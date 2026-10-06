@@ -63,17 +63,27 @@ uv sync --locked --python 3.12.14
 Programme werden aus dem Projektordner mit `uv run` gestartet.
 Eine manuelle Aktivierung der virtuellen Umgebung ist nicht nötig.
 
-## Technische Prüfung
+## Technische Prüfungen
+
+Die Python-Version ist in `.python-version` festgelegt.
+
+Die folgenden Befehle werden aus dem Projektordner ausgeführt:
 
 ```bash
-uv run python --version
-uv run python -c "import numpy, scipy, matplotlib, pandas, sympy; print('Basisbibliotheken geladen.')"
-uv run python -c "import pysr; print('PySR:', pysr.__version__)"
-uv run python -c "import pysr; from juliacall import Main as jl; print('Julia:', jl.seval('string(VERSION)')); print(jl.seval('1 + 1'))"
+uv run --locked ruff check .
+uv run --locked ruff format --check .
+uv run --locked python scripts/run_python.py scripts/check_environment.py
 ```
 
-Der erste PySR-Import kann Julia und Julia-Pakete herunterladen
-und vorkompilieren. Dafür wird eine Internetverbindung benötigt.
+Das Prüfskript kontrolliert Bibliotheksimporte, Python- und
+Julia-Versionen, das aktive Julia-Projekt sowie einen Julia-Rechentest.
+
+Diese Prüfungen wurden am 06.10.2026 auf Manjaro erfolgreich ausgeführt.
+
+Der Workflow `.github/workflows/technical-checks.yml` führt dieselben 
+Prüfungen bei Pull Requests und Änderungen an `main` auf einem
+Ubuntu-Rechner aus. Der technische GitHub-Actions-Workflow wurde am 06.10.2026
+erstmals erfolgreich ausgeführt.
 
 ## Reproduzierbarkeit
 
@@ -106,9 +116,6 @@ y = x² + 2x + 1 bis auf einen kleinen numerischen Fehler.
 
 Das bestätigt die technische Funktionsfähigkeit, jedoch keine
 wissenschaftliche Validierung der geplanten Ringdown-Methode.
-
-Eigene fachliche Tests und eine automatische GitHub-Testpipeline
-sind noch nicht eingerichtet.
 
 ## Technische Prüfung auf dem zweiten Rechner
 
