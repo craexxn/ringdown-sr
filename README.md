@@ -21,7 +21,8 @@ der technischen Funktionsprüfung.
 
 ## Entwicklungsumgebung
 
-Bisher auf einem Windows-Rechner mit Ubuntu unter WSL2 geprüft.
+Auf einem Windows-Rechner mit Ubuntu unter WSL2 sowie auf einem
+Laptop mit Manjaro Linux geprüft.
 Als Editor wird Visual Studio Code mit WSL-Anbindung verwendet.
 
 Gemeldete Versionen:
@@ -96,3 +97,23 @@ wissenschaftliche Validierung der geplanten Ringdown-Methode.
 
 Eigene fachliche Tests und eine automatische GitHub-Testpipeline
 sind noch nicht eingerichtet.
+
+## Technische Prüfung auf dem zweiten Rechner
+
+Am 06.10.2026 wurde die Umgebung auf dem Manjaro-Linux-Laptop
+aus dem GitHub-Repository und mit `uv sync --locked`
+wiederhergestellt.
+
+Erfolgreich geprüft:
+
+- Python 3.12.14 und Import der Basisbibliotheken.
+- PySR 2.6.0 und Julia 1.13.1.
+- Julia-Backend SymbolicRegression 2.5.1.
+- Allgemeine Formelsuche für y = x² + 2x + 1.
+
+Gefundene Formel: x(x + 2) + 1.
+Mittlerer quadratischer Fehler: ungefähr 3,94 × 10⁻³³.
+
+Damit ist die technische Funktionsfähigkeit auf beiden Rechnern
+geprüft. Die automatische Fixierung der Julia-Umgebung und die
+Portabilität des späteren Forschungsprogramms stehen noch aus.
