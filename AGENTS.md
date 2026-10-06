@@ -81,3 +81,12 @@ Kurz berichten:
 - Was geändert wurde und warum.
 - Welche Prüfungen durchgeführt wurden und mit welchem Ergebnis.
 - Welche Fragen oder Einschränkungen offenbleiben.
+
+## Julia-Umgebung
+
+- Python-Aufrufe mit PySR oder JuliaCall über
+  `uv run --locked --python 3.12.14 python scripts/run_python.py ...`
+  ausführen.
+- Die Julia-Version in `src/ringdown_sr/juliapkg.json` und
+  `julia/Manifest.toml` konsistent halten.
+- `julia/Manifest.toml` nicht manuell bearbeiten.
