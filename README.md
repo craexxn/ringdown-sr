@@ -82,7 +82,8 @@ Diese Prüfungen wurden am 06.10.2026 auf Manjaro erfolgreich ausgeführt.
 
 Der Workflow `.github/workflows/technical-checks.yml` führt dieselben 
 Prüfungen bei Pull Requests und Änderungen an `main` auf einem
-Ubuntu-Rechner aus. Der erste GitHub-Durchlauf steht noch aus.
+Ubuntu-Rechner aus. Der technische GitHub-Actions-Workflow wurde am 06.10.2026
+erstmals erfolgreich ausgeführt.
 
 ## Reproduzierbarkeit
 
