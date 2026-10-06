@@ -77,15 +77,27 @@ und vorkompilieren. Dafür wird eine Internetverbindung benötigt.
 
 ## Reproduzierbarkeit
 
-`pyproject.toml` beschreibt die Abhängigkeiten.
-`uv.lock` hält die aufgelösten Python-Paketversionen fest.
-Beide Dateien werden mit Git versioniert.
+- Python-Abhängigkeiten werden durch `pyproject.toml` und `uv.lock`
+  beschrieben und festgelegt. Verwendet wird Python 3.12.14.
+- `src/ringdown_sr/juliapkg.json` legt Julia auf Version 1.13.1 fest.
+- `julia/Project.toml` und `julia/Manifest.toml` halten die direkten
+  und indirekten Julia-Paketversionen fest.
+- `scripts/run_python.py` ermittelt das lokale Julia-Programm,
+  prüft die Version und stellt die gespeicherte Paketumgebung bereit.
+- Die lokale `.venv` wird nicht mit Git versioniert.
 
-Die lokale Umgebung `.venv` wird nicht versioniert.
+Python-Aufrufe mit PySR oder JuliaCall werden über das Startskript
+ausgeführt. Beispiel aus dem Projektordner:
 
-Die Julia-Version und Julia-Pakete sind durch `uv.lock` allein
-nicht vollständig festgelegt. Ihre explizite Fixierung und die
-Prüfung auf einem zweiten Rechner stehen noch aus.
+```bash
+uv run --locked --python 3.12.14 python scripts/run_python.py -c "import pysr; print(pysr.__version__)"
+```
+
+Für eine Python-Datei wird anstelle von `-c "..."` deren Pfad angegeben.
+
+Der Startweg wurde am 06.10.2026 auf Manjaro erfolgreich geprüft:
+PySR 2.6.0, Julia 1.13.1, SymbolicRegression 2.5.1 und PythonCall 0.9.36.
+Die Prüfung dieses neuen Startwegs unter Ubuntu/WSL2 steht noch aus.
 
 ## Stand der Prüfungen
 
@@ -115,5 +127,4 @@ Gefundene Formel: x(x + 2) + 1.
 Mittlerer quadratischer Fehler: ungefähr 3,94 × 10⁻³³.
 
 Damit ist die technische Funktionsfähigkeit auf beiden Rechnern
-geprüft. Die automatische Fixierung der Julia-Umgebung und die
-Portabilität des späteren Forschungsprogramms stehen noch aus.
+geprüft.
