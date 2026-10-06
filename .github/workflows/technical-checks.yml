@@ -1,0 +1,48 @@
+name: Technical checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: technical-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  technical-checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      UV_PYTHON: "3.12.14"
+      PYTHONUNBUFFERED: "1"
+      MPLBACKEND: Agg
+      JULIA_NUM_PRECOMPILE_TASKS: "2"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          version: "0.12.21"
+          enable-cache: false
+
+      - name: Install locked Python environment
+        run: uv sync --locked --dev
+
+      - name: Check Python code
+        run: uv run --locked ruff check .
+
+      - name: Check formatting
+        run: uv run --locked ruff format --check .
+
+      - name: Check Python and Julia environment
+        run: uv run --locked python scripts/run_python.py scripts/check_environment.py

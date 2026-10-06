@@ -67,11 +67,16 @@ Auch nach dem Startdatum nur die konkret beauftragte Aufgabe bearbeiten.
 - Genau berichten, welche Prüfungen tatsächlich ausgeführt wurden.
 - Nicht ausgeführte Prüfungen und offene Einschränkungen benennen.
 
-Verfügbare Werkzeuge:
+Verfügbare Prüfbefehle:
 
-- `uv run ruff check .` für statische Codeprüfung.
-- `uv run ruff format --check .` für Formatprüfung.
-- `uv run pytest` für Tests, sobald eigene Tests vorhanden sind.
+- `uv run --locked ruff check .` für statische Codeprüfung.
+- `uv run --locked ruff format --check .` für Formatprüfung.
+- `uv run --locked python scripts/run_python.py scripts/check_environment.py`
+  für die technische Umgebungsprüfung.
+- `uv run --locked pytest` für Tests, sobald eigene Tests vorhanden sind.
+
+Der technische Umgebungscheck prüft die Funktionsfähigkeit der
+Softwareumgebung. Wissenschaftliche Validierung benötigt fachliche Tests.
 
 Ein Testlauf ohne gefundene Tests ist kein bestandener Testnachweis.
 
