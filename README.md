@@ -15,9 +15,14 @@ Stand der technischen Vorbereitung am 01.10.2026:
 - Allgemeiner PySR-Funktionstest mit einer Polynomfunktion erfolgreich.
 - Git-Repository eingerichtet und mit GitHub verbunden.
 
-Die fachliche Implementierung und wissenschaftliche Auswertung
-haben noch nicht begonnen. Der Polynomtest dient ausschließlich
-der technischen Funktionsprüfung.
+Die fachliche Implementierung des Piloten hat am 15.10.2026 begonnen.
+Implementiert sind ein Signalgenerator, weißes Gaußrauschen und
+Verlust-Rechenkerne mit analytischen Referenztests.
+Die wissenschaftlichen Hauptversuche und ihre Auswertung stehen noch aus.
+Der frühere Polynomtest dient ausschließlich der technischen Funktionsprüfung.
+
+Details zum aktuellen Stand: [Pilot](docs/pilot.md) und
+[Verlustfunktionen](docs/losses.md).
 
 ## Entwicklungsumgebung
 
@@ -72,6 +77,7 @@ Die folgenden Befehle werden aus dem Projektordner ausgeführt:
 ```bash
 uv run --locked ruff check .
 uv run --locked ruff format --check .
+uv run --locked pytest -q
 uv run --locked python scripts/run_python.py scripts/check_environment.py
 ```
 
@@ -80,7 +86,7 @@ Julia-Versionen, das aktive Julia-Projekt sowie einen Julia-Rechentest.
 
 Diese Prüfungen wurden am 06.10.2026 auf Manjaro erfolgreich ausgeführt.
 
-Der Workflow `.github/workflows/technical-checks.yml` führt dieselben 
+Der Workflow `.github/workflows/technical-checks.yml` führt dieselben
 Prüfungen bei Pull Requests und Änderungen an `main` auf einem
 Ubuntu-Rechner aus. Der technische GitHub-Actions-Workflow wurde am 06.10.2026
 erstmals erfolgreich ausgeführt.
