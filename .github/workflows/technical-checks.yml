@@ -43,6 +43,10 @@ jobs:
 
       - name: Check formatting
         run: uv run --locked ruff format --check .
+        
+      - name: Run unit tests
+        run: uv run --locked pytest -q
+
 
       - name: Check Python and Julia environment
         run: uv run --locked python scripts/run_python.py scripts/check_environment.py
