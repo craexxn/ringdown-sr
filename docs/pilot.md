@@ -1,11 +1,12 @@
-# Pilot: erster Implementierungsschritt
+# Pilot: synthetisches Signal und weißes Rauschen
 
 ## Ziel und Stand
 
-Dieser Schritt implementiert eine gleichmäßige Zeitachse und einen
-deterministischen Generator für ein einzelnes gedämpftes Sinussignal.
-Die Tests prüfen seine mathematische Umsetzung anhand einfacher
-Referenzfälle. Rauscherzeugung, Kovarianzschätzung, Verlustfunktionen,
+Implementiert sind eine gleichmäßige Zeitachse, ein deterministischer
+Generator für ein einzelnes gedämpftes Sinussignal und weißes Gaußrauschen
+mit explizitem Zufallsgenerator. Die Tests prüfen die mathematische
+Umsetzung und grundlegende Rauscheigenschaften anhand analytischer
+Referenzen. Korreliertes Rauschen, Kovarianzschätzung, Verlustfunktionen,
 Referenzfit, PySR-Suche und Ergebnisexport folgen in weiteren Schritten.
 
 ## Signaldefinition und Einheiten
@@ -80,6 +81,59 @@ signal = ringdown_signal(
 Diese Beispielwerte dienen der Funktionsdemonstration und legen keine
 Parameterbereiche für die Forschungsexperimente fest.
 
+## Weißes Gaußrauschen
+
+`gaussian_white_noise` erzeugt unabhängige Zufallswerte mit:
+
+```text
+epsilon[k] ~ N(0, sigma^2)
+E[epsilon[k]] = 0
+Cov(epsilon[i], epsilon[j]) = sigma^2, wenn i = j, sonst 0
+y[k] = s(t[k]) + epsilon[k]
+```
+
+`standard_deviation` ist `sigma`, nicht die Varianz. Die Einheit entspricht
+der Signalamplitude; beim bisher normierten Signal ist sie dimensionslos.
+Der Wert muss endlich und nicht negativ sein. `sigma = 0` liefert den
+rauschfreien Referenzfall.
+
+Die Definition bezieht sich auf die Verteilung. Der Mittelwert und die
+Standardabweichung einer endlichen Realisierung schwanken. Die erzeugten
+Werte werden deshalb weder nachträglich zentriert noch auf exakt
+vorgegebene Stichprobenmomente normiert. Gerade bei kurzen Fenstern
+wären dies zusätzliche Eingriffe in die Rauschstatistik.
+
+```python
+import numpy as np
+
+from ringdown_sr.noise import gaussian_white_noise
+
+rng = np.random.Generator(np.random.PCG64(42))
+noise = gaussian_white_noise(
+    len(signal),
+    standard_deviation=0.1,
+    rng=rng,
+)
+observed = signal + noise
+```
+
+Der Aufrufer verwaltet Generator und Seed. Zwei frisch erzeugte
+Generatoren mit gleichem Seed reproduzieren bei gleicher Umgebung und
+gleicher Aufruffolge dieselben Werte. Ein wiederverwendeter Generator
+wird weitergeschaltet; sein nächster Aufruf erzeugt eine weitere
+Realisierung. Der globale NumPy-Zufallszustand bleibt unberührt.
+
+Im Beispiel und in den Tests ist der Algorithmus ausdrücklich `PCG64`.
+Die Funktion akzeptiert einen NumPy-`Generator`; für spätere Experimente
+werden Algorithmus, Seed, NumPy-Version und Aufruffolge protokolliert.
+Ein Seed allein garantiert keine identischen Gleitkommazufallszahlen
+über unterschiedliche NumPy-Builds oder Rechner hinweg. Details stehen
+in der [NumPy-Kompatibilitätsrichtlinie](https://numpy.org/doc/stable/reference/random/compatibility.html).
+
+Dieses Rauschen ist ein einfacher Kontrollfall. Es bildet noch keine
+Detektorcharakteristik ab und legt weder eine SNR-Konvention noch die
+Rauschpegel der Hauptversuche fest.
+
 ## Prüfungen
 
 Aus dem Projektordner:
@@ -93,6 +147,18 @@ uv run --locked pytest -q
 Die Signalgenerator-Tests importieren NumPy, aber kein PySR und kein
 JuliaCall. Der vorhandene technische Python-/Julia-Umgebungscheck bleibt
 als eigenständige Prüfung bestehen.
+
+Für das Rauschen prüfen feste Testseeds die Wiederholbarkeit, das
+Fortschalten des Generatorzustands und die Trennung vom globalen
+Zufallszustand. Statistiktests mit 200.000 Werten vergleichen Mittelwert,
+Varianz, den Anteil innerhalb einer Standardabweichung und ausgewählte
+Kovarianzen bei Zeitversatz mit analytisch begründeten Referenzen.
+Die Toleranzen entsprechen jeweils sechs Standardfehlern unter dem
+angenommenen unabhängigen Normalmodell. Sie sind vorab aus der
+Stichprobengröße abgeleitet und werden nicht an beobachtete Werte angepasst.
+Diese Prüfungen sind Kontrollfälle und kein vollständiger Nachweis aller
+Verteilungseigenschaften. Die große Teststichprobe legt keine Länge für
+die späteren Ringdown-Fenster fest.
 
 Die Referenzfälle beruhen auf `cos(0) = 1`,
 `cos(pi/2) = 0`, `cos(pi) = -1` und dem Faktor `2**(-t)` für
