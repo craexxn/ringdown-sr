@@ -6,7 +6,10 @@ Implementiert sind eine gleichmäßige Zeitachse, ein deterministischer
 Generator für ein einzelnes gedämpftes Sinussignal und weißes Gaußrauschen
 mit explizitem Zufallsgenerator. Die Tests prüfen die mathematische
 Umsetzung und grundlegende Rauscheigenschaften anhand analytischer
-Referenzen. Korreliertes Rauschen, Kovarianzschätzung, Verlustfunktionen,
+Referenzen. Hinzu kommen die gewöhnliche MSE und Rechenkerne für eine
+vorgegebene volle Kovarianzmatrix; Definitionen und offene
+Normierungsfragen stehen in [Verlustfunktionen](losses.md).
+Korreliertes Rauschen, Kovarianzschätzung und Regularisierung,
 Referenzfit, PySR-Suche und Ergebnisexport folgen in weiteren Schritten.
 
 ## Signaldefinition und Einheiten
