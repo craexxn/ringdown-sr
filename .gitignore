@@ -8,3 +8,6 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Local pilot outputs; keep configuration files under configs/.
+/results/

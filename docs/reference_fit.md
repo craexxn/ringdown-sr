@@ -8,8 +8,8 @@ Signalbeginn an. Der Formansatz ist bekannt; dies ist der klassische
 Vergleich und keine freie Formelentdeckung durch PySR.
 
 Dieser Baustein liefert Parameter, Vorhersage, Residuen, Fehlerwerte und
-Diagnosen aller Startpunkte. Ein vollständiger Versuchslauf mit
-Konfigurationsdatei, Metadaten und dauerhaftem Ergebnisexport folgt separat.
+Diagnosen aller Startpunkte. Ein [konfigurierter Kontrolllauf](configured_pilot.md)
+verbindet ihn mit Datenerzeugung, Metadaten und dauerhaftem Ergebnisexport.
 
 ## Parameterdarstellung und Berechnung
 

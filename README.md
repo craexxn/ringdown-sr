@@ -19,19 +19,39 @@ Auf `main` vorhanden:
   über eine Cholesky-Zerlegung: `src/ringdown_sr/losses.py`.
 - Klassischer Fit mit bekannter Ringdown-Formel, expliziten Startpunkten
   und optionaler fester Kovarianz: `src/ringdown_sr/reference_fit.py`.
-- 179 automatisierte Testfälle für diese Bausteine, einschließlich
+- Konfigurierbarer Kontrolllauf mit TOML-Eingabe, Ergebnisdateien,
+  Diagramm und Metadaten: `src/ringdown_sr/pilot.py`.
+- 237 automatisierte Testfälle für diese Bausteine, einschließlich
   analytischer Referenzfälle und ungültiger Eingaben.
 - Festgelegte Python-/Julia-Umgebung und automatische GitHub-Prüfungen.
 
-Die Bausteine ergeben noch keinen vollständigen Rekonstruktionslauf.
+Ein vollständiger kleiner Durchlauf mit bekanntem Formansatz ist vorhanden.
 Korreliertes Rauschen, Kovarianzschätzung und Regularisierung,
-PySR-Integration sowie ein vollständiger konfigurierter Ergebnisexport
-stehen noch aus.
+PySR-Integration und die statistische Leistungsbewertung stehen noch aus.
 Die wissenschaftlichen Hauptversuche und ihre Auswertung haben noch
 nicht begonnen.
 
 Details zum aktuellen Stand: [Pilot](docs/pilot.md),
-[Verlustfunktionen](docs/losses.md) und [Referenzfit](docs/reference_fit.md).
+[Verlustfunktionen](docs/losses.md), [Referenzfit](docs/reference_fit.md)
+und [konfigurierter Durchlauf](docs/configured_pilot.md).
+
+## Konfigurierter Durchlauf mit gespeicherten Ergebnissen
+
+Aus dem Projektordner:
+
+```bash
+uv run --locked ringdown-sr run configs/pilot_white.toml --output results/pilot-001
+code -r results/pilot-001/plot.png
+```
+
+Der neue Ausgabeordner enthält Konfiguration, Messwerte als CSV,
+Parameter und Fehlerwerte als JSON, ein Diagramm und Metadaten mit Seed,
+Zufallszuständen, Softwareversionen, Codezustand und Prüfsummen.
+Bestehende Ordner werden abgelehnt; für eine Wiederholung einen neuen
+Namen wie `results/pilot-002` verwenden. Lokale Ausgaben unter `results/`
+werden nicht versioniert und müssen separat gesichert werden.
+Der Kontrolllauf braucht kein Julia/PySR und legt keine Einstellungen
+oder Erfolgskriterien für die Hauptversuche fest.
 
 ## Sichtbarer Demolauf
 
@@ -140,7 +160,7 @@ Bisherige Prüfnachweise:
   zu Commit `600e95b` ist erfolgreich abgeschlossen: Ruff-Codeprüfung,
   Formatprüfung, 121 Unit-Testfälle und Python-/Julia-Umgebungscheck.
   Dieser Nachweis stammt aus dem Stand vor Ergänzung des Referenzfits.
-- Am 18.10.2026 wurden einschließlich Referenzfit 179 Unit-Testfälle
+- Am 18.10.2026 wurden einschließlich konfiguriertem Pilot 237 Testfälle
   in der Codex-Umgebung erfolgreich ausgeführt.
 
 Bestandene Tests bestätigen die geprüften Formeln und Eingaberandfälle.
@@ -180,9 +200,9 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
 ## Nächste Schritte
 
-1. Signal, Rauschen, Fit, Bewertung und Ergebnisexport zu einem kleinen
-   reproduzierbaren Durchlauf verbinden. Konfiguration und Zufallsquellen
-   werden zusammen mit den Ergebnissen protokolliert.
+1. Den konfigurierten Durchlauf methodisch prüfen und auf WSL2 sowie
+   Manjaro wiederholen. Gespeicherte Daten, Metadaten und Ergebnisse
+   vergleichen; plattformübergreifende Identität ist noch nicht nachgewiesen.
 2. Korreliertes Rauschen mit bekannter Kovarianz und anschließend
    Kovarianzschätzung aus getrennten Hintergrunddaten sowie Regularisierung
    ergänzen und prüfen.
