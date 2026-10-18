@@ -9,8 +9,11 @@ Umsetzung und grundlegende Rauscheigenschaften anhand analytischer
 Referenzen. Hinzu kommen die gewöhnliche MSE und Rechenkerne für eine
 vorgegebene volle Kovarianzmatrix; Definitionen und offene
 Normierungsfragen stehen in [Verlustfunktionen](losses.md).
+Ein [klassischer Referenzfit](reference_fit.md) passt die bekannte
+Ringdown-Formel an und kann eine vorgegebene volle Kovarianz berücksichtigen.
+Ein ausführbarer Demolauf stellt Messdaten, Signal und Fit gemeinsam dar.
 Korreliertes Rauschen, Kovarianzschätzung und Regularisierung,
-Referenzfit, PySR-Suche und Ergebnisexport folgen in weiteren Schritten.
+PySR-Suche und vollständiger Ergebnisexport folgen in weiteren Schritten.
 
 ## Signaldefinition und Einheiten
 

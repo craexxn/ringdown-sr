@@ -17,18 +17,36 @@ Auf `main` vorhanden:
   `src/ringdown_sr/noise.py`.
 - Gewöhnliche MSE sowie kovarianzgewichtete Verluste und Whitening
   über eine Cholesky-Zerlegung: `src/ringdown_sr/losses.py`.
-- 121 automatisierte Testfälle für diese Bausteine, einschließlich
+- Klassischer Fit mit bekannter Ringdown-Formel, expliziten Startpunkten
+  und optionaler fester Kovarianz: `src/ringdown_sr/reference_fit.py`.
+- 179 automatisierte Testfälle für diese Bausteine, einschließlich
   analytischer Referenzfälle und ungültiger Eingaben.
 - Festgelegte Python-/Julia-Umgebung und automatische GitHub-Prüfungen.
 
 Die Bausteine ergeben noch keinen vollständigen Rekonstruktionslauf.
-Klassischer Referenzfit, korreliertes Rauschen, Kovarianzschätzung und
-Regularisierung, PySR-Integration sowie Ergebnisexport stehen noch aus.
+Korreliertes Rauschen, Kovarianzschätzung und Regularisierung,
+PySR-Integration sowie ein vollständiger konfigurierter Ergebnisexport
+stehen noch aus.
 Die wissenschaftlichen Hauptversuche und ihre Auswertung haben noch
 nicht begonnen.
 
-Details zum aktuellen Stand: [Pilot](docs/pilot.md) und
-[Verlustfunktionen](docs/losses.md).
+Details zum aktuellen Stand: [Pilot](docs/pilot.md),
+[Verlustfunktionen](docs/losses.md) und [Referenzfit](docs/reference_fit.md).
+
+## Sichtbarer Demolauf
+
+Nach der Einrichtung aus dem Projektordner:
+
+```bash
+uv run --locked python scripts/demo_reference_fit.py
+```
+
+Der Aufruf zeigt vorgegebene und geschätzte Parameter sowie Fehlerwerte
+im Terminal und speichert ein Diagramm im temporären Verzeichnis.
+Unter Linux/WSL kann es mit `code -r /tmp/ringdown-reference-fit.png`
+geöffnet werden. Ein eigener Pfad ist mit `--output /pfad/diagramm.png`
+möglich. Dieser einzelne Demofall verwendet die bekannte Formel und
+ersetzt keine wissenschaftliche Bewertung oder freie PySR-Formelsuche.
 
 ## Entwicklungsumgebung
 
@@ -116,13 +134,14 @@ Der Workflow `.github/workflows/technical-checks.yml` führt dieselben
 Prüfungen bei Pull Requests und Änderungen an `main` auf einem
 Ubuntu-Rechner aus.
 
-Prüfnachweise für den dokumentierten Code-Stand:
+Bisherige Prüfnachweise:
 
 - Der [GitHub-Durchlauf auf `main` vom 15.10.2026](https://github.com/craexxn/ringdown-sr/actions/runs/38762123899)
   zu Commit `600e95b` ist erfolgreich abgeschlossen: Ruff-Codeprüfung,
-  Formatprüfung, Unit-Tests und Python-/Julia-Umgebungscheck.
-- Am 18.10.2026 wurden die 121 Unit-Testfälle dieses Code-Stands
-  zusätzlich in der Codex-Umgebung erfolgreich ausgeführt.
+  Formatprüfung, 121 Unit-Testfälle und Python-/Julia-Umgebungscheck.
+  Dieser Nachweis stammt aus dem Stand vor Ergänzung des Referenzfits.
+- Am 18.10.2026 wurden einschließlich Referenzfit 179 Unit-Testfälle
+  in der Codex-Umgebung erfolgreich ausgeführt.
 
 Bestandene Tests bestätigen die geprüften Formeln und Eingaberandfälle.
 Die wissenschaftliche Validierung der Rekonstruktionsmethode benötigt
@@ -161,16 +180,13 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
 ## Nächste Schritte
 
-1. Einen klassischen Referenzfit mit bekannter Ringdown-Formel ergänzen.
-   Parameterdarstellung, Startwerte und Grenzen werden dabei ausdrücklich
-   festgelegt und anhand unabhängiger Referenzfälle geprüft.
-2. Signal, Rauschen, Fit, Bewertung und Ergebnisexport zu einem kleinen
+1. Signal, Rauschen, Fit, Bewertung und Ergebnisexport zu einem kleinen
    reproduzierbaren Durchlauf verbinden. Konfiguration und Zufallsquellen
    werden zusammen mit den Ergebnissen protokolliert.
-3. Korreliertes Rauschen mit bekannter Kovarianz und anschließend
+2. Korreliertes Rauschen mit bekannter Kovarianz und anschließend
    Kovarianzschätzung aus getrennten Hintergrunddaten sowie Regularisierung
    ergänzen und prüfen.
-4. Die freie PySR-Formelsuche und die volle Kovarianzgewichtung integrieren.
+3. Die freie PySR-Formelsuche und die volle Kovarianzgewichtung integrieren.
    Endgültige Verlustnormierung und Komplexitätsgewichtung werden im
    methodischen Review festgelegt.
 
