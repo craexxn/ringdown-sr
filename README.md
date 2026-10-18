@@ -5,39 +5,48 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
+Dokumentationsstand: 18.10.2026.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
+Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
-Stand der technischen Vorbereitung am 01.10.2026:
+Auf `main` vorhanden:
 
-- Entwicklungsumgebung eingerichtet.
-- Python-Basisbibliotheken erfolgreich importiert.
-- Python–Julia-Verbindung geprüft.
-- Allgemeiner PySR-Funktionstest mit einer Polynomfunktion erfolgreich.
-- Git-Repository eingerichtet und mit GitHub verbunden.
+- Gleichmäßige Zeitachse und Generator für ein einzelnes gedämpftes
+  Sinussignal: `src/ringdown_sr/signals.py`.
+- Weißes Gaußrauschen mit explizitem NumPy-Zufallsgenerator:
+  `src/ringdown_sr/noise.py`.
+- Gewöhnliche MSE sowie kovarianzgewichtete Verluste und Whitening
+  über eine Cholesky-Zerlegung: `src/ringdown_sr/losses.py`.
+- 121 automatisierte Testfälle für diese Bausteine, einschließlich
+  analytischer Referenzfälle und ungültiger Eingaben.
+- Festgelegte Python-/Julia-Umgebung und automatische GitHub-Prüfungen.
 
-Die fachliche Implementierung des Piloten hat am 15.10.2026 begonnen.
-Implementiert sind ein Signalgenerator, weißes Gaußrauschen und
-Verlust-Rechenkerne mit analytischen Referenztests.
-Die wissenschaftlichen Hauptversuche und ihre Auswertung stehen noch aus.
-Der frühere Polynomtest dient ausschließlich der technischen Funktionsprüfung.
+Die Bausteine ergeben noch keinen vollständigen Rekonstruktionslauf.
+Klassischer Referenzfit, korreliertes Rauschen, Kovarianzschätzung und
+Regularisierung, PySR-Integration sowie Ergebnisexport stehen noch aus.
+Die wissenschaftlichen Hauptversuche und ihre Auswertung haben noch
+nicht begonnen.
 
 Details zum aktuellen Stand: [Pilot](docs/pilot.md) und
 [Verlustfunktionen](docs/losses.md).
 
 ## Entwicklungsumgebung
 
-Auf einem Windows-Rechner mit Ubuntu unter WSL2 sowie auf einem
-Laptop mit Manjaro Linux geprüft.
-Als Editor wird Visual Studio Code mit WSL-Anbindung verwendet.
+Die grundlegende Installation und ein allgemeiner PySR-Polynomtest
+wurden auf einem Windows-Rechner mit Ubuntu unter WSL2 sowie auf einem
+Laptop mit Manjaro Linux geprüft. Als Editor wird Visual Studio Code
+verwendet, unter Windows mit WSL-Anbindung.
 
 Gemeldete Versionen:
 
 - Python: 3.12.14
 - uv: 0.12.21
-- Git: 2.53.0
+- Git: 2.53.0 unter WSL2, 2.55.0 unter Manjaro
 - PySR: 2.6.0
 - juliacall: 0.9.36
 - Julia: 1.13.1
+- SymbolicRegression: 2.5.1
+- PythonCall: 0.9.36
 
 ## Bibliotheken
 
@@ -62,11 +71,26 @@ Die folgenden Befehle sind für ein Linux- beziehungsweise WSL-Terminal.
 git clone https://github.com/craexxn/ringdown-sr.git
 cd ringdown-sr
 uv python install 3.12.14
-uv sync --locked --python 3.12.14
+uv sync --locked --dev --python 3.12.14
 ```
 
 Programme werden aus dem Projektordner mit `uv run` gestartet.
 Eine manuelle Aktivierung der virtuellen Umgebung ist nicht nötig.
+
+## Bestehenden Rechner aktualisieren
+
+Im Linux- beziehungsweise WSL-Terminal aus dem Projektordner zuerst
+`git status` ausführen. Bei sauberem Arbeitsverzeichnis:
+
+```bash
+git switch main
+git pull --ff-only
+uv sync --locked --dev --python 3.12.14
+```
+
+Damit werden die übernommenen Änderungen von `main` und die festgelegten
+Python-Abhängigkeiten abgeglichen. Änderungen aus offenen Pull Requests
+sind auf deren jeweiligen Branches verfügbar.
 
 ## Technische Prüfungen
 
@@ -78,18 +102,31 @@ Die folgenden Befehle werden aus dem Projektordner ausgeführt:
 uv run --locked ruff check .
 uv run --locked ruff format --check .
 uv run --locked pytest -q
-uv run --locked python scripts/run_python.py scripts/check_environment.py
+uv run --locked --python 3.12.14 python scripts/run_python.py scripts/check_environment.py
 ```
 
 Das Prüfskript kontrolliert Bibliotheksimporte, Python- und
 Julia-Versionen, das aktive Julia-Projekt sowie einen Julia-Rechentest.
 
-Diese Prüfungen wurden am 06.10.2026 auf Manjaro erfolgreich ausgeführt.
+Mit `uv run --locked pytest -v` wird jeder Testfall mit seinem Ergebnis
+angezeigt. Die automatisierten Tests erzeugen keine Diagramme oder
+rekonstruierten Ringdown-Formeln.
 
 Der Workflow `.github/workflows/technical-checks.yml` führt dieselben
 Prüfungen bei Pull Requests und Änderungen an `main` auf einem
-Ubuntu-Rechner aus. Der technische GitHub-Actions-Workflow wurde am 06.10.2026
-erstmals erfolgreich ausgeführt.
+Ubuntu-Rechner aus.
+
+Prüfnachweise für den dokumentierten Code-Stand:
+
+- Der [GitHub-Durchlauf auf `main` vom 15.10.2026](https://github.com/craexxn/ringdown-sr/actions/runs/38762123899)
+  zu Commit `600e95b` ist erfolgreich abgeschlossen: Ruff-Codeprüfung,
+  Formatprüfung, Unit-Tests und Python-/Julia-Umgebungscheck.
+- Am 18.10.2026 wurden die 121 Unit-Testfälle dieses Code-Stands
+  zusätzlich in der Codex-Umgebung erfolgreich ausgeführt.
+
+Bestandene Tests bestätigen die geprüften Formeln und Eingaberandfälle.
+Die wissenschaftliche Validierung der Rekonstruktionsmethode benötigt
+die noch ausstehenden methodischen Prüfungen und Experimente.
 
 ## Reproduzierbarkeit
 
@@ -113,31 +150,30 @@ Für eine Python-Datei wird anstelle von `-c "..."` deren Pfad angegeben.
 
 Der Startweg wurde am 06.10.2026 auf Manjaro erfolgreich geprüft:
 PySR 2.6.0, Julia 1.13.1, SymbolicRegression 2.5.1 und PythonCall 0.9.36.
-Die Prüfung dieses neuen Startwegs unter Ubuntu/WSL2 steht noch aus.
+Der aktuelle GitHub-Durchlauf bestätigt ihn außerdem auf Ubuntu.
+Ein aktueller lokaler Prüfnachweis für diesen Startweg unter WSL2
+ist noch nicht dokumentiert; der GitHub-Lauf ersetzt diesen Nachweis nicht.
 
-## Stand der Prüfungen
+Der frühere allgemeine PySR-Test rekonstruierte `y = x² + 2x + 1`
+auf dem Manjaro-Laptop als `x(x + 2) + 1` mit einem mittleren
+quadratischen Fehler von ungefähr `3,94 × 10⁻³³`. Dieser Test ist
+eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
-Der allgemeine PySR-Test rekonstruierte die Funktion
-y = x² + 2x + 1 bis auf einen kleinen numerischen Fehler.
+## Nächste Schritte
 
-Das bestätigt die technische Funktionsfähigkeit, jedoch keine
-wissenschaftliche Validierung der geplanten Ringdown-Methode.
+1. Einen klassischen Referenzfit mit bekannter Ringdown-Formel ergänzen.
+   Parameterdarstellung, Startwerte und Grenzen werden dabei ausdrücklich
+   festgelegt und anhand unabhängiger Referenzfälle geprüft.
+2. Signal, Rauschen, Fit, Bewertung und Ergebnisexport zu einem kleinen
+   reproduzierbaren Durchlauf verbinden. Konfiguration und Zufallsquellen
+   werden zusammen mit den Ergebnissen protokolliert.
+3. Korreliertes Rauschen mit bekannter Kovarianz und anschließend
+   Kovarianzschätzung aus getrennten Hintergrunddaten sowie Regularisierung
+   ergänzen und prüfen.
+4. Die freie PySR-Formelsuche und die volle Kovarianzgewichtung integrieren.
+   Endgültige Verlustnormierung und Komplexitätsgewichtung werden im
+   methodischen Review festgelegt.
 
-## Technische Prüfung auf dem zweiten Rechner
-
-Am 06.10.2026 wurde die Umgebung auf dem Manjaro-Linux-Laptop
-aus dem GitHub-Repository und mit `uv sync --locked`
-wiederhergestellt.
-
-Erfolgreich geprüft:
-
-- Python 3.12.14 und Import der Basisbibliotheken.
-- PySR 2.6.0 und Julia 1.13.1.
-- Julia-Backend SymbolicRegression 2.5.1.
-- Allgemeine Formelsuche für y = x² + 2x + 1.
-
-Gefundene Formel: x(x + 2) + 1.
-Mittlerer quadratischer Fehler: ungefähr 3,94 × 10⁻³³.
-
-Damit ist die technische Funktionsfähigkeit auf beiden Rechnern
-geprüft.
+Diese Schritte bilden die Arbeitsplanung für den Pilot.
+Parameterbereiche, SNR-Konvention und Kriterien für die Hauptversuche
+werden gesondert begründet und dokumentiert.
