@@ -102,6 +102,25 @@ Pro Lauf werden gespeichert:
   installierten Python-Paketversionen sowie ausgewählte Thread-Variablen.
   `julia_used = false` stellt klar, dass installierte PySR-/JuliaCall-Versionen
   in der Paketliste keine Verwendung dieser Verfahren bedeuten.
+- Unter `environment.numerical_libraries` die Build-Konfigurationen von
+  NumPy und SciPy einschließlich Compiler- und BLAS-/LAPACK-Angaben aus
+  `show_config(mode="dicts")`. Buildpfade und dort genannte Python-Versionen
+  beschreiben die Erstellung des jeweiligen Pakets; sie sind nicht mit
+  der aktuellen Python-Laufzeit gleichzusetzen.
+- Ebenfalls dort eine Momentaufnahme der bereits geladenen, von
+  `threadpoolctl.threadpool_info()` erkannten nativen Bibliotheken vor der
+  Datenerzeugung: unter anderem Bibliothekspfad, Implementierung, Version,
+  Threading-Verfahren und eingestellte Threadzahl, soweit der Anbieter sie
+  meldet. Die Threadgrenzen werden nur gelesen, nicht geändert. NumPy und
+  SciPy können unterschiedliche BLAS-Versionen laden.
+  `threadpoolctl` ist bereits in der gesperrten Abhängigkeitskette vorhanden,
+  bleibt für diese Diagnose aber optional. Jeder Diagnosebericht kennzeichnet
+  `status = "available"` mit seinen `details` oder `status = "unavailable"`
+  mit `details = null` und Fehlermeldung. Eine erfolgreich gelesene leere
+  Bibliotheksliste bedeutet, dass keine unterstützte Bibliothek erkannt
+  wurde; sie beweist nicht, dass keine numerischen Bibliotheken verwendet
+  werden. Auch die Momentaufnahme ist keine vollständige Identitätsgarantie
+  für spätere Rechenoperationen.
 - Git-Commit und geänderte/unversionierte Dateipfade vor Erzeugung des
   Ausgabeordners, sofern das tatsächlich geladene Paket im Repository
   liegt. Ein anderes Repository im aktuellen Arbeitsverzeichnis wird
@@ -178,7 +197,14 @@ fortgesetzt oder gelöscht. Der nächste Versuch bekommt einen neuen Ordner.
 Integrationstests prüfen unter anderem den vollständigen Export, die
 CSV-Rückgewinnung, Prüfsummen, RNG-Zustandswiederholung, geänderte Seeds,
 unveränderten globalen Zufallszustand, Fehlerprotokolle, Überschreibschutz
-und einen Aufruf aus anderem Arbeitsverzeichnis. Ein rauschfreier Lauf
+einschließlich eines Symlinks mit fehlendem Ziel und einen Aufruf aus anderem
+Arbeitsverzeichnis. Zwei über ein gemeinsames Startsignal synchronisierte
+Python-Prozesse prüfen denselben Ausgabeordner: genau ein Lauf darf erfolgreich
+abschließen, der andere muss das vorhandene Ziel ablehnen. Anschließend
+werden Abschlussstatus, Dateibestand und sämtliche Nutzdatei-Prüfsummen
+kontrolliert. Fehlende Build-/Laufzeitdiagnosen werden außerdem als nicht
+verfügbare Angaben gespeichert, ohne den Rechenlauf scheitern zu lassen.
+Ein rauschfreier Lauf
 wird gegen die unabhängig berechnete Folge
 `2**(-k) * [1, 1, -1, -1, ...]` geprüft.
 
@@ -195,3 +221,9 @@ Kovarianzschätzung/Regularisierung, PySR-Integration sowie die Begründung
 der Hauptversuche. Eine bekannte Modellfamilie hat gegenüber freier
 Formelentdeckung zusätzliches Vorwissen; dies muss im Vergleich ausgewiesen
 werden.
+
+Referenzen zu den Diagnoseschnittstellen:
+
+- [NumPy: show_config](https://numpy.org/doc/stable/reference/generated/numpy.show_config.html)
+- [SciPy: show_config](https://docs.scipy.org/doc/scipy/reference/generated/scipy.show_config.html)
+- [threadpoolctl: Runtime Programmatic Introspection](https://github.com/joblib/threadpoolctl#python-runtime-programmatic-introspection)
