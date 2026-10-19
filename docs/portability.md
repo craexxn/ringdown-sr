@@ -1,0 +1,192 @@
+# Lokaler Portabilitätscheck des Piloten
+
+Prüfstand: 19.10.2026. Der technische Kontrollvergleich wurde auf einem
+Manjaro-Laptop und einem Windows-Rechner mit Ubuntu unter WSL2 ausgeführt.
+Die folgenden Nachweise beruhen auf den vom Nutzer übermittelten
+Terminalausgaben und Diagrammbestätigungen sowie ergänzenden Diagnoseläufen
+in der Codex-Umgebung. Die lokalen Ergebnisdateien wurden nicht in dieses
+Repository übernommen und müssen separat gesichert werden.
+
+## Umfang und Codezustand
+
+Geprüft wurden der konfigurierte Referenzfit mit bekannter Ringdown-Formel,
+sein Ergebnisexport und die Anzeige von `plot.png` für drei Kontrollfälle:
+
+| Konfiguration | Rauschmodell | Fit-Gewichtung |
+| --- | --- | --- |
+| `configs/pilot_white.toml` | Weißes Gaußrauschen | `known_white` |
+| `configs/pilot_ar1.toml` | Stationäres AR(1)-Gaußrauschen | `known_covariance` |
+| `configs/pilot_ar1_ordinary.toml` | Dasselbe AR(1)-Modell | `ordinary` |
+
+Alle drei Kontrollläufe meldeten auf beiden Rechnern `Status: success`;
+die zugehörigen Diagramme wurden geöffnet und vom Nutzer bestätigt.
+
+Die Code- und Testnachweise haben unterschiedlichen Umfang:
+
+- Manjaro, weißer Kontrollfall: sauberer Commit `3833a12`, 244 bestandene
+  Tests in 7,74 s. Konfiguration und beide unten genannten Ergebnisdateien
+  stimmten bytegenau mit dem Codex-Referenzlauf überein.
+- Manjaro, spätere AR(1)-Läufe: erfolgreiche Läufe und Daten-/Fehlervergleich
+  wurden bestätigt. Ihr eigener Git-Metadatensatz und ein neuer vollständiger
+  Testlauf wurden nicht separat übermittelt; sie werden hier nicht aus dem
+  älteren Weißrausch-Nachweis abgeleitet.
+- WSL2: Aktualisierung auf `fbe9a605dc5d89a9beb1b46f19fece178be4a25f`
+  (`main` nach PR #12), anschließend 301 bestandene Tests in 12,97 s.
+  Der übermittelte Git-Metadatensatz des weißen Laufs nennt diesen Commit.
+  Für die anschließend gestarteten AR(1)-Läufe wurde kein eigener
+  Git-Metadatensatz übermittelt.
+
+Der weiße WSL2-Lauf meldete `dirty: true`: Aufgeführt waren ausschließlich
+unversionierte historische Julia-Dateien unter
+`docs/environment/julia-2026-10-01/` und erzeugte Dateien unter
+`julia/.CondaPkg/`. Änderungen an versionierten Dateien wurden nicht
+gemeldet. Der Lauf ist damit kein Nachweis eines vollständig sauberen
+Arbeitsverzeichnisses. Diese Dateien wurden für die Prüfung weder gelöscht
+noch in den Projektstand aufgenommen.
+
+Im WSL2-Metadatensatz stehen NumPy 2.5.3 und SciPy 1.18.1. Die beiden
+geladenen OpenBLAS-Bibliotheken meldeten Versionen `0.3.31.dev` und
+`0.3.34.106.0`, jeweils Architektur `Haswell` und zwölf Threads.
+
+Diese Piloten verwenden kein Julia/PySR. Der weiterhin fehlende aktuelle
+lokale WSL2-Prüfnachweis des festgelegten Julia-Startwegs ist hiervon
+unabhängig; siehe [README](../README.md#reproduzierbarkeit).
+
+## Ergebnisordner und beobachtete Kennzahlen
+
+Die im Vergleich verwendeten relativen Verzeichnisse waren:
+
+| Kontrollfall | Manjaro | WSL2 |
+| --- | --- | --- |
+| Weiß | `results/portability-manjaro-001` | `results/portability-manjaro-001` |
+| AR(1), gewichtet | `results/ar1-known-manjaro-001` | `results/ar1-known-wsl2-002` |
+| AR(1), gewöhnlich | `results/ar1-ordinary-manjaro-001` | `results/ar1-ordinary-wsl2-002` |
+
+Der Name des weißen WSL2-Ordners wurde vom früheren Befehl übernommen;
+er bezeichnet in diesem Fall eine Ausführung unter WSL2. Die Daten wurden
+wegen des Ordnernamens nicht verschoben oder neu berechnet.
+
+Die Terminalausgaben auf beiden Rechnern stimmten in allen angezeigten
+Stellen überein:
+
+| Kontrollfall | Frequenz in Hz | Abklingzeit in s | Gewöhnliche MSE |
+| --- | ---: | ---: | ---: |
+| Weiß | 250.08257 | 0.007785405 | 0.006057622 |
+| AR(1), gewichtet | 250.62609 | 0.0079656544 | 0.0057284665 |
+| AR(1), gewöhnlich | 250.35745 | 0.0079046804 | 0.0057225228 |
+
+Das sind Kontrollfälle mit einem festen Seed, keine Schätzung von
+Leistungsunterschieden über viele Rauschrealisierungen. Die Metriken
+beziehen sich auf die zur Anpassung verwendeten Samples.
+
+## Daten- und Verlustkontrolle der AR(1)-Paare
+
+Auf jedem Rechner wurden innerhalb des gewichteten/gewöhnlichen Paars
+die Spalten `time_s`, `signal`, `noise` und `observed` aus `samples.csv`
+sowie die exportierten Kovarianzmatrizen mit exakter Array-Gleichheit
+verglichen. Beide Prüfungen bestätigten identische Eingaben innerhalb
+des jeweiligen Paars. Ein vollständiger byteweiser AR(1)-Datenvergleich
+zwischen den beiden Rechnern wurde damit nicht durchgeführt.
+
+Zusätzlich wurde für beide Fits die Quadratik direkt berechnet:
+
+```text
+r = exportierte Residuen = observed - prediction
+Q/N = r.T @ solve(C, r) / N
+```
+
+Dies kontrolliert den gespeicherten Wert unabhängig vom produktiven
+Cholesky-Whitening. Der WSL2-Vergleich mit dem gespeicherten Feld
+`metrics.known_covariance_mean_squared` verwendete
+`rtol=1e-10, atol=1e-12`. Diese Toleranzen prüfen die numerische Konsistenz
+zweier Auswertungswege; sie sind keine Erfolgskriterien der Hauptversuche.
+Auf beiden Rechnern wurden folgende Werte bis zur ausgegebenen neunten
+Nachkommastelle bestätigt:
+
+| Fit | Nachgerechnetes Q/N |
+| --- | ---: |
+| Gewichtet | 0.607162556 |
+| Gewöhnlich | 0.607430382 |
+
+Beim gewöhnlichen Fit ist dies eine nachgelagerte Diagnose mit derselben
+bekannten Kovarianz, kein Optimierungsziel. Die hier kleinere gewöhnliche
+MSE des gewöhnlichen Fits und das kleinere Q/N des gewichteten Fits sind
+mit den unterschiedlichen Zielfunktionen vereinbar. Sie belegen keine
+allgemeine Überlegenheit eines Verfahrens.
+
+## Diagnose der unterschiedlichen Weißrausch-Dateihashes
+
+Die Konfiguration war auf beiden Rechnern bytegleich. Ihre SHA-256 war:
+
+```text
+cfe5e1924e25398aa54da07a6a924f7913b017ab4ac442ea4da20ba6f8231f36
+```
+
+Die Ergebnisdateien hatten unterschiedliche SHA-256-Prüfsummen:
+
+| Datei | Manjaro / ursprüngliche Codex-Referenz | WSL2 |
+| --- | --- | --- |
+| `samples.csv` | `98dd727b986cdffe8f02bd7e2ae8e91ad3a7b32b18b03fb383b1d8a3885b2c81` | `054ba13387707cca237280fb991a4d8ed314e4cbaf72f6ace2d6f45a1e61ea76` |
+| `result.json` | `7112df3c39947c8df46c16a8c0e4c0c7ac8987329ea2c964eed912a8afbaf176` | `dc59b163a2d629d568e1cae83897dc025da8b235ed4d77240a93fddb660fe22d` |
+
+Der SHA-256-Vergleich jeder als zusammenhängendes Little-Endian-`float64`
+gelesenen CSV-Spalte zeigte identische Zeit- und Rauschwerte. Erste
+Unterschiede traten im sauberen Signal auf, anschließend in Messdaten,
+Vorhersage und Residuen. Ein anderer Dateihash allein hätte die Größe
+dieser Unterschiede nicht erkennen lassen.
+
+Ein ergänzender Codex-Diagnoselauf mit denselben Paketversionen stellte
+die WSL2-Signalwerte exakt nach, nachdem AVX-512-Rechenpfade deaktiviert
+worden waren. Zusammen mit `Haswell` und zwölf OpenBLAS-Threads entstanden
+auch `samples.csv` und `result.json` mit exakt den oben übermittelten
+WSL2-Dateihashes. Dafür wurden ausschließlich in den Diagnoseprozessen
+folgende Umgebungsvariablen gesetzt:
+
+```text
+NPY_DISABLE_CPU_FEATURES=X86_V4,AVX512_ICL,AVX512_SPR
+OPENBLAS_CORETYPE=Haswell
+OPENBLAS_NUM_THREADS=12
+```
+
+Diese Einstellungen sind keine neue Projektvorgabe. Die Diagnose zeigt,
+dass unterschiedliche numerische Rechenpfade die beobachteten Dateien
+reproduzieren können; sie bestimmt nicht den isolierten Anteil jeder
+einzelnen Einstellung. NumPy dokumentiert die Auswahl CPU-abhängiger
+Rechenpfade und die Möglichkeit, sie für Diagnosen einzuschränken:
+[CPU-Dispatch](https://numpy.org/doc/stable/reference/simd/how-it-works.html)
+und [Laufzeitdiagnose](https://numpy.org/doc/stable/user/troubleshooting-importerror.html#segfaults-or-crashes).
+
+Zwischen der ursprünglichen Codex-Referenz, deren Dateihashes Manjaro
+entsprechen, und dem exakt nachgestellten WSL2-Ergebnis ergaben sich:
+
+| Größe | Absolute Abweichung, gerundet |
+| --- | ---: |
+| Zeit und Rauschen | 0 |
+| Sauberes Signal, maximal über alle Samples | 1.11e-16; sechs Samples betroffen |
+| Messdaten, maximal über alle Samples | 5.55e-17 |
+| Vorhersage und Residuen, jeweils maximal | 6.04e-13 |
+| Geschätzte Amplitude | 6.40e-13 |
+| Geschätzte Frequenz | 2.03e-11 Hz |
+| Geschätzte Abklingzeit | 9.69e-15 s |
+| Geschätzte Phase | 5.48e-13 rad |
+| Gewöhnliche MSE | 2.60e-18 |
+
+Es wurde keine Rechenroutine geändert und keine Testtoleranz gelockert,
+um die ursprünglichen Hashes zu erzwingen. Der Vergleich dokumentiert
+sehr kleine numerische Unterschiede statt allgemeiner rechnerübergreifender
+Bitidentität.
+
+## Aussage und verbleibende Arbeit
+
+Der technische Portabilitätscheck ist für diese drei Kontrollfälle
+abgeschlossen: Ausführung, Export und Diagrammanzeige funktionieren auf
+beiden Rechnern; die ausgegebenen Kennzahlen stimmen überein. Die
+AR(1)-Eingabegleichheit innerhalb der Vergleichspaare und die erneute
+Quadratikberechnung sind bestätigt. Die abweichenden weißen Dateihashes
+konnten durch eine gezielte numerische Diagnose nachgestellt werden.
+
+Nicht abgedeckt sind eine statistische Leistungsbewertung, unabhängige
+Bewertungsdaten, Kovarianzschätzung/Regularisierung und freie PySR-Suche.
+Der nächste fachliche Schritt ist ein kritisch geprüfter Methodenplan
+für die Schätzung aus getrennten Hintergrunddaten, einschließlich
+Regularisierungswahl und unabhängig begründeter Prüfkriterien.

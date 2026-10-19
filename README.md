@@ -37,6 +37,8 @@ Details zum aktuellen Stand: [Pilot](docs/pilot.md),
 [Verlustfunktionen](docs/losses.md), [Referenzfit](docs/reference_fit.md),
 [konfigurierter Durchlauf](docs/configured_pilot.md) sowie
 [korreliertes Rauschen](docs/correlated_noise.md).
+Die lokalen Vergleiche auf Manjaro und Ubuntu unter WSL2 sind im
+[Portabilitätsprotokoll vom 19.10.2026](docs/portability.md) festgehalten.
 
 ## Konfigurierter Durchlauf mit gespeicherten Ergebnissen
 
@@ -180,8 +182,19 @@ Bisherige Prüfnachweise:
   sauberen Commit `3833a12` erfolgreich aus: 244 Tests bestanden, Diagramm
   geprüft. SHA-256 für Konfiguration, `samples.csv` und `result.json` waren
   mit dem Codex-Referenzlauf identisch. Dieser Nachweis gilt für den damaligen
-  weißen Kontrollfall; der neue AR(1)-Lauf und der aktuelle WSL2-Vergleich
-  sind dort noch nicht geprüft.
+  weißen Kontrollfall.
+- Anschließend wurden auf Manjaro auch beide AR(1)-Beispiele erfolgreich
+  ausgeführt, ihre Diagramme geöffnet und identische Eingabedaten und
+  Kovarianzen innerhalb des Fit-Paars bestätigt. Die gewichteten Fehlerwerte
+  wurden direkt aus den exportierten Residuen und Kovarianzen nachgerechnet.
+- Auf Ubuntu unter WSL2 wurden am 19.10.2026 nach Aktualisierung auf
+  `fbe9a60` 301 Tests bestanden sowie der weiße Kontrolllauf und beide
+  AR(1)-Beispiele erfolgreich ausgeführt und ihre Diagramme geöffnet.
+  Die ausgegebenen Kennzahlen stimmen mit Manjaro überein; bei AR(1)
+  wurden Eingabegleichheit innerhalb des Paars und gewichtete Fehlerwerte
+  erneut geprüft. Die abweichenden Weißrausch-Dateihashes wurden durch
+  eine CPU-/OpenBLAS-Diagnose exakt nachgestellt. Umfang, Zahlenwerte
+  und Grenzen stehen im [Portabilitätsprotokoll](docs/portability.md).
 
 Bestandene Tests bestätigen die geprüften Formeln und Eingaberandfälle.
 Die wissenschaftliche Validierung der Rekonstruktionsmethode benötigt
@@ -220,11 +233,12 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
 ## Nächste Schritte
 
-1. Den AR(1)-Kontrollfall methodisch prüfen und auf den lokalen Rechnern
-   wiederholen. Den noch offenen WSL2-Vergleich durchführen und Metadaten,
-   Daten sowie Ergebnisse vergleichen.
-2. Kovarianzschätzung aus getrennten Hintergrunddaten sowie Regularisierung
-   ergänzen und anhand unabhängiger Referenzen prüfen.
+1. Einen begründeten Methodenplan für Kovarianzschätzung aus getrennten
+   Hintergrunddaten und Regularisierung ausarbeiten. Schätzer,
+   Datentrennung, Regularisierungswahl und Prüfkriterien vor der
+   Implementierung kritisch prüfen.
+2. Die geprüften Verfahren ergänzen und anhand unabhängiger Referenzen
+   testen.
 3. Die freie PySR-Formelsuche und die volle Kovarianzgewichtung integrieren.
    Endgültige Verlustnormierung und Komplexitätsgewichtung werden im
    methodischen Review festgelegt.
