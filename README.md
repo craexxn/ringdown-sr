@@ -15,25 +15,28 @@ Auf `main` vorhanden:
   Sinussignal: `src/ringdown_sr/signals.py`.
 - Weißes Gaußrauschen mit explizitem NumPy-Zufallsgenerator:
   `src/ringdown_sr/noise.py`.
+- Stationäres korreliertes AR(1)-Gaußrauschen mit analytischer Kovarianz
+  und gepaarten Beispielen für gewöhnlichen und gewichteten Fit.
 - Gewöhnliche MSE sowie kovarianzgewichtete Verluste und Whitening
   über eine Cholesky-Zerlegung: `src/ringdown_sr/losses.py`.
 - Klassischer Fit mit bekannter Ringdown-Formel, expliziten Startpunkten
   und optionaler fester Kovarianz: `src/ringdown_sr/reference_fit.py`.
 - Konfigurierbarer Kontrolllauf mit TOML-Eingabe, Ergebnisdateien,
   Diagramm und Metadaten: `src/ringdown_sr/pilot.py`.
-- 244 automatisierte Testfälle für diese Bausteine, einschließlich
+- 301 automatisierte Testfälle für diese Bausteine, einschließlich
   analytischer Referenzfälle und ungültiger Eingaben.
 - Festgelegte Python-/Julia-Umgebung und automatische GitHub-Prüfungen.
 
 Ein vollständiger kleiner Durchlauf mit bekanntem Formansatz ist vorhanden.
-Korreliertes Rauschen, Kovarianzschätzung und Regularisierung,
-PySR-Integration und die statistische Leistungsbewertung stehen noch aus.
+Kovarianzschätzung und Regularisierung, PySR-Integration und die
+statistische Leistungsbewertung stehen noch aus.
 Die wissenschaftlichen Hauptversuche und ihre Auswertung haben noch
 nicht begonnen.
 
 Details zum aktuellen Stand: [Pilot](docs/pilot.md),
-[Verlustfunktionen](docs/losses.md), [Referenzfit](docs/reference_fit.md)
-und [konfigurierter Durchlauf](docs/configured_pilot.md).
+[Verlustfunktionen](docs/losses.md), [Referenzfit](docs/reference_fit.md),
+[konfigurierter Durchlauf](docs/configured_pilot.md) sowie
+[korreliertes Rauschen](docs/correlated_noise.md).
 
 ## Konfigurierter Durchlauf mit gespeicherten Ergebnissen
 
@@ -52,6 +55,13 @@ Namen wie `results/pilot-002` verwenden. Lokale Ausgaben unter `results/`
 werden nicht versioniert und müssen separat gesichert werden.
 Der Kontrolllauf braucht kein Julia/PySR und legt keine Einstellungen
 oder Erfolgskriterien für die Hauptversuche fest.
+
+Die gepaarten AR(1)-Beispiele werden genauso gestartet, mit
+`configs/pilot_ar1.toml` beziehungsweise `configs/pilot_ar1_ordinary.toml`
+und jeweils einem neuen Ausgabeordner. Sie erzeugen dieselben Daten und
+verwenden unterschiedliche Fit-Gewichtungen. Zusätzlich wird die bekannte
+Modellkovarianz als `covariance.csv` gespeichert. Das ist ein Kontrollvergleich,
+kein Nachweis einer Überlegenheit aus einem Einzelversuch.
 
 ## Sichtbarer Demolauf
 
@@ -164,6 +174,14 @@ Bisherige Prüfnachweise:
   in der Codex-Umgebung erfolgreich ausgeführt.
 - Am 19.10.2026 wurden nach Ergänzung der Build-/Laufzeitdiagnosen und
   weiterer Schutzprüfungen 244 Testfälle in der Codex-Umgebung bestanden.
+- Am 19.10.2026 wurden nach Integration des AR(1)-Kontrollfalls 301 Testfälle
+  in der Codex-Umgebung bestanden.
+- Der Nutzer führte am 19.10.2026 auf Manjaro den weißen Kontrolllauf am
+  sauberen Commit `3833a12` erfolgreich aus: 244 Tests bestanden, Diagramm
+  geprüft. SHA-256 für Konfiguration, `samples.csv` und `result.json` waren
+  mit dem Codex-Referenzlauf identisch. Dieser Nachweis gilt für den damaligen
+  weißen Kontrollfall; der neue AR(1)-Lauf und der aktuelle WSL2-Vergleich
+  sind dort noch nicht geprüft.
 
 Bestandene Tests bestätigen die geprüften Formeln und Eingaberandfälle.
 Die wissenschaftliche Validierung der Rekonstruktionsmethode benötigt
@@ -202,12 +220,11 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
 ## Nächste Schritte
 
-1. Den konfigurierten Durchlauf methodisch prüfen und auf WSL2 sowie
-   Manjaro wiederholen. Gespeicherte Daten, Metadaten und Ergebnisse
-   vergleichen; plattformübergreifende Identität ist noch nicht nachgewiesen.
-2. Korreliertes Rauschen mit bekannter Kovarianz und anschließend
-   Kovarianzschätzung aus getrennten Hintergrunddaten sowie Regularisierung
-   ergänzen und prüfen.
+1. Den AR(1)-Kontrollfall methodisch prüfen und auf den lokalen Rechnern
+   wiederholen. Den noch offenen WSL2-Vergleich durchführen und Metadaten,
+   Daten sowie Ergebnisse vergleichen.
+2. Kovarianzschätzung aus getrennten Hintergrunddaten sowie Regularisierung
+   ergänzen und anhand unabhängiger Referenzen prüfen.
 3. Die freie PySR-Formelsuche und die volle Kovarianzgewichtung integrieren.
    Endgültige Verlustnormierung und Komplexitätsgewichtung werden im
    methodischen Review festgelegt.

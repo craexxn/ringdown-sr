@@ -1,4 +1,4 @@
-"""Read the explicit, versioned configuration of one white-noise pilot run."""
+"""Read an explicit, versioned white-noise or AR(1) pilot configuration."""
 
 import math
 import tomllib
@@ -27,6 +27,11 @@ class NoiseConfig:
     standard_deviation: float
     bit_generator: str
     seed: int
+
+
+@dataclass(frozen=True)
+class AR1NoiseConfig(NoiseConfig):
+    correlation: float
 
 
 @dataclass(frozen=True)
@@ -94,7 +99,10 @@ def parse_config(content: bytes) -> PilotConfig:
         data["sampling"], set(SamplingConfig.__annotations__), "sampling"
     )
     signal = _fields(data["signal"], set(SignalConfig.__annotations__), "signal")
-    noise = _fields(data["noise"], set(NoiseConfig.__annotations__), "noise")
+    noise_fields = set(NoiseConfig.__annotations__)
+    if isinstance(data["noise"], dict) and data["noise"].get("kind") == "gaussian_ar1":
+        noise_fields.add("correlation")
+    noise = _fields(data["noise"], noise_fields, "noise")
     fit = _fields(data["fit"], set(FitConfig.__annotations__), "fit")
     n = _integer(sampling["n_samples"], "sampling.n_samples", 5)
     fs = _number(sampling["sample_rate_hz"], "sampling.sample_rate_hz")
@@ -109,14 +117,35 @@ def parse_config(content: bytes) -> PilotConfig:
         )
     sigma = _number(noise["standard_deviation"], "noise.standard_deviation")
     seed = _integer(noise["seed"], "noise.seed", 0)
-    if noise["kind"] != "gaussian_white" or noise["bit_generator"] != "PCG64":
-        raise ValueError("Only gaussian_white noise with PCG64 is supported.")
+    if (
+        noise["kind"] not in ("gaussian_white", "gaussian_ar1")
+        or noise["bit_generator"] != "PCG64"
+    ):
+        raise ValueError(
+            "Only gaussian_white or gaussian_ar1 noise with PCG64 is supported."
+        )
     if sigma < 0:
         raise ValueError("noise.standard_deviation must be nonnegative.")
-    if fit["weighting"] not in ("ordinary", "known_white"):
-        raise ValueError("fit.weighting must be ordinary or known_white.")
-    if fit["weighting"] == "known_white" and not 0 < sigma * sigma < math.inf:
-        raise ValueError("known_white requires a positive, finite float64 variance.")
+    noise_config = NoiseConfig(noise["kind"], sigma, "PCG64", seed)
+    if noise["kind"] == "gaussian_ar1":
+        rho = _number(noise["correlation"], "noise.correlation")
+        if not -1 < rho < 1:
+            raise ValueError("noise.correlation must lie strictly between -1 and 1.")
+        if sigma > 0 and not 0 < sigma * sigma < math.inf:
+            raise ValueError(
+                "AR(1) covariance requires a representable positive variance."
+            )
+        noise_config = AR1NoiseConfig(noise["kind"], sigma, "PCG64", seed, rho)
+    if fit["weighting"] not in ("ordinary", "known_white", "known_covariance"):
+        raise ValueError(
+            "fit.weighting must be ordinary, known_white or known_covariance."
+        )
+    if fit["weighting"] == "known_white" and noise["kind"] != "gaussian_white":
+        raise ValueError("known_white requires gaussian_white noise.")
+    if fit["weighting"] != "ordinary" and not 0 < sigma * sigma < math.inf:
+        raise ValueError(
+            "Known covariance weighting requires a positive finite variance."
+        )
     f_bounds = _pair(fit["frequency_bounds_hz"], "fit.frequency_bounds_hz")
     tau_bounds = _pair(fit["decay_time_bounds_s"], "fit.decay_time_bounds_s")
     if not 0 < f_bounds[0] < f_bounds[1] < fs / 2:
@@ -142,7 +171,7 @@ def parse_config(content: bytes) -> PilotConfig:
         1,
         SamplingConfig(n, fs),
         s,
-        NoiseConfig("gaussian_white", sigma, "PCG64", seed),
+        noise_config,
         FitConfig(fit["weighting"], f_bounds, tau_bounds, starts, budget),
     )
 

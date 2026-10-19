@@ -1,4 +1,4 @@
-"""Run and persist one configured white-noise reference-fit control case."""
+"""Run and persist a configured Gaussian-noise reference-fit control case."""
 
 import hashlib
 import json
@@ -17,8 +17,8 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.figure import Figure
 
 from ringdown_sr.config import parse_config
-from ringdown_sr.losses import mean_squared_error
-from ringdown_sr.noise import gaussian_white_noise
+from ringdown_sr.losses import CovarianceLoss, mean_squared_error
+from ringdown_sr.noise import ar1_covariance, gaussian_ar1_noise, gaussian_white_noise
 from ringdown_sr.reference_fit import ReferenceFitError, fit_ringdown
 from ringdown_sr.signals import ringdown_signal, sample_times
 
@@ -254,6 +254,7 @@ def run_pilot(config_path: str | Path, output_directory: str | Path) -> PilotRun
     (output / "config.toml").write_bytes(original)
     _write_json(output / "resolved_config.json", resolved)
     arrays = {}
+    model_covariance = None
     result = {
         "schema_version": 1,
         "status": None,
@@ -269,17 +270,51 @@ def run_pilot(config_path: str | Path, output_directory: str | Path) -> PilotRun
         signal = ringdown_signal(time_s, **asdict(config.signal))
         rng = np.random.Generator(np.random.PCG64(config.noise.seed))
         manifest["random"]["state_before"] = rng.bit_generator.state
-        call = {
-            "method": "normal",
-            "loc": 0.0,
-            "scale": config.noise.standard_deviation,
-            "size": len(signal),
-            "completed": False,
-        }
+        is_ar1 = config.noise.kind == "gaussian_ar1"
+        if is_ar1:
+            model_covariance = ar1_covariance(
+                len(signal),
+                standard_deviation=config.noise.standard_deviation,
+                correlation=config.noise.correlation,
+            )
+            result["noise_model"] = {
+                "kind": "gaussian_ar1",
+                "covariance_source": "analytic_stationary_ar1",
+                "covariance_file": "covariance.csv",
+                "covariance_used_for_fit": config.fit.weighting != "ordinary",
+            }
+            manifest["random"]["transform"] = {
+                "kind": "stationary_gaussian_ar1_v1",
+                "marginal_standard_deviation": config.noise.standard_deviation,
+                "correlation": config.noise.correlation,
+                "initialization": "stationary",
+            }
+            call = {
+                "method": "standard_normal",
+                "dtype": "float64",
+                "size": len(signal),
+                "completed": False,
+            }
+        else:
+            call = {
+                "method": "normal",
+                "loc": 0.0,
+                "scale": config.noise.standard_deviation,
+                "size": len(signal),
+                "completed": False,
+            }
         manifest["random"]["calls"].append(call)
-        noise = gaussian_white_noise(
-            len(signal), standard_deviation=config.noise.standard_deviation, rng=rng
-        )
+        if is_ar1:
+            noise = gaussian_ar1_noise(
+                len(signal),
+                standard_deviation=config.noise.standard_deviation,
+                correlation=config.noise.correlation,
+                rng=rng,
+            )
+        else:
+            noise = gaussian_white_noise(
+                len(signal), standard_deviation=config.noise.standard_deviation, rng=rng
+            )
         manifest["random"]["state_after"] = rng.bit_generator.state
         call["completed"] = True
         with np.errstate(over="raise", invalid="raise"):
@@ -293,8 +328,12 @@ def run_pilot(config_path: str | Path, output_directory: str | Path) -> PilotRun
         result["stage"] = "fit"
         status = "fit_failed"
         covariance = None
-        if config.fit.weighting == "known_white":
-            covariance = config.noise.standard_deviation**2 * np.eye(len(time_s))
+        if config.fit.weighting != "ordinary":
+            covariance = (
+                model_covariance
+                if is_ar1
+                else config.noise.standard_deviation**2 * np.eye(len(time_s))
+            )
         fit = fit_ringdown(
             time_s,
             observed,
@@ -326,6 +365,18 @@ def run_pilot(config_path: str | Path, output_directory: str | Path) -> PilotRun
             "evaluation_scope": "fitted_samples_only",
             "residual_definition": "observed_minus_prediction",
         }
+        if is_ar1:
+            # Report the same known-model diagnostic for ordinary and weighted fits.
+            # It never selects a start of an ordinary least-squares fit.
+            result["metrics"]["known_covariance_mean_squared"] = (
+                None
+                if config.noise.standard_deviation == 0
+                else (
+                    fit.covariance_mean_squared
+                    if covariance is not None
+                    else CovarianceLoss(model_covariance).mean_squared(fit.residual)
+                )
+            )
         status = "success"
         result["stage"] = "complete"
     except ReferenceFitError as error:
@@ -345,6 +396,14 @@ def run_pilot(config_path: str | Path, output_directory: str | Path) -> PilotRun
     _write_json(output / "result.json", result)
     if arrays:
         _save_samples(output / "samples.csv", arrays)
+    if model_covariance is not None:
+        np.savetxt(
+            output / "covariance.csv",
+            model_covariance,
+            delimiter=",",
+            fmt="%.17g",
+            encoding="utf-8",
+        )
     if status == "success":
         _save_plot(output / "plot.png", arrays)
     manifest["artifact_sha256"] = {

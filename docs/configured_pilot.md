@@ -3,7 +3,7 @@
 ## Umfang und Start
 
 Ein Aufruf verbindet Zeitachse, eine synthetische gedämpfte Schwingung,
-weißes Gaußrauschen, den [klassischen Referenzfit](reference_fit.md) und
+weißes oder [korreliertes Gaußrauschen](correlated_noise.md), den [klassischen Referenzfit](reference_fit.md) und
 die Auswertung auf denselben Samples. Es wird eine einzelne Konfiguration
 ausgeführt, kein Parameter-Raster und keine PySR-Suche. Die Vorgaben in
 `configs/pilot_white.toml` sind ausschließlich ein technischer Kontrollfall.
@@ -41,7 +41,7 @@ ungültige Datentypen und nicht endliche Zahlen werden abgelehnt.
 | Wurzel | `schema_version = 1` |
 | `sampling` | Ganzzahliges `n_samples >= 5`; positives `sample_rate_hz` in Hz |
 | `signal` | Dimensionslose vorzeichenbehaftete `amplitude`; `frequency_hz` zwischen null einschließlich und Nyquist ausschließlich; positives `decay_time_s` in Sekunden; `phase_rad` in Radiant |
-| `noise` | `kind = "gaussian_white"`; nicht negatives `standard_deviation` in Signaleinheiten; `bit_generator = "PCG64"`; ganzzahliger nicht negativer `seed` |
+| `noise` | `kind = "gaussian_white"` oder `"gaussian_ar1"`; nicht negatives marginales `standard_deviation` in Signaleinheiten; `bit_generator = "PCG64"`; ganzzahliger nicht negativer `seed`; nur für AR(1) zusätzlich `correlation` strikt zwischen -1 und 1 |
 | `fit` | `weighting`; positive geordnete `frequency_bounds_hz` strikt unter Nyquist; positive geordnete `decay_time_bounds_s`; nicht leere Liste `initial_points` aus `(f, tau)`-Paaren strikt innerhalb der Grenzen; ganzzahliges `max_nfev >= 1` pro Start |
 
 Zulässige Gewichtungen:
@@ -52,6 +52,11 @@ Zulässige Gewichtungen:
   `sigma = noise.standard_deviation`. Die Varianz muss als strikt positive
   endliche `float64`-Zahl darstellbar sein. Sie wird **nicht** aus der
   Stichprobe geschätzt. Das ist ein Kontrollfall mit bekanntem Rauschmodell.
+- `known_covariance`: bekannte analytische Kovarianz des Erzeugungsmodells,
+  bei AR(1) `sigma^2*rho^abs(i-j)`, sonst `sigma^2*I`. Dieser Modus benötigt
+  ebenfalls eine positive endliche Varianz. `known_white` wird bei AR(1)
+  abgelehnt. Einzelheiten und gepaarte Beispiele stehen unter
+  [korreliertes Rauschen](correlated_noise.md).
 
 Die Signalwahrheit darf außerhalb der Fit-Grenzen liegen, um bewusst einen
 unzutreffenden Suchbereich prüfen zu können. Grenzen und Startpunkte werden
@@ -73,6 +78,7 @@ hiermit nicht festgelegt.
 | `result.json` | Status, Wahrheit, Abtastung, geschätzte Parameter, sämtliche Startdiagnosen und Fehlerwerte; bei Rechenfehlern Fehlerbeschreibung |
 | `metadata.json` | Abschlussstatus, Zeitstempel, Laufzeit, Umgebung, Codezustand, Zufallszustände und SHA-256-Prüfsummen |
 | `plot.png` | Signal, Messdaten, Fit und Residuen; nur bei erfolgreichem Rechenlauf |
+| `covariance.csv` | Nur bei AR(1): analytische volle Modellkovarianz in Sample-Reihenfolge, auch für den gewöhnlichen Vergleichsfit |
 
 CSV-Zahlen werden mit 17 signifikanten Dezimalstellen geschrieben, damit
 `float64`-Werte mit einem korrekt rundenden Leser wiederhergestellt werden
@@ -134,8 +140,10 @@ Pro Lauf werden gespeichert:
   keine Sicherung des Quelltexts. Während eines Laufs keine Quelldateien
   bearbeiten.
 - Seed, ausdrücklich gewählter `PCG64`, Zufallszustand vor und nach dem
-  einzelnen Aufruf `normal(loc=0, scale=sigma, size=N)` und dessen
-  Abschlusskennung. Der globale NumPy-Zufallszustand wird nicht benutzt.
+  einzelnen Aufruf und dessen Abschlusskennung. Bei weißem Rauschen ist
+  dies `normal(loc=0, scale=sigma, size=N)`, bei AR(1)
+  `standard_normal(N, dtype=float64)` mit gespeicherter nachfolgender
+  stationärer Transformation. Der globale NumPy-Zufallszustand wird nicht benutzt.
 - Prüfsummen aller erzeugten Nutzdateien. `metadata.json` ist von seiner
   eigenen Prüfsummenliste ausgenommen. Prüfsummen erkennen Veränderungen;
   sie sind keine digitale Signatur oder wissenschaftliche Validierung.
@@ -212,11 +220,11 @@ Die im Review separat ausgeführten Vergleiche des vollständigen
 Referenzfits mit einer direkten Vierparameteroptimierung und symmetrischem
 Eigenwert-Whitening sind nun als neun Testfälle für weiße sowie positiv
 und negativ korrelierte feste Kovarianzen versioniert. Dies prüft den
-Fit-Kern; die konfigurierbare Datenerzeugung unterstützt weiterhin nur
-weißes Rauschen. Beide Optimierungen sind lokal, kein globaler Beweis.
+Fit-Kern. Die konfigurierbare Datenerzeugung unterstützt inzwischen auch
+stationäres AR(1)-Rauschen. Beide Optimierungen sind lokal, kein globaler Beweis.
 
 Offen bleiben statistische Leistungsbewertung mit mehreren Realisierungen,
-unabhängige Bewertungsdaten, Unsicherheiten, korrelierte Datenerzeugung,
+unabhängige Bewertungsdaten, Unsicherheiten, detektornähere Rauschmodelle,
 Kovarianzschätzung/Regularisierung, PySR-Integration sowie die Begründung
 der Hauptversuche. Eine bekannte Modellfamilie hat gegenüber freier
 Formelentdeckung zusätzliches Vorwissen; dies muss im Vergleich ausgewiesen
