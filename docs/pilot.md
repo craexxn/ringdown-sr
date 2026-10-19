@@ -14,8 +14,9 @@ Ringdown-Formel an und kann eine vorgegebene volle Kovarianz berücksichtigen.
 Ein ausführbarer Demolauf stellt Messdaten, Signal und Fit gemeinsam dar.
 Ein [konfigurierbarer Durchlauf mit Ergebnisexport](configured_pilot.md)
 verbindet diese Bausteine und speichert Daten, Ergebnisse, Diagramm und
-Metadaten. Korreliertes Rauschen, Kovarianzschätzung und Regularisierung
-sowie PySR-Suche folgen in weiteren Schritten.
+Metadaten. [Stationäres AR(1)-Rauschen](correlated_noise.md) ergänzt einen
+korrelierten Kontrollfall mit bekannter voller Kovarianz. Kovarianzschätzung,
+Regularisierung und PySR-Suche folgen in weiteren Schritten.
 
 ## Signaldefinition und Einheiten
 
