@@ -5,7 +5,7 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Dokumentationsstand: 18.10.2026.
+Dokumentationsstand: 19.10.2026.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
@@ -21,7 +21,7 @@ Auf `main` vorhanden:
   und optionaler fester Kovarianz: `src/ringdown_sr/reference_fit.py`.
 - Konfigurierbarer Kontrolllauf mit TOML-Eingabe, Ergebnisdateien,
   Diagramm und Metadaten: `src/ringdown_sr/pilot.py`.
-- 237 automatisierte Testfälle für diese Bausteine, einschließlich
+- 244 automatisierte Testfälle für diese Bausteine, einschließlich
   analytischer Referenzfälle und ungültiger Eingaben.
 - Festgelegte Python-/Julia-Umgebung und automatische GitHub-Prüfungen.
 
@@ -162,6 +162,8 @@ Bisherige Prüfnachweise:
   Dieser Nachweis stammt aus dem Stand vor Ergänzung des Referenzfits.
 - Am 18.10.2026 wurden einschließlich konfiguriertem Pilot 237 Testfälle
   in der Codex-Umgebung erfolgreich ausgeführt.
+- Am 19.10.2026 wurden nach Ergänzung der Build-/Laufzeitdiagnosen und
+  weiterer Schutzprüfungen 244 Testfälle in der Codex-Umgebung bestanden.
 
 Bestandene Tests bestätigen die geprüften Formeln und Eingaberandfälle.
 Die wissenschaftliche Validierung der Rekonstruktionsmethode benötigt

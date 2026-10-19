@@ -6,7 +6,9 @@ import math
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -86,6 +88,14 @@ def test_success_stores_complete_artifacts_and_consistent_metrics(
     assert manifest["elapsed_seconds"] >= 0
     assert manifest["environment"]["julia_used"] is False
     assert manifest["environment"]["packages"]["numpy"] == np.__version__
+    numerical = manifest["environment"]["numerical_libraries"]
+    assert numerical["snapshot"] == "before_generation"
+    assert numerical["numpy_build"]["status"] == "available"
+    assert numerical["numpy_build"]["details"] == np.show_config(mode="dicts")
+    assert numerical["scipy_build"]["status"] == "available"
+    assert numerical["scipy_build"]["details"] == pilot.scipy.show_config(mode="dicts")
+    assert numerical["threadpools"]["status"] == "available"
+    assert isinstance(numerical["threadpools"]["details"], list)
     assert set(manifest["artifact_sha256"]) == {p.name for p in output.iterdir()} - {
         "metadata.json"
     }
@@ -213,7 +223,7 @@ def test_export_failure_leaves_manifest_incomplete(config_path, tmp_path, monkey
     assert manifest["finished_at_utc"] is None
 
 
-@pytest.mark.parametrize("existing", ["directory", "file", "symlink"])
+@pytest.mark.parametrize("existing", ["directory", "file", "symlink", "broken_symlink"])
 def test_existing_output_is_never_overwritten(config_path, tmp_path, existing):
     output = tmp_path / "existing"
     if existing == "directory":
@@ -225,11 +235,139 @@ def test_existing_output_is_never_overwritten(config_path, tmp_path, existing):
         sentinel = output
     else:
         sentinel = tmp_path / "target"
-        sentinel.write_text("preserve", encoding="utf-8")
+        if existing == "symlink":
+            sentinel.write_text("preserve", encoding="utf-8")
         output.symlink_to(sentinel)
     with pytest.raises(FileExistsError):
         pilot.run_pilot(config_path, output)
-    assert sentinel.read_text(encoding="utf-8") == "preserve"
+    if existing == "broken_symlink":
+        assert output.is_symlink()
+        assert not output.exists() and not sentinel.exists()
+        assert output.readlink() == sentinel
+    else:
+        assert sentinel.read_text(encoding="utf-8") == "preserve"
+
+
+def test_simultaneous_processes_allow_exactly_one_complete_run(config_path, tmp_path):
+    output = tmp_path / "shared-output"
+    start = tmp_path / "start"
+    # Both real processes finish importing before the common start signal.
+    script = """
+import sys, time
+from pathlib import Path
+from ringdown_sr.pilot import run_pilot
+config, output, ready, start = map(Path, sys.argv[1:])
+ready.touch()
+deadline = time.monotonic() + 20
+while not start.exists():
+    if time.monotonic() > deadline:
+        raise TimeoutError('Test start signal did not arrive')
+    time.sleep(0.01)
+try:
+    result = run_pilot(config, output)
+except FileExistsError:
+    raise SystemExit(2)
+raise SystemExit(0 if result.status == 'success' else 1)
+"""
+    ready = [tmp_path / f"ready-{index}" for index in range(2)]
+    processes = []
+    try:
+        for marker in ready:
+            processes.append(
+                subprocess.Popen(
+                    [
+                        sys.executable,
+                        "-c",
+                        script,
+                        str(config_path),
+                        str(output),
+                        str(marker),
+                        str(start),
+                    ],
+                    cwd=tmp_path,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                )
+            )
+        deadline = time.monotonic() + 20
+        while not all(marker.exists() for marker in ready):
+            assert all(process.poll() is None for process in processes), (
+                "Worker exited before synchronization."
+            )
+            assert time.monotonic() < deadline, "Workers did not become ready."
+            time.sleep(0.01)
+        start.touch()
+        messages = [process.communicate(timeout=30) for process in processes]
+        assert sorted(process.returncode for process in processes) == [0, 2], messages
+    finally:
+        for process in processes:
+            if process.poll() is None:
+                process.kill()
+            process.communicate(timeout=5)
+    manifest = read_json(output / "metadata.json")
+    assert (
+        manifest["status"] == read_json(output / "result.json")["status"] == "success"
+    )
+    assert (output / "config.toml").read_bytes() == EXAMPLE
+    assert len(samples(output)) == 128
+    assert set(manifest["artifact_sha256"]) == {
+        "config.toml",
+        "resolved_config.json",
+        "result.json",
+        "samples.csv",
+        "plot.png",
+    }
+    for name, digest in manifest["artifact_sha256"].items():
+        assert hashlib.sha256((output / name).read_bytes()).hexdigest() == digest
+
+
+@pytest.mark.parametrize("library", ["numpy", "scipy"])
+def test_unavailable_build_diagnostic_is_explicit_without_failing_run(
+    library, config_path, tmp_path, monkeypatch
+):
+    module = np if library == "numpy" else pilot.scipy
+
+    def unavailable(*args, **kwargs):
+        raise RuntimeError("Build diagnostic unavailable")
+
+    monkeypatch.setattr(module, "show_config", unavailable)
+    output = tmp_path / "missing-build-info"
+    assert pilot.run_pilot(config_path, output).status == "success"
+    diagnostic = read_json(output / "metadata.json")["environment"][
+        "numerical_libraries"
+    ][f"{library}_build"]
+    assert diagnostic == {
+        "status": "unavailable",
+        "details": None,
+        "error": "RuntimeError: Build diagnostic unavailable",
+    }
+
+
+@pytest.mark.parametrize("failure", [ImportError, RuntimeError])
+def test_unavailable_runtime_diagnostic_does_not_fail_run(
+    failure, config_path, tmp_path, monkeypatch
+):
+    def unavailable(name):
+        raise failure("Runtime diagnostic unavailable")
+
+    monkeypatch.setattr(pilot, "import_module", unavailable)
+    output = tmp_path / "missing-runtime-info"
+    assert pilot.run_pilot(config_path, output).status == "success"
+    diagnostic = read_json(output / "metadata.json")["environment"][
+        "numerical_libraries"
+    ]["threadpools"]
+    assert diagnostic["status"] == "unavailable"
+    assert diagnostic["details"] is None
+    assert diagnostic["error"] == f"{failure.__name__}: Runtime diagnostic unavailable"
+
+
+def test_empty_runtime_detection_is_distinct_from_unavailable_diagnostic(monkeypatch):
+    monkeypatch.setattr(
+        pilot, "import_module", lambda name: SimpleNamespace(threadpool_info=list)
+    )
+    diagnostic = pilot._environment()["numerical_libraries"]["threadpools"]
+    assert diagnostic == {"status": "available", "details": [], "error": None}
 
 
 @pytest.mark.parametrize(

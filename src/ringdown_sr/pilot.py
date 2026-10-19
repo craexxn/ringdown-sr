@@ -8,10 +8,11 @@ import subprocess
 import time
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
-from importlib import metadata
+from importlib import import_module, metadata
 from pathlib import Path
 
 import numpy as np
+import scipy
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.figure import Figure
 
@@ -104,6 +105,29 @@ def _provenance() -> dict:
     }
 
 
+def _diagnostic(collect, expected_type: type) -> dict:
+    """Keep optional numerical-library diagnostics from blocking a pilot run."""
+    try:
+        details = collect()
+        if not isinstance(details, expected_type):
+            raise TypeError("Diagnostic provider returned an unexpected data type.")
+        _json_bytes(details)
+    except (
+        AttributeError,
+        ImportError,
+        OSError,
+        RuntimeError,
+        TypeError,
+        ValueError,
+    ) as error:
+        return {
+            "status": "unavailable",
+            "details": None,
+            "error": f"{type(error).__name__}: {error}",
+        }
+    return {"status": "available", "details": details, "error": None}
+
+
 def _environment() -> dict:
     return {
         "python_version": platform.python_version(),
@@ -125,6 +149,16 @@ def _environment() -> dict:
                 "MKL_NUM_THREADS",
                 "NUMEXPR_NUM_THREADS",
             )
+        },
+        "numerical_libraries": {
+            "snapshot": "before_generation",
+            "numpy_build": _diagnostic(lambda: np.show_config(mode="dicts"), dict),
+            "scipy_build": _diagnostic(lambda: scipy.show_config(mode="dicts"), dict),
+            # Already present in the locked PySR dependency tree; optional here.
+            # Read loaded native-library information without changing thread limits.
+            "threadpools": _diagnostic(
+                lambda: import_module("threadpoolctl").threadpool_info(), list
+            ),
         },
         "array_dtype": "float64",
         "julia_used": False,
