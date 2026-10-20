@@ -46,8 +46,12 @@ Details zum aktuellen Stand: [Pilot](docs/pilot.md),
 [korreliertes Rauschen](docs/correlated_noise.md) und
 [Kovarianzschätzer](docs/covariance_estimation.md) und
 [Pilot mit geschätzter Kovarianz](docs/estimated_covariance_pilot.md).
-Die lokalen Vergleiche auf Manjaro und Ubuntu unter WSL2 sind im
-[Portabilitätsprotokoll vom 19.10.2026](docs/portability.md) festgehalten.
+Das [Portabilitätsprotokoll](docs/portability.md) enthält die bisherigen
+Schema-1-Vergleiche und die neuen Schema-2-Nachweise auf Manjaro und WSL2
+am selben sauberen Commit. Auch der gepinnte Julia-Startweg ist lokal
+unter WSL2 bestätigt. Der [PySR-Methodenentwurf](docs/symbolic_regression_method_plan.md)
+wurde separat geprüft und um die Reviewpunkte präzisiert; seine
+ausführbare Umsetzung steht noch aus.
 
 ## Konfigurierter Durchlauf mit gespeicherten Ergebnissen
 
@@ -232,8 +236,19 @@ Schätzers. Nach der Schema-2-Integration bestanden am selben Tag insgesamt
 Die Seed-Prüfung lehnt identische Anfangszustände der vier Generatoren
 vor Datenerzeugung und Anlegen des Ausgabeordners ab. Beide vollständigen
 Schema-2-Beispiele wurden in der Codex-Umgebung erfolgreich ausgeführt und
-ihre Diagramme geprüft. Das separate Integrationsreview und diese neuen
-Kontrollläufe auf Manjaro/WSL2 stehen noch aus.
+ihre Diagramme geprüft. Das separate Integrationsreview zu PR #16 fand
+eine Seed-Überschneidung; deren Nachbesserung ist mit Commit `1fcf9fc`
+übernommen. Am 20.10.2026 bestätigte der Nutzer an diesem sauberen Commit
+auf Manjaro 456 bestandene Tests in 33,02 s, beide erfolgreichen
+Schema-2-Beispiele und die Diagrammanzeige. Eine zusätzliche Nachrechnung
+bestätigte Dateiprüfsummen, Kovarianzen, Kontroll-Scores und Fit-Verluste.
+Umfang und Zahlen stehen im [Portabilitätsprotokoll](docs/portability.md).
+Unter WSL2 wurden am selben Referenzcommit ebenfalls 456 Tests in 27,19 s
+bestanden, beide Beispiele und alle vier Diagramme bestätigt sowie dieselben
+Datei-, Kovarianz-, Kontroll-Score- und Verlustprüfungen ausgeführt.
+Alpha und ausgegebene Kennzahlen stimmen mit Manjaro überein.
+Ein vollständiger rechnerübergreifender Array- oder Bytevergleich ist
+damit nicht belegt.
 Die wissenschaftliche Validierung der Rekonstruktionsmethode benötigt
 die noch ausstehenden methodischen Prüfungen und Experimente.
 
@@ -260,8 +275,12 @@ Für eine Python-Datei wird anstelle von `-c "..."` deren Pfad angegeben.
 Der Startweg wurde am 06.10.2026 auf Manjaro erfolgreich geprüft:
 PySR 2.6.0, Julia 1.13.1, SymbolicRegression 2.5.1 und PythonCall 0.9.36.
 Der aktuelle GitHub-Durchlauf bestätigt ihn außerdem auf Ubuntu.
-Ein aktueller lokaler Prüfnachweis für diesen Startweg unter WSL2
-ist noch nicht dokumentiert; der GitHub-Lauf ersetzt diesen Nachweis nicht.
+Am 20.10.2026 bestätigte der Nutzer den Startweg außerdem lokal unter WSL2:
+`Technical environment check passed.`, Python 3.12.14, PySR 2.6.0,
+Julia 1.13.1, SymbolicRegression 2.5.1 und PythonCall 0.9.36;
+geladen wurde `julia/Project.toml` im Projektordner.
+Der separate Nachweis ist im [Portabilitätsprotokoll](docs/portability.md)
+dokumentiert und bestätigt keinen bereits implementierten SR-Adapter.
 
 Der frühere allgemeine PySR-Test rekonstruierte `y = x² + 2x + 1`
 auf dem Manjaro-Laptop als `x(x + 2) + 1` mit einem mittleren
@@ -270,14 +289,15 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
 ## Nächste Schritte
 
-1. Die [Pilotintegration](docs/estimated_covariance_pilot.md) im separaten
-   Code- und Wissenschaftsreview prüfen, besonders Datentrennung, feste
-   Kovarianzen, RNG-Rollen und die Bedeutung der ausgegebenen Kennzahlen.
-2. Tests und sichtbare Schema-2-Kontrollläufe auf Manjaro und WSL2 am selben
-   übernommenen Codezustand wiederholen und numerische Abweichungen prüfen.
-3. Die freie PySR-Formelsuche und die volle Kovarianzgewichtung integrieren.
-   Endgültige Verlustnormierung und Komplexitätsgewichtung werden im
-   methodischen Review festgelegt.
+1. Den nach Astra-High-Review präzisierten
+   [PySR-Methodenentwurf](docs/symbolic_regression_method_plan.md) umsetzen:
+   zunächst den Julia-Verlustkern und die explizite Einheitenprüfung.
+2. Den tatsächlichen PySR-Konstantenoptimierer unabhängig prüfen,
+   einschließlich Newton- und Mehrkonstanten-BFGS-Pfad, Alias-/Phasenfällen
+   und eindeutig bezeichnetem Score-Export.
+3. Danach versionierte Konfiguration und Exporte integrieren und den
+   neuen SR-Adapter separat reviewen und auf beiden Rechnern prüfen.
+   Die wissenschaftliche Formelauswahl wird gesondert festgelegt.
 
 Diese Schritte bilden die Arbeitsplanung für den Pilot.
 Parameterbereiche, SNR-Konvention und Kriterien für die Hauptversuche

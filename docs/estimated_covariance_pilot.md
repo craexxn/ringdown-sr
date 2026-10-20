@@ -198,10 +198,33 @@ Nach Ergänzung der Seed-Prüfung wurden beide Beispiele wiederholt.
 Alle CSV-Dateien, `result.json` und sämtliche RNG-Protokolle waren zum
 Stand vor dieser Nachbesserung bytegleich.
 
-Offen sind das separate Integrationsreview sowie sichtbare Schema-2-Läufe
-auf Manjaro und WSL2 am selben übernommenen Codezustand. Vor dem Vergleich
-sind rechnerübergreifende numerische Toleranzen zu begründen; Bitidentität
-wird gemäß [Portabilitätsprotokoll](portability.md) nicht vorausgesetzt.
-Der lokale Python-/Julia-Umgebungscheck wurde für diese Änderung nicht
-erneut ausgeführt; beide Piloten verwenden Julia nicht. Hauptversuche,
-Unsicherheitsabdeckung und freie Formelentdeckung folgen separat.
+Das separate Integrationsreview zu PR #16, Commit `4aae1b0`, bestätigte die
+Methodenkonformität und fand einen Seed-Grenzfall mit identischem
+Messrausch-/Validierungszustand. Die Prüfung der vier Anfangszustände
+wurde in `5c97d64` ergänzt; übernommen wurde PR #16 als `1fcf9fc`.
+Die bisherigen Beispielseeds waren von diesem Fehler nicht betroffen.
+
+Am 20.10.2026 bestätigte der Nutzer auf Manjaro am sauberen Commit
+`1fcf9fce5b999c2344b038c0a171b60ffaf7ae73` 456 bestandene Tests in 33,02 s,
+beide erfolgreichen Beispiele und die Diagrammanzeige. Die zusätzliche
+Nachrechnung bestätigte die zwölf Artefaktprüfsummen pro Lauf,
+Trainingskovarianz und Schrumpfung, Kontroll-Scores sowie die exportierten
+Fit-Verluste. Alpha war 1 für Weißrauschen und 0,5 für AR(1).
+Das [Portabilitätsprotokoll](portability.md) dokumentiert die übermittelten
+Kennzahlen und den genauen Umfang dieses Nachweises.
+
+Unter WSL2 bestätigte der Nutzer am selben sauberen Referenzcommit
+456 bestandene Tests in 27,19 s, beide Beispiele und alle vier Diagramme.
+Die zusätzliche lokale Nachrechnung bestand ebenfalls; Alpha und die
+ausgegebenen Kennzahlen stimmen mit Manjaro überein. Der technische
+Kontrollvergleich ist für diese beiden Konfigurationen damit abgeschlossen.
+Der genaue Umfang und die Grenzen stehen im
+[Portabilitätsprotokoll](portability.md); allgemeine Bitidentität oder eine
+wissenschaftliche Leistungsbewertung sind damit nicht nachgewiesen.
+
+Zusätzlich wurde der gepinnte Python-/Julia-Startweg am 20.10.2026 im
+ursprünglichen WSL2-Checkout erfolgreich geprüft. Schema 2 selbst benötigt
+Julia nicht. Der [PySR-Methodenentwurf](symbolic_regression_method_plan.md)
+wurde separat geprüft und um Mehrkonstantentest, Aliasdarstellung und
+Score-Herkunft ergänzt. Hauptversuche, Unsicherheitsabdeckung und freie
+Formelentdeckung folgen separat.

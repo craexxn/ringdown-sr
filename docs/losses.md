@@ -2,15 +2,19 @@
 
 ## Umfang und offene Entscheidungen
 
-Implementiert werden mathematische Referenzfunktionen für einen
+Implementiert sind mathematische Referenzfunktionen für einen
 Residualvektor und eine vorgegebene Kovarianzmatrix. Die endgültige
 Normierung der Forschungszielfunktion und ihre Abstimmung mit der
 Komplexitätsstrafe sind noch nicht festgelegt. Dafür sind beide
 Kovarianzquadratik-Werte ausdrücklich zugänglich; es gibt keine
 voreingestellte Aufrufvariante eines `CovarianceLoss`-Objekts.
 
-Kovarianzschätzung, Regularisierung und PySR-Integration gehören zu
-weiteren Schritten. Dieser Baustein ändert keine Versuchskriterien.
+[Kovarianzschätzung und Regularisierung](covariance_estimation.md) sind
+inzwischen als eigener Baustein implementiert. Der
+[PySR-Methodenentwurf](symbolic_regression_method_plan.md) schlägt für den
+ersten technischen Adapter ausdrücklich `Q/N` vor; eine wissenschaftliche
+Komplexitäts- und Formelauswahl ist damit noch nicht beschlossen.
+Dieser reine Rechenkern ändert keine Versuchskriterien.
 
 ## Definitionen
 

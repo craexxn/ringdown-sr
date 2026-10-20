@@ -10,8 +10,12 @@ Einstellungen der Hauptversuche fest.
 Umsetzungsstand: Der [reine Kovarianzschätzer](covariance_estimation.md)
 und die [Schema-2-Pilotintegration](estimated_covariance_pilot.md) mit
 getrennten Hintergrundrollen, drei Fits und Exporten sind implementiert.
-Der Plan bleibt die methodische Grundlage; ein separates Integrationsreview
-und neue sichtbare Kontrollläufe auf beiden Nutzerrechnern stehen noch aus.
+Der Plan bleibt die methodische Grundlage. Das separate Integrationsreview
+zu PR #16 und die nachfolgende Seed-Korrektur sind bearbeitet und auf `main`
+übernommen. Die sichtbaren Schema-2-Kontrollläufe auf Manjaro und WSL2
+sind am selben sauberen Commit `1fcf9fc` bestätigt; beide Rechner
+bestanden 456 Tests sowie die nachgelagerte Export-/Verlustkontrolle.
+Nachweise und Grenzen stehen im [Portabilitätsprotokoll](portability.md).
 
 ## 1. Ziel und begrenzter erster Schritt
 
