@@ -14,8 +14,9 @@ function _real_array(values, name::String, dimensions::Int)
     Base.require_one_based_indexing(values)
     all(x -> x isa Real && !(x isa Bool), values) ||
         throw(ArgumentError("$name must contain real numbers, excluding booleans."))
+    # Materialize ranges and views into owned dense arrays too.
     converted = try
-        Float64.(values)
+        collect(Float64, values)
     catch error
         if error isa InexactError || error isa OverflowError || error isa ArgumentError
             throw(ArgumentError("$name cannot be represented as finite Float64 values."))

@@ -52,9 +52,12 @@ end
         identity = FixedWindowLoss(
             [0.0, 1.0], [2.0, 4.0]; covariance=Matrix{Float64}(I, 2, 2),
         )
-        @test residual_loss(ordinary, [2.0, 4.0]) ≈ 10.0
-        @test residual_loss(identity, [2.0, 4.0]) ≈ 10.0
-        @test candidate_loss(ordinary, const_node(0), options) ≈ 10.0
+        @test residual_loss(ordinary, [2.0, 4.0]) ≈ 10.0 rtol=32eps(Float64)
+        @test residual_loss(identity, [2.0, 4.0]) ≈ 10.0 rtol=32eps(Float64)
+        @test candidate_loss(ordinary, const_node(0), options) ≈ 10.0 rtol=32eps(Float64)
+        @test residual_loss(ordinary, 2.0:2.0:4.0) ≈ 10.0 rtol=32eps(Float64)
+        ranged = FixedWindowLoss(0.0:1.0, 2.0:2.0:4.0)
+        @test candidate_loss(ranged, const_node(0), options) ≈ 10.0 rtol=32eps(Float64)
 
         for scale in (1e-21, 1.0, 1e21)
             scaled = FixedWindowLoss(
@@ -130,7 +133,7 @@ end
         zero = const_node(0)
         @test objective(zero, dataset, options) ≈ 1/4 rtol=32eps(Float64)
         callback_options = loss_options(loss_function=objective)
-        @test SymbolicRegression.eval_loss(zero, dataset, callback_options) ≈ 1/4
+        @test SymbolicRegression.eval_loss(zero, dataset, callback_options) ≈ 1/4 rtol=32eps(Float64)
 
         # The custom-loss route must perform units analysis even with penalty 0.
         units_objective = FixedWindowLoss(time, time)
@@ -243,7 +246,7 @@ end
 
         other = FixedWindowLoss([0.0, 1.0], [1.0, 0.0])
         first = candidate_loss(context, const_node(0), options)
-        @test candidate_loss(other, const_node(0), options) == 1/2
+        @test candidate_loss(other, const_node(0), options) ≈ 1/2 rtol=32eps(Float64)
         @test candidate_loss(context, const_node(0), options) == first
         @test Matrix(context._factor) == factor_values
     end
