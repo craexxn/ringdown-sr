@@ -5,7 +5,7 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Dokumentationsstand: 19.10.2026.
+Dokumentationsstand: 20.10.2026.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
@@ -236,7 +236,10 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 1. Einen begründeten Methodenplan für Kovarianzschätzung aus getrennten
    Hintergrunddaten und Regularisierung ausarbeiten. Schätzer,
    Datentrennung, Regularisierungswahl und Prüfkriterien vor der
-   Implementierung kritisch prüfen.
+   Implementierung kritisch prüfen. Der
+   [Methodenplan](docs/covariance_method_plan.md) wurde nach dem ersten
+   methodischen Review um gezielte Referenzfälle ergänzt; der Schätzer
+   ist noch nicht implementiert.
 2. Die geprüften Verfahren ergänzen und anhand unabhängiger Referenzen
    testen.
 3. Die freie PySR-Formelsuche und die volle Kovarianzgewichtung integrieren.
