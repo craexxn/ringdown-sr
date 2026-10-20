@@ -16,7 +16,7 @@ import scipy
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.figure import Figure
 
-from ringdown_sr.config import parse_config
+from ringdown_sr.config import CovariancePilotConfig, parse_config
 from ringdown_sr.losses import CovarianceLoss, mean_squared_error
 from ringdown_sr.noise import ar1_covariance, gaussian_ar1_noise, gaussian_white_noise
 from ringdown_sr.reference_fit import ReferenceFitError, fit_ringdown
@@ -221,6 +221,12 @@ def run_pilot(config_path: str | Path, output_directory: str | Path) -> PilotRun
     config_path = Path(config_path)
     original = config_path.read_bytes()
     config = parse_config(original)
+    if isinstance(config, CovariancePilotConfig):
+        from ringdown_sr.covariance_pilot import run_covariance_pilot
+
+        return run_covariance_pilot(
+            config, original, config_path.name, output_directory
+        )
     resolved = config.to_dict()
     # Capture before creating output; results/ is excluded from Git.
     provenance = _provenance()

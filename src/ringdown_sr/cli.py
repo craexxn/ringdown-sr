@@ -34,9 +34,25 @@ def main(argv: list[str] | None = None) -> int:
     if outcome.status != "success":
         print(f"Fehler: {result['error']['message']}", file=sys.stderr)
         return 1
-    parameters = result["fit"]["parameters"]
-    print(f"Frequenz: {parameters['frequency_hz']:.8g} Hz")
-    print(f"Abklingzeit: {parameters['decay_time_s']:.8g} s")
-    print(f"MSE an Messdaten: {result['metrics']['ordinary_mse']:.8g}")
+    if result["schema_version"] == 2:
+        print(f"Gewähltes Alpha: {result['covariance_estimation']['alpha_selected']:g}")
+        for name, label in (
+            ("ordinary", "Gewöhnlicher Fit"),
+            ("known_covariance", "Fit mit wahrer Kovarianz"),
+            ("estimated_covariance", "Fit mit geschätzter Kovarianz"),
+        ):
+            record = result["fits"][name]
+            parameters = record["fit"]["parameters"]
+            print(
+                f"{label}: f = {parameters['frequency_hz']:.8g} Hz, "
+                f"tau = {parameters['decay_time_s']:.8g} s, "
+                f"MSE = {record['metrics']['ordinary_mse']:.8g}, "
+                f"Q_true/N = {record['metrics']['q_true_per_sample']:.8g}"
+            )
+    else:
+        parameters = result["fit"]["parameters"]
+        print(f"Frequenz: {parameters['frequency_hz']:.8g} Hz")
+        print(f"Abklingzeit: {parameters['decay_time_s']:.8g} s")
+        print(f"MSE an Messdaten: {result['metrics']['ordinary_mse']:.8g}")
     print("Einzelner Kontrollfall; keine wissenschaftliche Leistungsbewertung.")
     return 0

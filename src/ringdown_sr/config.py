@@ -56,6 +56,29 @@ class PilotConfig:
         return asdict(self)
 
 
+@dataclass(frozen=True)
+class BackgroundConfig:
+    n_train: int
+    n_validation: int
+    n_check: int
+    bit_generator: str
+    seed: int
+    stream_scheme: str
+
+
+@dataclass(frozen=True)
+class CovarianceConfig:
+    mean_mode: str
+    alpha_candidates: tuple[float, ...]
+    kappa_max: float
+
+
+@dataclass(frozen=True)
+class CovariancePilotConfig(PilotConfig):
+    background: BackgroundConfig
+    covariance_estimation: CovarianceConfig
+
+
 def _fields(table, required: set[str], name: str) -> dict:
     if not isinstance(table, dict) or set(table) != required:
         raise ValueError(f"{name} requires exactly these fields: {sorted(required)}.")
@@ -92,9 +115,13 @@ def parse_config(content: bytes) -> PilotConfig:
         data = tomllib.loads(content.decode("utf-8"))
     except (UnicodeError, tomllib.TOMLDecodeError) as error:
         raise ValueError(f"Invalid UTF-8 TOML configuration: {error}") from error
-    _fields(data, {"schema_version", "sampling", "signal", "noise", "fit"}, "root")
-    if type(data["schema_version"]) is not int or data["schema_version"] != 1:
-        raise ValueError("schema_version must be 1.")
+    version = data.get("schema_version")
+    if type(version) is not int or version not in (1, 2):
+        raise ValueError("schema_version must be 1 or 2.")
+    root_fields = {"schema_version", "sampling", "signal", "noise", "fit"}
+    if version == 2:
+        root_fields |= {"background", "covariance_estimation"}
+    _fields(data, root_fields, "root")
     sampling = _fields(
         data["sampling"], set(SamplingConfig.__annotations__), "sampling"
     )
@@ -136,9 +163,14 @@ def parse_config(content: bytes) -> PilotConfig:
                 "AR(1) covariance requires a representable positive variance."
             )
         noise_config = AR1NoiseConfig(noise["kind"], sigma, "PCG64", seed, rho)
-    if fit["weighting"] not in ("ordinary", "known_white", "known_covariance"):
+    weightings = (
+        ("compare_covariances",)
+        if version == 2
+        else ("ordinary", "known_white", "known_covariance")
+    )
+    if fit["weighting"] not in weightings:
         raise ValueError(
-            "fit.weighting must be ordinary, known_white or known_covariance."
+            f"fit.weighting for schema {version} must be one of {weightings}."
         )
     if fit["weighting"] == "known_white" and noise["kind"] != "gaussian_white":
         raise ValueError("known_white requires gaussian_white noise.")
@@ -167,12 +199,53 @@ def parse_config(content: bytes) -> PilotConfig:
     ):
         raise ValueError("All initial_points must lie strictly inside the fit bounds.")
     budget = _integer(fit["max_nfev"], "fit.max_nfev", 1)
-    return PilotConfig(
-        1,
+    common = (
+        version,
         SamplingConfig(n, fs),
         s,
         noise_config,
         FitConfig(fit["weighting"], f_bounds, tau_bounds, starts, budget),
+    )
+    if version == 1:
+        return PilotConfig(*common)
+    background = _fields(
+        data["background"], set(BackgroundConfig.__annotations__), "background"
+    )
+    amounts = {
+        name: _integer(background[name], f"background.{name}", 1)
+        for name in ("n_train", "n_validation", "n_check")
+    }
+    background_seed = _integer(background["seed"], "background.seed", 0)
+    if (
+        background["bit_generator"] != "PCG64"
+        or background["stream_scheme"] != "seedsequence_role_v1"
+    ):
+        raise ValueError("Background requires PCG64 and seedsequence_role_v1.")
+    covariance = _fields(
+        data["covariance_estimation"],
+        set(CovarianceConfig.__annotations__),
+        "covariance_estimation",
+    )
+    if covariance["mean_mode"] != "known_zero":
+        raise ValueError('covariance_estimation.mean_mode must be "known_zero".')
+    grid = covariance["alpha_candidates"]
+    if not isinstance(grid, list) or not grid:
+        raise ValueError("alpha_candidates must be a nonempty list.")
+    alphas = tuple(_number(value, "alpha_candidates") for value in grid)
+    if any(not 0 <= alpha <= 1 for alpha in alphas) or len(set(alphas)) != len(alphas):
+        raise ValueError("alpha_candidates must be unique and lie in [0, 1].")
+    kappa = _number(covariance["kappa_max"], "covariance_estimation.kappa_max")
+    if kappa <= 1:
+        raise ValueError("covariance_estimation.kappa_max must exceed one.")
+    return CovariancePilotConfig(
+        *common,
+        BackgroundConfig(
+            **amounts,
+            bit_generator="PCG64",
+            seed=background_seed,
+            stream_scheme="seedsequence_role_v1",
+        ),
+        CovarianceConfig("known_zero", alphas, kappa),
     )
 
 

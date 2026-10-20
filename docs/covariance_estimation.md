@@ -2,9 +2,10 @@
 
 Stand: 20.10.2026. Implementiert ist der reine Schätzer aus dem
 [geprüften Methodenplan](covariance_method_plan.md), einschließlich
-Referenz- und Fehlerprüfungen. Die Anbindung an den konfigurierbaren
-Piloten, Erzeugung getrennter Hintergrundrollen und ihre Exporte folgen
-im nächsten Schritt. Die bisherigen TOML-Beispiele sind unverändert.
+Referenz- und Fehlerprüfungen. Die
+[Schema-2-Pilotintegration](estimated_covariance_pilot.md) erzeugt getrennte
+Hintergrundrollen und exportiert den Vergleich dreier Fits. Die bisherigen
+Schema-1-TOML-Beispiele sind unverändert.
 
 ## Schnittstelle und Annahmen
 
@@ -195,12 +196,12 @@ Gauß-Standardfehlern aus dem Methodenplan verglichen. Diese Prüfung
 betrifft die rohe Schätzung, keine Unverzerrtheit der Schrumpfung und
 keine Rekonstruktionsleistung.
 
-Die nächste Integration muss Hintergrundrollen getrennt erzeugen,
-deren gemeinsame Rauschverteilung sicherstellen, `C_hat` einmal bestimmen
-und für alle Kandidaten eines Fits festhalten. Kontrollfenster und wahre
-Kovarianz dürfen die Auswahl nicht beeinflussen. Die bestehende CLI hat
-noch keinen Modus für geschätzte Kovarianzen; ein erfolgreicher Unit-Test
-ist kein Nachweis einer bereits vorhandenen Pilotintegration.
+Die Schema-2-Integration erzeugt die Rollen getrennt unter gemeinsamer
+Rauschverteilung, bestimmt `C_hat` einmal und hält es während des Fits fest.
+Kontrollfenster und wahre Kovarianz beeinflussen die Auswahl nicht.
+Die reinen Schätzer-Tests und die Integrationsprüfungen sind unterschiedliche
+Nachweise; Portabilität und wissenschaftliche Leistungsbewertung des
+integrierten Verfahrens benötigen weitere Prüfungen.
 
 Technische Referenzen:
 
