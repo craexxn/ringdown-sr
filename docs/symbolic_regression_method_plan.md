@@ -1,11 +1,13 @@
 # Methodenentwurf: freie PySR-Suche mit fester Kovarianz
 
-Stand: 20.10.2026. **Vorschlag für das methodische Review, noch keine
-Implementierungsfreigabe oder wissenschaftliche Leistungsvalidierung.**
-Alle neuen Such- und Auswahlvorgaben dieses Dokuments sind Vorschläge für
-einen begrenzten technischen Pilot. Sie legen weder die Hauptversuche noch
-deren Erfolgskriterien fest. Änderungen an Forschungsentscheidungen werden
-nach dem Review ausdrücklich dokumentiert.
+Stand: 20.10.2026. **Nach methodischem Review präzisierter Entwurf für
+den begrenzten technischen Adapter; keine wissenschaftliche Leistungsvalidierung.**
+Das Review zu PR #17, Commit `d13b900`, bewertete den Entwurf als grundsätzlich
+tragfähig. Der Mehrkonstantentest, die Aliasdarstellung und die Score-Herkunft
+sind nachfolgend ergänzt; Abschnitt 11 ordnet die Nachbesserungen zu.
+Die Such- und Auswahlvorgaben gelten als Planung für den technischen Pilot.
+Sie legen weder die Hauptversuche noch deren Erfolgskriterien fest.
+Die Umsetzung und ihre ausführbaren Adapterprüfungen stehen noch aus.
 
 ## 1. Ausgangspunkt und Ziel
 
@@ -13,8 +15,9 @@ Die [Schema-2-Pipeline](estimated_covariance_pilot.md) erzeugt Messdaten,
 trennt drei Hintergrundrollen, schätzt einmalig eine Kovarianz und führt
 drei klassische Fits mit bekannter Ringdown-Form aus. Schätzer und
 Integration wurden separat geprüft; die Seed-Nachbesserung ist auf `main`.
-Der [Manjaro-Nachweis](portability.md) gilt für Commit
-`1fcf9fce5b999c2344b038c0a171b60ffaf7ae73`; sein WSL2-Gegenstück fehlt.
+Die [Nachweise auf Manjaro und WSL2](portability.md) gelten für denselben
+sauberen Commit `1fcf9fce5b999c2344b038c0a171b60ffaf7ae73`.
+Auch der gepinnte Julia-Startweg wurde inzwischen lokal unter WSL2 bestätigt.
 
 Die nächste Erweiterung soll Ausdrücke aus Operatoren und freien Konstanten
 suchen, statt die vollständige Ringdown-Form vorzugeben. PySR und sein
@@ -140,6 +143,9 @@ Optimierer ohne eigene AD-Gradienten auf; die numerische Differentiation
 muss für diesen Callback geprüft werden. Bei einer einzigen Konstanten
 wählt das Backend Newton, auch wenn `optimizer_algorithm="BFGS"` eingestellt
 ist [4]. Die Beschriftung „immer BFGS“ wäre deshalb falsch.
+Der Abnahmeplan muss beide tatsächlichen Backend-Pfade prüfen: den
+Ein-Konstantenfall mit Newton und den Mehrkonstantenfall mit BFGS samt
+numerischer Differentiation. Abschnitt 8 enthält dafür getrennte Referenzen.
 
 Vorschlag zur Isolation: jeder SR-Arm läuft in einem neuen Python-/Julia-
 Unterprozess über `scripts/run_python.py` und die gesperrte Julia-Umgebung.
@@ -191,6 +197,35 @@ Der bibliothekseigene Score ist weder unser Verlust noch ein nachgewiesenes
 wissenschaftliches Auswahlkriterium. Nullverluste und Gleichstände werden
 gesondert geprüft und nachvollziehbar gekennzeichnet.
 
+Für den Export ist die Score-Quelle ausdrücklich
+`PySRRegressor.equations_["score"]`, berechnet durch
+`pysr.sr.calculate_scores` in PySR 2.6.0 bei `loss_scale="log"` [2].
+Der Julia-Score aus `format_hall_of_fame` ist eine andere Quelle [5] und
+ersetzt diesen Wert nicht. Beim Übergang von positivem Verlust auf null
+liefert Python einen positiven unendlichen Score; Julia verwendet einen
+numerisch abgesicherten Logarithmus. Ein erster Kandidat mit Verlust null
+hat im Python-Pfad dagegen Score 0. Beide Fälle sind zu prüfen.
+
+Vorgeschlagener JSON-Vertrag für `library_score`: endliche Zahlen mit
+`status="finite"`; sonst `value=null` mit einem der Statuswerte
+`positive_infinity`, `negative_infinity`, `nan` oder `unavailable`.
+Quelle, Bibliotheksversion und `loss_scale` werden mitgespeichert.
+Beispiel für den genannten Übergang:
+
+```json
+{
+  "value": null,
+  "status": "positive_infinity",
+  "source": "pysr.sr.calculate_scores",
+  "library_version": "2.6.0",
+  "loss_scale": "log"
+}
+```
+
+Der eigentliche Verlust bleibt dabei exakt 0. Nicht endliche Score-Diagnosen
+ändern weder diesen Verlust noch die technische Auswahl nach `accuracy`.
+Die Serialisierung muss ohne `NaN`- oder `Infinity`-Zahlentoken auskommen.
+
 Der Export enthält die von der Suche gefundenen Pareto-Kandidaten nach
 Komplexität und Trainingsverlust [5]. Diese Front ist nicht der vollständige
 Raum aller möglichen Formeln. Eine Display-Auswahl verwirft die anderen
@@ -215,10 +250,12 @@ Auch diese Operatorwahl ist Vorwissen. Mit dieser Zählung hat beispielsweise
 `A*exp(b*t)*cos(c*t+d)` 13 Knoten. Der Suchraum enthält damit die Zielstruktur,
 erzwingt aber weder ihre Entdeckung noch physikalisch sinnvolle Parameter.
 `b` und `c` haben die Einheit `1/s`, `A` und `d` sind dimensionslos.
-Nur falls ein gefundener Ausdruck tatsächlich in eine entsprechende
-Form überführt und identifiziert wurde, dürfen etwa `tau=-1/b` für `b<0`
-oder `f=abs(c)/(2*pi)` berichtet werden. Allgemeine Ausdrücke haben keine
-automatisch definierten Ringdown-Parameter.
+Nur falls ein gefundener Ausdruck tatsächlich in eine entsprechende Form
+überführt wurde, dürfen etwa `tau=-1/b` für `b<0` und die rohe
+Ausdrucksfrequenz `abs(c)/(2*pi)` abgeleitet werden. Daraus folgt auf einem
+Sample-Raster keine eindeutige physikalische Frequenzidentifikation.
+Allgemeine Ausdrücke haben keine automatisch definierten Ringdown-Parameter;
+die zusätzliche Alias-Konvention steht in Abschnitt 6.1.
 
 Vorschlag: zunächst physikalische Sekunden mit `X_units=["s"]` und einer
 ausdrücklich dimensionslosen Ausgabe (`y_units="1"`) übergeben;
@@ -248,6 +285,61 @@ für die Prüfung sind `exp(b*t)` mit inverser Zeitkonstante gegenüber
 `exp(t)` sowie `h(t)=t` bei dimensionslos geforderter Ausgabe. Beim Export
 wird zwischen zulässiger Dimensionsprüfung und einer tatsächlich
 rekonstruierten Zuordnung der Konstanteneinheiten unterschieden.
+
+### 6.1 Rohe Ausdrucksfrequenz und Aliasdarstellung
+
+Die freie Grammatik bleibt bestehen. Ihre rohe Frequenz wird nicht auf
+die klassischen Fit-Grenzen beschränkt. Für die ausdrücklich erkannte
+Form `A*exp(b*t)*cos(c*t+d)` wird als separate Diagnose eine kanonische
+Darstellung auf dem Raster vorgeschlagen; der gefundene Baum bleibt erhalten.
+
+Für die bisherige Abtastung `t_j=j/fs` mit Zeitursprung null gilt:
+
+```text
+nu = c / (2*pi)                         # signed raw frequency in Hz
+k = floor(nu/fs + 1/2)
+q = nu - k*fs                          # -fs/2 <= q < fs/2
+s = -1 if q < 0 else +1
+frequency_alias_hz = abs(q)
+phase_alias_rad = wrap_to_minus_pi_pi(s*d)
+```
+
+`wrap_to_minus_pi_pi` bezeichnet das Intervall `[-pi,pi)`.
+Wegen `nu=q+k*fs` unterscheidet sich das ursprüngliche Sample-Argument
+von `s*(2*pi*abs(q)*t_j+s*d)` um `2*pi*k*j`. Periodizität und
+Geradheit des Kosinus ergeben deshalb dieselben Samples. Dämpfung
+und Amplitude werden dabei nicht verändert. Bei einem anderen Zeitursprung
+gälte diese Phasenregel nicht unverändert; ein solcher Fall ist vor einer
+Erweiterung gesondert herzuleiten und zu prüfen.
+
+Der spätere Parameterexport soll rohe Konstanten und rohen Baum,
+`frequency_raw_signed_hz=nu`, `frequency_raw_hz=abs(nu)` sowie die getrennten
+Aliaswerte, Abtastrate und Konvention enthalten. Der Status bezeichnet
+diese ausdrücklich als Aliasrepräsentation, nicht als eindeutig ermittelte
+physikalische Frequenz. Bei Frequenz null oder genau der Nyquist-Frequenz
+sind Phase und Amplitude zusätzlich nicht getrennt identifizierbar:
+auf dem Raster wirkt nur `A*cos(d)`, gegebenenfalls mit wechselndem Vorzeichen.
+Ein gewählter kanonischer Phasenwert ist dann lediglich eine Darstellung
+und erhält einen entsprechenden Degenerationsstatus. Bei Amplitude null
+sind auch Frequenz und Abklingparameter aus diesen Samples nicht identifizierbar.
+
+Für sehr große Konstanten sowie die Nähe der Faltungsgrenzen muss die
+spätere Implementierung die numerische Zuverlässigkeit der Frequenz- und
+Phasenreduktion prüfen. Kann sie nicht gesichert werden, werden abgeleitete
+Aliaswerte als nicht bestimmbar gekennzeichnet; rohe Werte und Baum bleiben
+für die Nachrechnung erhalten. Eine Toleranz darf die Faltungsgrenze nicht
+stillschweigend verschieben.
+
+Bei `fs=4096 Hz` sind beispielsweise 250 Hz und 4346 Hz mit derselben
+Phase sample-äquivalent. 3846 Hz wird zu 250 Hz mit umgekehrter Phase;
+auch negative rohe Frequenzen müssen mit dieser Phasenregel behandelt werden.
+Die Formeln können zwischen den Samples verschiedene Werte liefern.
+Ein Off-Raster-Gegenbeispiel gehört daher ausdrücklich zum Prüfplan.
+Die Aliasdarstellung ersetzt weder die Originalkurve noch eine nach
+zusätzlichen physikalischen Annahmen begründete Identifikationsbewertung.
+Eine künftig ausgewiesene rohe oder aliasbezogene Parameterabweichung
+muss ihre Definition nennen; Sample-Äquivalenz allein ist kein Erfolg
+einer eindeutigen Rekonstruktion.
 
 ## 7. Konkreter Vorschlag für einen technischen Suchlauf
 
@@ -291,16 +383,53 @@ erhalten. Ein zufälliger Suchtreffer ersetzt keinen dieser Nachweise.
 | --- | --- |
 | Orientierung | `C=[[5/2,3/2],[3/2,9/2]]`, `r=[1,0]`: `det(C)=9`, `Q=1/2`, `Q/N=1/4`; falsches `L^-T` liefert `Q=2/5` |
 | Volle Kopplung | `C=[[2,1],[1,2]]`, `r=[1,1]` bzw. `[1,-1]`: beide MSE 1, aber `Q/N=1/3` bzw. 1; diagonale Gewichte reichen nicht |
-| Konstantenanpassung | `h(t)=theta`, `y=[1,3]`, `C=[[4,2],[2,10]]`: `theta=(1.T C^-1 y)/(1.T C^-1 1)=7/5`; gewöhnliches Mittel ist 2. Der tatsächlich verwendete Konstantenoptimierer muss das gewichtete Minimum liefern |
+| Eine Konstante / Newton | `h(t)=theta`, `y=[1,3]`, `C=[[4,2],[2,10]]`: `theta=(1.T C^-1 y)/(1.T C^-1 1)=7/5`; gewöhnliches Mittel ist 2. Den tatsächlichen Newton-Sonderfall prüfen |
+| Mehrere Konstanten / BFGS | `h(t)=a+b*t` mit den unten angegebenen Daten: volle Matrix verlangt `a=0, b=1/7, Q/N=4/21`; beide Konstanten über den echten Backend-BFGS-Pfad optimieren |
+| Frequenz-Aliasing | Bei `fs=4096` die Fälle 250, 4346, 3846 Hz sowie negative Frequenzen mit nicht verschwindender Phase prüfen; Aliasfrequenz und Phasenvorzeichen gemäß Abschnitt 6.1, zusätzlich 0/Nyquist und Unterschiede zwischen Samples |
 | Zeitachse | `L=[[1,0],[1,1]]`, `t=[0,1]`, `h=exp`: `L^-1 h(t)=[1,e-1]`, aber `h(L^-1 t)=[1,e]`; Zeit-Whitening ist ein anderer Ansatz |
 | Identität und Skalierung | `C=I` reproduziert gewöhnliche MSE; gemeinsame Skalierung `r->a*r`, `C->a^2*C` erhält den Verlust, einschließlich `a=1e-21` |
 | Vorzeitiger Überlauf | Ein noch darstellbarer Mittelwert großer Quadrate darf nicht durch eine vorher überlaufende Quadratsumme unzulässig werden; Normierung wie im Python-Referenzkern |
 | Einheiten im Custom Loss | Zulässige und unzulässige Bäume aus Abschnitt 6 auch während Konstantenanpassung unterscheiden; ein gesetzter Einheitenparameter allein ist kein Prüfnachweis |
 | Kandidatenfehler | Ungültige Division, Überlauf, falsche Länge und nicht endliche Ausgabe: Kandidatenfehler und Eingabefehler gemäß Abschnitt 4 unterscheiden; keine stillen Ersatzdaten |
-| Exakter Treffer | Verlust null bleibt null; Auswahl, Score-Diagnose und Export bleiben verwendbar |
+| Exakter Treffer / Score | Verlust null bleibt null; erster Python-Score 0, Übergang von positivem Verlust auf null als `value=null, status=positive_infinity` mit festgelegter Quelle exportieren; `accuracy`-Auswahl bleibt verlustbasiert |
 | Kontexttrennung | Mit unveränderten Eingaben Arm A, Arm B mit anderer Kovarianz und erneut A ausführen: A behält seinen eigenen Faktor; kein Cache- oder Warm-Start-Übertrag |
 | Vollständiges Fenster | Nebendiagonalreferenz auch durch die echte PySR-Schnittstelle prüfen; Callback sieht alle N Samples in richtiger Reihenfolge, auch bei Optimierung |
 | Export und Auswahl | Vorgegebene Kandidaten mit unterschiedlichen Komplexitäten/Verlusten prüfen Auswahl und Pareto-Export; ein späterer Kandidat muss einen früheren verdrängen können |
+
+### Mehrkonstanten-Referenz für den tatsächlichen BFGS-Pfad
+
+Für `h(t)=a+b*t` werden Zeit in Sekunden und folgende Daten fest vorgegeben:
+
+```text
+t = [0, 1, 2]
+y = [0, 1, 0]
+C = [[2, 1, 0],
+     [1, 2, 0],
+     [0, 0, 1]]
+```
+
+Die unabhängig mit `X=[1,t]` berechnete GLS-Referenz folgt aus
+`(X.T C^-1 X) beta = X.T C^-1 y`. Für die volle Matrix sind die
+Normgleichungsmatrix `[[5/3,7/3],[7/3,14/3]]` und die rechte Seite
+`[1/3,2/3]`. Die exakten Minima lauten:
+
+| Gewichtung | a | b |
+| --- | ---: | ---: |
+| Volle Kovarianz C | 0 | 1/7 |
+| Nur Diagonale von C | 4/11 | -1/11 |
+| Gewöhnliche MSE | 1/3 | 0 |
+
+Am vollen gewichteten Minimum gilt `Q/N=4/21`. Die Referenz unterscheidet
+damit volle Gewichtung, versehentliche Diagonalisierung und gewöhnliche MSE.
+Der ausführbare Adaptertest muss einen Baum mit **zwei freien Konstanten**
+von abweichenden Startpaaren, etwa `(a,b)=(1,-1)` und `(-1,1)`, durch den
+tatsächlichen Mehrkonstanten-Backend-Pfad laufen lassen:
+`optimizer_algorithm="BFGS"`, `autodiff_backend=None`, vollständiger
+Custom Loss und drei unveränderte Samples. Der Nachweis soll auch den
+gewählten Optimiererpfad und beide optimierten Konstanten erfassen.
+Eine separat gelöste GLS-Gleichung ist nur die unabhängige Referenz;
+ihr Ergebnis darf den Backend-Aufruf nicht ersetzen. Der Newton-Test
+bleibt als eigenständiger Nachweis bestehen.
 
 Für kleine Matrizen werden die exakten rationalen Werte und direkte
 Gleichungslösungen als Referenz verwendet, nicht nur der produktive
@@ -330,7 +459,11 @@ ein SR-Lauf pro Arm mindestens:
   Julia-RNG-Zustände; keine Behauptung vollständiger Zustandsrekonstruktion
   allein aus einem Python-Seed.
 - Gefundene Pareto-Kandidaten mit Komplexität, rohem Trainingsverlust,
-  Baseline/Normalisierung und ausdrücklich benanntem Bibliotheks-Score.
+  Baseline/Normalisierung und `library_score` samt Quelle, Version und
+  Endlichkeitsstatus gemäß Abschnitt 5.
+- Falls die Formelinterpretation möglich ist: rohe und aliasbezogene
+  Parameter getrennt, einschließlich Phasentransformation,
+  Konventionskennung und Identifizierbarkeitsstatus gemäß Abschnitt 6.1.
 - Reproduzierbare Baumbeschreibung mit Operatoren, Variablen und Konstanten
   in voller `float64`-Genauigkeit sowie lesbare Formel und Einheitenstatus.
   Eine verkürzte Terminalformel reicht nicht zum Wiederherstellen.
@@ -352,27 +485,44 @@ Vorgeschlagene Reihenfolge nach dem methodischen Review:
    Konstantenoptimierung mit kleinen deterministischen Fällen prüfen.
 3. Versionierte Konfiguration und Exporte an vorhandene Daten anschließen;
    die kleinen weißen/AR(1)-Kontrollläufe ausführen und unabhängig nachrechnen.
-4. Code-/Wissenschaftsreview und danach neue Manjaro-/WSL2-Kontrollen;
-   die bestehende offene WSL2-Prüfung von Schema 2 bleibt separat vermerkt.
+4. Code-/Wissenschaftsreview und danach eigene Manjaro-/WSL2-Kontrollen
+   des neuen SR-Adapters. Die bereits bestätigten Schema-2-Läufe mit
+   klassischem Formansatz ersetzen diese künftigen SR-Prüfungen nicht.
 
-## 10. Konkreter Auftrag an das methodische Review
+## 10. Methodischer Entscheidungsstand nach dem Review
 
-| Entscheidung / Risiko | Zu prüfen oder ausdrücklich zu entscheiden |
+| Entscheidung / Risiko | Planung für den technischen Adapter und spätere Grenzen |
 | --- | --- |
 | Verlust und Vergleich | `Q/N` für diesen Adapter; kein Logdet im Formelsuchverlust bei festem C; getrennte Diagnosen der drei Arme |
 | Komplexität | Technisch zunächst keine zusätzliche Strafe, Knotenlimit und gesamte gefundene Front; spätere wissenschaftliche Auswahlregel bleibt offen |
 | Suchraum | Vorgeschlagene Operatoren, Knotenmaß und Limit 20; Zielstruktur darstellbar, keine versteckte Vorgabe der vollständigen Formel |
 | Einheiten / Zeit | Sekunden und dimensionsbehaftete Konstanten zunächst beibehalten? Expliziter Prüfer im Custom Loss; Grenzen der Wildcard-Einheitenanalyse |
-| Optimierung | Tatsächlicher Custom-Loss-Pfad einschließlich Newton-Sonderfall, numerischer Differentiation und unzulässiger Kandidaten |
+| Optimierung | Tatsächlichen Newton- und Mehrkonstanten-BFGS-Pfad getrennt prüfen, einschließlich numerischer Differentiation und unzulässiger Kandidaten |
+| Aliasinterpretation | Freie Grammatik beibehalten; rohe und kanonische Frequenz samt Phase trennen; physikalische Identifikation bleibt gesondert zu begründen |
+| Score-Export | Python-Quelle mit Version festlegen; nicht endliche Werte als `null` mit Status, unveränderter Verlust |
 | Datenrollen | Keine Auswahl anhand von Wahrheit oder Hintergrundkontrolle; unabhängige spätere Signalbewertung gesondert planen |
 | Vergleichsbudget | Technischer Vorschlag aus Abschnitt 7; Hauptversuchsbudgets und Zahl unabhängiger Suchstarts noch nicht begründet |
 | Schnittstelle / Export | Prozessisolation, vollständige Reihenfolge, voller Faktor, Präzision, Replay und Fehlerstatus ausreichend abgesichert? |
 
-Das Review soll zunächst diese Vorschläge und Gegenbeispiele beurteilen.
-Es soll keine nicht durchgeführte PySR-Integration oder Leistungsstudie
-bestätigen. Endgültige SNR-Konvention, Datenbudgets, Generalisierung,
-Identifikationskriterien und statistische Vergleiche gehören in einen
-anschließenden Versuchsplan.
+Das Review zu `d13b900` bewertet die übrigen Vorschläge für den begrenzten
+technischen Adapter als passend. Diese Einschätzung bestätigt keine
+bereits ausgeführte PySR-Integration oder Leistungsstudie. Endgültige
+SNR-Konvention, Datenbudgets, Generalisierung, physikalische Identifikation
+und statistische Vergleiche gehören in einen anschließenden Versuchsplan.
+
+## 11. Zuordnung der Review-Nachbesserungen
+
+| Befund zu d13b900 | Änderung im Plan |
+| --- | --- |
+| Ein-Konstantenfall erfasst nur Newton | Abschnitte 4 und 8 verlangen zusätzlich den echten BFGS-Mehrkonstantenpfad mit zwei abweichenden Starts; exakte volle/diagonale/gewöhnliche Referenzen ergänzt |
+| Rohe Frequenz auf dem Raster nicht eindeutig | Abschnitt 6.1 definiert eine getrennte Aliasdarstellung mit Phasentransformation, Degenerationsstatus und Off-Raster-Gegenprobe; freie Grammatik bleibt bestehen |
+| Unterschiedliche Score-Quellen bei Nullverlust | Abschnitte 5, 8 und 9 legen Python-Quelle, Version, Endlichkeitsstatus und strikte JSON-Darstellung fest |
+
+Die Mehrkonstanten-Minima wurden für diese Nachbesserung unabhängig mit
+exakter rationaler Arithmetik nachgerechnet. Die Aliasfälle wurden über
+ganzzahlige Periodendifferenzen geprüft. Dies sind mathematische
+Referenzprüfungen, keine ausgeführten BFGS-, Julia- oder PySR-Adaptertests.
+
 
 ## Quellen und Prüfumfang dieses Entwurfs
 
@@ -381,7 +531,8 @@ PySR and SymbolicRegression.jl*, [arXiv:2305.01582v3](https://arxiv.org/abs/2305
 Einordnung des Verfahrens; kein Beleg für unsere konkrete Gewichtung.
 
 [2] [PySR 2.6.0: `pysr/sr.py`](https://github.com/astroautomata/PySR/blob/v2.6.0/pysr/sr.py),
-insbesondere Parameter, `_run`, `fit` und `idx_model_selection`.
+insbesondere Parameter, `_run`, `fit`, `idx_model_selection` und
+`calculate_scores`.
 Die installierte Python-Quelle wurde ohne Initialisierung von Julia gelesen.
 
 [3] [SymbolicRegression 2.5.1: `src/LossFunctions.jl`](https://github.com/astroautomata/SymbolicRegression.jl/blob/v2.5.1/src/LossFunctions.jl),
@@ -399,5 +550,6 @@ insbesondere `violates_dimensional_constraints` und `WildcardQuantity`.
 
 Für diesen Dokumentationsentwurf wurden Quellen und handrechenbare
 Referenzen geprüft. Es wurden keine SR-Suchläufe, Julia-Adaptertests oder
-neuen statistischen Experimente durchgeführt. Der vorhandene
-Manjaro-Prüfnachweis betrifft Schema 2 mit klassischen Fits.
+neuen statistischen Experimente durchgeführt. Die übermittelten Nachweise
+auf Manjaro und WSL2 betreffen Schema 2 mit klassischen Fits; der zusätzliche
+WSL2-Umgebungscheck bestätigt den gepinnten Startweg, keinen neuen SR-Adapter.

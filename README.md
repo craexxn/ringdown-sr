@@ -47,10 +47,11 @@ Details zum aktuellen Stand: [Pilot](docs/pilot.md),
 [Kovarianzschätzer](docs/covariance_estimation.md) und
 [Pilot mit geschätzter Kovarianz](docs/estimated_covariance_pilot.md).
 Das [Portabilitätsprotokoll](docs/portability.md) enthält die bisherigen
-Schema-1-Vergleiche auf beiden Rechnern und den neuen Schema-2-Nachweis
-auf Manjaro; dessen WSL2-Vergleich ist offen. Der nächste fachliche Schritt
-ist der [Methodenentwurf für die freie PySR-Suche](docs/symbolic_regression_method_plan.md),
-der vor der Umsetzung separat geprüft werden soll.
+Schema-1-Vergleiche und die neuen Schema-2-Nachweise auf Manjaro und WSL2
+am selben sauberen Commit. Auch der gepinnte Julia-Startweg ist lokal
+unter WSL2 bestätigt. Der [PySR-Methodenentwurf](docs/symbolic_regression_method_plan.md)
+wurde separat geprüft und um die Reviewpunkte präzisiert; seine
+ausführbare Umsetzung steht noch aus.
 
 ## Konfigurierter Durchlauf mit gespeicherten Ergebnissen
 
@@ -242,7 +243,12 @@ auf Manjaro 456 bestandene Tests in 33,02 s, beide erfolgreichen
 Schema-2-Beispiele und die Diagrammanzeige. Eine zusätzliche Nachrechnung
 bestätigte Dateiprüfsummen, Kovarianzen, Kontroll-Scores und Fit-Verluste.
 Umfang und Zahlen stehen im [Portabilitätsprotokoll](docs/portability.md).
-Die Schema-2-Kontrolle unter WSL2 bleibt offen.
+Unter WSL2 wurden am selben Referenzcommit ebenfalls 456 Tests in 27,19 s
+bestanden, beide Beispiele und alle vier Diagramme bestätigt sowie dieselben
+Datei-, Kovarianz-, Kontroll-Score- und Verlustprüfungen ausgeführt.
+Alpha und ausgegebene Kennzahlen stimmen mit Manjaro überein.
+Ein vollständiger rechnerübergreifender Array- oder Bytevergleich ist
+damit nicht belegt.
 Die wissenschaftliche Validierung der Rekonstruktionsmethode benötigt
 die noch ausstehenden methodischen Prüfungen und Experimente.
 
@@ -269,8 +275,12 @@ Für eine Python-Datei wird anstelle von `-c "..."` deren Pfad angegeben.
 Der Startweg wurde am 06.10.2026 auf Manjaro erfolgreich geprüft:
 PySR 2.6.0, Julia 1.13.1, SymbolicRegression 2.5.1 und PythonCall 0.9.36.
 Der aktuelle GitHub-Durchlauf bestätigt ihn außerdem auf Ubuntu.
-Ein aktueller lokaler Prüfnachweis für diesen Startweg unter WSL2
-ist noch nicht dokumentiert; der GitHub-Lauf ersetzt diesen Nachweis nicht.
+Am 20.10.2026 bestätigte der Nutzer den Startweg außerdem lokal unter WSL2:
+`Technical environment check passed.`, Python 3.12.14, PySR 2.6.0,
+Julia 1.13.1, SymbolicRegression 2.5.1 und PythonCall 0.9.36;
+geladen wurde `julia/Project.toml` im Projektordner.
+Der separate Nachweis ist im [Portabilitätsprotokoll](docs/portability.md)
+dokumentiert und bestätigt keinen bereits implementierten SR-Adapter.
 
 Der frühere allgemeine PySR-Test rekonstruierte `y = x² + 2x + 1`
 auf dem Manjaro-Laptop als `x(x + 2) + 1` mit einem mittleren
@@ -279,14 +289,14 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
 ## Nächste Schritte
 
-1. Den [PySR-Methodenentwurf](docs/symbolic_regression_method_plan.md)
-   separat mit Astra High prüfen: vollständige Kovarianz im Custom Loss,
-   Einheiten, Suchraum, Komplexitätsbehandlung, Datenrollen und Referenzfälle.
-2. Sobald der Windows-Rechner verfügbar ist, die Schema-2-Prüfung unter
-   WSL2 am Manjaro-Referenzcommit `1fcf9fc` ergänzen. Neue Dokumentations-
-   oder Implementierungsstände sind kein Ersatz für denselben Codezustand.
-3. Nach dem Methodenreview zunächst Julia-Verlustkern und PySR-Adapter
-   unabhängig prüfen; anschließend Konfiguration und Exporte integrieren.
+1. Den nach Astra-High-Review präzisierten
+   [PySR-Methodenentwurf](docs/symbolic_regression_method_plan.md) umsetzen:
+   zunächst den Julia-Verlustkern und die explizite Einheitenprüfung.
+2. Den tatsächlichen PySR-Konstantenoptimierer unabhängig prüfen,
+   einschließlich Newton- und Mehrkonstanten-BFGS-Pfad, Alias-/Phasenfällen
+   und eindeutig bezeichnetem Score-Export.
+3. Danach versionierte Konfiguration und Exporte integrieren und den
+   neuen SR-Adapter separat reviewen und auf beiden Rechnern prüfen.
    Die wissenschaftliche Formelauswahl wird gesondert festgelegt.
 
 Diese Schritte bilden die Arbeitsplanung für den Pilot.

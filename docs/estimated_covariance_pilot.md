@@ -213,11 +213,18 @@ Fit-Verluste. Alpha war 1 für Weißrauschen und 0,5 für AR(1).
 Das [Portabilitätsprotokoll](portability.md) dokumentiert die übermittelten
 Kennzahlen und den genauen Umfang dieses Nachweises.
 
-Offen bleiben sichtbare Schema-2-Läufe unter WSL2 am selben Referenzcommit.
-Vor deren numerischem Vergleich sind passende Toleranzen zu begründen;
-Bitidentität wird nicht vorausgesetzt. Der
-[PySR-Methodenentwurf](symbolic_regression_method_plan.md) bereitet parallel
-den nächsten fachlichen Schritt vor und ist noch separat zu prüfen.
-Der lokale Python-/Julia-Umgebungscheck wurde für diese Änderung nicht
-erneut ausgeführt; beide Piloten verwenden Julia nicht. Hauptversuche,
-Unsicherheitsabdeckung und freie Formelentdeckung folgen separat.
+Unter WSL2 bestätigte der Nutzer am selben sauberen Referenzcommit
+456 bestandene Tests in 27,19 s, beide Beispiele und alle vier Diagramme.
+Die zusätzliche lokale Nachrechnung bestand ebenfalls; Alpha und die
+ausgegebenen Kennzahlen stimmen mit Manjaro überein. Der technische
+Kontrollvergleich ist für diese beiden Konfigurationen damit abgeschlossen.
+Der genaue Umfang und die Grenzen stehen im
+[Portabilitätsprotokoll](portability.md); allgemeine Bitidentität oder eine
+wissenschaftliche Leistungsbewertung sind damit nicht nachgewiesen.
+
+Zusätzlich wurde der gepinnte Python-/Julia-Startweg am 20.10.2026 im
+ursprünglichen WSL2-Checkout erfolgreich geprüft. Schema 2 selbst benötigt
+Julia nicht. Der [PySR-Methodenentwurf](symbolic_regression_method_plan.md)
+wurde separat geprüft und um Mehrkonstantentest, Aliasdarstellung und
+Score-Herkunft ergänzt. Hauptversuche, Unsicherheitsabdeckung und freie
+Formelentdeckung folgen separat.
