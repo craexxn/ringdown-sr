@@ -1,9 +1,11 @@
 # Methodenplan: Kovarianzschätzung aus getrennten Hintergrunddaten
 
-Stand: 19.10.2026. **Entwurf für das methodische Review; noch nicht
-implementiert oder wissenschaftlich validiert.** Die unten vorgeschlagenen
-Verfahren, Zahlenwerte und Abnahmekriterien sind vor der Implementierung
-kritisch zu prüfen. Sie legen keine Einstellungen der Hauptversuche fest.
+Stand: 20.10.2026. **Nach methodischem Review überarbeiteter Entwurf;
+noch nicht implementiert oder wissenschaftlich validiert.** Das Review
+zu Commit `897a8ce` bewertete die Verfahrenswahl als tragfähig. Die beiden
+Lücken im Prüfplan sowie die zusätzlichen Hinweise sind unten eingearbeitet
+und in Abschnitt 10 zugeordnet. Die Kontrollvorgaben legen keine
+Einstellungen der Hauptversuche fest.
 
 ## 1. Ziel und begrenzter erster Schritt
 
@@ -49,6 +51,14 @@ Jede Zeile einer Hintergrundmatrix ist ein vollständiger Rauschvektor
 der Länge `N`. Seine Komponenten dürfen zeitlich korreliert sein.
 Unabhängigkeit wird zwischen den Zeilen und zwischen den Datenrollen
 vorausgesetzt, nicht zwischen den Samples innerhalb eines AR(1)-Fensters.
+Im Kontrollfall stammen alle drei Hintergrundrollen und das
+Signalrauschen aus derselben Rauschverteilung: gleiche Modellfamilie,
+bekannter Nullmittelwert, marginale Rauschstärke und gegebenenfalls
+AR(1)-Korrelation. Alle Fenster verwenden dieselbe Samplezahl `N`,
+Abtastrate und Sample-Reihenfolge. Unterschiedlich sind ihre unabhängigen
+Realisierungen und vorgesehenen Datenrollen, nicht die zugrunde liegende
+Verteilung. Diese Übereinstimmung stellt der Orchestrator sicher; die
+wahren Rauschparameter bleiben für den Schätzer unzugänglich.
 
 | Datenrolle | Verwendung | Für Auswahl oder Fit gesperrte Information |
 | --- | --- | --- |
@@ -138,8 +148,25 @@ endliche positive Eigenwertdiagnose. Zusätzlich wird eine ausdrücklich
 konfigurierte Grenze `kappa_max > 1` für die Zweinorm-Kondition vorgeschlagen:
 `kappa_2 = lambda_max / lambda_min`. Ein Überschreiten macht den Kandidaten
 unzulässig und wird protokolliert, statt ihn nachträglich zu verändern.
-Der vorgeschlagene Kontrollwert `1e8` ist ein zu prüfender numerischer
-Grenzwert, keine universelle Genauigkeitsgarantie.
+Der Kontrollwert `1e8` ist ein numerischer Grenzwert, keine universelle
+Genauigkeitsgarantie. Die Grenze selbst ist einschließlich ihres
+zugelassenen Gleichheitsfalls separat zu prüfen.
+
+Für positiv semidefinites `S`, `mu > 0` und `0 < alpha <= 1` gilt außerdem:
+
+```text
+lambda_max(S) <= trace(S) = N*mu
+lambda_min(C_alpha) >= alpha*mu
+kappa_2(C_alpha) <= ((1-alpha)*N*mu + alpha*mu) / (alpha*mu)
+                 = 1 + N*(1-alpha)/alpha
+```
+
+Bei `N=128` und dem kleinsten positiven Rasterwert `alpha=0.001` beträgt
+diese Schranke `127873`, deutlich weniger als `1e8`. Der normale
+Kontrolllauf reizt die Konditionsgrenze mit seinen positiven Alpha-Werten
+mathematisch daher nicht aus. Für Alpha null gilt die Schranke nicht;
+insbesondere ist die rohe Matrix bei `M_train < N` singulär. Die
+explizite Konditionsprüfung bleibt in allen Fällen erforderlich.
 
 Nicht endliche Werte, `mu <= 0`, nicht darstellbare Kovarianzskalen oder
 eine vollständig unzulässige Kandidatenmenge ergeben einen erklärten
@@ -263,21 +290,56 @@ Methoden-/Software-Referenz, keine bereits eingeführte Projektabhängigkeit.
 
 ## 9. Vorgeschlagene Kontrollen vor Leistungsstudien
 
-Alle nachfolgenden Zahlen sind **Prüfvorschläge für das Review**. Es
-wurden damit noch keine neuen Kontrollläufe oder Forschungsreihen ausgeführt.
+Die nachfolgenden Kontrollen berücksichtigen das methodische Review und
+beschreiben den geplanten Funktionsnachweis. Die Zahlen gelten nur für
+technische Kontrollfälle. Damit wurden noch keine neuen konfigurierten
+Kontrollläufe oder stochastischen Forschungsreihen ausgeführt.
 
 ### Deterministische Referenzfälle
 
 | Prüfung | Unabhängig begründeter Bezug |
 | --- | --- |
-| Mittelwertkonvention und Divisor | Für `B=[[1,0],[-1,0],[0,2],[0,-2]]` folgt `S=diag(0.5,2)`, `mu=1.25` |
+| Keine Stichprobenzentrierung | Für `B=[[1,0],[1,2]]` ist der Spaltenmittelwert `[1,1]` und `S=[[1,1],[1,2]]`; eine fehlerhafte Zentrierung vor Division durch `M=2` liefert dagegen `[[0,0],[0,1]]` |
+| Divisor und Schrumpfungsbasis | Für `B=[[1,0],[-1,0],[0,2],[0,-2]]` folgt `S=diag(0.5,2)`, `mu=1.25` |
 | Schrumpfung | Für dieses `S` und `alpha=0.4` ist `C_alpha=diag(0.8,1.7)` |
 | Score | Für Validierungszeilen `[1,1]` und `[-1,-1]` ist der Score `log(1.36) + 1/0.8 + 1/1.7`; Referenz ohne produktives Whitening berechnen |
 | Logdeterminante | Für dieselben Zeilen erzielt `I` den Score `2`, `100*I` den Score `2*log(100)+0.02`; eine reine Q-Auswahl würde die größere Matrix bevorzugen |
 | Rangmangel | Bei `B=[[1,2],[2,4]]` ist `S=[[2.5,5],[5,10]]`; Alpha null ist unzulässig, positives Alpha macht die Matrix mathematisch positiv definit |
+| Konditionsgrenze einschließlich Gleichheit | Für `S=diag(1,0)` gilt `kappa_2(C_alpha)=2/alpha-1`; mit `kappa_max=3` wird `alpha=0.4` wegen `kappa=4` abgelehnt und `alpha=0.5` mit `kappa=3` zugelassen |
 | Exakte Gleichstände | Isotropes `S` erzeugt dasselbe `C_alpha` für alle Alpha-Werte; die definierte Reihenfolge muss die Auswahl eindeutig machen |
 | Skalierung | Für gemeinsames `B,V -> c*(B,V)` gilt `C -> c^2*C`, unveränderte Kondition und Alpha-Auswahl; alle Scores verschieben sich um `2*N*log(abs(c))` |
 | Fehlerpfade | Nulltrainingsmatrix, falsche Formen, nicht endliche/komplexe Daten, ungültige Raster, unzulässige Kondition und Bereichsfehler werden erklärt abgelehnt |
+
+Der erste Fall hat absichtlich einen nicht verschwindenden empirischen
+Mittelwert. Er prüft die bekannte Populationsmittelwert-Konvention und
+erkennt das versehentliche Abziehen der Spaltenmittelwerte. Der bisherige
+ausgeglichene Fall bleibt als Divisor- und Schrumpfungsreferenz erhalten,
+könnte diesen Zentrierungsfehler allein aber nicht erkennen.
+
+**Gesamte Alpha-Auswahl mit eindeutigem Minimum:** Zur vorhandenen Basis
+`S=diag(0.5,2)` werden die Validierungszeilen `[1,0]`, `[0,2]` und das
+Raster `[0,0.4,1]` verwendet. Mit `kappa_max=10` sind alle drei Kandidaten
+zulässig. Die unabhängig berechneten Referenzwerte lauten:
+
+| Alpha | Vollständiger Score, exakt | Score, gerundet | Nur mittlere Quadratik |
+| --- | --- | ---: | ---: |
+| 0 | `2` | 2.000000 | 2.000000 |
+| 0.4 | `log(34/25) + 245/136` | 2.108955 | 1.801471 |
+| 1 | `2*log(5/4) + 2` | 2.446287 | 2.000000 |
+
+Der gesamte Selektor muss `alpha_selected=0` und `C_hat=S` zurückgeben,
+nicht nur diese Scores berechnen. Mit einer umsortierten Eingabe
+`[1,0.4,0]` muss dieselbe Auswahl mit denselben zugeordneten Matrizen und
+Scores entstehen. Ohne Logdeterminante würde fälschlich Alpha `0.4`
+gewinnen. Das eindeutige Minimum und der separat vorgesehene
+Gleichstandstest sichern unterschiedliche Auswahlfälle ab.
+
+Für die separate Konditionskontrolle kann `S=diag(1,0)` aus den
+Trainingszeilen `[1,0]`, `[-1,0]` gewonnen werden. Auf dem Raster
+`[0.4,0.5]` muss bei `kappa_max=3` nur Alpha `0.5` zur Score-Auswahl
+zugelassen werden; der abgelehnte Kandidat behält seinen dokumentierten
+Grund. Eine erfolgreiche Grenzprüfung ersetzt keine Genauigkeitsprüfung
+der Quadratik oder des Fits.
 
 Der Skalentest soll vorab festgelegte gut konditionierte Fälle mit
 `c=1e-21` und `c=1e21` enthalten. Eindeutige Score-Abstände sind erforderlich,
@@ -289,7 +351,7 @@ Fehlschlägen anzupassen.
 
 ### Statistische Kontrolle des rohen Schätzers
 
-Vorschlag: `N=4`, `M_train=32`, `R=2000` unabhängige Wiederholungen,
+Vorgesehen sind `N=4`, `M_train=32`, `R=2000` unabhängige Wiederholungen,
 `sigma=0.1` und `rho` aus `[-0.65, 0, 0.65]`. Nur der rohe Schätzer `S`
 wird gegen Erwartungswerte geprüft, nicht die verzerrende Schrumpfung.
 Für gemeinsam gaußsche, mittelwertfreie Fenster folgt aus den vierten
@@ -301,19 +363,21 @@ SE(mean_over_R(S[i,j]))
     = sqrt((C[i,i]*C[j,j] + C[i,j]^2) / (M_train*R))
 ```
 
-Vorgeschlagen ist eine vorab festgelegte Toleranz von sechs solchen
-Standardfehlern zuzüglich begründeter Rundungsfehler. Der Test zählt
+Die vorab festgelegte Toleranz beträgt sechs solcher
+Standardfehler zuzüglich begründeter Rundungsfehler. Der Test zählt
 korrelierte Samples nicht als zusätzliche unabhängige Fenster und
-behauptet keine exakte normalverteilte Fehlerschranke. Ob Budget und
-Toleranz angemessen sind, ist Bestandteil des Reviews.
+behauptet keine exakte normalverteilte Fehlerschranke. Budget und Toleranz
+wurden im Review als ergänzender Funktionstest plausibel bewertet; die
+deterministischen Referenzfälle bleiben zusätzlich erforderlich.
 
 ### Kleine Integration und nachgelagerte Portabilität
 
 Für den ersten sichtbaren Durchlauf werden die bestehenden Signal-,
-Sampling- und Fit-Vorgaben aus den Pilotbeispielen beibehalten. Als neue
-reine Kontrollvorgaben werden vorgeschlagen:
+Sampling- und Fit-Vorgaben aus den Pilotbeispielen beibehalten. Die
+folgenden Werte wurden im Review als technische Kontrollvorgaben
+akzeptiert:
 
-| Feld | Entwurf, vor Umsetzung zu prüfen |
+| Feld | Technischer Kontrollwert |
 | --- | --- |
 | Hintergrundmengen | `M_train=64`, `M_validation=128`, `M_check=256` bei `N=128` |
 | Alpha-Raster | `[0, 0.001, 0.01, 0.05, 0.1, 0.2, 0.5, 1]` |
@@ -323,7 +387,8 @@ reine Kontrollvorgaben werden vorgeschlagen:
 
 `M_train < N` prüft gezielt die notwendige Regularisierung; diese Mengen
 sind weder ein begründetes Hintergrundbudget für LIGO noch ein Raster der
-Hauptversuche. Der erste Kontrolllauf darf keine generelle Verbesserung
+Hauptversuche. Sie belegen auch keine statistisch stabile Alpha-Auswahl.
+Der erste Kontrolllauf darf keine generelle Verbesserung
 von Matrixfehler oder Rekonstruktion als Pflicht zum Bestehen verlangen.
 
 Integrationstests müssen nachweisen: gleiche Messdaten in allen drei
@@ -331,6 +396,11 @@ Fits; ein einmal bestimmtes festes `C_hat`; nur Trainingsdaten bestimmen
 `S` und `mu`; die Auswahl-Scores werten nur Validierungsdaten unter den
 aus Trainingsdaten bestimmten Kandidaten aus; Änderungen
 an `background_check` oder an Signalwahrheit ändern die Schätzung nicht.
+Alle Hintergrundrollen und das Signalrauschen verwenden dieselbe
+Rauschverteilung und Abtastung gemäß Abschnitt 3; die Zufallsströme sind
+getrennt. Dies ist anhand der aufgelösten Konfiguration und Zuordnung der
+Generatoraufrufe zu prüfen, nicht durch eine Forderung nach identischen
+empirischen Momenten unabhängiger Stichproben.
 Ein anderer Hintergrundumfang verändert die Messdaten nicht. Exporte
 stellen die Eingaben und Entscheidung wieder her. Fehlgeschlagene
 Schätzung bleibt ein Fehler; die bisherigen Schema-1-Kontrollfälle und
@@ -342,7 +412,30 @@ numerische Abweichungen und konsistente Datenrollen; allgemeine
 Bitidentität wird gemäß [Portabilitätsprotokoll](portability.md) nicht
 vorausgesetzt. Konkrete Fehlertoleranzen sind vor der Prüfung zu begründen.
 
-## 10. Auftrag an das methodische Review
+## 10. Methodisches Review und eingearbeitete Befunde
+
+Das separate Review zu PR #14, Commit `897a8ce`, bewertete den Plan als
+fachlich tragfähig. Die volle empirische Matrix mit Identitätsschrumpfung,
+bekannter Nullmittelwert, getrennte Hintergrundrollen, Gauß-Score und
+Verzicht auf Refit bleiben für den ersten Schritt erhalten. Ledoit-Wolf
+und OAS müssen für diesen Implementierungsschritt nicht ergänzt werden.
+
+Die am 20.10.2026 eingearbeiteten konkreten Befunde sind:
+
+| Befund | Änderung | Stelle |
+| --- | --- | --- |
+| Mittel: bisheriger Nullmittelwert-Fall erkennt Zentrierung nicht | Zusätzliche Trainingsmatrix mit Spaltenmittelwert `[1,1]` und ausdrücklich unterschiedlichem zentriertem Ergebnis | Abschnitt 9, deterministische Referenzfälle |
+| Mittel: erwartetes Ergebnis des gesamten Selektors fehlt | Vollständige Score-Tabelle, eindeutige Auswahl Alpha null und dieselbe Erwartung bei umsortiertem Raster | Abschnitt 9, gesamte Alpha-Auswahl |
+| Niedrig: normale Kontrollwerte erreichen die Konditionsgrenze nicht | Herleitung der Konditionsschranke und gesonderter Annahme-/Ablehnungsfall mit `kappa_max=3` | Abschnitte 5 und 9 |
+| Ergänzung zur Datentrennung | Gleiche Rauschverteilung und Abtastung aller Hintergrundrollen und des Signalrauschens ausdrücklich vorausgesetzt und als Integrationsprüfung festgehalten | Abschnitte 3 und 9 |
+
+Das Review akzeptierte die Kontrollmengen, das Alpha-Raster sowie die
+ergänzende statistische Prüfung als technische Funktionstests. Daraus
+folgen keine Aussagen zur statistischen Stabilität der Auswahl oder zur
+Leistungsfähigkeit der späteren Rekonstruktion. Die Anforderungen an
+Genauigkeit, Datenrollen und getrennte wissenschaftliche Bewertung bleiben.
+
+### Prüfauftrag des ursprünglichen Reviews
 
 Das Review soll ein eigenes Urteil anhand der Quellen, des bestehenden
 Codes und dieses Entwurfs bilden. Besonders zu beantworten sind:
@@ -361,11 +454,15 @@ Codes und dieses Entwurfs bilden. Besonders zu beantworten sind:
 6. Werden geschätzte Kovarianzunsicherheit, unterschiedliche Q-Skalen und
    das Vorwissen des bekannten Kontrollfits ausreichend berücksichtigt?
 
-Erwartet werden konkrete Befunde mit Schweregrad, Begründung und
-Korrekturvorschlag. Vor der Implementierung sind diese Befunde
-einzuarbeiten und die offenen methodischen Entscheidungen festzuhalten.
-Eine erfolgreiche Softwareprüfung dieses Dokuments ersetzt dieses
-fachliche Review nicht.
+Die ergänzten Referenzwerte wurden am 20.10.2026 exakt symbolisch
+nachgerechnet. Scores wurden zusätzlich numerisch mit dem bestehenden
+Verlustkern verglichen, die Auswahlerwartung für alle sechs
+Rasterpermutationen geprüft und die Konditionsgrenze einschließlich
+Gleichheit unabhängig über Eigenwerte kontrolliert. Das sind Prüfungen
+des Plans; ein neuer Schätzer wurde dabei nicht implementiert.
+Bei der Implementierung sind die beschriebenen Prüfungen in automatisierte
+Tests zu überführen. Die Dokumentationsprüfung validiert noch keine
+Schätzimplementierung oder wissenschaftliche Leistungsbewertung.
 
 ## Quellen und jeweiliger Geltungsbereich
 
