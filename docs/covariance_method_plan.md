@@ -7,10 +7,11 @@ Lücken im Prüfplan sowie die zusätzlichen Hinweise sind unten eingearbeitet
 und in Abschnitt 10 zugeordnet. Die Kontrollvorgaben legen keine
 Einstellungen der Hauptversuche fest.
 
-Teilumsetzung: Der [reine Kovarianzschätzer](covariance_estimation.md) mit
-Referenz-, Fehler- und statistischen Funktionstests ist implementiert.
-Der Plan beschreibt außerdem die noch ausstehende Erzeugung der
-Hintergrundrollen und ihre Anbindung an den konfigurierbaren Piloten.
+Umsetzungsstand: Der [reine Kovarianzschätzer](covariance_estimation.md)
+und die [Schema-2-Pilotintegration](estimated_covariance_pilot.md) mit
+getrennten Hintergrundrollen, drei Fits und Exporten sind implementiert.
+Der Plan bleibt die methodische Grundlage; ein separates Integrationsreview
+und neue sichtbare Kontrollläufe auf beiden Nutzerrechnern stehen noch aus.
 
 ## 1. Ziel und begrenzter erster Schritt
 

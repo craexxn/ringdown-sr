@@ -26,13 +26,17 @@ Auf `main` vorhanden:
 - Reiner Kovarianzschätzer aus getrennten Hintergrundfenstern mit
   ausdrücklicher Identitätsschrumpfung und Alpha-Auswahl:
   `src/ringdown_sr/covariance_estimation.py`.
-- 386 automatisierte Testfälle für diese Bausteine, einschließlich
+- Drei gekoppelte Referenzfits mit getrennten Hintergrundrollen und
+  geschätzter Kovarianz im ausdrücklich versionierten Schema 2:
+  `src/ringdown_sr/covariance_pilot.py`.
+- 449 automatisierte Testfälle für diese Bausteine, einschließlich
   analytischer Referenzfälle und ungültiger Eingaben.
 - Festgelegte Python-/Julia-Umgebung und automatische GitHub-Prüfungen.
 
 Ein vollständiger kleiner Durchlauf mit bekanntem Formansatz ist vorhanden.
-Die Integration des Kovarianzschätzers in diesen Durchlauf,
-PySR-Integration und die statistische Leistungsbewertung stehen noch aus.
+Die Kovarianzschätzung ist mit Hintergrundrollen, drei Fit-Varianten und
+Exporten integriert. PySR-Integration und die statistische
+Leistungsbewertung stehen noch aus.
 Die wissenschaftlichen Hauptversuche und ihre Auswertung haben noch
 nicht begonnen.
 
@@ -40,7 +44,8 @@ Details zum aktuellen Stand: [Pilot](docs/pilot.md),
 [Verlustfunktionen](docs/losses.md), [Referenzfit](docs/reference_fit.md),
 [konfigurierter Durchlauf](docs/configured_pilot.md) sowie
 [korreliertes Rauschen](docs/correlated_noise.md) und
-[Kovarianzschätzer](docs/covariance_estimation.md).
+[Kovarianzschätzer](docs/covariance_estimation.md) und
+[Pilot mit geschätzter Kovarianz](docs/estimated_covariance_pilot.md).
 Die lokalen Vergleiche auf Manjaro und Ubuntu unter WSL2 sind im
 [Portabilitätsprotokoll vom 19.10.2026](docs/portability.md) festgehalten.
 
@@ -68,6 +73,21 @@ und jeweils einem neuen Ausgabeordner. Sie erzeugen dieselben Daten und
 verwenden unterschiedliche Fit-Gewichtungen. Zusätzlich wird die bekannte
 Modellkovarianz als `covariance.csv` gespeichert. Das ist ein Kontrollvergleich,
 kein Nachweis einer Überlegenheit aus einem Einzelversuch.
+
+Schema 2 erzeugt die drei Fits gemeinsam und schätzt die dritte Kovarianz
+aus getrennten Hintergrundfenstern. Der AR(1)-Kontrolllauf wird so gestartet:
+
+```bash
+uv run --locked ringdown-sr run configs/pilot_estimated_ar1.toml --output results/estimated-ar1-001
+code -r results/estimated-ar1-001/plot.png
+code -r results/estimated-ar1-001/covariance_plot.png
+```
+
+Für weißes Rauschen gibt es `configs/pilot_estimated_white.toml`.
+Die Ausgabe enthält zusätzlich Hintergrundfenster, rohe/geschätzte/wahre
+Kovarianzen, Alpha-Diagnosen und getrennte RNG-Rollen. Bedienung,
+Konfiguration, Kennzahlen und Grenzen beschreibt die
+[Schema-2-Dokumentation](docs/estimated_covariance_pilot.md).
 
 ## Sichtbarer Demolauf
 
@@ -163,8 +183,10 @@ Das Prüfskript kontrolliert Bibliotheksimporte, Python- und
 Julia-Versionen, das aktive Julia-Projekt sowie einen Julia-Rechentest.
 
 Mit `uv run --locked pytest -v` wird jeder Testfall mit seinem Ergebnis
-angezeigt. Die automatisierten Tests erzeugen keine Diagramme oder
-rekonstruierten Ringdown-Formeln.
+angezeigt. Integrationstests erzeugen unter anderem temporäre Diagramme
+im pytest-Verzeichnis. Für bewusst gespeicherte Ergebnisse und Diagramme
+die obigen CLI-Kontrollläufe ausführen. Freie Formelsuche findet dort
+noch nicht statt.
 
 Der Workflow `.github/workflows/technical-checks.yml` führt dieselben
 Prüfungen bei Pull Requests und Änderungen an `main` auf einem
@@ -205,7 +227,11 @@ Am 20.10.2026 wurden nach Ergänzung des reinen Kovarianzschätzers und
 den Korrekturen aus dem Implementierungsreview 396 Tests in der
 Codex-Umgebung bestanden, davon 95 neue Tests für
 Schätzung, Auswahl, Fehlerfälle und die statistische Kontrolle des rohen
-Schätzers. Die CLI verwendet weiterhin nur die bisherigen Fit-Gewichtungen.
+Schätzers. Nach der Schema-2-Integration bestanden am selben Tag insgesamt
+449 Tests, darunter 53 neue Schema-/Integrationstests. Beide vollständigen
+Schema-2-Beispiele wurden in der Codex-Umgebung erfolgreich ausgeführt und
+ihre Diagramme geprüft. Das separate Integrationsreview und diese neuen
+Kontrollläufe auf Manjaro/WSL2 stehen noch aus.
 Die wissenschaftliche Validierung der Rekonstruktionsmethode benötigt
 die noch ausstehenden methodischen Prüfungen und Experimente.
 
@@ -242,13 +268,11 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
 ## Nächste Schritte
 
-1. Den reinen [Kovarianzschätzer](docs/covariance_estimation.md) mit seinen
-   Tests im separaten Code- und Wissenschaftsreview prüfen.
-2. Gemäß [Methodenplan](docs/covariance_method_plan.md) getrennte
-   Hintergrundrollen und Schätzer in den Piloten integrieren, drei
-   Fit-Varianten mit gemeinsamen Messdaten vergleichen sowie Exporte und
-   Metadaten ergänzen. Danach Tests und sichtbare Kontrollläufe auf beiden
-   Rechnern wiederholen.
+1. Die [Pilotintegration](docs/estimated_covariance_pilot.md) im separaten
+   Code- und Wissenschaftsreview prüfen, besonders Datentrennung, feste
+   Kovarianzen, RNG-Rollen und die Bedeutung der ausgegebenen Kennzahlen.
+2. Tests und sichtbare Schema-2-Kontrollläufe auf Manjaro und WSL2 am selben
+   übernommenen Codezustand wiederholen und numerische Abweichungen prüfen.
 3. Die freie PySR-Formelsuche und die volle Kovarianzgewichtung integrieren.
    Endgültige Verlustnormierung und Komplexitätsgewichtung werden im
    methodischen Review festgelegt.

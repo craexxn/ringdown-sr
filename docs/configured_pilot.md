@@ -1,5 +1,9 @@
 # Konfigurierbarer Pilot mit Ergebnisexport
 
+Diese Seite beschreibt Schema 1 mit einem Fit pro Aufruf. Der
+[Pilot mit geschätzter Kovarianz](estimated_covariance_pilot.md) ergänzt
+Schema 2 mit getrennten Hintergrundrollen und drei gekoppelten Fits.
+
 ## Umfang und Start
 
 Ein Aufruf verbindet Zeitachse, eine synthetische gedämpfte Schwingung,
@@ -225,7 +229,8 @@ stationäres AR(1)-Rauschen. Beide Optimierungen sind lokal, kein globaler Bewei
 
 Offen bleiben statistische Leistungsbewertung mit mehreren Realisierungen,
 unabhängige Bewertungsdaten, Unsicherheiten, detektornähere Rauschmodelle,
-Kovarianzschätzung/Regularisierung, PySR-Integration sowie die Begründung
+statistische Absicherung der integrierten Kovarianzschätzung,
+PySR-Integration sowie die Begründung
 der Hauptversuche. Eine bekannte Modellfamilie hat gegenüber freier
 Formelentdeckung zusätzliches Vorwissen; dies muss im Vergleich ausgewiesen
 werden.
