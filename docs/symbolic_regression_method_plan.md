@@ -7,7 +7,11 @@ tragfähig. Der Mehrkonstantentest, die Aliasdarstellung und die Score-Herkunft
 sind nachfolgend ergänzt; Abschnitt 11 ordnet die Nachbesserungen zu.
 Die Such- und Auswahlvorgaben gelten als Planung für den technischen Pilot.
 Sie legen weder die Hauptversuche noch deren Erfolgskriterien fest.
-Die Umsetzung und ihre ausführbaren Adapterprüfungen stehen noch aus.
+Der [Julia-Verlustkern](julia_loss_kernel.md) einschließlich expliziter
+Einheitenprüfung und vollständigem Fenster-Callback ist inzwischen als
+erster Baustein implementiert. Seine Tests schließen die echten
+PySR-/Konstantenoptimiererprüfungen noch nicht ein. Diese, die freien
+Suchläufe und die Ergebnisintegration stehen weiter aus.
 
 ## 1. Ausgangspunkt und Ziel
 

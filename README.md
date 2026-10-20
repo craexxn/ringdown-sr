@@ -31,12 +31,15 @@ Auf `main` vorhanden:
   `src/ringdown_sr/covariance_pilot.py`.
 - 456 automatisierte Testfälle für diese Bausteine, einschließlich
   analytischer Referenzfälle und ungültiger Eingaben.
+- Julia-Verlustkern mit expliziter Einheitenprüfung, festem Fenster und
+  voller Kovarianz sowie separaten Julia-Tests und Python-Replay.
 - Festgelegte Python-/Julia-Umgebung und automatische GitHub-Prüfungen.
 
 Ein vollständiger kleiner Durchlauf mit bekanntem Formansatz ist vorhanden.
 Die Kovarianzschätzung ist mit Hintergrundrollen, drei Fit-Varianten und
-Exporten integriert. PySR-Integration und die statistische
-Leistungsbewertung stehen noch aus.
+Exporten integriert. Der [Julia-Verlustkern](docs/julia_loss_kernel.md) ist als erster
+Baustein der freien Suche ergänzt. Die tatsächliche PySR-Anbindung,
+Konstantenoptimierung und statistische Leistungsbewertung stehen noch aus.
 Die wissenschaftlichen Hauptversuche und ihre Auswertung haben noch
 nicht begonnen.
 
@@ -181,10 +184,15 @@ uv run --locked ruff check .
 uv run --locked ruff format --check .
 uv run --locked pytest -q
 uv run --locked --python 3.12.14 python scripts/run_python.py scripts/check_environment.py
+uv run --locked --python 3.12.14 python scripts/run_python.py scripts/check_julia_loss.py
 ```
 
-Das Prüfskript kontrolliert Bibliotheksimporte, Python- und
+Der Umgebungscheck kontrolliert Bibliotheksimporte, Python- und
 Julia-Versionen, das aktive Julia-Projekt sowie einen Julia-Rechentest.
+Der separate Verlustkern-Check führt deterministische Julia-Tests und
+zehn Residualvergleiche mit dem Python-Kern aus. Diese Prüfungen gehören
+nicht zur pytest-Anzahl; Details stehen im
+[Julia-Verlustkern](docs/julia_loss_kernel.md).
 
 Mit `uv run --locked pytest -v` wird jeder Testfall mit seinem Ergebnis
 angezeigt. Integrationstests erzeugen unter anderem temporäre Diagramme
@@ -289,9 +297,8 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
 ## Nächste Schritte
 
-1. Den nach Astra-High-Review präzisierten
-   [PySR-Methodenentwurf](docs/symbolic_regression_method_plan.md) umsetzen:
-   zunächst den Julia-Verlustkern und die explizite Einheitenprüfung.
+1. Den [Julia-Verlustkern](docs/julia_loss_kernel.md) im KI-gestützten
+   Code- und Methodenreview prüfen und lokal auf Manjaro/WSL2 ausführen.
 2. Den tatsächlichen PySR-Konstantenoptimierer unabhängig prüfen,
    einschließlich Newton- und Mehrkonstanten-BFGS-Pfad, Alias-/Phasenfällen
    und eindeutig bezeichnetem Score-Export.
