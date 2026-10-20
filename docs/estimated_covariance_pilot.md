@@ -81,6 +81,26 @@ eine andere Fensterzahl verschiebt keine anderen Ströme.
 Das Messrauschen verwendet wie bisher `Generator(PCG64(noise.seed))` mit
 Seed 42. Der globale NumPy-Zufallszustand wird nicht verwendet.
 
+Vor dem Anlegen des Ausgabeordners und vor jeder Datenerzeugung werden
+die vier tatsächlichen Generatoren gemeinsam initialisiert. Der Pilot
+vergleicht ihre vollständigen PCG64-Anfangszustände in allen sechs Paaren.
+Bei Gleichheit wird die Konfiguration mit den betroffenen Rollennamen
+abgelehnt (CLI-Code `2`); es werden keine Daten oder Laufdateien erzeugt.
+Bei erfolgreicher Prüfung werden genau diese unbenutzten Generatoren für
+Messrauschen und Hintergrund weiterverwendet.
+
+Damit wird insbesondere die im Implementierungsreview nachgewiesene
+Überschneidung bei `background.seed=20261019` und
+`noise.seed=20261019 + 2**128` mit dem Validierungszweig ausgeschlossen;
+der entsprechende Fall mit `2*2**128` kollidiert mit dem Kontrollzweig.
+Seeds werden weiterhin nicht pauschal auf eine feste Bitbreite begrenzt.
+Die Ableitung und die gültigen Beispielseeds bleiben unverändert.
+Verschiedene Anfangszustände sind allein kein allgemeiner Beweis
+statistischer Unabhängigkeit. Die
+[NumPy-Dokumentation zur parallelen Zufallserzeugung](https://numpy.org/doc/stable/reference/random/parallel.html)
+beschreibt die Voraussetzungen und Überschneidungsrisiken beim Kombinieren
+verschiedener Seed-Ableitungen.
+
 Das AR(1)-Modell führt pro Fenster einen Aufruf
 `standard_normal(N, dtype=float64)` und die vorhandene stationäre
 Transformation aus. Weißes Rauschen verwendet `normal(0,sigma,N)`.
@@ -147,14 +167,18 @@ bleiben alle Fits `not_run`. Fehler bei Eingabe oder Export liefern Code `2`;
 nach einem unvollständigen Export bleibt die Metadatei `running`.
 Vorhandene Ordner werden weder fortgesetzt noch überschrieben.
 
-Am 20.10.2026 bestanden in der Codex-Umgebung 449 Tests, darunter 53 neue
-Schema-/Integrationstests. Diese prüfen insbesondere Datentrennung,
+Am 20.10.2026 bestanden in der Codex-Umgebung 456 Tests, darunter 60 neue
+Tests für Schema, Zufallsströme und Integration. Diese prüfen insbesondere Datentrennung,
 einmalige Schätzung und feste Matrixübergabe, RNG-Ableitung und -Wiederholung,
 stationäre Anfangswerte, Rekonstruktion der Auswahl aus CSV sowie Scores
 und Quadratik mit unabhängigen direkten Gleichungslösern. Veränderte
 Kontrollwerte, Signalwahrheit und Messrausch-Seeds beeinflussen die Schätzung
 nicht. Änderungen einer Hintergrundmenge verschieben keine anderen Rollen.
 Fehlerpfade erhalten vorhandene Ergebnisse und endliche Teildiagnosen.
+Sieben zusätzliche RNG-Testfälle sichern die Seed-Nachbesserung ab:
+Kollisionen mit Validierungs- und Kontrollzweig für beide Rauscharten,
+die Ablehnung vor Ausgabeordner und Datenerzeugung, gültige große Seeds
+sowie eine absichtlich doppelt belegte Hintergrundrolle.
 
 Beide vollständigen Beispiele wurden am selben Tag in der Codex-Umgebung
 erfolgreich ausgeführt; die Diagramme wurden geöffnet und geprüft:
@@ -170,6 +194,9 @@ Die beiden bisherigen AR(1)-Fits reproduzieren die bisherigen Kontrollwerte.
 Beim geschätzten AR(1)-Fit beträgt die Frequenz ungefähr `250.10931 Hz`,
 die Abklingzeit `0.0081485932 s` und `Q_true/N = 0.60895906`.
 Ein Verbesserungskriterium gegenüber den anderen Fits wurde nicht verlangt.
+Nach Ergänzung der Seed-Prüfung wurden beide Beispiele wiederholt.
+Alle CSV-Dateien, `result.json` und sämtliche RNG-Protokolle waren zum
+Stand vor dieser Nachbesserung bytegleich.
 
 Offen sind das separate Integrationsreview sowie sichtbare Schema-2-Läufe
 auf Manjaro und WSL2 am selben übernommenen Codezustand. Vor dem Vergleich

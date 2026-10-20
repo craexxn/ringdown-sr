@@ -29,7 +29,7 @@ Auf `main` vorhanden:
 - Drei gekoppelte Referenzfits mit getrennten Hintergrundrollen und
   geschätzter Kovarianz im ausdrücklich versionierten Schema 2:
   `src/ringdown_sr/covariance_pilot.py`.
-- 449 automatisierte Testfälle für diese Bausteine, einschließlich
+- 456 automatisierte Testfälle für diese Bausteine, einschließlich
   analytischer Referenzfälle und ungültiger Eingaben.
 - Festgelegte Python-/Julia-Umgebung und automatische GitHub-Prüfungen.
 
@@ -228,7 +228,9 @@ den Korrekturen aus dem Implementierungsreview 396 Tests in der
 Codex-Umgebung bestanden, davon 95 neue Tests für
 Schätzung, Auswahl, Fehlerfälle und die statistische Kontrolle des rohen
 Schätzers. Nach der Schema-2-Integration bestanden am selben Tag insgesamt
-449 Tests, darunter 53 neue Schema-/Integrationstests. Beide vollständigen
+456 Tests, darunter 60 neue Tests für Schema, Zufallsströme und Integration.
+Die Seed-Prüfung lehnt identische Anfangszustände der vier Generatoren
+vor Datenerzeugung und Anlegen des Ausgabeordners ab. Beide vollständigen
 Schema-2-Beispiele wurden in der Codex-Umgebung erfolgreich ausgeführt und
 ihre Diagramme geprüft. Das separate Integrationsreview und diese neuen
 Kontrollläufe auf Manjaro/WSL2 stehen noch aus.

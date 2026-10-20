@@ -8,6 +8,41 @@ from ringdown_sr.noise import gaussian_ar1_noise, gaussian_white_noise
 ROLE_IDS = {"train": 0, "validation": 1, "check": 2}
 
 
+def pilot_generators(
+    signal_seed: int, background_seed: int
+) -> dict[str, np.random.Generator]:
+    """Create the four actual pilot streams and reject equal initial states.
+
+    Direct integer seeding can encode the same SeedSequence input as a
+    background spawn key. Compare full PCG64 states before drawing anything;
+    distinct initial states alone are not a proof of statistical independence.
+    """
+    generators = {"signal": np.random.Generator(np.random.PCG64(signal_seed))}
+    generators.update(
+        {
+            role: np.random.Generator(
+                np.random.PCG64(
+                    np.random.SeedSequence(
+                        background_seed, spawn_key=(role_id,), pool_size=4
+                    )
+                )
+            )
+            for role, role_id in ROLE_IDS.items()
+        }
+    )
+    states = {}
+    for role, rng in generators.items():
+        state = rng.bit_generator.state
+        for previous_role, previous_state in states.items():
+            if state == previous_state:
+                raise ValueError(
+                    f"Initial PCG64 states collide for {previous_role} and {role}; "
+                    "choose different noise.seed/background.seed."
+                )
+        states[role] = state
+    return generators
+
+
 def noise_draw_record(noise: NoiseConfig, n_samples: int, n_calls: int) -> dict:
     """Describe actual per-window calls, with no implied completed draws."""
     ar1 = noise.kind == "gaussian_ar1"
@@ -99,19 +134,18 @@ def generate_background(
     *,
     windows: dict,
     random: dict,
+    generators: dict[str, np.random.Generator],
 ) -> None:
     """Fill independent role matrices, preserving completed rows on failure.
 
     Each AR(1) call starts a new stationary window. No windows are cut from
     one continuous trajectory. The signal RNG is never accessed. Fixed
     spawn keys prevent role sizes or execution order from shifting peers.
+    The caller supplies the already checked, unadvanced pilot generators.
     """
-    for role, role_id in ROLE_IDS.items():
+    for role in ROLE_IDS:
         record = random["roles"][role]
-        sequence = np.random.SeedSequence(
-            background.seed, spawn_key=(role_id,), pool_size=4
-        )
-        rng = np.random.Generator(np.random.PCG64(sequence))
+        rng = generators[role]
         record["state_before"] = rng.bit_generator.state
         completed = []
         try:

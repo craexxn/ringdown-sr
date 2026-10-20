@@ -15,6 +15,7 @@ from ringdown_sr.background import (
     draw_noise_window,
     generate_background,
     noise_draw_record,
+    pilot_generators,
 )
 from ringdown_sr.config import CovariancePilotConfig
 from ringdown_sr.covariance_estimation import (
@@ -164,6 +165,8 @@ def run_covariance_pilot(
     output_directory: str | Path,
 ) -> PilotRun:
     """Persist a schema-2 control without refits, fallbacks or output overwrites."""
+    # Reject overlapping streams before reserving output or generating any data.
+    generators = pilot_generators(config.noise.seed, config.background.seed)
     resolved = config.to_dict()
     provenance, environment = _provenance(), _environment()
     output = Path(output_directory)
@@ -218,7 +221,7 @@ def run_covariance_pilot(
         time_s = sample_times(**asdict(config.sampling))
         signal = ringdown_signal(time_s, **asdict(config.signal))
         arrays.update(time_s=time_s, signal=signal)
-        rng = np.random.Generator(np.random.PCG64(config.noise.seed))
+        rng = generators["signal"]
         signal_random["state_before"] = rng.bit_generator.state
         try:
             noise = draw_noise_window(config.noise, len(time_s), rng)
@@ -257,6 +260,7 @@ def run_covariance_pilot(
             config.background,
             windows=background,
             random=manifest["random"]["background"],
+            generators=generators,
         )
         status, result["stage"] = "estimation_failed", "covariance_estimation"
         estimate = estimate_covariance(
