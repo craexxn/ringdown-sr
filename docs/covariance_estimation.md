@@ -62,6 +62,13 @@ endlichen Score. `kappa_max` ist ausdrücklich anzugeben, endlich und
 größer als eins. Die Konditionsgrenze ist einschließlich Gleichheit
 zugelassen und garantiert allein keine gewünschte Rechengenauigkeit.
 
+Für Alpha null gilt vorher eine strukturelle Prüfung: Bei `n_train < N`
+ist `rank(S) <= n_train < N`, daher wird der Kandidat unabhängig von
+gerundeten Eigenwerten und der Konditionsgrenze abgelehnt. Eigenwert-,
+Cholesky- und Score-Berechnungen werden für ihn nicht ausgeführt. Bei
+`n_train >= N` ist Vollrang weiterhin nicht garantiert; dort bleiben die
+numerischen Prüfungen erforderlich.
+
 `CovarianceEstimate` enthält:
 
 | Feld | Bedeutung |
@@ -84,8 +91,12 @@ Validierungsquadratik und Score. `eligible` ist nur bei einem erfolgreich
 ausgewerteten Kandidaten wahr. `None` bedeutet, dass eine Diagnose nicht
 verfügbar war oder noch nicht ausgeführt wurde. Beispielsweise folgt
 nach Überschreiten der Konditionsgrenze kein Cholesky- oder Score-Aufruf.
+Endliche Teilergebnisse werden unmittelbar gespeichert: Scheitert etwa
+die Validierungsquadratik, bleibt die bereits berechnete endliche
+Logdeterminante erhalten. Ein unvollständiger Score macht den Kandidaten
+weiterhin unzulässig.
 
-Mögliche Ablehnungsgründe sind `not_positive_definite`,
+Mögliche Ablehnungsgründe sind `structurally_singular`, `not_positive_definite`,
 `condition_limit_exceeded`, `condition_not_finite`,
 `matrix_diagnostic_failed`, `eigenvalues_out_of_range`, `cholesky_failed`,
 `cholesky_nonfinite` und `validation_score_out_of_range`. Es gibt keine
@@ -154,13 +165,28 @@ Alpha für verrauschte Ringdown-Daten.
 
 ## Prüfumfang und nächste Integration
 
-Die Tests sichern insbesondere die beiden Review-Befunde ab:
-nicht verschwindender Stichprobenmittelwert ohne Zentrierung und das
-richtige vollständige Score-Minimum bei allen sechs Rasterpermutationen.
-Hinzu kommen handinvertierte volle Matrizen und Eigenwert-Whitening,
-Rangmangel, Gleichstände, inklusive Konditionsgrenze, gemeinsame Skalierung,
-sehr kleines Alpha, Bereichsfehler, unveränderliche Ergebnisse und
-erhaltene Diagnosen bei gescheiterter Auswahl.
+Die Tests sichern insbesondere die Referenzfälle aus Methoden- und
+Implementierungsreview ab: einen nicht verschwindenden Stichprobenmittelwert
+ohne Zentrierung, das vollständige Score-Minimum und einen späteren
+zulässigen Gewinner bei allen sechs Rasterpermutationen. Eine handinvertierte
+volle Matrix mit Validierungszeile `[1,0]` unterscheidet korrektes von
+transponiertem Cholesky-Whitening: Die erwartete Quadratik ist `0.5`,
+die falsche Orientierung ergäbe `0.4`.
+
+Nicht achsenparallele Trainingsmatrizen mit weniger Zeilen als Spalten
+prüfen die strukturelle Ablehnung bei Alpha null auch mit `kappa_max=1e20`.
+Bei Training `[[1e-150]]` und Validierung `[[1e150]]` bleibt trotz
+überlaufender Quadratik die Logdeterminante `-300*log(10)` erhalten.
+Weitere Fälle betreffen Eigenwert-Whitening, Rangmangel, Gleichstände,
+inklusive Konditionsgrenze, gemeinsame Skalierung, sehr kleines Alpha,
+Bereichsfehler und unveränderliche Ergebnisse.
+
+Zusätzlich wurden die beiden Fehlervarianten nur im Arbeitsspeicher
+ausgeführt: Der neue volle Matrixreferenzfall scheitert bei transponiertem
+Whitening; alle sechs Rasterpermutationen des späteren Gewinners scheitern
+bei der Auswahl des ersten zulässigen Kandidaten. Diese absichtlich
+fehlgeschlagenen Prüfungen belegen, dass die ergänzten Referenzen die
+beiden im Review nachgewiesenen Testlücken schließen.
 
 Die statistische Kontrolle verwendet für `rho=-0.65,0,0.65` jeweils
 `R=2000` unabhängige Schätzungen aus `M=32` Fenstern mit `N=4` und

@@ -201,8 +201,9 @@ Bisherige Prüfnachweise:
   und Grenzen stehen im [Portabilitätsprotokoll](docs/portability.md).
 
 Bestandene Tests bestätigen die geprüften Formeln und Eingaberandfälle.
-Am 20.10.2026 wurden nach Ergänzung des reinen Kovarianzschätzers
-386 Tests in der Codex-Umgebung bestanden, davon 85 neue Tests für
+Am 20.10.2026 wurden nach Ergänzung des reinen Kovarianzschätzers und
+den Korrekturen aus dem Implementierungsreview 396 Tests in der
+Codex-Umgebung bestanden, davon 95 neue Tests für
 Schätzung, Auswahl, Fehlerfälle und die statistische Kontrolle des rohen
 Schätzers. Die CLI verwendet weiterhin nur die bisherigen Fit-Gewichtungen.
 Die wissenschaftliche Validierung der Rekonstruktionsmethode benötigt

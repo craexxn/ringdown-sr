@@ -67,6 +67,22 @@ def test_complete_selector_chooses_full_score_minimum_in_any_grid_order(grid):
     assert result.candidates[int(np.argmin(quadratics))].alpha == 0.4
 
 
+@pytest.mark.parametrize("grid", list(permutations([0.0, 0.4, 1.0])))
+def test_later_eligible_candidate_replaces_first_when_its_score_is_lower(grid):
+    result = estimate(validation=[[1, 0], [0, 1]], alphas=grid)
+    assert result.alpha_selected == 0.4
+    assert_allclose(result.covariance, np.diag([0.8, 1.7]), rtol=2e-15, atol=0)
+    assert [c.alpha for c in result.candidates] == [0, 0.4, 1]
+    expected_scores = [
+        5 / 4,
+        math.log(34 / 25) + 125 / 136,
+        2 * math.log(5 / 4) + 4 / 5,
+    ]
+    assert_allclose(
+        [c.score for c in result.candidates], expected_scores, rtol=3e-15, atol=0
+    )
+
+
 def test_off_diagonal_score_matches_hand_inverse_and_independent_eigen_whitening():
     # S=[[5,3],[3,9]]/2; det(S)=9; inverse(S)=[[9,-3],[-3,5]]/18.
     validation = np.array([[1, 2], [-2, 1]], dtype=float)
@@ -84,6 +100,15 @@ def test_off_diagonal_score_matches_hand_inverse_and_independent_eigen_whitening
     assert_allclose(
         result.candidates[0].score, math.log(9) + expected_q, rtol=2e-15, atol=0
     )
+
+
+def test_off_diagonal_whitening_orientation_matches_hand_inverse():
+    # inverse(S)=[[9,-3],[-3,5]]/18 gives Q=1/2 for [1,0].
+    # Solving the transposed Cholesky system would instead give Q=0.4.
+    result = estimate(train=[[2, 0], [1, 3]], validation=[[1, 0]], alphas=[0])
+    candidate = result.candidates[0]
+    assert_allclose(candidate.validation_quadratic_mean, 1 / 2, rtol=2e-15, atol=0)
+    assert_allclose(candidate.score, math.log(9) + 1 / 2, rtol=2e-15, atol=0)
 
 
 def test_score_averages_windows_and_does_not_divide_by_covariance_dimension():
@@ -120,6 +145,31 @@ def test_rank_deficiency_rejects_raw_matrix_without_hidden_jitter():
     assert result.candidates[0].eigenvalues == (0, 1)
     assert result.alpha_selected == 1
     assert_array_equal(result.covariance, np.eye(2) * 0.5)
+
+
+@pytest.mark.parametrize("train", [[[0.7, 0.1]], [[0.7, 0.1, 0.3], [0.2, 0.4, 0.5]]])
+def test_fewer_windows_than_components_rejects_raw_matrix_before_numeric_checks(train):
+    # rank(B.T @ B) <= n_train < n_samples, regardless of rounded eigenvalues.
+    result = estimate(
+        train=train,
+        validation=np.zeros((1, len(train[0]))),
+        alphas=[0, 1],
+        kappa=1e20,
+    )
+    rejected, accepted = result.candidates
+    assert rejected.reason == "structurally_singular"
+    assert not rejected.eligible
+    assert rejected.eigenvalues is None and rejected.condition_number is None
+    assert rejected.cholesky_success is None and rejected.log_determinant is None
+    assert rejected.validation_quadratic_mean is None and rejected.score is None
+    assert accepted.eligible and result.alpha_selected == 1
+
+
+def test_structurally_singular_raw_only_grid_raises_without_adding_shrinkage():
+    with pytest.raises(CovarianceEstimationError, match="No alpha") as info:
+        estimate(train=[[0.7, 0.1]], validation=[[0, 0]], alphas=[0], kappa=1e20)
+    assert len(info.value.candidates) == 1
+    assert info.value.candidates[0].reason == "structurally_singular"
 
 
 def test_tiny_explicit_alpha_is_not_lost_by_subtraction_in_diagonal_update():
@@ -349,6 +399,8 @@ def test_unrepresentable_validation_score_preserves_failed_candidate(amplitude):
     candidate = info.value.candidates[0]
     assert candidate.reason == "validation_score_out_of_range"
     assert candidate.cholesky_success is True
+    assert_allclose(candidate.log_determinant, -300 * math.log(10), rtol=2e-15, atol=0)
+    assert candidate.validation_quadratic_mean is None
     assert candidate.score is None and not candidate.eligible
 
 

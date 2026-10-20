@@ -162,8 +162,13 @@ def _candidate(
     alpha: float,
     validation: NDArray[np.float64],
     kappa_max: float,
+    *,
+    n_train: int,
 ) -> tuple[CovarianceCandidate, NDArray[np.float64] | None]:
     diagnostic = CovarianceCandidate(alpha)
+    if alpha == 0 and n_train < raw.shape[0]:
+        # rank(B.T @ B) <= n_train; rounded eigenvalues cannot restore rank.
+        return replace(diagnostic, reason="structurally_singular"), None
     try:
         with np.errstate(over="raise", invalid="raise", divide="raise", under="ignore"):
             matrix = (1 - alpha) * raw
@@ -203,6 +208,9 @@ def _candidate(
     try:
         with np.errstate(over="raise", invalid="raise", divide="raise", under="ignore"):
             logdet = 2 * float(np.log(factor.diagonal()).sum())
+            if not math.isfinite(logdet):
+                raise FloatingPointError
+            diagnostic = replace(diagnostic, log_determinant=logdet)
             transformed = solve_triangular(
                 factor, validation.T, lower=True, check_finite=False
             )
@@ -215,17 +223,15 @@ def _candidate(
                 )
             )
             quadratic = scaled_norm * scaled_norm
+            if not math.isfinite(quadratic):
+                raise FloatingPointError
+            diagnostic = replace(diagnostic, validation_quadratic_mean=quadratic)
             score = logdet + quadratic
-        if not all(math.isfinite(value) for value in (logdet, quadratic, score)):
+        if not math.isfinite(score):
             raise FloatingPointError
     except (FloatingPointError, LinAlgError, OverflowError):
         return replace(diagnostic, reason="validation_score_out_of_range"), None
-    return replace(
-        diagnostic,
-        log_determinant=logdet,
-        validation_quadratic_mean=quadratic,
-        score=score,
-    ), matrix
+    return replace(diagnostic, score=score), matrix
 
 
 def estimate_covariance(
@@ -244,7 +250,8 @@ def estimate_covariance(
     S is estimated only from training. The score is logdet(C) plus the
     mean validation quadratic; it is not Q/N. Candidates are sorted and
     exact score ties prefer smaller alpha. Condition <= kappa_max is
-    allowed. There is no refit, matrix repair, hidden alpha or fallback.
+    allowed. Alpha zero is rejected structurally when n_train < n_samples.
+    There is no refit, matrix repair, hidden alpha or fallback.
     No RNG, signal truth or analytic covariance is accessed.
     """
     _mean_mode(mean_mode)
@@ -278,7 +285,9 @@ def estimate_covariance(
     selected = None
     covariance = None
     for alpha in alphas:
-        candidate, matrix = _candidate(raw, mu, alpha, validation, kappa_max)
+        candidate, matrix = _candidate(
+            raw, mu, alpha, validation, kappa_max, n_train=train.shape[0]
+        )
         candidates.append(candidate)
         if candidate.eligible and (
             selected is None or candidate.score < selected.score

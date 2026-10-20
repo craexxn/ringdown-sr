@@ -116,6 +116,9 @@ bekannten Nullmittelwert wäre sie eine zweite Momentenmatrix. Es wird
 kein `M_train - 1` verwendet, weil kein Mittelwert geschätzt wurde.
 Bei `M_train < N` ist `S` mathematisch singulär. Vollrang bei größerem
 `M_train` ist nicht allein durch die Samplezahl garantiert.
+Alpha null muss deshalb bei `M_train < N` schon strukturell abgelehnt
+werden, selbst wenn gerundete Eigenwerte und eine Cholesky-Zerlegung
+scheinbare positive Definitheit anzeigen.
 
 Insbesondere wird nicht jeder Zeile ihr eigener zeitlicher Mittelwert
 abgezogen: Das würde das Modell verändern, den konstanten Vektor
@@ -310,6 +313,8 @@ Kontrollläufe oder stochastischen Forschungsreihen ausgeführt.
 | Score | Für Validierungszeilen `[1,1]` und `[-1,-1]` ist der Score `log(1.36) + 1/0.8 + 1/1.7`; Referenz ohne produktives Whitening berechnen |
 | Logdeterminante | Für dieselben Zeilen erzielt `I` den Score `2`, `100*I` den Score `2*log(100)+0.02`; eine reine Q-Auswahl würde die größere Matrix bevorzugen |
 | Rangmangel | Bei `B=[[1,2],[2,4]]` ist `S=[[2.5,5],[5,10]]`; Alpha null ist unzulässig, positives Alpha macht die Matrix mathematisch positiv definit |
+| Struktureller Rangmangel trotz Rundung | Für `B=[[0.7,0.1]]` gilt `M_train=1 < N=2`; Alpha null wird auch mit `kappa_max=1e20` vor numerischen Matrixdiagnosen abgelehnt |
+| Whitening-Orientierung | Für `B=[[2,0],[1,3]]` ist `S=[[5,3],[3,9]]/2` und `S^-1=[[9,-3],[-3,5]]/18`; die Validierungszeile `[1,0]` ergibt `Q=1/2` und Score `log(9)+1/2`, transponiertes Whitening ergäbe fälschlich `Q=0.4` |
 | Konditionsgrenze einschließlich Gleichheit | Für `S=diag(1,0)` gilt `kappa_2(C_alpha)=2/alpha-1`; mit `kappa_max=3` wird `alpha=0.4` wegen `kappa=4` abgelehnt und `alpha=0.5` mit `kappa=3` zugelassen |
 | Exakte Gleichstände | Isotropes `S` erzeugt dasselbe `C_alpha` für alle Alpha-Werte; die definierte Reihenfolge muss die Auswahl eindeutig machen |
 | Skalierung | Für gemeinsames `B,V -> c*(B,V)` gilt `C -> c^2*C`, unveränderte Kondition und Alpha-Auswahl; alle Scores verschieben sich um `2*N*log(abs(c))` |
@@ -338,6 +343,21 @@ nicht nur diese Scores berechnen. Mit einer umsortierten Eingabe
 Scores entstehen. Ohne Logdeterminante würde fälschlich Alpha `0.4`
 gewinnen. Das eindeutige Minimum und der separat vorgesehene
 Gleichstandstest sichern unterschiedliche Auswahlfälle ab.
+
+**Ein späterer zulässiger Kandidat muss den ersten verdrängen können:**
+Bei derselben Trainingsbasis und Validierungszeilen `[1,0]`, `[0,1]`
+ergeben sich auf dem Raster `[0,0.4,1]` mit `kappa_max=10`:
+
+| Alpha | Vollständiger Score, exakt | Score, gerundet |
+| --- | --- | ---: |
+| 0 | `5/4` | 1.250000000 |
+| 0.4 | `log(34/25) + 125/136` | 1.226602347 |
+| 1 | `2*log(5/4) + 4/5` | 1.246287103 |
+
+Der Selektor muss Alpha `0.4` und `diag(0.8,1.7)` zurückgeben, auch bei
+allen umgeordneten Rastereingaben. Dieser Fall erkennt die fehlerhafte
+Auswahl des ersten zulässigen Kandidaten, die der vorangehende Fall
+mit Gewinner Alpha null allein nicht erkennen kann.
 
 Für die separate Konditionskontrolle kann `S=diag(1,0)` aus den
 Trainingszeilen `[1,0]`, `[-1,0]` gewonnen werden. Auf dem Raster
