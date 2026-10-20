@@ -1,11 +1,16 @@
 # Methodenplan: Kovarianzschätzung aus getrennten Hintergrunddaten
 
-Stand: 20.10.2026. **Nach methodischem Review überarbeiteter Entwurf;
-noch nicht implementiert oder wissenschaftlich validiert.** Das Review
+Stand: 20.10.2026. **Nach methodischem Review überarbeiteter Plan;
+noch keine wissenschaftliche Leistungsvalidierung.** Das Review
 zu Commit `897a8ce` bewertete die Verfahrenswahl als tragfähig. Die beiden
 Lücken im Prüfplan sowie die zusätzlichen Hinweise sind unten eingearbeitet
 und in Abschnitt 10 zugeordnet. Die Kontrollvorgaben legen keine
 Einstellungen der Hauptversuche fest.
+
+Teilumsetzung: Der [reine Kovarianzschätzer](covariance_estimation.md) mit
+Referenz-, Fehler- und statistischen Funktionstests ist implementiert.
+Der Plan beschreibt außerdem die noch ausstehende Erzeugung der
+Hintergrundrollen und ihre Anbindung an den konfigurierbaren Piloten.
 
 ## 1. Ziel und begrenzter erster Schritt
 

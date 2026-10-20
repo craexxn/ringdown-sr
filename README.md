@@ -23,20 +23,24 @@ Auf `main` vorhanden:
   und optionaler fester Kovarianz: `src/ringdown_sr/reference_fit.py`.
 - Konfigurierbarer Kontrolllauf mit TOML-Eingabe, Ergebnisdateien,
   Diagramm und Metadaten: `src/ringdown_sr/pilot.py`.
-- 301 automatisierte Testfälle für diese Bausteine, einschließlich
+- Reiner Kovarianzschätzer aus getrennten Hintergrundfenstern mit
+  ausdrücklicher Identitätsschrumpfung und Alpha-Auswahl:
+  `src/ringdown_sr/covariance_estimation.py`.
+- 386 automatisierte Testfälle für diese Bausteine, einschließlich
   analytischer Referenzfälle und ungültiger Eingaben.
 - Festgelegte Python-/Julia-Umgebung und automatische GitHub-Prüfungen.
 
 Ein vollständiger kleiner Durchlauf mit bekanntem Formansatz ist vorhanden.
-Kovarianzschätzung und Regularisierung, PySR-Integration und die
-statistische Leistungsbewertung stehen noch aus.
+Die Integration des Kovarianzschätzers in diesen Durchlauf,
+PySR-Integration und die statistische Leistungsbewertung stehen noch aus.
 Die wissenschaftlichen Hauptversuche und ihre Auswertung haben noch
 nicht begonnen.
 
 Details zum aktuellen Stand: [Pilot](docs/pilot.md),
 [Verlustfunktionen](docs/losses.md), [Referenzfit](docs/reference_fit.md),
 [konfigurierter Durchlauf](docs/configured_pilot.md) sowie
-[korreliertes Rauschen](docs/correlated_noise.md).
+[korreliertes Rauschen](docs/correlated_noise.md) und
+[Kovarianzschätzer](docs/covariance_estimation.md).
 Die lokalen Vergleiche auf Manjaro und Ubuntu unter WSL2 sind im
 [Portabilitätsprotokoll vom 19.10.2026](docs/portability.md) festgehalten.
 
@@ -197,6 +201,10 @@ Bisherige Prüfnachweise:
   und Grenzen stehen im [Portabilitätsprotokoll](docs/portability.md).
 
 Bestandene Tests bestätigen die geprüften Formeln und Eingaberandfälle.
+Am 20.10.2026 wurden nach Ergänzung des reinen Kovarianzschätzers
+386 Tests in der Codex-Umgebung bestanden, davon 85 neue Tests für
+Schätzung, Auswahl, Fehlerfälle und die statistische Kontrolle des rohen
+Schätzers. Die CLI verwendet weiterhin nur die bisherigen Fit-Gewichtungen.
 Die wissenschaftliche Validierung der Rekonstruktionsmethode benötigt
 die noch ausstehenden methodischen Prüfungen und Experimente.
 
@@ -233,15 +241,13 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
 ## Nächste Schritte
 
-1. Einen begründeten Methodenplan für Kovarianzschätzung aus getrennten
-   Hintergrunddaten und Regularisierung ausarbeiten. Schätzer,
-   Datentrennung, Regularisierungswahl und Prüfkriterien vor der
-   Implementierung kritisch prüfen. Der
-   [Methodenplan](docs/covariance_method_plan.md) wurde nach dem ersten
-   methodischen Review um gezielte Referenzfälle ergänzt; der Schätzer
-   ist noch nicht implementiert.
-2. Die geprüften Verfahren ergänzen und anhand unabhängiger Referenzen
-   testen.
+1. Den reinen [Kovarianzschätzer](docs/covariance_estimation.md) mit seinen
+   Tests im separaten Code- und Wissenschaftsreview prüfen.
+2. Gemäß [Methodenplan](docs/covariance_method_plan.md) getrennte
+   Hintergrundrollen und Schätzer in den Piloten integrieren, drei
+   Fit-Varianten mit gemeinsamen Messdaten vergleichen sowie Exporte und
+   Metadaten ergänzen. Danach Tests und sichtbare Kontrollläufe auf beiden
+   Rechnern wiederholen.
 3. Die freie PySR-Formelsuche und die volle Kovarianzgewichtung integrieren.
    Endgültige Verlustnormierung und Komplexitätsgewichtung werden im
    methodischen Review festgelegt.
