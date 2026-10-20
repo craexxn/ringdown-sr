@@ -1,13 +1,15 @@
 # Lokaler Portabilitätscheck des Piloten
 
-Prüfstand: 19.10.2026. Der technische Kontrollvergleich wurde auf einem
-Manjaro-Laptop und einem Windows-Rechner mit Ubuntu unter WSL2 ausgeführt.
+Prüfstand: 20.10.2026. Der Schema-1-Kontrollvergleich vom 19.10.2026
+wurde auf einem Manjaro-Laptop und einem Windows-Rechner mit Ubuntu unter
+WSL2 ausgeführt. Für Schema 2 ist inzwischen Manjaro bestätigt; der
+WSL2-Vergleich dieses neuen Schemas bleibt offen (siehe letzter Abschnitt).
 Die folgenden Nachweise beruhen auf den vom Nutzer übermittelten
 Terminalausgaben und Diagrammbestätigungen sowie ergänzenden Diagnoseläufen
 in der Codex-Umgebung. Die lokalen Ergebnisdateien wurden nicht in dieses
 Repository übernommen und müssen separat gesichert werden.
 
-## Umfang und Codezustand
+## Schema 1 vom 19.10.2026: Umfang und Codezustand
 
 Geprüft wurden der konfigurierte Referenzfit mit bekannter Ringdown-Formel,
 sein Ergebnisexport und die Anzeige von `plot.png` für drei Kontrollfälle:
@@ -176,7 +178,7 @@ um die ursprünglichen Hashes zu erzwingen. Der Vergleich dokumentiert
 sehr kleine numerische Unterschiede statt allgemeiner rechnerübergreifender
 Bitidentität.
 
-## Aussage und verbleibende Arbeit
+## Aussage des Schema-1-Vergleichs
 
 Der technische Portabilitätscheck ist für diese drei Kontrollfälle
 abgeschlossen: Ausführung, Export und Diagrammanzeige funktionieren auf
@@ -185,8 +187,88 @@ AR(1)-Eingabegleichheit innerhalb der Vergleichspaare und die erneute
 Quadratikberechnung sind bestätigt. Die abweichenden weißen Dateihashes
 konnten durch eine gezielte numerische Diagnose nachgestellt werden.
 
-Nicht abgedeckt sind eine statistische Leistungsbewertung, unabhängige
-Bewertungsdaten, Kovarianzschätzung/Regularisierung und freie PySR-Suche.
-Der nächste fachliche Schritt ist ein kritisch geprüfter Methodenplan
-für die Schätzung aus getrennten Hintergrunddaten, einschließlich
-Regularisierungswahl und unabhängig begründeter Prüfkriterien.
+Dieser historische Vergleich deckt keine statistische Leistungsbewertung,
+unabhängigen Bewertungsdaten, Kovarianzschätzung/Regularisierung oder freie
+PySR-Suche ab. Die inzwischen umgesetzte Schätzung und ihre Pilotintegration
+haben einen eigenen Prüfstand; sie werden nicht rückwirkend durch diese
+Schema-1-Läufe bestätigt.
+
+## Schema 2 vom 20.10.2026: Manjaro bestätigt, WSL2 offen
+
+Die [Pilotintegration mit geschätzter Kovarianz](estimated_covariance_pilot.md)
+wurde in PR #16 separat geprüft. Das Review zu `4aae1b0` fand eine
+deterministische Seed-Überschneidung; die Korrektur `5c97d64` prüft alle
+vier Anfangszustände vor der Datenerzeugung. PR #16 wurde als
+`1fcf9fce5b999c2344b038c0a171b60ffaf7ae73` übernommen. Die bestehenden
+Beispielseeds `42` und `20261019` waren vom Fehler nicht betroffen.
+
+Der Nutzer hat auf dem Manjaro-Laptop an genau diesem übernommenen Commit
+folgende Nachweise übermittelt:
+
+- Vollständige Testsuite: **456 bestanden in 33,02 s**.
+- Beide CLI-Kontrollläufe melden `Status: success`; Signal-/Fit- und
+  Kovarianzdiagramme wurden angezeigt und bestätigt.
+- Beide `metadata.json` nennen den vollständigen Commit `1fcf9fce...`,
+  `available: true`, `dirty: false` und `changes: []`.
+- Eine zusätzliche Nachrechnung bestätigte die unten abgegrenzten
+  Datei-, Kovarianz-, Score- und Fitprüfungen für beide Läufe.
+
+Die übermittelten Ergebnisordner sind lokal und werden nicht versioniert:
+
+| Konfiguration | Ergebnisordner auf Manjaro | Gewähltes Alpha |
+| --- | --- | ---: |
+| `configs/pilot_estimated_white.toml` | `results/estimated-white-portability-001` | 1 |
+| `configs/pilot_estimated_ar1.toml` | `results/estimated-ar1-portability-001` | 0.5 |
+
+Die Terminalausgaben ergeben folgende Werte; Stellenzahl und Rundung
+entsprechen den übermittelten Ausgaben:
+
+| Rauschen / Fit | Frequenz in Hz | Abklingzeit in s | Gewöhnliche MSE | Nachgerechnetes `Q_true/N` |
+| --- | ---: | ---: | ---: | ---: |
+| Weiß / gewöhnlich | 250.08257 | 0.007785405 | 0.006057622 | 0.605762195838 |
+| Weiß / wahre Kovarianz | 250.08257 | 0.007785405 | 0.006057622 | 0.605762195838 |
+| Weiß / geschätzte Kovarianz | 250.08257 | 0.007785405 | 0.006057622 | 0.605762195838 |
+| AR(1) / gewöhnlich | 250.35745 | 0.0079046804 | 0.0057225228 | 0.607430381829 |
+| AR(1) / wahre Kovarianz | 250.62609 | 0.0079656544 | 0.0057284665 | 0.607162556032 |
+| AR(1) / geschätzte Kovarianz | 250.10931 | 0.0081485932 | 0.0057616639 | 0.608959058286 |
+
+Die zusätzliche Prüfung las die lokalen CSV-/JSON-Dateien und kontrollierte:
+
+1. Erfolgsstatus und alle zwölf gespeicherten Artefaktprüfsummen je Lauf
+   gegen die zugehörigen Dateibytes; `metadata.json` hasht sich nicht selbst.
+2. `S = B_train.T @ B_train / M_train`, `mu = trace(S)/N` und
+   `C_hat = (1-alpha)*S + alpha*mu*I` aus den exportierten Fenstern.
+3. Kontroll-Scores für `C_true` und `C_hat` aus `slogdet(C)` und der über
+   Kontrollzeilen gemittelten Quadratik mit direktem `solve(C, b)`.
+4. `residual = observed - prediction`, gewöhnliche MSE und für jeden Fit
+   `Q_true/N` sowie, wo vorhanden, `Q_used/N` mit direktem Gleichungslöser
+   statt dem produktiven Cholesky-Whitening.
+
+Für die rohe Matrix galt `rtol=0` und
+`atol=8*M_train*eps(float64)*max(diag(S))`; dieselbe absolute Schranke
+wurde für die Schrumpfungsrekonstruktion verwendet. Für `mu` galt
+`rtol=8*N*eps(float64)`. Die Quadratikvergleiche verwendeten
+`rtol=8*N*eps(float64)*cond(C)`, `atol=0`. Dies sind an diese numerischen
+Kontrollfälle gebundene Konsistenzprüfungen, keine statistischen
+Erfolgsschwellen oder universellen Schranken für alle möglichen Eingaben.
+
+Die Nachrechnung bestätigt die Konsistenz der übermittelten Läufe. Sie
+prüfte nicht separat sämtliche Alpha-Validierungsscores, eine vollständige
+erneute Selektorausführung oder alle nachgelagerten Wahrheitsdiagnosen.
+Die lokalen Dateien selbst und ihre einzelnen Hashwerte wurden nicht
+übermittelt. Ein byteweiser oder vollständiger numerischer Vergleich
+dieser neuen Schema-2-Artefakte zwischen Rechnern liegt daher nicht vor.
+
+**Offen bleibt der Schema-2-Lauf unter WSL2 am selben Referenzcommit
+`1fcf9fce5b999c2344b038c0a171b60ffaf7ae73`.** Dieser Commit bleibt auch nach
+weiteren Dokumentationsänderungen die Vergleichsbasis. Vor einer
+rechnerübergreifenden Bewertung sind Toleranzen unter Berücksichtigung der
+jeweiligen Numerik zu begründen; ein Dateihash allein genügt dafür nicht.
+Der aktuelle lokale WSL2-Check des gepinnten Julia-Startwegs ist ebenfalls
+weiter offen und eine separate Aufgabe. Schema 2 benötigt Julia nicht.
+
+Die Kontrollwerte zeigen insbesondere keine allgemeine Überlegenheit
+der geschätzten Gewichtung. Eine wissenschaftliche Leistungsstudie und
+freie PySR-Suche sind noch nicht durchgeführt. Parallel zum offenen
+WSL2-Vergleich wird der [PySR-Methodenentwurf](symbolic_regression_method_plan.md)
+für das nächste separate methodische Review vorbereitet.

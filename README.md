@@ -46,8 +46,11 @@ Details zum aktuellen Stand: [Pilot](docs/pilot.md),
 [korreliertes Rauschen](docs/correlated_noise.md) und
 [Kovarianzschätzer](docs/covariance_estimation.md) und
 [Pilot mit geschätzter Kovarianz](docs/estimated_covariance_pilot.md).
-Die lokalen Vergleiche auf Manjaro und Ubuntu unter WSL2 sind im
-[Portabilitätsprotokoll vom 19.10.2026](docs/portability.md) festgehalten.
+Das [Portabilitätsprotokoll](docs/portability.md) enthält die bisherigen
+Schema-1-Vergleiche auf beiden Rechnern und den neuen Schema-2-Nachweis
+auf Manjaro; dessen WSL2-Vergleich ist offen. Der nächste fachliche Schritt
+ist der [Methodenentwurf für die freie PySR-Suche](docs/symbolic_regression_method_plan.md),
+der vor der Umsetzung separat geprüft werden soll.
 
 ## Konfigurierter Durchlauf mit gespeicherten Ergebnissen
 
@@ -232,8 +235,14 @@ Schätzers. Nach der Schema-2-Integration bestanden am selben Tag insgesamt
 Die Seed-Prüfung lehnt identische Anfangszustände der vier Generatoren
 vor Datenerzeugung und Anlegen des Ausgabeordners ab. Beide vollständigen
 Schema-2-Beispiele wurden in der Codex-Umgebung erfolgreich ausgeführt und
-ihre Diagramme geprüft. Das separate Integrationsreview und diese neuen
-Kontrollläufe auf Manjaro/WSL2 stehen noch aus.
+ihre Diagramme geprüft. Das separate Integrationsreview zu PR #16 fand
+eine Seed-Überschneidung; deren Nachbesserung ist mit Commit `1fcf9fc`
+übernommen. Am 20.10.2026 bestätigte der Nutzer an diesem sauberen Commit
+auf Manjaro 456 bestandene Tests in 33,02 s, beide erfolgreichen
+Schema-2-Beispiele und die Diagrammanzeige. Eine zusätzliche Nachrechnung
+bestätigte Dateiprüfsummen, Kovarianzen, Kontroll-Scores und Fit-Verluste.
+Umfang und Zahlen stehen im [Portabilitätsprotokoll](docs/portability.md).
+Die Schema-2-Kontrolle unter WSL2 bleibt offen.
 Die wissenschaftliche Validierung der Rekonstruktionsmethode benötigt
 die noch ausstehenden methodischen Prüfungen und Experimente.
 
@@ -270,14 +279,15 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
 ## Nächste Schritte
 
-1. Die [Pilotintegration](docs/estimated_covariance_pilot.md) im separaten
-   Code- und Wissenschaftsreview prüfen, besonders Datentrennung, feste
-   Kovarianzen, RNG-Rollen und die Bedeutung der ausgegebenen Kennzahlen.
-2. Tests und sichtbare Schema-2-Kontrollläufe auf Manjaro und WSL2 am selben
-   übernommenen Codezustand wiederholen und numerische Abweichungen prüfen.
-3. Die freie PySR-Formelsuche und die volle Kovarianzgewichtung integrieren.
-   Endgültige Verlustnormierung und Komplexitätsgewichtung werden im
-   methodischen Review festgelegt.
+1. Den [PySR-Methodenentwurf](docs/symbolic_regression_method_plan.md)
+   separat mit Astra High prüfen: vollständige Kovarianz im Custom Loss,
+   Einheiten, Suchraum, Komplexitätsbehandlung, Datenrollen und Referenzfälle.
+2. Sobald der Windows-Rechner verfügbar ist, die Schema-2-Prüfung unter
+   WSL2 am Manjaro-Referenzcommit `1fcf9fc` ergänzen. Neue Dokumentations-
+   oder Implementierungsstände sind kein Ersatz für denselben Codezustand.
+3. Nach dem Methodenreview zunächst Julia-Verlustkern und PySR-Adapter
+   unabhängig prüfen; anschließend Konfiguration und Exporte integrieren.
+   Die wissenschaftliche Formelauswahl wird gesondert festgelegt.
 
 Diese Schritte bilden die Arbeitsplanung für den Pilot.
 Parameterbereiche, SNR-Konvention und Kriterien für die Hauptversuche

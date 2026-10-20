@@ -198,10 +198,26 @@ Nach Ergänzung der Seed-Prüfung wurden beide Beispiele wiederholt.
 Alle CSV-Dateien, `result.json` und sämtliche RNG-Protokolle waren zum
 Stand vor dieser Nachbesserung bytegleich.
 
-Offen sind das separate Integrationsreview sowie sichtbare Schema-2-Läufe
-auf Manjaro und WSL2 am selben übernommenen Codezustand. Vor dem Vergleich
-sind rechnerübergreifende numerische Toleranzen zu begründen; Bitidentität
-wird gemäß [Portabilitätsprotokoll](portability.md) nicht vorausgesetzt.
+Das separate Integrationsreview zu PR #16, Commit `4aae1b0`, bestätigte die
+Methodenkonformität und fand einen Seed-Grenzfall mit identischem
+Messrausch-/Validierungszustand. Die Prüfung der vier Anfangszustände
+wurde in `5c97d64` ergänzt; übernommen wurde PR #16 als `1fcf9fc`.
+Die bisherigen Beispielseeds waren von diesem Fehler nicht betroffen.
+
+Am 20.10.2026 bestätigte der Nutzer auf Manjaro am sauberen Commit
+`1fcf9fce5b999c2344b038c0a171b60ffaf7ae73` 456 bestandene Tests in 33,02 s,
+beide erfolgreichen Beispiele und die Diagrammanzeige. Die zusätzliche
+Nachrechnung bestätigte die zwölf Artefaktprüfsummen pro Lauf,
+Trainingskovarianz und Schrumpfung, Kontroll-Scores sowie die exportierten
+Fit-Verluste. Alpha war 1 für Weißrauschen und 0,5 für AR(1).
+Das [Portabilitätsprotokoll](portability.md) dokumentiert die übermittelten
+Kennzahlen und den genauen Umfang dieses Nachweises.
+
+Offen bleiben sichtbare Schema-2-Läufe unter WSL2 am selben Referenzcommit.
+Vor deren numerischem Vergleich sind passende Toleranzen zu begründen;
+Bitidentität wird nicht vorausgesetzt. Der
+[PySR-Methodenentwurf](symbolic_regression_method_plan.md) bereitet parallel
+den nächsten fachlichen Schritt vor und ist noch separat zu prüfen.
 Der lokale Python-/Julia-Umgebungscheck wurde für diese Änderung nicht
 erneut ausgeführt; beide Piloten verwenden Julia nicht. Hauptversuche,
 Unsicherheitsabdeckung und freie Formelentdeckung folgen separat.

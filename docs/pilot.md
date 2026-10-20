@@ -15,8 +15,11 @@ Ein ausführbarer Demolauf stellt Messdaten, Signal und Fit gemeinsam dar.
 Ein [konfigurierbarer Durchlauf mit Ergebnisexport](configured_pilot.md)
 verbindet diese Bausteine und speichert Daten, Ergebnisse, Diagramm und
 Metadaten. [Stationäres AR(1)-Rauschen](correlated_noise.md) ergänzt einen
-korrelierten Kontrollfall mit bekannter voller Kovarianz. Kovarianzschätzung,
-Regularisierung und PySR-Suche folgen in weiteren Schritten.
+korrelierten Kontrollfall mit bekannter voller Kovarianz.
+[Kovarianzschätzung mit Regularisierung](covariance_estimation.md) und
+ihre [Schema-2-Integration](estimated_covariance_pilot.md) sind inzwischen
+vorhanden. Die freie PySR-Suche folgt nach Prüfung ihres
+[Methodenentwurfs](symbolic_regression_method_plan.md).
 
 ## Signaldefinition und Einheiten
 
