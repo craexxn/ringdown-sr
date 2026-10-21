@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.12"
 resolution-markers = [
     "python_full_version >= '3.14' and sys_platform == 'win32'",
@@ -1132,6 +1132,8 @@ name = "ringdown-sr"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "filelock" },
+    { name = "juliapkg" },
     { name = "matplotlib" },
     { name = "numpy" },
     { name = "pandas" },
@@ -1149,6 +1151,8 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "filelock", specifier = "==3.32.7" },
+    { name = "juliapkg", specifier = "==0.1.27" },
     { name = "matplotlib", specifier = ">=3.11.2" },
     { name = "numpy", specifier = ">=2.5.3" },
     { name = "pandas", specifier = ">=3.0.6" },

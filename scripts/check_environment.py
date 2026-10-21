@@ -3,6 +3,7 @@
 import importlib
 import os
 import platform
+import sys
 import tomllib
 from importlib.metadata import version
 from pathlib import Path
@@ -19,6 +20,8 @@ def main() -> None:
 
     if os.environ.get("PYTHON_JULIACALL_PROJECT") != str(project):
         raise SystemExit("Run this check through scripts/run_python.py.")
+    if os.environ.get("JULIA_CONDAPKG_BACKEND") != "Null":
+        raise SystemExit("The project requires the Null CondaPkg backend.")
 
     for name in ("numpy", "scipy", "matplotlib", "pandas", "sympy"):
         importlib.import_module(name)
@@ -47,6 +50,22 @@ def main() -> None:
         if actual != expected:
             raise SystemExit(f"Expected {name} {expected}, found {actual}.")
         print(f"{name}: {actual}")
+
+    embedded_python = str(
+        jl.seval('PythonCall.pyconvert(String, PythonCall.pyimport("sys").executable)')
+    )
+    if Path(embedded_python) != Path(sys.executable):
+        raise SystemExit(f"PythonCall uses a different Python: {embedded_python}")
+    if jl.seval("isdefined(PythonCall.C, :CondaPkg)"):
+        backend = str(jl.seval("PythonCall.C.CondaPkg.backend()"))
+        if backend != "Null":
+            raise SystemExit(f"Unexpected CondaPkg backend: {backend}")
+    if not jl.seval(
+        "Base.get_extension(SymbolicRegression, :SymbolicRegressionPythonCallExt) !== nothing"
+    ):
+        raise SystemExit("The SymbolicRegression/PythonCall extension did not load.")
+    print("PythonCall interpreter:", embedded_python)
+    print("CondaPkg policy: Null; PythonCall extension loaded.")
 
     if jl.seval("1 + 1") != 2:
         raise SystemExit("Julia arithmetic check failed.")

@@ -50,5 +50,8 @@ jobs:
       - name: Check Python and Julia environment
         run: uv run --locked python scripts/run_python.py scripts/check_environment.py
 
+      - name: Check repeated and concurrent Julia startup
+        run: uv run --locked python scripts/check_julia_startup.py
+
       - name: Check Julia loss, constant optimization and Python replay
         run: uv run --locked python scripts/run_python.py scripts/check_julia_loss.py
