@@ -11,8 +11,9 @@ Der [Julia-Verlustkern](julia_loss_kernel.md) einschließlich expliziter
 Einheitenprüfung und vollständigem Fenster-Callback ist inzwischen als
 erster Baustein implementiert. Die [Backend-Konstantenoptimiererprüfung](constant_optimization.md)
 ergänzt nun die tatsächlichen Newton-/BFGS-Pfade mit unabhängigen Referenzen.
-Die PySR-Schnittstelle, freie Suchläufe, Prozessisolation und
-Ergebnisintegration stehen weiter aus.
+Der [isolierte PySR-Suchadapter](symbolic_adapter.md) ergänzt nun freie
+Suchläufe, Prozessisolation und Baum-/Verlust-Replay für einzelne Arme.
+Die Ergebnisintegration in den vollständigen Pilot steht weiter aus.
 
 ## 1. Ausgangspunkt und Ziel
 
