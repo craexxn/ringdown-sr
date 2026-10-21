@@ -134,6 +134,22 @@ end
         @test objective(zero, dataset, options) ≈ 1/4 rtol=32eps(Float64)
         callback_options = loss_options(loss_function=objective)
         @test SymbolicRegression.eval_loss(zero, dataset, callback_options) ≈ 1/4 rtol=32eps(Float64)
+        @test SymbolicRegression.eval_loss(
+            zero, dataset, callback_options; idx=nothing,
+        ) ≈ 1/4 rtol=32eps(Float64)
+
+        # Explicit indices must not be silently ignored, even for the full window.
+        for idx in ([1], [1, 2], [2, 1], Int[], 1:2)
+            @test_throws ArgumentError SymbolicRegression.eval_loss(
+                zero, dataset, callback_options; idx,
+            )
+        end
+        # The four-argument dispatcher also forwards indices from SubDataset.
+        for idx in ([1], [1, 2])
+            @test_throws ArgumentError SymbolicRegression.eval_loss(
+                zero, batch(dataset, idx), callback_options,
+            )
+        end
 
         # The custom-loss route must perform units analysis even with penalty 0.
         units_objective = FixedWindowLoss(time, time)

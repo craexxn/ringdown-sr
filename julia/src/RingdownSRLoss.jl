@@ -190,14 +190,24 @@ end
 
 """
     objective(tree, dataset, options)
+    objective(tree, dataset, options, idx)
 
-Three-argument full-loss callback. Reject changed, weighted or batched
-datasets before evaluating any candidate. The future PySR adapter must bind
-this instance in its isolated process and explicitly disable batching.
+Full-loss callback. Reject changed, weighted or batched datasets before
+evaluating any candidate. The four-argument backend interface rejects every
+idx other than nothing, including indices covering the complete window.
+With idx=nothing it delegates to the three-argument callback. The future
+PySR adapter must bind this instance in its isolated process and explicitly
+disable batching.
 """
 function (objective::FixedWindowLoss)(tree, dataset, options)
     _check_dataset(objective, dataset)
     return candidate_loss(objective, tree, options)
+end
+
+function (objective::FixedWindowLoss)(tree, dataset, options, idx)
+    idx === nothing ||
+        throw(ArgumentError("Explicit batch indices are not supported by the full covariance."))
+    return objective(tree, dataset, options)
 end
 
 end

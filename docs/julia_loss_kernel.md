@@ -1,6 +1,6 @@
 # Julia-Verlustkern mit expliziter Dimensionsprüfung
 
-Stand: 20.10.2026. Erster ausführbarer Baustein des
+Stand: 21.10.2026. Erster ausführbarer Baustein des
 [geprüften PySR-Methodenplans](symbolic_regression_method_plan.md).
 Die Umsetzung liegt in `julia/src/RingdownSRLoss.jl`. Sie verbindet eine
 feste Fensterdefinition, gewöhnliche beziehungsweise kovarianzgewichtete
@@ -55,6 +55,7 @@ Die Zeitmerkmale werden nicht mit L transformiert. Es wird weder
 | `residual_loss(objective, residual)` | Numerische MSE beziehungsweise Q/N für einen expliziten Residualvektor; keine Formel- oder Einheiteninterpretation |
 | `candidate_loss(objective, tree, options)` | Dimensionsprüfung, Auswertung des Baums an allen ursprünglichen Zeiten, vollständiges Residuum und Verlust |
 | `objective(tree, dataset, options)` | Vollständiger Callback mit zusätzlichen Prüfungen des übergebenen Backend-Datensatzes |
+| `objective(tree, dataset, options, idx)` | Backend-Schnittstelle für explizite Indizes; nur `idx=nothing` ist zulässig und delegiert an den dreistelligen Callback |
 | `n_samples(objective)` | Unveränderte Fensterlänge |
 
 Der vollständige Callback akzeptiert nur einen Float64-Regressionsdatensatz
@@ -63,6 +64,13 @@ Messwerte einschließlich Reihenfolge sowie die geparsten Einheiten
 Sekunden und dimensionslose Ausgabe gegen das beim Erstellen festgelegte
 Fenster. Geänderte, gewichtete oder gebatchte Datensätze werden abgelehnt.
 Auch ein Batch mit allen Samples gilt als Batch und wird abgelehnt.
+Zusätzlich bietet der Kern den vierstelligen Callback an: Der Backend-Dispatcher
+reicht explizite `idx`-Argumente nur an diese Schnittstelle weiter. Jeder Wert
+außer `nothing` führt zu `ArgumentError`, auch vollständige, umsortierte oder
+leere Indexlisten und Indexbereiche. `idx=nothing` durchläuft unverändert
+die vollständige Datensatz- und Kandidatenprüfung. Tests prüfen beide
+Batch-Zugänge über den tatsächlichen `SymbolicRegression.eval_loss`-Dispatcher:
+explizite Indizes und Indizes aus einem `SubDataset`.
 Der spätere PySR-Adapter muss ausdrücklich `batching=False` setzen.
 
 Der Kern unterstützt die getesteten Float64-`Node`-Bäume und normale
@@ -126,7 +134,8 @@ SymbolicRegression 2.5.1 gebunden.
 - Ursprüngliche Zeitachse, gültige/ungültige Dimensionen, zulässige
   gedämpfte Schwingung sowie numerische Kandidatenfehler.
 - Den echten vollständigen Backend-Loss-Pfad, Ablehnung veränderter
-  und gebatchter Daten, Originaldatenkopien und unabhängige Instanzen.
+  und gebatchter Daten sowie expliziter Indizes, unveränderten Verlust bei
+  `idx=nothing`, Originaldatenkopien und unabhängige Instanzen.
 
 Die einfachen Matrixreferenzen verwenden relative Schranken von
 32 beziehungsweise 64 Maschinenpräzisionen. Für die starke Korrelation
