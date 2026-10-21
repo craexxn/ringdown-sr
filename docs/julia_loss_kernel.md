@@ -8,8 +8,9 @@ Residualverluste und eine ausdrückliche Dimensionsprüfung für Kandidaten.
 
 Die Tests prüfen diesen Kern sowie den vollständigen Verlust-Dispatcher
 des gepinnten SymbolicRegression-Backends. Die Anbindung an
-`PySRRegressor.fit`, echte Newton-/BFGS-Konstantenoptimierung, freie
-Suchläufe und neue Ergebnisformate folgen in eigenen Schritten.
+`PySRRegressor.fit`, freie Suchläufe und neue Ergebnisformate folgen
+in eigenen Schritten. Die tatsächliche Newton-/BFGS-Konstantenoptimierung
+wird in einer [separaten Erweiterung](constant_optimization.md) geprüft.
 Die bekannte lineare Mehrkonstantenreferenz wird hier nur ausgewertet;
 ihr Optimum wird noch nicht durch einen Optimierer ermittelt.
 
@@ -166,8 +167,10 @@ Umgebungscheck. Sie werden nicht stillschweigend in die bisherige
 pytest-Anzahl aufgenommen. Der erste Lauf kann vorkompilieren.
 
 Für diese Erweiterung wurden keine Abhängigkeiten oder Lockdateien
-geändert. Die nächste Aufgabe ist das KI-gestützte Code- und Methodenreview
-dieses Kerns und danach die tatsächliche PySR-/Konstantenoptimierer-Anbindung.
+geändert. Das KI-gestützte Code- und Methodenreview dieses Kerns ist erfolgt;
+die Batch-Abwehr wurde entsprechend ergänzt. Die nächste Erweiterung prüft
+die [tatsächlichen Konstantenoptimierer](constant_optimization.md).
+Die PySR-Suchanbindung und Prozessisolation stehen weiter aus.
 Die bisherigen [Manjaro-/WSL2-Nachweise](portability.md) gelten für den
 klassischen Schema-2-Piloten. Lokale Nutzerprüfungen des neuen Julia-Kerns
 sind zusätzlich erforderlich; Hauptversuche und Leistungsvalidierung

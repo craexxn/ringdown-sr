@@ -75,7 +75,7 @@ Verfügbare Prüfbefehle:
   für die technische Umgebungsprüfung.
 - `uv run --locked pytest` für Tests, sobald eigene Tests vorhanden sind.
 - `uv run --locked --python 3.12.14 python scripts/run_python.py scripts/check_julia_loss.py`
-  für Julia-Verlustkern-Tests und den numerischen Python-/Julia-Vergleich.
+  für Julia-Verlustkern- und Konstantenoptimierer-Tests sowie Python-Replays.
 
 Der technische Umgebungscheck prüft die Funktionsfähigkeit der
 Softwareumgebung. Wissenschaftliche Validierung benötigt fachliche Tests.

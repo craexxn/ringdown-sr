@@ -1,4 +1,4 @@
-"""Run deterministic Julia loss tests and replay residuals against Python."""
+"""Check Julia loss and constant optimization against independent Python references."""
 
 import os
 from pathlib import Path
@@ -6,6 +6,60 @@ from pathlib import Path
 import numpy as np
 
 from ringdown_sr.losses import CovarianceLoss, mean_squared_error
+
+
+def check_constant_optimization(jl) -> None:
+    cases = jl.ConstantOptimizationChecks.REPLAY_CASES
+    assert len(cases) == 12, "Missing constant-optimization reference runs."
+    for case in cases:
+        time = np.asarray(case.time, dtype=np.float64)
+        observed = np.asarray(case.observed, dtype=np.float64)
+        model = str(case.model)
+        if model == "constant":
+            design = np.ones((time.size, 1))
+        elif model == "linear":
+            design = np.column_stack((np.ones(time.size), time))
+        else:
+            raise AssertionError(f"Unknown reference model: {model}")
+        covariance = (
+            np.eye(time.size)
+            if case.covariance is None
+            else np.asarray(case.covariance, dtype=np.float64)
+        )
+        # Independent GLS normal equations: no production whitening or optimizer.
+        expected = np.linalg.solve(
+            design.T @ np.linalg.solve(covariance, design),
+            design.T @ np.linalg.solve(covariance, observed),
+        )
+        expected_residual = observed - design @ expected
+        expected_loss = (
+            expected_residual @ np.linalg.solve(covariance, expected_residual)
+        ) / time.size
+        result = case.result
+        parameters = np.asarray(result.parameters, dtype=np.float64)
+        prediction = np.asarray(result.prediction, dtype=np.float64)
+        loss = float(result.loss)
+        label = f"{model}/{case.weighting}, start={result.initial_parameters}"
+        # Predeclared convergence tolerances; stricter rounding bounds below.
+        np.testing.assert_allclose(
+            parameters, expected, rtol=0, atol=1e-6, err_msg=label
+        )
+        np.testing.assert_allclose(
+            loss, expected_loss, rtol=0, atol=1e-11, err_msg=label
+        )
+        np.testing.assert_allclose(
+            prediction,
+            design @ parameters,
+            rtol=32 * np.finfo(np.float64).eps,
+            atol=32 * np.finfo(np.float64).eps,
+            err_msg=label,
+        )
+        residual = observed - prediction
+        replay = (residual @ np.linalg.solve(covariance, residual)) / time.size
+        rtol = 64 * np.finfo(np.float64).eps * np.linalg.cond(covariance)
+        np.testing.assert_allclose(loss, replay, rtol=rtol, atol=0, err_msg=label)
+        print(f"Optimizer replay {label}: parameters={parameters}, loss={loss:.17g}")
+    print(f"Python/Julia constant-optimization replay passed: {len(cases)} cases.")
 
 
 def main() -> None:
@@ -73,6 +127,7 @@ def main() -> None:
         np.testing.assert_allclose(actual, expected, rtol=rtol, atol=0, err_msg=name)
         print(f"Replay {name}: {actual:.17g}")
     print(f"Python/Julia residual replay passed: {len(cases)} cases.")
+    check_constant_optimization(jl)
     print("Julia loss kernel check passed.")
 
 

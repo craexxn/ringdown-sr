@@ -5,7 +5,7 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Dokumentationsstand: 20.10.2026.
+Dokumentationsstand: 21.10.2026.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
@@ -33,13 +33,16 @@ Auf `main` vorhanden:
   analytischer Referenzfälle und ungültiger Eingaben.
 - Julia-Verlustkern mit expliziter Einheitenprüfung, festem Fenster und
   voller Kovarianz sowie separaten Julia-Tests und Python-Replay.
+- Deterministische Prüfung der tatsächlichen Newton-/BFGS-Konstantenanpassung
+  im Julia-Backend mit unabhängigen Referenzen und Python-Nachrechnung.
 - Festgelegte Python-/Julia-Umgebung und automatische GitHub-Prüfungen.
 
 Ein vollständiger kleiner Durchlauf mit bekanntem Formansatz ist vorhanden.
 Die Kovarianzschätzung ist mit Hintergrundrollen, drei Fit-Varianten und
 Exporten integriert. Der [Julia-Verlustkern](docs/julia_loss_kernel.md) ist als erster
-Baustein der freien Suche ergänzt. Die tatsächliche PySR-Anbindung,
-Konstantenoptimierung und statistische Leistungsbewertung stehen noch aus.
+Baustein der freien Suche ergänzt. Die [Konstantenoptimiererprüfung](docs/constant_optimization.md)
+ergänzt die tatsächlichen Backend-Pfade bei fest vorgegebenen Strukturen.
+Die freie PySR-Suchanbindung und statistische Leistungsbewertung stehen noch aus.
 Die wissenschaftlichen Hauptversuche und ihre Auswertung haben noch
 nicht begonnen.
 
@@ -54,7 +57,7 @@ Schema-1-Vergleiche und die neuen Schema-2-Nachweise auf Manjaro und WSL2
 am selben sauberen Commit. Auch der gepinnte Julia-Startweg ist lokal
 unter WSL2 bestätigt. Der [PySR-Methodenentwurf](docs/symbolic_regression_method_plan.md)
 wurde separat geprüft und um die Reviewpunkte präzisiert; seine
-ausführbare Umsetzung steht noch aus.
+weitere Such- und Ergebnisintegration steht noch aus.
 
 ## Konfigurierter Durchlauf mit gespeicherten Ergebnissen
 
@@ -189,8 +192,9 @@ uv run --locked --python 3.12.14 python scripts/run_python.py scripts/check_juli
 
 Der Umgebungscheck kontrolliert Bibliotheksimporte, Python- und
 Julia-Versionen, das aktive Julia-Projekt sowie einen Julia-Rechentest.
-Der separate Verlustkern-Check führt deterministische Julia-Tests und
-zehn Residualvergleiche mit dem Python-Kern aus. Diese Prüfungen gehören
+Der separate Julia-Check führt Verlustkern- und echte Konstantenoptimierer-Tests,
+zehn Residualvergleiche mit dem Python-Kern sowie zwölf unabhängige
+Optimierer-Nachrechnungen aus. Diese Prüfungen gehören
 nicht zur pytest-Anzahl; Details stehen im
 [Julia-Verlustkern](docs/julia_loss_kernel.md).
 
@@ -297,11 +301,11 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
 ## Nächste Schritte
 
-1. Den [Julia-Verlustkern](docs/julia_loss_kernel.md) im KI-gestützten
-   Code- und Methodenreview prüfen und lokal auf Manjaro/WSL2 ausführen.
-2. Den tatsächlichen PySR-Konstantenoptimierer unabhängig prüfen,
-   einschließlich Newton- und Mehrkonstanten-BFGS-Pfad, Alias-/Phasenfällen
-   und eindeutig bezeichnetem Score-Export.
+1. Die [Backend-Konstantenoptimiererprüfung](docs/constant_optimization.md)
+   im KI-gestützten Code- und Methodenreview prüfen; den Julia-Kern und
+   die Erweiterung lokal auf Manjaro/WSL2 ausführen.
+2. Die freie PySR-Schnittstelle und Prozessisolation ergänzen und prüfen;
+   Alias-/Phasenfälle und eindeutig bezeichneten Score-Export umsetzen.
 3. Danach versionierte Konfiguration und Exporte integrieren und den
    neuen SR-Adapter separat reviewen und auf beiden Rechnern prüfen.
    Die wissenschaftliche Formelauswahl wird gesondert festgelegt.

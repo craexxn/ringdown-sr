@@ -267,3 +267,5 @@ end
         @test Matrix(context._factor) == factor_values
     end
 end
+
+include(joinpath(@__DIR__, "constant_optimization.jl"))
