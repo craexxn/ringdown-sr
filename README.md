@@ -29,13 +29,15 @@ Auf `main` vorhanden:
 - Drei gekoppelte Referenzfits mit getrennten Hintergrundrollen und
   geschätzter Kovarianz im ausdrücklich versionierten Schema 2:
   `src/ringdown_sr/covariance_pilot.py`.
-- 456 automatisierte Testfälle für diese Bausteine, einschließlich
-  analytischer Referenzfälle und ungültiger Eingaben.
+- 468 automatisierte Python-Testfälle für diese Bausteine, einschließlich
+  analytischer Referenzfälle, ungültiger Eingaben und des Julia-Startwegs.
 - Julia-Verlustkern mit expliziter Einheitenprüfung, festem Fenster und
   voller Kovarianz sowie separaten Julia-Tests und Python-Replay.
 - Deterministische Prüfung der tatsächlichen Newton-/BFGS-Konstantenanpassung
   im Julia-Backend mit unabhängigen Referenzen und Python-Nachrechnung.
 - Festgelegte Python-/Julia-Umgebung und automatische GitHub-Prüfungen.
+- Isolierte Laufzeitvorbereitung ohne zusätzliche Conda-Python-Umgebung;
+  Prüfung gleichzeitiger Starts bei fremder aktiver CondaPkg-Sperre.
 
 Ein vollständiger kleiner Durchlauf mit bekanntem Formansatz ist vorhanden.
 Die Kovarianzschätzung ist mit Hintergrundrollen, drei Fit-Varianten und
@@ -187,11 +189,16 @@ uv run --locked ruff check .
 uv run --locked ruff format --check .
 uv run --locked pytest -q
 uv run --locked --python 3.12.14 python scripts/run_python.py scripts/check_environment.py
+uv run --locked --python 3.12.14 python scripts/check_julia_startup.py
 uv run --locked --python 3.12.14 python scripts/run_python.py scripts/check_julia_loss.py
 ```
 
 Der Umgebungscheck kontrolliert Bibliotheksimporte, Python- und
 Julia-Versionen, das aktive Julia-Projekt sowie einen Julia-Rechentest.
+Er prüft außerdem die tatsächliche PythonCall-Interpreterbindung und die
+geladene PythonCall-Erweiterung. Der separate
+[Startweg-Check](docs/julia_startup.md) prüft zwei gleichzeitige Starts bei
+einer fremden aktiven CondaPkg-Sperre.
 Der separate Julia-Check führt Verlustkern- und echte Konstantenoptimierer-Tests,
 zehn Residualvergleiche mit dem Python-Kern sowie zwölf unabhängige
 Optimierer-Nachrechnungen aus. Diese Prüfungen gehören
@@ -272,7 +279,10 @@ die noch ausstehenden methodischen Prüfungen und Experimente.
 - `julia/Project.toml` und `julia/Manifest.toml` halten die direkten
   und indirekten Julia-Paketversionen fest.
 - `scripts/run_python.py` ermittelt das lokale Julia-Programm,
-  prüft die Version und stellt die gespeicherte Paketumgebung bereit.
+  prüft die Pins und stellt ausschließlich die gespeicherte Paketumgebung
+  bereit. PythonCall verwendet die aktuelle Python-Umgebung; CondaPkg
+  läuft mit dem Null-Backend. Nur die Vorbereitung hält die
+  Installationssperre; Details stehen im [Startweg](docs/julia_startup.md).
 - Die lokale `.venv` wird nicht mit Git versioniert.
 
 Python-Aufrufe mit PySR oder JuliaCall werden über das Startskript
@@ -301,9 +311,10 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
 ## Nächste Schritte
 
-1. Die [Backend-Konstantenoptimiererprüfung](docs/constant_optimization.md)
-   im KI-gestützten Code- und Methodenreview prüfen; den Julia-Kern und
-   die Erweiterung lokal auf Manjaro/WSL2 ausführen.
+1. Den [geänderten Startweg](docs/julia_startup.md) technisch prüfen und
+   lokal auf Manjaro/WSL2 ausführen. Das methodische Review der
+   [Backend-Konstantenoptimiererprüfung](docs/constant_optimization.md)
+   zu PR #19 hat keine korrekturbedürftigen Fehler gefunden.
 2. Die freie PySR-Schnittstelle und Prozessisolation ergänzen und prüfen;
    Alias-/Phasenfälle und eindeutig bezeichneten Score-Export umsetzen.
 3. Danach versionierte Konfiguration und Exporte integrieren und den

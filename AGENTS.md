@@ -76,6 +76,8 @@ Verfügbare Prüfbefehle:
 - `uv run --locked pytest` für Tests, sobald eigene Tests vorhanden sind.
 - `uv run --locked --python 3.12.14 python scripts/run_python.py scripts/check_julia_loss.py`
   für Julia-Verlustkern- und Konstantenoptimierer-Tests sowie Python-Replays.
+- `uv run --locked --python 3.12.14 python scripts/check_julia_startup.py`
+  für gleichzeitige Starts bei fremder aktiver CondaPkg-Sperre.
 
 Der technische Umgebungscheck prüft die Funktionsfähigkeit der
 Softwareumgebung. Wissenschaftliche Validierung benötigt fachliche Tests.
@@ -97,3 +99,5 @@ Kurz berichten:
 - Die Julia-Version in `src/ringdown_sr/juliapkg.json` und
   `julia/Manifest.toml` konsistent halten.
 - `julia/Manifest.toml` nicht manuell bearbeiten.
+- Der Launcher bindet PythonCall an den aktuellen Python-Interpreter und setzt
+  CondaPkg auf `Null`. Fremde oder aktive Sperrdateien nicht löschen.
