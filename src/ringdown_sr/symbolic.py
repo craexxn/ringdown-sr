@@ -407,10 +407,11 @@ def worker(directory: Path) -> None:
             python_prediction, prediction, rtol=1e-12, atol=1e-14
         )
         residual = target - prediction
+        python_residual = target - python_prediction
         python_loss = (
-            mean_squared_error(residual)
+            mean_squared_error(python_residual)
             if loss_object is None
-            else loss_object.mean_squared(residual)
+            else loss_object.mean_squared(python_residual)
         )
         raw_loss = float(member.loss)
         np.testing.assert_allclose(
