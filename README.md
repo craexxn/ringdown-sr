@@ -63,7 +63,12 @@ Details zum aktuellen Stand: [Pilot](docs/pilot.md),
 [Pilot mit geschätzter Kovarianz](docs/estimated_covariance_pilot.md).
 Das [Portabilitätsprotokoll](docs/portability.md) enthält die bisherigen
 Schema-1-Vergleiche und die neuen Schema-2-Nachweise auf Manjaro und WSL2
-am selben sauberen Commit. Auch der gepinnte Julia-Startweg ist lokal
+am selben sauberen Commit. Für Schema 3 sind außerdem 559 bestandene Tests,
+beide vollständigen Audits und Diagrammanzeigen auf Manjaro am sauberen
+Commit `6ed493d` übermittelt. Eine zusätzliche Prüfung bestätigt die
+gespeicherte Git-Herkunft aller Stufen. Der Schema-3-Nachweis unter WSL2
+steht noch aus.
+Auch der gepinnte Julia-Startweg ist lokal
 unter WSL2 bestätigt. Der [PySR-Methodenentwurf](docs/symbolic_regression_method_plan.md)
 wurde separat geprüft und um die Reviewpunkte präzisiert. Die freie Suche
 ist im Dreiarm-Pilot integriert; Alias-/Parameterinterpretation und
@@ -336,10 +341,10 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
 ## Nächste Schritte
 
-1. Die [Schema-3-Integration](docs/symbolic_pilot.md) hinsichtlich gemeinsamer
-   Eingaben, Datentrennung, eingefrorener Auswahl und Diagnosen prüfen.
-2. Den neuen SR-Ablauf separat auf Manjaro/WSL2 prüfen. Vor einem späteren
-   Parameterexport die geplanten Alias-/Phasenfälle umsetzen.
+1. Den [Schema-3-Vollprofil-Nachweis](docs/portability.md) unter WSL2 am
+   selben Referenzcommit `6ed493d` ergänzen; Manjaro ist bestätigt.
+2. Vor einem späteren Parameterexport die geplanten Alias-/Phasenfälle
+   umsetzen und prüfen.
 3. Wissenschaftliche Formelauswahl und statistischen Versuchsplan gesondert
    begründen, bevor Leistungs- und Identifikationsaussagen untersucht werden.
 

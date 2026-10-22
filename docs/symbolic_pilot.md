@@ -192,5 +192,8 @@ Eltern-Replay, Auswahlprüfung und Diagnosen laufen echt. Gegenproben
 prüfen veränderte Artefakte, Fehler, Abbrüche und unveränderte Auswahl bei
 geänderter nachgelagerter Signalwahrheit. Echte PySR-Suchen laufen separat.
 Diese Prüfungen belegen keine wissenschaftliche Rekonstruktionsleistung.
-Portabilitätsprüfungen dieses Schema-3-Ablaufs auf Manjaro und WSL2
-stehen noch aus.
+Auf Manjaro wurden 559 bestandene Tests, beide vollständigen Audits und
+Diagrammanzeigen am Referenzcommit `6ed493d` übermittelt. Eine zusätzliche
+Metadatenprüfung bestätigt den sauberen Codezustand der Elternpipeline,
+Referenzstufe und aller Sucharme. Der entsprechende WSL2-Nachweis steht
+noch aus; Details und Grenzen stehen im [Portabilitätsprotokoll](portability.md).

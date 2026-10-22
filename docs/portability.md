@@ -1,9 +1,10 @@
 # Lokaler Portabilitätscheck des Piloten
 
-Prüfstand: 20.10.2026. Der Schema-1-Kontrollvergleich vom 19.10.2026
+Prüfstand: 22.10.2026. Der Schema-1-Kontrollvergleich vom 19.10.2026
 wurde auf einem Manjaro-Laptop und einem Windows-Rechner mit Ubuntu unter
 WSL2 ausgeführt. Für Schema 2 sind inzwischen beide Rechner am selben
-Referenzcommit geprüft (siehe letzter Abschnitt).
+Referenzcommit geprüft. Für Schema 3 ist der Manjaro-Nachweis einschließlich
+der gespeicherten Git-Herkunft bestätigt; der WSL2-Nachweis steht noch aus.
 Die folgenden Nachweise beruhen auf den vom Nutzer übermittelten
 Terminalausgaben und Diagrammbestätigungen sowie ergänzenden Diagnoseläufen
 in der Codex-Umgebung. Die lokalen Ergebnisdateien wurden nicht in dieses
@@ -315,7 +316,90 @@ Startweg, keinen neuen SR-Adapter; ein eigener Git-Metadatensatz dieses
 Umgebungsaufrufs wurde nicht übermittelt. Schema 2 benötigt Julia nicht.
 
 Die Kontrollwerte zeigen insbesondere keine allgemeine Überlegenheit
-der geschätzten Gewichtung. Eine wissenschaftliche Leistungsstudie und
-freie PySR-Suche sind noch nicht durchgeführt. Der
-[PySR-Methodenentwurf](symbolic_regression_method_plan.md) wurde separat
-geprüft; seine ausführbare Umsetzung folgt als eigener Schritt.
+der geschätzten Gewichtung. Diese Schema-2-Nachweise betreffen klassische
+Fits mit bekannter Formel. Die freie PySR-Suche wird im nachfolgenden
+Schema-3-Abschnitt gesondert dokumentiert. Eine wissenschaftliche
+Leistungsstudie steht weiterhin aus.
+
+## Schema 3 vom 22.10.2026: Manjaro am sauberen Referenzcommit bestätigt
+
+Der Nutzer übermittelte nach dem angeleiteten Vollprofil des
+[SR-Piloten](symbolic_pilot.md) folgende Ergebnisse auf Manjaro:
+
+- **559 Python-Tests bestanden in 53,44 s**.
+- `Technical environment check passed.` mit korrekter PythonCall-Bindung
+  an `.venv/bin/python` des separaten Prüfprojekts, CondaPkg-Backend `Null`
+  und geladener PythonCall-Erweiterung.
+- Beide vollständigen Audits melden `Schema-3 audit passed`.
+- Beide gemeinsamen Diagramme werden laut Nutzer angezeigt.
+
+Der durch gespeicherte Git-Metadaten bestätigte Prüfstand ist Commit
+`6ed493d2e8fb3a845dd921bd99a620feb8b8850a` im separaten Worktree
+`ringdown-sr-portability-6ed493d`. Der Nutzer führte zusätzlich eine lesende
+Herkunftsprüfung an den gespeicherten Metadaten beider Ergebnisordner aus:
+
+- Je Lauf wurden die Elternpipeline, die klassische Referenzstufe und alle
+  drei SR-Arme berücksichtigt.
+- Für die Arme wurden sowohl `provenance` vor dem Workerstart als auch
+  `worker_provenance` vor `fit` geprüft.
+- Alle geprüften Git-Aufnahmen nennen `available: true`, denselben
+  vollständigen Referenzcommit, `dirty: false` und `changes: []`.
+
+Die gemeldeten Abschlusszeilen lauten jeweils für `white` und `ar1`:
+`Commit 6ed493d und sauberer Codezustand aller Stufen bestätigt.`
+Dieser Herkunftsnachweis beruht auf der übermittelten Ausführung der
+Metadatenprüfung; die Dateien selbst wurden nicht hier eingelesen.
+
+Die Ergebnisordner liegen relativ zum Prüfprojekt unter
+`results/sr-portability-001/white` und `results/sr-portability-001/ar1`.
+Das vorgegebene Vollprofil verwendet die unveränderten Schema-3-Beispiele
+mit 128 Samples und dem Standard-Suchbudget, keinen reduzierten CI-Lauf.
+Die folgenden Werte wurden tatsächlich im Terminal gemeldet:
+
+| Rauschen | SR-Arm | Exportierte Kandidaten | `Q_true/N` |
+| --- | --- | ---: | ---: |
+| Weiß | gewöhnliche MSE | 11 | 5.07768087378 |
+| Weiß | wahre Kovarianz | 7 | 6.3972941486 |
+| Weiß | geschätzte Kovarianz | 9 | 5.70728782157 |
+| AR(1) | gewöhnliche MSE | 5 | 4.93620902355 |
+| AR(1) | wahre Kovarianz | 7 | 2.75758997199 |
+| AR(1) | geschätzte Kovarianz | 8 | 2.54625560892 |
+
+Gewähltes Alpha: **1** bei Weißrauschen und **0,5** bei AR(1).
+Insgesamt wurden **47 Kandidaten** exportiert. Kandidatenzahlen, Alpha und
+die ausgegebenen `Q_true/N` stimmen in allen übermittelten Stellen mit dem
+bisherigen vollständigen Codex-Kontrolllauf aus dem Implementierungsarbeitsstand
+überein. Das bestätigt keine
+Identität der Bäume, vollständigen Arrays oder Dateibytes zwischen Rechnern.
+
+Gemeldete Umgebung:
+
+| Komponente | Version |
+| --- | --- |
+| Python | 3.12.14 |
+| NumPy | 2.5.3 |
+| SciPy | 1.18.1 |
+| Matplotlib | 3.11.2 |
+| pandas | 3.0.6 |
+| SymPy | 1.14.0 |
+| PySR | 2.6.0 |
+| Julia | 1.13.1 |
+| SymbolicRegression | 2.5.1 |
+| PythonCall | 0.9.36 |
+
+Julia wurde zunächst für die eigene `.venv` dieses Prüfprojekts
+heruntergeladen und installiert. Die dabei gemeldete Warnung zu mehreren
+lokalen Installationsorten bezeichnet keinen fehlgeschlagenen Check;
+anschließend wurden die gepinnte Version und der Projektstart erfolgreich
+bestätigt.
+
+Die Audit-Erfolgsmeldungen belegen nach übermittelter Ausführung die
+projektierten Datei-, Übergabe-, Schrumpfungs-, Kandidaten-, Verlust- und
+Kontroll-Score-Prüfungen. Die lokalen Dateien selbst wurden nicht
+übermittelt und hier nicht neu geprüft. Eine wissenschaftliche
+Leistungsbewertung folgt aus diesen einzelnen angepassten Kontrollfällen
+nicht. Für diese beiden Manjaro-Kontrollfälle sind damit Tests, Umgebung,
+Ausführung, Audits, Diagrammanzeige und sauberer Referenzcommit durch die
+übermittelten Nachweise bestätigt. Offen bleibt derselbe Schema-3-Vollprofil-
+Nachweis unter WSL2. Der frühere WSL2-Schema-2-Nachweis ersetzt diesen neuen
+Test nicht.
