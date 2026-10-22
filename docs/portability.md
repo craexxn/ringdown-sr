@@ -3,8 +3,9 @@
 Prüfstand: 22.10.2026. Der Schema-1-Kontrollvergleich vom 19.10.2026
 wurde auf einem Manjaro-Laptop und einem Windows-Rechner mit Ubuntu unter
 WSL2 ausgeführt. Für Schema 2 sind inzwischen beide Rechner am selben
-Referenzcommit geprüft. Für Schema 3 ist der Manjaro-Nachweis einschließlich
-der gespeicherten Git-Herkunft bestätigt; der WSL2-Nachweis steht noch aus.
+Referenzcommit geprüft. Für Schema 3 sind Manjaro und WSL2 einschließlich
+der gespeicherten Git-Herkunft am selben Referenzcommit bestätigt. Die
+freien SR-Suchergebnisse unterscheiden sich zwischen diesen Rechnern.
 Die folgenden Nachweise beruhen auf den vom Nutzer übermittelten
 Terminalausgaben und Diagrammbestätigungen sowie ergänzenden Diagnoseläufen
 in der Codex-Umgebung. Die lokalen Ergebnisdateien wurden nicht in dieses
@@ -400,6 +401,73 @@ Kontroll-Score-Prüfungen. Die lokalen Dateien selbst wurden nicht
 Leistungsbewertung folgt aus diesen einzelnen angepassten Kontrollfällen
 nicht. Für diese beiden Manjaro-Kontrollfälle sind damit Tests, Umgebung,
 Ausführung, Audits, Diagrammanzeige und sauberer Referenzcommit durch die
-übermittelten Nachweise bestätigt. Offen bleibt derselbe Schema-3-Vollprofil-
-Nachweis unter WSL2. Der frühere WSL2-Schema-2-Nachweis ersetzt diesen neuen
-Test nicht.
+übermittelten Nachweise bestätigt. Der entsprechende Schema-3-Nachweis
+unter WSL2 und sein Vergleich mit Manjaro folgen im nächsten Abschnitt.
+
+## Schema 3 vom 22.10.2026: WSL2 bestätigt, SR-Ergebnisse weichen ab
+
+Der Nutzer führte dasselbe angeleitete Vollprofil unter Windows mit
+Ubuntu/WSL2 in einem separaten Worktree am Referenzcommit
+`6ed493d2e8fb3a845dd921bd99a620feb8b8850a` aus und übermittelte:
+
+- **559 Python-Tests bestanden in 56,97 s**.
+- `Technical environment check passed.` mit denselben gemeldeten Versionen
+  wie im Manjaro-Umgebungsblock: Python 3.12.14, NumPy 2.5.3, SciPy 1.18.1,
+  Matplotlib 3.11.2, pandas 3.0.6, SymPy 1.14.0, PySR 2.6.0, Julia 1.13.1,
+  SymbolicRegression 2.5.1 und PythonCall 0.9.36.
+- PythonCall verwendet `.venv/bin/python` dieses Prüfprojekts;
+  CondaPkg-Backend `Null` und die PythonCall-Erweiterung sind bestätigt.
+- Beide vollständigen Audits melden `Schema-3 audit passed`.
+- Die zusätzliche lesende Herkunftsprüfung meldet für `white` und `ar1`
+  jeweils den Commit `6ed493d` und sauberen Codezustand aller Stufen.
+  Sie prüft dieselben Metadatenfelder und Git-Bedingungen wie auf Manjaro,
+  einschließlich der Arm-Aufnahme vor Workerstart und der Workeraufnahme
+  vor `fit`.
+- Beide gemeinsamen Diagramme werden laut Nutzer angezeigt.
+
+Die Ergebnisordner liegen auch hier relativ zum Prüfprojekt unter
+`results/sr-portability-001/white` und `results/sr-portability-001/ar1`.
+Julia wurde für dessen eigene `.venv` installiert; anschließend bestanden
+der Umgebungscheck und die Such-/Auditläufe.
+
+Die Alpha-Auswahl stimmt auf beiden Rechnern überein: **1** bei Weißrauschen
+und **0,5** bei AR(1). Die SR-Ergebnisse unterscheiden sich dagegen bereits
+in den übermittelten Stellen. Die Kandidatenzahl bezeichnet jeweils die
+exportierte Pareto-Front, nicht alle während der Suche untersuchten Bäume:
+
+| Rauschen | SR-Arm | Kandidaten Manjaro | Kandidaten WSL2 | `Q_true/N` Manjaro | `Q_true/N` WSL2 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Weiß | gewöhnliche MSE | 11 | 7 | 5.07768087378 | 5.49373971715 |
+| Weiß | wahre Kovarianz | 7 | 7 | 6.3972941486 | 5.07985556164 |
+| Weiß | geschätzte Kovarianz | 9 | 9 | 5.70728782157 | 4.32241384476 |
+| AR(1) | gewöhnliche MSE | 5 | 6 | 4.93620902355 | 3.75865072184 |
+| AR(1) | wahre Kovarianz | 7 | 8 | 2.75758997199 | 0.734382443275 |
+| AR(1) | geschätzte Kovarianz | 8 | 9 | 2.54625560892 | 3.73673302619 |
+
+Insgesamt wurden auf Manjaro **47**, unter WSL2 **46** Kandidaten exportiert.
+Die Testlaufzeiten sind keine kontrollierte Geschwindigkeitsmessung. Auch
+die einzelne kleinere Quadratik eines Arms begründet keine allgemeine
+Überlegenheit des Verfahrens oder Rechners.
+
+Der technische Ausführungsnachweis ist für diese beiden Konfigurationen
+auf beiden Rechnern damit erbracht: gleicher sauberer Codecommit,
+gemeldete Versionen, erfolgreiche Tests, Umgebung, Exporte, lokale Audits
+und Diagrammanzeige. Die Audits prüfen die interne Konsistenz der jeweils
+lokalen Dateien; sie vergleichen keine Arrays, Konstanten, Bäume oder
+Dateibytes zwischen Rechnern. Die übereinstimmenden Alpha-Werte beweisen
+ebenfalls keine bitgleichen Hintergrundfenster oder Schätzmatrizen.
+
+**Rechnerübergreifend identische SR-Suchergebnisse sind in diesen Läufen
+nicht gegeben.** Die Ursache ist mit den vorliegenden Ausgaben nicht
+bestimmt. Unterschiede in numerischen Eingaben, CPU-/Build-/BLAS-Umgebung
+oder Gleitkommarechnungen sind mögliche Erklärungen, keine hier bestätigte
+Diagnose. Für eine Ursachenanalyse müssten unter anderem die gespeicherten
+numerischen Eingaben sowie Backend-Seeds, Optionen und Numerikumgebungen
+der einzelnen Arme zwischen Rechnern verglichen werden. Auch die
+Wiederholbarkeit auf demselben Rechner wurde mit diesen Einzelstarts
+nicht gesondert geprüft.
+
+Alle hier dokumentierten lokalen Nachweise wurden vom Nutzer übermittelt;
+die Manjaro-/WSL2-Ergebnisdateien wurden hier nicht eingelesen und keine
+neuen Suchen dafür ausgeführt. Die wissenschaftliche Leistungsbewertung,
+unabhängige Generalisierung und Parameteridentifikation bleiben offen.

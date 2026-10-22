@@ -192,8 +192,11 @@ Eltern-Replay, Auswahlprüfung und Diagnosen laufen echt. Gegenproben
 prüfen veränderte Artefakte, Fehler, Abbrüche und unveränderte Auswahl bei
 geänderter nachgelagerter Signalwahrheit. Echte PySR-Suchen laufen separat.
 Diese Prüfungen belegen keine wissenschaftliche Rekonstruktionsleistung.
-Auf Manjaro wurden 559 bestandene Tests, beide vollständigen Audits und
-Diagrammanzeigen am Referenzcommit `6ed493d` übermittelt. Eine zusätzliche
-Metadatenprüfung bestätigt den sauberen Codezustand der Elternpipeline,
-Referenzstufe und aller Sucharme. Der entsprechende WSL2-Nachweis steht
-noch aus; Details und Grenzen stehen im [Portabilitätsprotokoll](portability.md).
+Auf Manjaro und WSL2 wurden jeweils 559 bestandene Tests, beide vollständigen
+Audits und Diagrammanzeigen am Referenzcommit `6ed493d` übermittelt.
+Zusätzliche Metadatenprüfungen bestätigen den sauberen Codezustand der
+Elternpipeline, Referenzstufe und aller Sucharme. Die SR-Kandidatenzahlen
+und Verluste unterscheiden sich zwischen den Rechnern. Die Ursache ist
+noch nicht bestimmt; die lokalen Audits belegen keine identischen
+Suchergebnisse über Rechner hinweg. Details und Grenzen stehen im
+[Portabilitätsprotokoll](portability.md).
