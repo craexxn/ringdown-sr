@@ -530,6 +530,19 @@ ganzzahlige Periodendifferenzen geprüft. Dies sind mathematische
 Referenzprüfungen, keine ausgeführten BFGS-, Julia- oder PySR-Adaptertests.
 
 
+## Implementierungsstand nach dem Entwurfsreview
+
+Der [Verlustkern](julia_loss_kernel.md), die tatsächliche
+[Newton-/BFGS-Prüfung](constant_optimization.md) und der
+[isolierte Suchadapter](symbolic_adapter.md) sind umgesetzt und separat
+geprüft. Der [Schema-3-Pilot](symbolic_pilot.md) verbindet drei solche
+Sucharme mit der vorhandenen Datenerzeugung, gemeinsamen Diagnosen und
+vollständigen Exporten. Dieser Stand erweitert den technischen Ablauf;
+er legt weder wissenschaftliche Formelauswahl noch Hauptversuche fest.
+Alias-/Phaseninterpretation vor einem späteren Parameterexport und die
+Portabilitätsprüfung des neuen Gesamtablaufs bleiben offen. Die folgenden
+Angaben zum Prüfumfang beziehen sich auf den ursprünglichen Entwurf.
+
 ## Quellen und Prüfumfang dieses Entwurfs
 
 [1] Miles Cranmer (2023): *Interpretable Machine Learning for Science with

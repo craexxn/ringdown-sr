@@ -58,3 +58,6 @@ jobs:
 
       - name: Check isolated free PySR searches and expression replay
         run: uv run --locked python scripts/run_python.py scripts/check_symbolic_search.py
+
+      - name: Check paired schema-3 symbolic pilots and independent metrics
+        run: uv run --locked python scripts/check_symbolic_pilot.py --output results/ci-sr-controls

@@ -13,6 +13,7 @@ from pathlib import Path
 
 import numpy as np
 
+from ringdown_sr.config import SearchBudget
 from ringdown_sr.losses import CovarianceLoss, _real_array, mean_squared_error
 from ringdown_sr.pilot import _environment, _provenance, _utc_now, _write_json
 
@@ -93,25 +94,6 @@ def _initial_metadata() -> dict:
         "parent_pid": os.getpid(),
         "parent_python_executable": sys.executable,
     }
-
-
-@dataclass(frozen=True)
-class SearchBudget:
-    """Technical search budgets; these are not research performance settings."""
-
-    seed: int = 20261020
-    niterations: int = 10
-    populations: int = 2
-    population_size: int = 32
-    ncycles_per_iteration: int = 50
-
-    def __post_init__(self):
-        for name, value in asdict(self).items():
-            minimum = 0 if name == "seed" else 16 if name == "population_size" else 1
-            if type(value) is not int or value < minimum:
-                raise ValueError(f"{name} must be an integer >= {minimum}.")
-        if self.seed >= 2**32:
-            raise ValueError("seed must be smaller than 2**32 for PySR's RandomState.")
 
 
 @dataclass(frozen=True)

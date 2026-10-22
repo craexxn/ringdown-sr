@@ -79,6 +79,42 @@ class CovariancePilotConfig(PilotConfig):
     covariance_estimation: CovarianceConfig
 
 
+@dataclass(frozen=True)
+class SearchBudget:
+    """Technical search budgets; these are not research performance settings."""
+
+    seed: int = 20261020
+    niterations: int = 10
+    populations: int = 2
+    population_size: int = 32
+    ncycles_per_iteration: int = 50
+
+    def __post_init__(self):
+        for name, value in asdict(self).items():
+            minimum = 0 if name == "seed" else 16 if name == "population_size" else 1
+            if type(value) is not int or value < minimum:
+                raise ValueError(f"{name} must be an integer >= {minimum}.")
+        if self.seed >= 2**32:
+            raise ValueError("seed must be smaller than 2**32 for PySR's RandomState.")
+
+
+@dataclass(frozen=True)
+class SymbolicPilotConfig(CovariancePilotConfig):
+    symbolic_search: SearchBudget
+
+    def reference_config(self) -> CovariancePilotConfig:
+        """Keep every data, covariance and classical-fit setting unchanged."""
+        return CovariancePilotConfig(
+            2,
+            self.sampling,
+            self.signal,
+            self.noise,
+            self.fit,
+            self.background,
+            self.covariance_estimation,
+        )
+
+
 def _fields(table, required: set[str], name: str) -> dict:
     if not isinstance(table, dict) or set(table) != required:
         raise ValueError(f"{name} requires exactly these fields: {sorted(required)}.")
@@ -116,11 +152,13 @@ def parse_config(content: bytes) -> PilotConfig:
     except (UnicodeError, tomllib.TOMLDecodeError) as error:
         raise ValueError(f"Invalid UTF-8 TOML configuration: {error}") from error
     version = data.get("schema_version")
-    if type(version) is not int or version not in (1, 2):
-        raise ValueError("schema_version must be 1 or 2.")
+    if type(version) is not int or version not in (1, 2, 3):
+        raise ValueError("schema_version must be 1, 2 or 3.")
     root_fields = {"schema_version", "sampling", "signal", "noise", "fit"}
-    if version == 2:
+    if version >= 2:
         root_fields |= {"background", "covariance_estimation"}
+    if version == 3:
+        root_fields.add("symbolic_search")
     _fields(data, root_fields, "root")
     sampling = _fields(
         data["sampling"], set(SamplingConfig.__annotations__), "sampling"
@@ -165,7 +203,7 @@ def parse_config(content: bytes) -> PilotConfig:
         noise_config = AR1NoiseConfig(noise["kind"], sigma, "PCG64", seed, rho)
     weightings = (
         ("compare_covariances",)
-        if version == 2
+        if version >= 2
         else ("ordinary", "known_white", "known_covariance")
     )
     if fit["weighting"] not in weightings:
@@ -237,8 +275,7 @@ def parse_config(content: bytes) -> PilotConfig:
     kappa = _number(covariance["kappa_max"], "covariance_estimation.kappa_max")
     if kappa <= 1:
         raise ValueError("covariance_estimation.kappa_max must exceed one.")
-    return CovariancePilotConfig(
-        *common,
+    extra = (
         BackgroundConfig(
             **amounts,
             bit_generator="PCG64",
@@ -246,6 +283,17 @@ def parse_config(content: bytes) -> PilotConfig:
             stream_scheme="seedsequence_role_v1",
         ),
         CovarianceConfig("known_zero", alphas, kappa),
+    )
+    if version == 3:
+        search = _fields(
+            data["symbolic_search"],
+            set(SearchBudget.__annotations__),
+            "symbolic_search",
+        )
+        return SymbolicPilotConfig(*common, *extra, SearchBudget(**search))
+    return CovariancePilotConfig(
+        *common,
+        *extra,
     )
 
 
