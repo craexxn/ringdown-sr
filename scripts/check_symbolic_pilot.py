@@ -62,8 +62,18 @@ def verify(directory: Path):
     raw = train.T @ train / len(train)
     alpha = result["covariance_estimation"]["alpha_selected"]
     estimated = (1 - alpha) * raw + alpha * np.trace(raw) / n * np.eye(n)
+    # For a PSD covariance, its largest absolute entry is the largest variance.
+    # Use only the independent reference, with no floor in amplitude-squared units.
+    covariance_scale = float(np.max(np.abs(estimated)))
+    assert np.isfinite(covariance_scale) and covariance_scale > 0, (
+        "The reconstructed covariance needs a finite positive comparison scale."
+    )
     np.testing.assert_allclose(
-        arrays["covariance_estimated"], estimated, rtol=1e-12, atol=1e-15
+        arrays["covariance_estimated"] / covariance_scale,
+        estimated / covariance_scale,
+        rtol=1e-12,
+        atol=1e-15,
+        err_msg="Estimated covariance differs from independent shrinkage reconstruction.",
     )
     check = np.loadtxt(
         directory / "reference/background_check.csv", delimiter=",", ndmin=2

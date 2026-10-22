@@ -157,6 +157,22 @@ werden ebenfalls geprüft. Für Bäume wird derselbe Python-Interpreter wie
 im Adapter verwendet; die unabhängige Verlustprüfung betrifft die direkte
 Matrix-/Innovationsrechnung, keinen zweiten AST-Interpreter.
 
+Der Kovarianzvergleich wird durch `s = max(abs(C_reference))` normiert.
+Die Referenz entsteht unabhängig aus den gespeicherten Trainingsfenstern
+und Alpha. Für eine positiv semidefinite Kovarianz entspricht `s` der
+größten Varianz; die geprüfte Referenz muss eine endliche positive Skala
+besitzen. Beide Matrizen werden vor dem Vergleich durch `s` geteilt.
+`rtol=1e-12, atol=1e-15` gelten damit in normierten Einheiten: Der absolute
+Anteil entspricht `1e-15*s` in Amplitudenquadrat, ohne feste Untergrenze.
+Der relative Anteil toleriert Rundungsunterschiede der unabhängigen
+Matrixprodukte; der normierte absolute Anteil betrifft verschwindende
+oder sehr kleine Kopplungseinträge. Das ist keine allgemeine numerische
+Fehlergarantie für beliebige Eingaben. Regressionsfälle führen den gesamten
+Audit mit weißem und AR(1)-Rauschen bei `(A, sigma)=(1, 0.1)` und
+`(1e-21, 1e-22)` aus: Korrekte Matrizen bestehen, nach der Schätzung
+verdoppelte Matrizen müssen jeweils scheitern. Nur die teure Suche wird
+dabei durch kontrollierte Kandidaten ersetzt.
+
 Beide vollständigen Beispiele mit unveränderten Konfigurationen starten:
 
 ```bash

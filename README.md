@@ -29,7 +29,7 @@ Implementierter Stand:
 - Drei gekoppelte Referenzfits mit getrennten Hintergrundrollen und
   geschätzter Kovarianz im ausdrücklich versionierten Schema 2:
   `src/ringdown_sr/covariance_pilot.py`.
-- 551 automatisierte Python-Testfälle für diese Bausteine, einschließlich
+- 559 automatisierte Python-Testfälle für diese Bausteine, einschließlich
   analytischer Referenzfälle, ungültiger Eingaben und des Julia-Startwegs.
 - Julia-Verlustkern mit expliziter Einheitenprüfung, festem Fenster und
   voller Kovarianz sowie separaten Julia-Tests und Python-Replay.

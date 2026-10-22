@@ -1,14 +1,15 @@
 """Verify schema-3 data identity, selection, diagnostics and failure persistence."""
 
 import hashlib
+import importlib.util
 import json
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 
 import numpy as np
 import pytest
 
-from ringdown_sr import symbolic_pilot
+from ringdown_sr import covariance_pilot, symbolic_pilot
 from ringdown_sr.cli import main
 from ringdown_sr.config import SymbolicPilotConfig, load_config, parse_config
 from ringdown_sr.losses import CovarianceLoss, mean_squared_error
@@ -106,7 +107,7 @@ def write_worker(time, observed, *, covariance, output, budget):
         },
     )
     for name in ("metadata.json", "metadata_initial.json"):
-        _write_json(output / name, {"test_stub": True})
+        _write_json(output / name, {"provenance": {"test_stub": True}})
     _write_json(
         output / "checksums.json",
         {
@@ -466,3 +467,37 @@ def test_corrupt_reference_handoff_never_reaches_search(
     assert (
         "checksum" in read(outcome.output_directory / "result.json")["error"]["message"]
     )
+
+
+@pytest.mark.parametrize("kind", ["white", "ar1"])
+@pytest.mark.parametrize("amplitude,sigma", [("1.0", "0.1"), ("1e-21", "1e-22")])
+@pytest.mark.parametrize("covariance_multiplier", [1.0, 2.0])
+def test_full_audit_covariance_comparison_has_no_absolute_amplitude_floor(
+    tmp_path, monkeypatch, stub_search, kind, amplitude, sigma, covariance_multiplier
+):
+    # Keep generation, estimation, classical fits, export and all audit stages real.
+    # Only the expensive search is replaced by the existing controlled artifacts.
+    original = covariance_pilot.estimate_covariance
+
+    def estimate(*args, **kwargs):
+        result = original(*args, **kwargs)
+        return replace(result, covariance=covariance_multiplier * result.covariance)
+
+    monkeypatch.setattr(covariance_pilot, "estimate_covariance", estimate)
+    config = small_config(kind).replace("amplitude = 1.0", f"amplitude = {amplitude}")
+    config = config.replace("standard_deviation = 0.1", f"standard_deviation = {sigma}")
+    path = tmp_path / "input.toml"
+    path.write_text(config)
+    outcome = run_pilot(path, tmp_path / "run")
+    assert outcome.status == "success" and len(stub_search) == 3
+    source = ROOT / "scripts/check_symbolic_pilot.py"
+    spec = importlib.util.spec_from_file_location("schema3_audit", source)
+    audit = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(audit)
+    if covariance_multiplier == 1:
+        audit.verify(outcome.output_directory)
+    else:
+        with pytest.raises(
+            AssertionError, match="independent shrinkage reconstruction"
+        ):
+            audit.verify(outcome.output_directory)
