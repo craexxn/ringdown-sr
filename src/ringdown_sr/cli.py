@@ -34,7 +34,19 @@ def main(argv: list[str] | None = None) -> int:
     if outcome.status != "success":
         print(f"Fehler: {result['error']['message']}", file=sys.stderr)
         return 1
-    if result["schema_version"] == 2:
+    if result["schema_version"] == 3:
+        print(f"Gewähltes Alpha: {result['covariance_estimation']['alpha_selected']:g}")
+        for name, label in (
+            ("ordinary", "SR mit gewöhnlicher MSE"),
+            ("known_covariance", "SR mit wahrer Kovarianz"),
+            ("estimated_covariance", "SR mit geschätzter Kovarianz"),
+        ):
+            record = result["symbolic_arms"][name]
+            print(f"{label}: {record['selected']['display_equation']}")
+            print(
+                f"  MSE = {record['metrics']['ordinary_mse']:.8g}, Q_true/N = {record['metrics']['q_true_per_sample']:.8g}"
+            )
+    elif result["schema_version"] == 2:
         print(f"Gewähltes Alpha: {result['covariance_estimation']['alpha_selected']:g}")
         for name, label in (
             ("ordinary", "Gewöhnlicher Fit"),

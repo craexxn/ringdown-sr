@@ -80,6 +80,10 @@ Verfügbare Prüfbefehle:
   für gleichzeitige Starts bei fremder aktiver CondaPkg-Sperre.
 - `uv run --locked --python 3.12.14 python scripts/run_python.py scripts/check_symbolic_search.py`
   für echte freie PySR-Suchen in getrennten Prozessen, Baumexport und Replay.
+- `uv run --locked python scripts/check_symbolic_pilot.py --output results/ci-sr-controls-001`
+  für beide Schema-3-Kontrollfälle mit reduziertem, gespeichertem CI-Budget.
+- `uv run --locked python scripts/check_symbolic_pilot.py --verify results/sr-ar1-001`
+  für die unabhängige Nachrechnung eines vorhandenen Schema-3-Ergebnisses.
 
 Der technische Umgebungscheck prüft die Funktionsfähigkeit der
 Softwareumgebung. Wissenschaftliche Validierung benötigt fachliche Tests.

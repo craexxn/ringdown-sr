@@ -163,6 +163,8 @@ def run_covariance_pilot(
     original: bytes,
     source_filename: str,
     output_directory: str | Path,
+    *,
+    _capture_inputs: bool = False,
 ) -> PilotRun:
     """Persist a schema-2 control without refits, fallbacks or output overwrites."""
     # Reject overlapping streams before reserving output or generating any data.
@@ -269,6 +271,17 @@ def run_covariance_pilot(
             **asdict(config.covariance_estimation),
         )
         matrices.update(raw=estimate.raw_covariance, estimated=estimate.covariance)
+        if _capture_inputs:
+            # Exact binary handoff to schema 3; the ordinary schema-2 export is unchanged.
+            np.savez(
+                output / "comparison_inputs.npz",
+                time_s=time_s,
+                signal=signal,
+                noise=noise,
+                observed=observed,
+                covariance_true=matrices["true"],
+                covariance_estimated=matrices["estimated"],
+            )
         result["covariance_estimation"] = {
             "method": estimate.method,
             "mean_mode": estimate.mean_mode,

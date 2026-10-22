@@ -29,7 +29,7 @@ Implementierter Stand:
 - Drei gekoppelte Referenzfits mit getrennten Hintergrundrollen und
   geschätzter Kovarianz im ausdrücklich versionierten Schema 2:
   `src/ringdown_sr/covariance_pilot.py`.
-- 520 automatisierte Python-Testfälle für diese Bausteine, einschließlich
+- 559 automatisierte Python-Testfälle für diese Bausteine, einschließlich
   analytischer Referenzfälle, ungültiger Eingaben und des Julia-Startwegs.
 - Julia-Verlustkern mit expliziter Einheitenprüfung, festem Fenster und
   voller Kovarianz sowie separaten Julia-Tests und Python-Replay.
@@ -40,6 +40,8 @@ Implementierter Stand:
   Prüfung gleichzeitiger Starts bei fremder aktiver CondaPkg-Sperre.
 - Isolierter Adapter für einzelne freie PySR-Suchläufe mit vollständigem
   Baumexport, festem Kovarianzkontext und Verlust-Replay aller Pareto-Kandidaten.
+- Vollständiger Schema-3-Pilot: drei freie SR-Arme auf denselben binären
+  Eingaben, gemeinsame nachgelagerte Diagnosen und klassische Referenzen.
 
 Ein vollständiger kleiner Durchlauf mit bekanntem Formansatz ist vorhanden.
 Die Kovarianzschätzung ist mit Hintergrundrollen, drei Fit-Varianten und
@@ -47,8 +49,9 @@ Exporten integriert. Der [Julia-Verlustkern](docs/julia_loss_kernel.md) ist als 
 Baustein der freien Suche ergänzt. Die [Konstantenoptimiererprüfung](docs/constant_optimization.md)
 ergänzt die tatsächlichen Backend-Pfade bei fest vorgegebenen Strukturen.
 Der [freie Suchadapter](docs/symbolic_adapter.md) startet einzelne Arme in
-neuen Prozessen. Sein Anschluss an die vollständige Pilotpipeline und
-die statistische Leistungsbewertung stehen noch aus.
+neuen Prozessen. Der [Schema-3-Pilot](docs/symbolic_pilot.md) verbindet sie
+mit der bestehenden Datenerzeugung und speichert alle Kandidaten sowie
+gemeinsame Diagnosen. Die statistische Leistungsbewertung steht noch aus.
 Die wissenschaftlichen Hauptversuche und ihre Auswertung haben noch
 nicht begonnen.
 
@@ -62,8 +65,9 @@ Das [Portabilitätsprotokoll](docs/portability.md) enthält die bisherigen
 Schema-1-Vergleiche und die neuen Schema-2-Nachweise auf Manjaro und WSL2
 am selben sauberen Commit. Auch der gepinnte Julia-Startweg ist lokal
 unter WSL2 bestätigt. Der [PySR-Methodenentwurf](docs/symbolic_regression_method_plan.md)
-wurde separat geprüft und um die Reviewpunkte präzisiert; seine
-Ergebnisintegration in den Dreiarm-Pilot steht noch aus.
+wurde separat geprüft und um die Reviewpunkte präzisiert. Die freie Suche
+ist im Dreiarm-Pilot integriert; Alias-/Parameterinterpretation und
+wissenschaftliche Formelauswahl bleiben gesonderte Folgeaufgaben.
 
 ## Konfigurierter Durchlauf mit gespeicherten Ergebnissen
 
@@ -104,6 +108,21 @@ Die Ausgabe enthält zusätzlich Hintergrundfenster, rohe/geschätzte/wahre
 Kovarianzen, Alpha-Diagnosen und getrennte RNG-Rollen. Bedienung,
 Konfiguration, Kennzahlen und Grenzen beschreibt die
 [Schema-2-Dokumentation](docs/estimated_covariance_pilot.md).
+
+Schema 3 startet zusätzlich drei freie PySR-Suchen mit demselben kleinen
+technischen Budget. Die klassischen Referenzen liegen unter `reference/`:
+
+```bash
+uv run --locked ringdown-sr run configs/pilot_sr_ar1.toml --output results/sr-ar1-001
+code -r results/sr-ar1-001/plot.png
+uv run --locked python scripts/check_symbolic_pilot.py --verify results/sr-ar1-001
+```
+
+Das weiße Gegenstück heißt `configs/pilot_sr_white.toml`. Alle drei Arme
+erhalten dieselben Samples; ihre Gewichtung unterscheidet sich. Das letzte
+Kommando rechnet gespeicherte Verluste und Diagnosen unabhängig nach.
+Aufrufe, Dateien, Suchbudget und Grenzen beschreibt die
+[Schema-3-Dokumentation](docs/symbolic_pilot.md).
 
 ## Sichtbarer Demolauf
 
@@ -195,6 +214,8 @@ uv run --locked pytest -q
 uv run --locked --python 3.12.14 python scripts/run_python.py scripts/check_environment.py
 uv run --locked --python 3.12.14 python scripts/check_julia_startup.py
 uv run --locked --python 3.12.14 python scripts/run_python.py scripts/check_julia_loss.py
+uv run --locked --python 3.12.14 python scripts/run_python.py scripts/check_symbolic_search.py
+uv run --locked python scripts/check_symbolic_pilot.py --output results/ci-sr-controls-001
 ```
 
 Der Umgebungscheck kontrolliert Bibliotheksimporte, Python- und
@@ -212,8 +233,8 @@ nicht zur pytest-Anzahl; Details stehen im
 Mit `uv run --locked pytest -v` wird jeder Testfall mit seinem Ergebnis
 angezeigt. Integrationstests erzeugen unter anderem temporäre Diagramme
 im pytest-Verzeichnis. Für bewusst gespeicherte Ergebnisse und Diagramme
-die obigen CLI-Kontrollläufe ausführen. Freie Formelsuche findet dort
-noch nicht statt.
+die obigen CLI-Kontrollläufe ausführen. Nur die Schema-3-Konfigurationen
+starten dabei freie Formelsuchen.
 
 Der Workflow `.github/workflows/technical-checks.yml` führt dieselben
 Prüfungen bei Pull Requests und Änderungen an `main` auf einem
@@ -315,13 +336,12 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
 ## Nächste Schritte
 
-1. Den [freien Suchadapter](docs/symbolic_adapter.md) einschließlich
-   Callback-Bindung, Prozessisolation, Baumexport und Replay prüfen.
-2. Versionierte Konfiguration und Exporte für den vollständigen SR-Pilot
-   integrieren; weiße und AR(1)-Kontrollfälle mit drei Armen nachrechnen.
-3. Den neuen SR-Ablauf separat auf Manjaro/WSL2 prüfen. Vor einem späteren
+1. Die [Schema-3-Integration](docs/symbolic_pilot.md) hinsichtlich gemeinsamer
+   Eingaben, Datentrennung, eingefrorener Auswahl und Diagnosen prüfen.
+2. Den neuen SR-Ablauf separat auf Manjaro/WSL2 prüfen. Vor einem späteren
    Parameterexport die geplanten Alias-/Phasenfälle umsetzen.
-   Die wissenschaftliche Formelauswahl wird gesondert festgelegt.
+3. Wissenschaftliche Formelauswahl und statistischen Versuchsplan gesondert
+   begründen, bevor Leistungs- und Identifikationsaussagen untersucht werden.
 
 Diese Schritte bilden die Arbeitsplanung für den Pilot.
 Parameterbereiche, SNR-Konvention und Kriterien für die Hauptversuche

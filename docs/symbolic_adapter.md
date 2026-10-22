@@ -60,7 +60,8 @@ und SymbolicRegression 2.5.1 gebunden; der Launcher prüft die Laufzeit-Pins.
 ## Eigenes Ausgabeformat für einen Sucharm
 
 Das Format heißt `ringdown-sr-search-arm-1`. Es ist ein eigenständiger
-technischer Arm-Auftrag, noch kein neues Dreiarm-Pilotschema.
+technischer Arm-Auftrag. Der [Schema-3-Pilot](symbolic_pilot.md) verwendet
+drei solcher Aufträge und behält ihre vollständigen Ausgaben bei.
 
 | Datei | Inhalt |
 | --- | --- |
@@ -218,9 +219,10 @@ im Arbeitsspeicher deaktivierte Vorhersageprüfung lässt den neuen
 Worker-Gegenprobentest wie erwartet scheitern: Die Regression prüft damit
 auch die tatsächliche Einbindung des Vergleichs im Worker.
 
-Diese Nachweise belegen die technische Schnittstelle. Der nächste Schritt
-ist ein versionierter vollständiger SR-Pilot mit denselben Schema-2-Messdaten,
-drei Armen und gemeinsamen nachgelagerten Diagnosen. Die neuen Suchläufe
+Diese Nachweise belegen die technische Schnittstelle. Der
+[Schema-3-Pilot](symbolic_pilot.md) verbindet sie inzwischen mit denselben
+Schema-2-Messdaten, drei Armen und gemeinsamen nachgelagerten Diagnosen.
+Die neuen Suchläufe
 müssen anschließend auf Manjaro und WSL2 geprüft werden. Statistische
 Rekonstruktionsleistung, physikalische Formelidentifikation und die
 wissenschaftliche Formelauswahl sind weiterhin offen.
