@@ -78,6 +78,8 @@ Verfügbare Prüfbefehle:
   für Julia-Verlustkern- und Konstantenoptimierer-Tests sowie Python-Replays.
 - `uv run --locked --python 3.12.14 python scripts/check_julia_startup.py`
   für gleichzeitige Starts bei fremder aktiver CondaPkg-Sperre.
+- `uv run --locked --python 3.12.14 python scripts/run_python.py scripts/check_symbolic_search.py`
+  für echte freie PySR-Suchen in getrennten Prozessen, Baumexport und Replay.
 
 Der technische Umgebungscheck prüft die Funktionsfähigkeit der
 Softwareumgebung. Wissenschaftliche Validierung benötigt fachliche Tests.

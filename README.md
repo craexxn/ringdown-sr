@@ -5,11 +5,11 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Dokumentationsstand: 21.10.2026.
+Dokumentationsstand: 22.10.2026.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
-Auf `main` vorhanden:
+Implementierter Stand:
 
 - Gleichmäßige Zeitachse und Generator für ein einzelnes gedämpftes
   Sinussignal: `src/ringdown_sr/signals.py`.
@@ -29,7 +29,7 @@ Auf `main` vorhanden:
 - Drei gekoppelte Referenzfits mit getrennten Hintergrundrollen und
   geschätzter Kovarianz im ausdrücklich versionierten Schema 2:
   `src/ringdown_sr/covariance_pilot.py`.
-- 468 automatisierte Python-Testfälle für diese Bausteine, einschließlich
+- 520 automatisierte Python-Testfälle für diese Bausteine, einschließlich
   analytischer Referenzfälle, ungültiger Eingaben und des Julia-Startwegs.
 - Julia-Verlustkern mit expliziter Einheitenprüfung, festem Fenster und
   voller Kovarianz sowie separaten Julia-Tests und Python-Replay.
@@ -38,13 +38,17 @@ Auf `main` vorhanden:
 - Festgelegte Python-/Julia-Umgebung und automatische GitHub-Prüfungen.
 - Isolierte Laufzeitvorbereitung ohne zusätzliche Conda-Python-Umgebung;
   Prüfung gleichzeitiger Starts bei fremder aktiver CondaPkg-Sperre.
+- Isolierter Adapter für einzelne freie PySR-Suchläufe mit vollständigem
+  Baumexport, festem Kovarianzkontext und Verlust-Replay aller Pareto-Kandidaten.
 
 Ein vollständiger kleiner Durchlauf mit bekanntem Formansatz ist vorhanden.
 Die Kovarianzschätzung ist mit Hintergrundrollen, drei Fit-Varianten und
 Exporten integriert. Der [Julia-Verlustkern](docs/julia_loss_kernel.md) ist als erster
 Baustein der freien Suche ergänzt. Die [Konstantenoptimiererprüfung](docs/constant_optimization.md)
 ergänzt die tatsächlichen Backend-Pfade bei fest vorgegebenen Strukturen.
-Die freie PySR-Suchanbindung und statistische Leistungsbewertung stehen noch aus.
+Der [freie Suchadapter](docs/symbolic_adapter.md) startet einzelne Arme in
+neuen Prozessen. Sein Anschluss an die vollständige Pilotpipeline und
+die statistische Leistungsbewertung stehen noch aus.
 Die wissenschaftlichen Hauptversuche und ihre Auswertung haben noch
 nicht begonnen.
 
@@ -59,7 +63,7 @@ Schema-1-Vergleiche und die neuen Schema-2-Nachweise auf Manjaro und WSL2
 am selben sauberen Commit. Auch der gepinnte Julia-Startweg ist lokal
 unter WSL2 bestätigt. Der [PySR-Methodenentwurf](docs/symbolic_regression_method_plan.md)
 wurde separat geprüft und um die Reviewpunkte präzisiert; seine
-weitere Such- und Ergebnisintegration steht noch aus.
+Ergebnisintegration in den Dreiarm-Pilot steht noch aus.
 
 ## Konfigurierter Durchlauf mit gespeicherten Ergebnissen
 
@@ -311,14 +315,12 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
 ## Nächste Schritte
 
-1. Den [geänderten Startweg](docs/julia_startup.md) technisch prüfen und
-   lokal auf Manjaro/WSL2 ausführen. Das methodische Review der
-   [Backend-Konstantenoptimiererprüfung](docs/constant_optimization.md)
-   zu PR #19 hat keine korrekturbedürftigen Fehler gefunden.
-2. Die freie PySR-Schnittstelle und Prozessisolation ergänzen und prüfen;
-   Alias-/Phasenfälle und eindeutig bezeichneten Score-Export umsetzen.
-3. Danach versionierte Konfiguration und Exporte integrieren und den
-   neuen SR-Adapter separat reviewen und auf beiden Rechnern prüfen.
+1. Den [freien Suchadapter](docs/symbolic_adapter.md) einschließlich
+   Callback-Bindung, Prozessisolation, Baumexport und Replay prüfen.
+2. Versionierte Konfiguration und Exporte für den vollständigen SR-Pilot
+   integrieren; weiße und AR(1)-Kontrollfälle mit drei Armen nachrechnen.
+3. Den neuen SR-Ablauf separat auf Manjaro/WSL2 prüfen. Vor einem späteren
+   Parameterexport die geplanten Alias-/Phasenfälle umsetzen.
    Die wissenschaftliche Formelauswahl wird gesondert festgelegt.
 
 Diese Schritte bilden die Arbeitsplanung für den Pilot.
