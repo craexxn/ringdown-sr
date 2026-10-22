@@ -1,6 +1,6 @@
 # Isolierter Adapter für freie PySR-Suchläufe
 
-Stand: 21.10.2026. Dieser Baustein setzt die freie Suchschnittstelle des
+Stand: 22.10.2026. Dieser Baustein setzt die freie Suchschnittstelle des
 [Methodenplans](symbolic_regression_method_plan.md) für einen einzelnen Arm um.
 Der geprüfte [Verlustkern](julia_loss_kernel.md) und die separat geprüfte
 [Konstantenoptimierung](constant_optimization.md) werden wiederverwendet.
@@ -71,7 +71,8 @@ technischer Arm-Auftrag, noch kein neues Dreiarm-Pilotschema.
 | `result.json` | Gesamte gefundene Pareto-Front, technische Auswahl, Baseline, Normalisierung, Callback-Zähler und Zeiten |
 | `search_state.jls`, `search_options.jls` | Versionsgebundene Julia-Serialisierungen; kein vollständiger RNG-Checkpoint und kein eigenständiges portables Dateiformat |
 | `pysr/` | Zusätzlich von PySR erzeugte Dateien; verkürzte Formeln und Pickle sind für unseren Verlust-Replay nicht maßgeblich |
-| `metadata.json` | Git-/Quellstand, Lockdatei-Prüfsummen, Software-/Numerikdiagnosen, Julia-/Backend-Version und Worker-Interpreter/PID |
+| `metadata_initial.json` | Unveränderliche erste Herkunftsaufnahme vor dem Workerstart: Git-/Quellstand, Lockdatei- und Adapterquell-Prüfsummen, Python-/Numerikumgebung und Elternprozess |
+| `metadata.json` | Ergänzte Herkunftsaufnahme mit Worker-Phase, vor `fit` erfasster Herkunft/Umgebung, Julia-/Backend-Version, Worker-Interpreter/PID und gegebenenfalls Fehlerdiagnose |
 | `RingdownSRLoss.jl`, `RingdownSRSearch.jl` | Tatsächlich verwendete projektspezifische Julia-Quellen |
 | `checksums.json` | SHA-256 aller abgeschlossenen Nutzdateien einschließlich PySR-Artefakten; das noch wachsende Log und der anschließend geschriebene Status sind ausgenommen |
 
@@ -92,13 +93,33 @@ fest. Die Reihenfolge der binären Teilausdrücke bleibt erhalten. Vor einem
 erfolgreichen Export wird er in Julia neu aufgebaut, erneut auf Einheiten
 geprüft und ausgewertet. Python wertet denselben Baum ohne SymPy-Umschreibung
 aus. Der Verlust wird zusätzlich mit dem Python-Rechenkern nachgerechnet.
-Vorhersagen werden mit `rtol=1e-12, atol=1e-14`, rohe/CSV-/Replay-Verluste
-mit `rtol=1e-10, atol=0` verglichen. Diese konservativen technischen Schranken
+Für den Vorhersagevergleich wird die gemeinsame Skala
+`s=max(max(abs(p_python)),max(abs(p_julia)))` verwendet. Für `s>0` werden
+**beide Vektoren zuerst durch `s` geteilt** und anschließend mit
+`rtol=1e-12, atol=1e-14` verglichen. Der absolute Anteil entspricht damit
+`1e-14*s` in den ursprünglichen Amplitudeneinheiten; es gibt keine feste
+Untergrenze von 1 oder einer anderen Amplitude. Die Division vor dem Vergleich
+vermeidet sowohl den Unterlauf einer winzigen absoluten Toleranz als auch
+den Überlauf einer unskalierten Differenz sehr großer Vorhersagen.
+Bei `s=0` sind beide Vektoren bereits exakt null. Der Vergleich kontrolliert
+die Vektoren relativ zu ihrer gemeinsamen Maximalamplitude, nicht die
+relative Genauigkeit jeder einzelnen sehr kleinen Komponente.
+Skala und maximale normierte Abweichung werden pro Kandidat unter
+`prediction_replay` gespeichert. Die Messwerte und die Zielfunktion werden
+durch diese reine Replay-Prüfung nicht skaliert.
+
+Rohe/CSV-/Replay-Verluste werden weiterhin mit `rtol=1e-10, atol=0` verglichen.
+Diese konservativen technischen Schranken
 lassen kleine Unterschiede elementarer Gleitkommafunktionen zu; sie sind
 keine allgemeine Fehlergarantie für beliebig schlecht konditionierte Bäume
 oder Kovarianzen. Ein nicht bestandener Replay beendet den Arm als Fehler,
 ohne Toleranzen nachträglich anzupassen. Ein exakter Nullverlust erhält kein
 Epsilon und muss auch im Verlust-Replay exakt null bleiben.
+
+Die Gegenprobe `y=0`, `C=1e-42*I`, `p=[1e-21,-1e-21]` und `-p` besitzt
+zweimal denselben Verlust von ungefähr 1. Die neue Vorhersageprüfung weist
+die Vorzeichenumkehr dennoch eindeutig zurück. Gleiche Verluste ersetzen
+daher weiterhin keinen gesonderten Vorhersagevergleich.
 
 `library_score` bezeichnet ausdrücklich `pysr.sr.calculate_scores` aus
 PySR 2.6.0 bei logarithmischer Skala. Nicht endliche Werte werden als `null`
@@ -124,6 +145,26 @@ haben keine zusätzliche Zeitgrenze; die Bootstrap-Fristen des Launchers
 gelten weiterhin. Die neue Schnittstelle ist bisher auf Linux-Ausführung
 ausgerichtet, native Windows-Ausführung ist nicht geprüft.
 
+Die erste Herkunftsaufnahme wird **vor dem Launcher-/Workerstart** in
+`metadata_initial.json` und zunächst auch in `metadata.json` gespeichert.
+Der Worker verändert die erste Datei nicht. In der ergänzten Datei bleiben
+`provenance` und `adapter_source_sha256` dieser ersten Aufnahme erhalten.
+Noch vor `model.fit` kommen `worker_provenance`,
+`worker_adapter_source_sha256`, tatsächliche Julia-Version/Projekt und
+die Worker-Umgebung mit Snapshotkennung `before_fit` hinzu. Nach erfolgreichem
+Replay ergänzt `environment_after_search` die später geladenen Bibliotheken;
+Git-Stand und Python-Quellprüfsummen werden nach `fit` nicht neu zugeordnet.
+Die beiden Herkunftsaufnahmen sind zeitlich bezeichnet und machen mögliche
+Checkout-Änderungen zwischen Eltern- und Workeraufnahme sichtbar.
+
+Worker-Fehler erhalten `phase=failed`, `failed_during` und eine Diagnose.
+Import-, Fit- und Replay-Fehler lassen alle bereits geschriebenen Aufnahmen
+erhalten. Stirbt der Worker vor eigener Fehlerbehandlung oder scheitert der
+Launcher, bleibt mindestens die erste Aufnahme bestehen. `status.json`
+enthält den vom Elternprozess beobachteten Abschluss; die Metadatenphase
+bezeichnet die zuletzt protokollierte Workerphase. Auch gescheiterte Läufe
+können so ihrem ursprünglichen Code-/Umgebungsstand zugeordnet werden.
+
 ## Prüfungen und nächste Integration
 
 ```bash
@@ -136,6 +177,12 @@ verlustbasierte Auswahl einschließlich eines späteren besseren Kandidaten,
 Score-Endlichkeit, exakte Baumkonstanten/Auswertungsreihenfolge,
 Prozessauftrag, exklusive Ausgaben und Fehler-/Abbruchbehandlung.
 Ein realer Prozessgruppentest sichert das Beenden eigener Unterprozesse ab.
+Zusätzliche Regressionstests weisen die gleich verlustbehaftete
+Vorzeichenumkehr bei `1e-21` zurück und prüfen Skalen von `1e-200` bis `1e200`,
+exakte Nullvektoren, Subnormalzahlen und große endliche Werte. Gezielte
+Import-, Fit- und Replay-Fehler prüfen die erhaltenen Anfangs- und
+Laufzeitmetadaten; eine während `fit` simulierte Quelländerung darf die
+vorher erfasste Herkunft nicht überschreiben.
 
 Das separate Integrationsskript startet echte `PySRRegressor.fit`-Suchen.
 Mit `C=[[2.5,1.5],[1.5,4.5]]`, `y=[1,0]` prüft es über den tatsächlich
@@ -149,13 +196,27 @@ und negativem Nullwert sowie volle Kovarianzquadratik werden unabhängig
 kontrolliert. Die tatsächliche Python-Score-Funktion muss beim ersten
 Nullverlust Score 0 und beim Übergang auf null einen unendlichen Score liefern.
 Die vorhandenen Newton-/BFGS-Referenzprüfungen bleiben ein eigener CI-Schritt.
+Eine zusätzliche echte Julia-Auswertung bei Amplitude `1e-21` bestätigt den
+korrekten Baum-Replay und den gewichteten Verlust 1; die Vorzeichenumkehr
+muss an der normierten Vorhersageprüfung scheitern. In den freien Suchläufen
+werden außerdem die unveränderte Anfangsaufnahme, die vor `fit` erfassten
+Metadaten und ihre Aufnahme in das Prüfsummenmanifest kontrolliert.
 
-Lokal bestanden am 21.10.2026 in der nativen Python-3.12.14-Umgebung der
-Codex-Ausführung 506 Python-Tests, die vorhandenen 283 Julia-Prüfungen,
+Am ursprünglichen Adapterstand `c129c8c` bestanden am 21.10.2026 in der
+nativen Python-3.12.14-Umgebung der Codex-Ausführung 506 Python-Tests,
+die vorhandenen 283 Julia-Prüfungen,
 zehn Residual-Replays und zwölf Optimierer-Nachrechnungen. Ein zusätzlicher
 allgemeiner Polynomlauf mit dem oben angegebenen Standardbudget exportierte
 vier Pareto-Kandidaten; alle bestanden Baum-Rückübertragung und Verlust-Replay.
 Das ist ein technischer Funktionsnachweis, keine neue Ringdown-Studie.
+
+Nach der Nachbesserung des fachlichen Reviews zu `c129c8c` bestanden lokal
+520 Python-Tests, darunter 14 zusätzliche Regressionstests. Die echte
+Julia-Auswertung bei Amplitude `1e-21`, alle drei freien A–B–A-Suchen und
+die Metadaten-/Prüfsummenkontrollen bestanden ebenfalls. Eine ausschließlich
+im Arbeitsspeicher deaktivierte Vorhersageprüfung lässt den neuen
+Worker-Gegenprobentest wie erwartet scheitern: Die Regression prüft damit
+auch die tatsächliche Einbindung des Vergleichs im Worker.
 
 Diese Nachweise belegen die technische Schnittstelle. Der nächste Schritt
 ist ein versionierter vollständiger SR-Pilot mit denselben Schema-2-Messdaten,

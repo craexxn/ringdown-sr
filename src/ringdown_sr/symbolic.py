@@ -14,12 +14,85 @@ from pathlib import Path
 import numpy as np
 
 from ringdown_sr.losses import CovarianceLoss, _real_array, mean_squared_error
-from ringdown_sr.pilot import _environment, _provenance, _write_json
+from ringdown_sr.pilot import _environment, _provenance, _utc_now, _write_json
 
 ROOT = Path(__file__).resolve().parents[2]
 FORMAT = "ringdown-sr-search-arm-1"
 BINARY = ("+", "-", "*", "/")
 UNARY = ("exp", "sin", "cos")
+
+
+def _check_prediction_replay(python_prediction, julia_prediction) -> dict:
+    """Compare predictions in their own amplitude units, without a unit-size floor.
+
+    Divide both vectors by their shared maximum absolute amplitude before
+    comparison. This avoids underflow of an absolute tolerance for subnormal
+    predictions and overflow of a raw difference at large amplitudes. A pair
+    of identically zero vectors needs no division and agrees exactly.
+    """
+    python_values = _real_array(python_prediction, "python_prediction")
+    julia_values = _real_array(julia_prediction, "julia_prediction")
+    if (
+        python_values.ndim != 1
+        or python_values.size == 0
+        or python_values.shape != julia_values.shape
+    ):
+        raise ValueError("Prediction replays need equal nonempty vector shapes.")
+    scale = max(
+        float(np.max(np.abs(python_values))), float(np.max(np.abs(julia_values)))
+    )
+    difference = 0.0
+    if scale != 0.0:
+        normalized_python = python_values / scale
+        normalized_julia = julia_values / scale
+        np.testing.assert_allclose(
+            normalized_python,
+            normalized_julia,
+            rtol=1e-12,
+            atol=1e-14,
+            err_msg="Python and Julia predictions disagree at their amplitude scale.",
+        )
+        difference = float(np.max(np.abs(normalized_python - normalized_julia)))
+    return {
+        "amplitude_scale": scale,
+        "scale_definition": "max_abs_of_both_predictions_no_floor",
+        "max_normalized_difference": difference,
+        "normalized_atol": 1e-14,
+        "rtol": 1e-12,
+    }
+
+
+def _environment_snapshot(phase: str, *, julia_used: bool) -> dict:
+    environment = _environment()
+    environment["numerical_libraries"]["snapshot"] = phase
+    environment["julia_used"] = julia_used
+    return environment
+
+
+def _adapter_source_hashes() -> dict:
+    return {
+        name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
+        for name in (
+            "scripts/run_python.py",
+            "scripts/run_symbolic_worker.py",
+            "julia/src/RingdownSRLoss.jl",
+            "julia/src/RingdownSRSearch.jl",
+        )
+    }
+
+
+def _initial_metadata() -> dict:
+    """Capture immutable provenance before any bootstrap or worker can fail."""
+    return {
+        "format": FORMAT,
+        "phase": "before_worker_start",
+        "captured_at": _utc_now(),
+        "provenance": _provenance(),
+        "environment": _environment_snapshot("before_worker_start", julia_used=False),
+        "adapter_source_sha256": _adapter_source_hashes(),
+        "parent_pid": os.getpid(),
+        "parent_python_executable": sys.executable,
+    }
 
 
 @dataclass(frozen=True)
@@ -255,6 +328,9 @@ def run_search_arm(
     _write_json(directory / "status.json", {"status": "running", "format": FORMAT})
     started = time.perf_counter()
     try:
+        metadata = _initial_metadata()
+        _write_json(directory / "metadata_initial.json", metadata)
+        _write_json(directory / "metadata.json", metadata)
         with (directory / "worker.log").open("w", encoding="utf-8") as log:
             completed = _run_worker(
                 [
@@ -324,6 +400,29 @@ def worker(directory: Path) -> None:
     if os.environ.get("PYTHON_JULIACALL_PROJECT") != str(ROOT / "julia"):
         raise RuntimeError("Run this worker through scripts/run_python.py.")
     started = time.perf_counter()
+    # Start from the on-disk snapshot, never recapture/replace the parent's origin.
+    metadata = json.loads((directory / "metadata_initial.json").read_text())
+    metadata.update(
+        phase="worker_start",
+        worker_started_at=_utc_now(),
+        worker_pid=os.getpid(),
+        python_executable=sys.executable,
+    )
+    _write_json(directory / "metadata.json", metadata)
+    try:
+        _worker_search(directory, metadata, started)
+    except BaseException as error:
+        metadata.update(
+            failed_during=metadata["phase"],
+            phase="failed",
+            failed_at=_utc_now(),
+            error=f"{type(error).__name__}: {error}",
+        )
+        _write_json(directory / "metadata.json", metadata)
+        raise
+
+
+def _worker_search(directory: Path, metadata: dict, started: float) -> None:
     request = json.loads((directory / "request.json").read_text())
     if set(request) != {"format", "budget"} or request["format"] != FORMAT:
         raise ValueError("Unsupported search-arm request.")
@@ -365,11 +464,30 @@ def worker(directory: Path) -> None:
         **parameters, output_directory=str(directory / "pysr"), run_id="search"
     )
     _write_json(directory / "pysr_parameters.json", model.get_params())
+    metadata.update(
+        phase="fit",
+        before_fit_at=_utc_now(),
+        worker_provenance=_provenance(),
+        worker_adapter_source_sha256=_adapter_source_hashes(),
+        environment=_environment_snapshot("before_fit", julia_used=True),
+        julia_version=str(jl.seval("string(VERSION)")),
+        symbolic_regression_version=str(
+            jl.seval("string(Base.pkgversion(SymbolicRegression))")
+        ),
+        active_julia_project=str(jl.seval("Base.active_project()")),
+    )
+    _write_json(directory / "metadata.json", metadata)
     before_fit = time.perf_counter()
     model.fit(
         time_values[:, None], target, variable_names=["t"], X_units=["s"], y_units="1"
     )
     after_fit = time.perf_counter()
+    metadata.update(
+        phase="replay",
+        after_fit_at=_utc_now(),
+        fit_wall_seconds=after_fit - before_fit,
+    )
+    _write_json(directory / "metadata.json", metadata)
     search_calls = int(backend.CALLS[()])
     options = backend.LAST_OPTIONS[()]
     dataset = backend.LAST_DATASET[()]
@@ -403,9 +521,7 @@ def worker(directory: Path) -> None:
         prediction, replay_loss = backend.replay(restored, options)
         prediction = np.asarray(prediction, dtype=np.float64)
         python_prediction = evaluate_tree(tree, time_values)
-        np.testing.assert_allclose(
-            python_prediction, prediction, rtol=1e-12, atol=1e-14
-        )
+        prediction_replay = _check_prediction_replay(python_prediction, prediction)
         residual = target - prediction
         python_residual = target - python_prediction
         python_loss = (
@@ -431,28 +547,11 @@ def worker(directory: Path) -> None:
                 "residual": residual.tolist(),
                 "julia_reimport_loss": float(replay_loss),
                 "python_loss": python_loss,
+                "prediction_replay": prediction_replay,
                 "units_status": "accepted_by_backend_wildcard_checker",
             }
         )
     selected = select_candidate(candidates)
-    metadata = {
-        "provenance": _provenance(),
-        "environment": _environment(),
-        "julia_version": str(jl.seval("string(VERSION)")),
-        "symbolic_regression_version": str(
-            jl.seval("string(Base.pkgversion(SymbolicRegression))")
-        ),
-        "worker_pid": os.getpid(),
-        "python_executable": sys.executable,
-        "active_julia_project": str(jl.seval("Base.active_project()")),
-        "adapter_source_sha256": {
-            name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
-            for name in ("scripts/run_python.py", "scripts/run_symbolic_worker.py")
-        },
-    }
-    metadata["environment"]["julia_used"] = True
-    metadata["environment"]["numerical_libraries"]["snapshot"] = "after_search"
-    _write_json(directory / "metadata.json", metadata)
     result = {
         "format": FORMAT,
         "evaluation_scope": "fitted_samples_only",
@@ -484,6 +583,12 @@ def worker(directory: Path) -> None:
         },
     }
     _write_json(directory / "result.json", result)
+    metadata.update(
+        phase="success",
+        completed_at=_utc_now(),
+        environment_after_search=_environment_snapshot("after_search", julia_used=True),
+    )
+    _write_json(directory / "metadata.json", metadata)
     checksums = {
         path.relative_to(directory).as_posix(): hashlib.sha256(
             path.read_bytes()

@@ -5,7 +5,7 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Dokumentationsstand: 21.10.2026.
+Dokumentationsstand: 22.10.2026.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
@@ -29,7 +29,7 @@ Implementierter Stand:
 - Drei gekoppelte Referenzfits mit getrennten Hintergrundrollen und
   geschätzter Kovarianz im ausdrücklich versionierten Schema 2:
   `src/ringdown_sr/covariance_pilot.py`.
-- 506 automatisierte Python-Testfälle für diese Bausteine, einschließlich
+- 520 automatisierte Python-Testfälle für diese Bausteine, einschließlich
   analytischer Referenzfälle, ungültiger Eingaben und des Julia-Startwegs.
 - Julia-Verlustkern mit expliziter Einheitenprüfung, festem Fenster und
   voller Kovarianz sowie separaten Julia-Tests und Python-Replay.

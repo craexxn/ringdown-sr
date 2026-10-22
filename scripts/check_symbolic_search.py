@@ -11,6 +11,7 @@ import numpy as np
 from ringdown_sr.symbolic import (
     ROOT,
     SearchBudget,
+    _check_prediction_replay,
     _export_tree,
     _import_tree,
     evaluate_tree,
@@ -80,6 +81,34 @@ def check_tree_and_score_references():
     residual = observed - expected
     reference_loss = residual @ np.linalg.solve(covariance, residual) / time.size
     np.testing.assert_allclose(loss, reference_loss, rtol=1e-13, atol=0)
+    # Physical-amplitude replay: equal quadratic losses cannot detect a sign error.
+    tiny_time = np.array([0.0, 1.0])
+    tiny_covariance = np.eye(2) * 1e-42
+    tiny_objective = jl.RingdownSRLoss.FixedWindowLoss(
+        array(tiny_time), array(np.zeros(2)), covariance=array(tiny_covariance)
+    )
+    tiny_root = b(3, c(1e-21), u(3, b(3, c(float(np.pi)), t)))
+    tiny_tree = _export_tree(tiny_root, options)
+    tiny_prediction, complete = jl.SymbolicRegression.eval_tree_array(
+        _import_tree(tiny_tree, backend), array(tiny_time.reshape(1, -1)), options
+    )
+    assert complete
+    tiny_python = evaluate_tree(tiny_tree, tiny_time)
+    tiny_check = _check_prediction_replay(tiny_python, np.asarray(tiny_prediction))
+    np.testing.assert_allclose(tiny_check["amplitude_scale"], 1e-21, rtol=1e-14, atol=0)
+    tiny_loss = float(
+        jl.RingdownSRLoss.candidate_loss(tiny_objective, tiny_root, options)
+    )
+    np.testing.assert_allclose(tiny_loss, 1.0, rtol=1e-14, atol=0)
+    try:
+        _check_prediction_replay(-tiny_python, np.asarray(tiny_prediction))
+    except AssertionError:
+        pass
+    else:
+        raise AssertionError("A sign reversal at amplitude 1e-21 was accepted.")
+    print(
+        "Tiny-amplitude Python/Julia replay passed; equal-loss sign reversal rejected."
+    )
     # Full tree round trips retain a nondecimal Float64 and signed zero too.
     for value in (np.nextafter(1.0, 2.0), -0.0, np.nextafter(0.0, 1.0)):
         exported = _export_tree(c(float(value)), options)
@@ -110,6 +139,26 @@ def check_arm(directory, covariance, expected_zero):
         raise AssertionError((directory / "worker.log").read_text())
     result = json.loads((directory / "result.json").read_text())
     metadata = json.loads((directory / "metadata.json").read_text())
+    initial = json.loads((directory / "metadata_initial.json").read_text())
+    assert initial["phase"] == "before_worker_start"
+    assert initial["parent_pid"] == os.getpid()
+    assert (
+        initial["environment"]["numerical_libraries"]["snapshot"]
+        == "before_worker_start"
+    )
+    assert metadata["provenance"] == initial["provenance"]
+    assert metadata["adapter_source_sha256"] == initial["adapter_source_sha256"]
+    assert (
+        metadata["worker_provenance"]["python_source_sha256"]
+        == initial["provenance"]["python_source_sha256"]
+    )
+    assert metadata["phase"] == "success"
+    assert metadata["before_fit_at"] and metadata["after_fit_at"]
+    assert metadata["environment"]["numerical_libraries"]["snapshot"] == "before_fit"
+    assert (
+        metadata["environment_after_search"]["numerical_libraries"]["snapshot"]
+        == "after_search"
+    )
     assert metadata["worker_pid"] != os.getpid()
     assert result["callback_calls_during_fit"] > 0
     np.testing.assert_allclose(

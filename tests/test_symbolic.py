@@ -7,6 +7,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -160,6 +161,61 @@ def test_tree_replay_rejects_invalid_trees(tree):
         symbolic.evaluate_tree(tree, [0, 1])
 
 
+def test_tiny_sign_reversal_with_identical_losses_is_rejected():
+    prediction = np.array([1e-21, -1e-21])
+    reversed_prediction = -prediction
+    objective = symbolic.CovarianceLoss(np.eye(2) * 1e-42)
+    # The old fixed-atol check and the loss check both accept this counterexample.
+    np.testing.assert_allclose(prediction, reversed_prediction, rtol=1e-12, atol=1e-14)
+    np.testing.assert_allclose(
+        [
+            objective.mean_squared(prediction),
+            objective.mean_squared(reversed_prediction),
+        ],
+        [1.0, 1.0],
+        rtol=1e-14,
+        atol=0,
+    )
+    with pytest.raises(AssertionError, match="amplitude scale"):
+        symbolic._check_prediction_replay(prediction, reversed_prediction)
+
+
+@pytest.mark.parametrize("amplitude", [1e-200, 1e-21, 1.0, 1e200])
+def test_prediction_replay_is_invariant_to_amplitude_units(amplitude):
+    expected = np.array([1.0, -2.0, 0.0]) * amplitude
+    nearby = np.array([1.0 + 2e-14, -2.0, 1e-15]) * amplitude
+    diagnostic = symbolic._check_prediction_replay(nearby, expected)
+    assert diagnostic["amplitude_scale"] == 2 * amplitude
+    assert diagnostic["max_normalized_difference"] < 2e-14
+    with pytest.raises(AssertionError):
+        symbolic._check_prediction_replay(expected * 1.001, expected)
+
+
+def test_prediction_replay_zero_subnormal_and_large_amplitudes():
+    zeros = symbolic._check_prediction_replay([0.0, -0.0], [0.0, 0.0])
+    assert zeros["amplitude_scale"] == zeros["max_normalized_difference"] == 0.0
+    subnormal = np.nextafter(0.0, 1.0)
+    tiny = symbolic._check_prediction_replay([subnormal], [subnormal])
+    assert tiny["amplitude_scale"] == subnormal
+    assert tiny["max_normalized_difference"] == 0.0
+    for first, second in (
+        ([subnormal], [-subnormal]),
+        ([0.0], [1e-21]),
+        ([1e308], [-1e308]),
+    ):
+        with np.errstate(over="raise"), pytest.raises(AssertionError):
+            symbolic._check_prediction_replay(first, second)
+
+
+@pytest.mark.parametrize(
+    "first,second",
+    [([], []), ([1.0, 2.0], [1.0]), ([[1.0]], [[1.0]]), ([math.nan], [0.0])],
+)
+def test_prediction_replay_requires_finite_equal_vectors(first, second):
+    with pytest.raises(ValueError):
+        symbolic._check_prediction_replay(first, second)
+
+
 @pytest.mark.parametrize(
     "time,target,covariance",
     [
@@ -221,6 +277,10 @@ def test_worker_receives_only_inputs_budget_and_literal_paths(tmp_path, monkeypa
 
 def test_nonzero_worker_preserves_logs_and_failure(tmp_path, monkeypatch):
     def fail(command, **kwargs):
+        initial = json.loads((tmp_path / "failure/metadata_initial.json").read_text())
+        assert initial["phase"] == "before_worker_start"
+        assert initial["provenance"]["python_source_sha256"]
+        assert initial["environment"]["python_version"]
         kwargs["stdout"].write("worker failed with diagnostic\n")
         return subprocess.CompletedProcess(command, 17)
 
@@ -233,6 +293,193 @@ def test_nonzero_worker_preserves_logs_and_failure(tmp_path, monkeypatch):
         == 17
     )
     assert (result.output_directory / "inputs.npz").exists()
+    assert json.loads(
+        (result.output_directory / "metadata.json").read_text()
+    ) == initial_metadata(result.output_directory)
+
+
+def initial_metadata(directory):
+    return json.loads((directory / "metadata_initial.json").read_text())
+
+
+@pytest.fixture
+def worker_failure_runtime(monkeypatch):
+    """Stub external runtime boundaries so failures exercise the real worker lifecycle."""
+    import pandas as pd
+
+    state = {"source": "before-search", "fit_calls": 0, "fail_fit": False}
+
+    def provenance():
+        return {
+            "git": {"commit": state["source"]},
+            "python_source_sha256": {"ringdown_sr/symbolic.py": state["source"]},
+        }
+
+    monkeypatch.setattr(symbolic, "_provenance", provenance)
+    monkeypatch.setattr(
+        symbolic,
+        "_environment",
+        lambda: {
+            "python_version": "3.12.14",
+            "packages": {"pysr": "2.6.0"},
+            "numerical_libraries": {},
+        },
+    )
+    backend = SimpleNamespace(
+        bind_context=lambda *args: None,
+        CALLS={(): 1},
+        LAST_OPTIONS={(): SimpleNamespace(seed=123)},
+        LAST_DATASET={(): SimpleNamespace(baseline_loss=1.0, use_baseline=True)},
+        constant=lambda value: value,
+        option_fields=lambda options: [],
+    )
+    member = SimpleNamespace(tree="fixed tree", loss=0.2)
+    jl = SimpleNamespace(
+        Array={float: "Float64Array"},
+        Float64=float,
+        RingdownSRSearch=backend,
+        include=lambda path: None,
+        seval=lambda code: "2.5.1" if "pkgversion" in code else "1.13.1",
+        SymbolicRegression=SimpleNamespace(
+            eval_loss=lambda *args: 0.5,
+            calculate_pareto_frontier=lambda hof: [member],
+            get_tree=lambda tree: tree,
+            compute_complexity=lambda tree, options: state.get("complexity", 1),
+        ),
+    )
+
+    class Model:
+        def __init__(self, **kwargs):
+            self.equations_ = pd.DataFrame(
+                {
+                    "loss": [state.get("loss", 0.2)],
+                    "complexity": [state.get("complexity", 1)],
+                    "score": [0.0],
+                    "equation": ["fixed test tree"],
+                }
+            )
+            self.julia_state_ = (None, "hof")
+            self.julia_state_stream_ = self.julia_options_stream_ = b"state"
+
+        def get_params(self):
+            return {"precision": 64}
+
+        def fit(self, *args, **kwargs):
+            state["fit_calls"] += 1
+            state["source"] = "changed-during-fit"
+            if state["fail_fit"]:
+                raise RuntimeError("injected fit failure")
+
+    monkeypatch.setitem(
+        sys.modules, "pysr", SimpleNamespace(__version__="2.6.0", PySRRegressor=Model)
+    )
+    monkeypatch.setitem(
+        sys.modules,
+        "juliacall",
+        SimpleNamespace(Main=jl, convert=lambda _, values: values),
+    )
+    monkeypatch.setenv("PYTHON_JULIACALL_PROJECT", str(symbolic.ROOT / "julia"))
+    state.update(backend=backend, member=member)
+    return state
+
+
+@pytest.mark.parametrize("phase", ["fit", "replay"])
+def test_failed_fit_or_replay_retains_initial_and_runtime_provenance(
+    tmp_path, monkeypatch, worker_failure_runtime, phase
+):
+    state = worker_failure_runtime
+    state["fail_fit"] = phase == "fit"
+
+    def replay_failure(*args):
+        raise RuntimeError("injected replay failure")
+
+    monkeypatch.setattr(symbolic, "_export_tree", replay_failure)
+    initial_bytes = []
+
+    def launch(command, **kwargs):
+        directory = Path(command[-1])
+        initial_bytes.append((directory / "metadata_initial.json").read_bytes())
+        with pytest.raises(RuntimeError, match=f"injected {phase} failure"):
+            symbolic.worker(directory)
+        return subprocess.CompletedProcess(command, 17)
+
+    monkeypatch.setattr(symbolic, "_run_worker", launch)
+    run = symbolic.run_search_arm([0.0, 1.0], [1.0, 0.0], output=tmp_path / phase)
+    directory = run.output_directory
+    assert run.status == "failed" and state["fit_calls"] == 1
+    assert (directory / "metadata_initial.json").read_bytes() == initial_bytes[0]
+    first = initial_metadata(directory)
+    current = json.loads((directory / "metadata.json").read_text())
+    assert first["provenance"]["git"]["commit"] == "before-search"
+    assert current["provenance"] == first["provenance"]
+    assert current["adapter_source_sha256"] == first["adapter_source_sha256"]
+    assert current["worker_provenance"]["git"]["commit"] == "before-search"
+    assert current["worker_provenance"]["python_source_sha256"]
+    assert current["environment"]["numerical_libraries"]["snapshot"] == "before_fit"
+    assert current["environment"]["julia_used"] is True
+    assert current["phase"] == "failed" and current["failed_during"] == phase
+    assert current["worker_pid"] == os.getpid() and current["julia_version"] == "1.13.1"
+    assert state["source"] == "changed-during-fit"
+
+
+def test_import_failure_preserves_origin_before_runtime_is_available(
+    tmp_path, monkeypatch
+):
+    monkeypatch.setitem(sys.modules, "pysr", None)
+    monkeypatch.setenv("PYTHON_JULIACALL_PROJECT", str(symbolic.ROOT / "julia"))
+
+    def launch(command, **kwargs):
+        with pytest.raises(ModuleNotFoundError):
+            symbolic.worker(Path(command[-1]))
+        return subprocess.CompletedProcess(command, 17)
+
+    monkeypatch.setattr(symbolic, "_run_worker", launch)
+    run = symbolic.run_search_arm([0.0], [1.0], output=tmp_path / "import-failure")
+    current = json.loads((run.output_directory / "metadata.json").read_text())
+    assert current["phase"] == "failed" and current["failed_during"] == "worker_start"
+    assert current["provenance"] == initial_metadata(run.output_directory)["provenance"]
+    assert current["provenance"]["python_source_sha256"]
+    assert current["environment"]["python_version"]
+    assert "julia_version" not in current
+
+
+def test_worker_rejects_tiny_sign_error_even_when_loss_replays_agree(
+    tmp_path, monkeypatch, worker_failure_runtime
+):
+    state = worker_failure_runtime
+    state.update(loss=1.0, complexity=7)
+    state["member"].loss = 1.0
+    prediction = np.array([1e-21, -1e-21])
+    state["backend"].replay = lambda *args: (-prediction, 1.0)
+    tree = operator(
+        "*",
+        constant(1e-21),
+        operator(
+            "cos", operator("*", constant(np.pi), {"kind": "variable", "index": 1})
+        ),
+    )
+    # Stub only the external tree transfer; evaluate the Python AST and all
+    # production replay checks normally. Both covariance losses would be 1.
+    monkeypatch.setattr(symbolic, "_export_tree", lambda *args: tree)
+    monkeypatch.setattr(symbolic, "_import_tree", lambda *args: "restored tree")
+
+    def launch(command, **kwargs):
+        with pytest.raises(AssertionError, match="amplitude scale"):
+            symbolic.worker(Path(command[-1]))
+        return subprocess.CompletedProcess(command, 17)
+
+    monkeypatch.setattr(symbolic, "_run_worker", launch)
+    run = symbolic.run_search_arm(
+        [0.0, 1.0],
+        [0.0, 0.0],
+        covariance=np.eye(2) * 1e-42,
+        output=tmp_path / "sign-error",
+    )
+    assert run.status == "failed"
+    current = json.loads((run.output_directory / "metadata.json").read_text())
+    assert (
+        current["failed_during"] == "replay" and "amplitude scale" in current["error"]
+    )
 
 
 def test_success_without_result_is_failed(tmp_path, monkeypatch):
