@@ -29,7 +29,7 @@ Implementierter Stand:
 - Drei gekoppelte Referenzfits mit getrennten Hintergrundrollen und
   geschätzter Kovarianz im ausdrücklich versionierten Schema 2:
   `src/ringdown_sr/covariance_pilot.py`.
-- 575 automatisierte Python-Testfälle für diese Bausteine, einschließlich
+- Automatisierte Python-Tests für diese Bausteine, einschließlich
   analytischer Referenzfälle, ungültiger Eingaben und des Julia-Startwegs.
 - Julia-Verlustkern mit expliziter Einheitenprüfung, festem Fenster und
   voller Kovarianz sowie separaten Julia-Tests und Python-Replay.
@@ -42,6 +42,8 @@ Implementierter Stand:
   Baumexport, festem Kovarianzkontext und Verlust-Replay aller Pareto-Kandidaten.
 - Vollständiger Schema-3-Pilot: drei freie SR-Arme auf denselben binären
   Eingaben, gemeinsame nachgelagerte Diagnosen und klassische Referenzen.
+- Unabhängige [Alias-/Phasenreferenzen](docs/alias_references.md) für
+  vorgegebene Ausdruckspaare, einschließlich kleiner Amplituden und Randfälle.
 
 Ein vollständiger kleiner Durchlauf mit bekanntem Formansatz ist vorhanden.
 Die Kovarianzschätzung ist mit Hintergrundrollen, drei Fit-Varianten und
@@ -73,8 +75,9 @@ rechnerübergreifend identische SR-Ergebnisse liegen nicht vor.
 Auch der gepinnte Julia-Startweg ist lokal
 unter WSL2 bestätigt. Der [PySR-Methodenentwurf](docs/symbolic_regression_method_plan.md)
 wurde separat geprüft und um die Reviewpunkte präzisiert. Die freie Suche
-ist im Dreiarm-Pilot integriert; Alias-/Parameterinterpretation und
-wissenschaftliche Formelauswahl bleiben gesonderte Folgeaufgaben.
+ist im Dreiarm-Pilot integriert. Die automatische Parameterinterpretation
+wird im [neuen Methoden- und Abnahmeplan](docs/parameter_interpretation_plan.md)
+vorbereitet; wissenschaftliche Formelauswahl bleibt eine gesonderte Aufgabe.
 
 ## Konfigurierter Durchlauf mit gespeicherten Ergebnissen
 
@@ -349,8 +352,11 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
    Numerikumgebungen vergleichen. Die Ausführung beider Vollprofile am
    sauberen Referenzcommit `6ed493d` ist bestätigt; die Ursache ihrer
    unterschiedlichen SR-Ergebnisse ist weiterhin offen.
-2. Vor einem späteren Parameterexport die geplanten Alias-/Phasenfälle
-   umsetzen und prüfen.
+2. Die bereits geprüften [Alias-/Phasenreferenzen](docs/alias_references.md)
+   für die [geplante Parameterinterpretation](docs/parameter_interpretation_plan.md)
+   nutzen: zunächst Erkennung geeigneter Bäume und rohe Koeffizienten,
+   anschließend abgesicherte Umrechnungen und lesender Diagnoseexport.
+   Der Methoden- und Abnahmeplan wird vor der Implementierung geprüft.
 3. Wissenschaftliche Formelauswahl und statistischen Versuchsplan gesondert
    begründen, bevor Leistungs- und Identifikationsaussagen untersucht werden.
 

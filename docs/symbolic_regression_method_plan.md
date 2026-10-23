@@ -355,6 +355,8 @@ prüfen exakte Periodendifferenzen und die Auswertung vorgegebener
 Ausdruckspaare, einschließlich Phasenumkehr, Faltungsgrenzen,
 Degenerationen und Gegenbeispielen zwischen Samples. Strukturerkennung
 und allgemeine numerisch abgesicherte Reduktion bleiben offen.
+Der [ergänzende Methoden- und Abnahmeplan](parameter_interpretation_plan.md)
+konkretisiert diese nächste Umsetzung als nachgelagerten Diagnosebaustein.
 
 ## 7. Konkreter Vorschlag für einen technischen Suchlauf
 

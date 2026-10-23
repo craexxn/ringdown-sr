@@ -109,6 +109,9 @@ ihnen abgeleitet. Die [Alias-/Phasenreferenzen](alias_references.md) sind
 als unabhängige Prüfungen vorgegebener Ausdruckspaare umgesetzt. Eine
 Strukturerkennung mit numerisch abgesicherter Parameterinterpretation
 bleibt Voraussetzung für einen späteren Parameterexport.
+Der [Methoden- und Abnahmeplan](parameter_interpretation_plan.md) beschreibt
+den vorgesehenen begrenzten Erkenner und die nachgelagerte Diagnose;
+dieser zusätzliche Baustein ist noch nicht implementiert.
 
 ## Dateien, Herkunft und Fehler
 
