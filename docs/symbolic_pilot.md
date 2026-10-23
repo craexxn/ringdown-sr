@@ -105,8 +105,10 @@ Generalisierungsprüfung nach Anpassung desselben Messfensters.
 
 Allgemeine SR-Ausdrücke erhalten `parameter_interpretation=not_attempted`.
 Frequenz, Abklingzeit und physikalische Identifikation werden nicht aus
-ihnen abgeleitet. Die vorgesehenen Alias-/Phasenreferenzen bleiben
-Voraussetzung für einen späteren Parameterexport.
+ihnen abgeleitet. Die [Alias-/Phasenreferenzen](alias_references.md) sind
+als unabhängige Prüfungen vorgegebener Ausdruckspaare umgesetzt. Eine
+Strukturerkennung mit numerisch abgesicherter Parameterinterpretation
+bleibt Voraussetzung für einen späteren Parameterexport.
 
 ## Dateien, Herkunft und Fehler
 
