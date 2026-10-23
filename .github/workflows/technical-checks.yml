@@ -61,3 +61,8 @@ jobs:
 
       - name: Check paired schema-3 symbolic pilots and independent metrics
         run: uv run --locked python scripts/check_symbolic_pilot.py --output results/ci-sr-controls
+
+      - name: Check read-only diagnostic export and comparison
+        run: |
+          uv run --locked python scripts/diagnose_symbolic_pilot.py export results/ci-sr-controls --label ci --output results/ci-diagnostics
+          uv run --locked python scripts/diagnose_symbolic_pilot.py compare results/ci-diagnostics results/ci-diagnostics --output results/ci-diagnostics-comparison.json

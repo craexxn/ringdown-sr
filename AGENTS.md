@@ -84,6 +84,10 @@ Verfügbare Prüfbefehle:
   für beide Schema-3-Kontrollfälle mit reduziertem, gespeichertem CI-Budget.
 - `uv run --locked python scripts/check_symbolic_pilot.py --verify results/sr-ar1-001`
   für die unabhängige Nachrechnung eines vorhandenen Schema-3-Ergebnisses.
+- `uv run --locked python scripts/diagnose_symbolic_pilot.py export results/sr-portability-001 --label manjaro --output results/diagnostics-manjaro-001`
+  für einen lesenden Diagnoseexport bestehender weißer/AR(1)-Läufe; keine Suche.
+- `uv run --locked python scripts/diagnose_symbolic_pilot.py compare results/diagnostics-manjaro-001 results/diagnostics-wsl2-001 --output results/diagnostics-comparison-001.json`
+  für den beschreibenden Vergleich zweier vorhandener Diagnosepakete.
 
 Der technische Umgebungscheck prüft die Funktionsfähigkeit der
 Softwareumgebung. Wissenschaftliche Validierung benötigt fachliche Tests.
