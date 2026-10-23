@@ -1,9 +1,13 @@
 # Methoden- und Abnahmeplan: Interpretation erkannter Ringdown-Ausdrücke
 
-Stand: 23.10.2026. **Entwurf für einen nachgelagerten Diagnosebaustein.**
+Stand: 23.10.2026. **Plan für einen nachgelagerten Diagnosebaustein.**
 Dieser Plan ergänzt den [SR-Methodenplan](symbolic_regression_method_plan.md)
 und die [Alias-/Phasenreferenzen](alias_references.md). Er ist noch keine
-Implementierung oder wissenschaftliche Identifikationsbewertung.
+vollständige Implementierung oder wissenschaftliche Identifikationsbewertung.
+Der [Strukturerkenner](structure_recognition.md) setzt inzwischen Schritt 1
+mit exakten rohen Koeffizienten um. Alle Aussagen zu Umrechnung,
+Nachrechnung, Aliasdiagnose und Diagnoseexport bleiben Anforderungen an
+die nachfolgenden Schritte.
 
 ## 1. Ziel und Abgrenzung
 
