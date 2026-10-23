@@ -13,7 +13,10 @@ erster Baustein implementiert. Die [Backend-Konstantenoptimiererprüfung](consta
 ergänzt nun die tatsächlichen Newton-/BFGS-Pfade mit unabhängigen Referenzen.
 Der [isolierte PySR-Suchadapter](symbolic_adapter.md) ergänzt nun freie
 Suchläufe, Prozessisolation und Baum-/Verlust-Replay für einzelne Arme.
-Die Ergebnisintegration in den vollständigen Pilot steht weiter aus.
+Der [Schema-3-Pilot](symbolic_pilot.md) integriert diese Sucharme inzwischen.
+Die [Alias-/Phasenreferenzen](alias_references.md) sichern seit 23.10.2026
+vorgegebene Ausdruckspaare ab; eine allgemeine Parameterinterpretation
+ist damit noch nicht implementiert.
 
 ## 1. Ausgangspunkt und Ziel
 
@@ -346,6 +349,12 @@ zusätzlichen physikalischen Annahmen begründete Identifikationsbewertung.
 Eine künftig ausgewiesene rohe oder aliasbezogene Parameterabweichung
 muss ihre Definition nennen; Sample-Äquivalenz allein ist kein Erfolg
 einer eindeutigen Rekonstruktion.
+
+Umsetzungsstand vom 23.10.2026: Die [unabhängigen Referenzfälle](alias_references.md)
+prüfen exakte Periodendifferenzen und die Auswertung vorgegebener
+Ausdruckspaare, einschließlich Phasenumkehr, Faltungsgrenzen,
+Degenerationen und Gegenbeispielen zwischen Samples. Strukturerkennung
+und allgemeine numerisch abgesicherte Reduktion bleiben offen.
 
 ## 7. Konkreter Vorschlag für einen technischen Suchlauf
 
