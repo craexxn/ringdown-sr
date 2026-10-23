@@ -163,11 +163,57 @@ Als konservativer Vorschlag für den reinen Diagnosebaustein:
    zuverlässig bestimmbare andere Parameter bleiben erhalten. Es gibt
    keinen stillen Float64-Modulo-Fallback.
 
-Bei expliziter Hz-Eingabe ist `q` direkt rational bestimmbar; für die
-Phase bleibt die `pi`-Reduktion erforderlich. Diese Schnittstelle wird
-zur unabhängigen Prüfung der vorhandenen Hz-Referenzen vorgesehen.
-Bauminterpretation und Hz-Hilfsfunktion müssen ihre Eingabebedeutung
-unterschiedlich protokollieren.
+### 4.1 Ausdrückliche Eingabearten der Referenzschnittstelle
+
+Frequenz- und Phasenbedeutung werden getrennt deklariert. Bei expliziter
+Hz-Eingabe ist `q` direkt rational bestimmbar. Für die Phase sind zwei
+ausdrücklich verschiedene Eingabearten vorgesehen:
+
+| Phasenart | Exakte Bedeutung und Verwendung |
+| --- | --- |
+| `radian_rational` | `d=p/q` Radiant mit rationalem `p/q`. Die Baumroute verwendet ausschließlich diese Art: hexadezimale Float64-Konstanten und daraus exakt extrahierte rationale Koeffizienten. |
+| `pi_multiple` | `d=r*pi` mit exakt rationalem `r`. Diese Art dient ausdrücklich deklarierten analytischen Referenzen; `r=1` bedeutet mathematisch exakt `pi`. |
+
+Art und rationaler Eingabewert werden protokolliert; in der Ausgabe bleiben
+beide unterscheidbar. Mehrdeutige Aufträge mit beiden Darstellungen oder
+unbekannter Art werden zurückgewiesen. Die Bedeutung wird weder anhand
+eines Dezimalwerts noch über eine Nähe-Toleranz erraten. Insbesondere darf
+eine Baumkonstante `float(pi)` nicht nachträglich als `pi_multiple=1`
+interpretiert werden.
+
+Für `radian_rational` gilt die Intervallentscheidung aus Abschnitt 4 mit
+`m=floor(s*d/(2*pi)+1/2)`. Für `pi_multiple` wird der gemeinsame Faktor
+`pi` vor der Intervallauswertung symbolisch gekürzt:
+`m=floor(s*r/2+1/2)` und `r_alias=s*r-2*m`. Diese Rechnung ist exakt
+rational und liefert `-1 <= r_alias < 1`; die Aliasphase ist
+`r_alias*pi`. Nur ihre spätere Float64-Darstellung benötigt gegebenenfalls
+einen `pi`-Einschluss. Dadurch bleibt auch der exakte Randfall `r=1`
+entscheidbar, ohne unabhängige Intervalle für denselben Faktor zu dividieren.
+
+Die vorhandene Referenztabelle in `test_alias_references.py` verwendet
+Phasen als rationale `pi`-Vielfache. Beim Prüfen des neuen Reduzierers
+werden deshalb diese Brüche direkt mit `pi_multiple` übergeben. Die
+Float64-Umrechnung für die dortige Kurvenauswertung darf nicht zur
+Eingabe des analytischen Grenztests werden. Baumphasen und explizite
+rationale Radiantwerte erhalten eigene, getrennt bestimmte Erwartungen.
+
+Für positive Orientierung `s=+1` sind folgende Fälle verpflichtend:
+
+| Eingabe | Phasenart | Reduktionsquotient `m` | Mathematische Aliasphase |
+| --- | --- | --- | --- |
+| `r=1`, also exakt `pi` | `pi_multiple` | 1 | exakt `-pi` |
+| `nextafter(float(pi), 0)` als exakter Binärbruch | `radian_rational` | 0 | unverändertes `d`, unterhalb von `pi` |
+| `float(pi)` als exakter Binärbruch | `radian_rational` | 0 | unverändertes `d`, unterhalb von `pi` |
+| `nextafter(float(pi), +inf)` als exakter Binärbruch | `radian_rational` | 1 | `d-2*pi`, strikt oberhalb von `-pi` |
+
+Die Fälle sind zusätzlich mit umgekehrter Orientierung und an der
+negativen Phasengrenze zu prüfen. Der Quotient wird unabhängig von der
+späteren Float64-Ausgabe kontrolliert: Gleiche gerundete Zahlen ersetzen
+keinen Nachweis gleicher exakter Eingaben oder Grenzentscheidungen.
+Insbesondere ist ein ausgegebener Wert `float(pi)` allein kein Beleg,
+dass die mathematische obere Intervallgrenze erreicht wurde.
+
+### 4.2 Grenzen der Identifizierbarkeit
 
 Bei exaktem Alias null oder Nyquist sind `A` und Phase nicht getrennt
 identifizierbar: Auf dem Raster wirkt nur `A*cos(d)`, gegebenenfalls mit
@@ -232,7 +278,8 @@ Suchläufe wird gesondert entschieden.
 | Ungültige Bäume | Nicht endliche Konstanten, falscher Variablen-/Operatorindex, Stelligkeit oder Kinderzahl sind erkennbare Eingabefehler |
 | Formzustände | Negative, null und positive `b` unterscheiden `decaying`, `undamped`, `growing`; keine positive Abklingzeit für `b>=0` erfinden |
 | Amplitude | Negatives `A` bleibt negativ. Exaktes null, `1e-21` und ein erst bei Float64-Konversion unterlaufender rationaler Wert bleiben unterscheidbar |
-| Hz-Referenzen | Die unabhängigen Vorgaben aus `test_alias_references.py` prüfen den neuen Reduzierer direkt, einschließlich negativer Frequenzen, Phasenumschlag und beider Nyquist-Nachbarn |
+| Hz-Referenzen | Die unabhängigen Vorgaben aus `test_alias_references.py` prüfen den neuen Reduzierer direkt mit expliziter Hz-Eingabe und unveränderten rationalen Phasenbrüchen der Art `pi_multiple`, einschließlich negativer Frequenzen, Phasenumschlag und beider Nyquist-Nachbarn |
+| Phasenarten und Grenzen | Die Fälle aus Abschnitt 4.1 prüfen `pi`, `float(pi)` und dessen direkte Nachbarn mit ihren getrennten Eingabearten und Reduktionsquotienten; auch negative Grenze und umgekehrte Orientierung. Keine implizite Umdeutung von Radiantwerten in `pi`-Vielfache; widersprüchliche Eingabearten werden abgelehnt |
 | Winkel statt Hz | `c=2*float(pi)*2048` darf nicht ungeprüft als exakt Nyquist klassifiziert werden; ebenso Gegensinn und Nachbarwerte prüfen |
 | `pi`-Einschluss | Machin-Winkelidentität über rationale Tangensrechnung prüfen; gerade/ungerade Partialsumme und nächster Restterm müssen echte einschließende Grenzen bilden |
 | Numerische Abwehr | Große Winkel/Frequenzen, beide Seiten von Faltungs- und Phasengrenzen sowie Rundungszellgrenzen führen zu korrekten Werten oder ausdrücklich unbestimmtem Status; niemals zu still verschobenen Grenzen |
