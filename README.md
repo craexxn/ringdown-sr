@@ -63,7 +63,14 @@ Details zum aktuellen Stand: [Pilot](docs/pilot.md),
 [Pilot mit geschätzter Kovarianz](docs/estimated_covariance_pilot.md).
 Das [Portabilitätsprotokoll](docs/portability.md) enthält die bisherigen
 Schema-1-Vergleiche und die neuen Schema-2-Nachweise auf Manjaro und WSL2
-am selben sauberen Commit. Auch der gepinnte Julia-Startweg ist lokal
+am selben sauberen Commit. Für Schema 3 sind auf Manjaro und WSL2 jeweils
+559 bestandene Tests, beide vollständigen Audits und Diagrammanzeigen am
+sauberen Commit `6ed493d` übermittelt. Zusätzliche Prüfungen bestätigen
+die gespeicherte Git-Herkunft aller Stufen. Die freie SR-Suche liefert dabei
+unterschiedliche Kandidatenzahlen und Verluste; die Ursache ist noch
+nicht bestimmt. Ausführbarkeit und lokale Konsistenz sind bestätigt,
+rechnerübergreifend identische SR-Ergebnisse liegen nicht vor.
+Auch der gepinnte Julia-Startweg ist lokal
 unter WSL2 bestätigt. Der [PySR-Methodenentwurf](docs/symbolic_regression_method_plan.md)
 wurde separat geprüft und um die Reviewpunkte präzisiert. Die freie Suche
 ist im Dreiarm-Pilot integriert; Alias-/Parameterinterpretation und
@@ -336,10 +343,12 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
 ## Nächste Schritte
 
-1. Die [Schema-3-Integration](docs/symbolic_pilot.md) hinsichtlich gemeinsamer
-   Eingaben, Datentrennung, eingefrorener Auswahl und Diagnosen prüfen.
-2. Den neuen SR-Ablauf separat auf Manjaro/WSL2 prüfen. Vor einem späteren
-   Parameterexport die geplanten Alias-/Phasenfälle umsetzen.
+1. Die [abweichenden SR-Kontrollläufe](docs/portability.md) auf Manjaro/WSL2
+   diagnostisch einordnen: gespeicherte numerische Eingaben, Seeds, Optionen
+   und Numerikumgebungen vergleichen. Die Ausführung beider Vollprofile
+   am sauberen Referenzcommit `6ed493d` ist bestätigt.
+2. Vor einem späteren Parameterexport die geplanten Alias-/Phasenfälle
+   umsetzen und prüfen.
 3. Wissenschaftliche Formelauswahl und statistischen Versuchsplan gesondert
    begründen, bevor Leistungs- und Identifikationsaussagen untersucht werden.
 
