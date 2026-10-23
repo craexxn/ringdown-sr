@@ -111,7 +111,9 @@ Strukturerkennung mit numerisch abgesicherter Parameterinterpretation
 bleibt Voraussetzung für einen späteren Parameterexport.
 Der [Methoden- und Abnahmeplan](parameter_interpretation_plan.md) beschreibt
 den vorgesehenen begrenzten Erkenner und die nachgelagerte Diagnose;
-dieser zusätzliche Baustein ist noch nicht implementiert.
+der [Erkenner mit rohen Koeffizienten](structure_recognition.md) ist als
+separates Modul umgesetzt. Numerische Parameter-/Aliasdiagnose und deren
+Export stehen noch aus; die bisherigen Pilotdateien bleiben unverändert.
 
 ## Dateien, Herkunft und Fehler
 
