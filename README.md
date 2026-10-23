@@ -5,7 +5,7 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Dokumentationsstand: 22.10.2026.
+Dokumentationsstand: 23.10.2026.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
@@ -29,7 +29,7 @@ Implementierter Stand:
 - Drei gekoppelte Referenzfits mit getrennten Hintergrundrollen und
   geschätzter Kovarianz im ausdrücklich versionierten Schema 2:
   `src/ringdown_sr/covariance_pilot.py`.
-- 559 automatisierte Python-Testfälle für diese Bausteine, einschließlich
+- 575 automatisierte Python-Testfälle für diese Bausteine, einschließlich
   analytischer Referenzfälle, ungültiger Eingaben und des Julia-Startwegs.
 - Julia-Verlustkern mit expliziter Einheitenprüfung, festem Fenster und
   voller Kovarianz sowie separaten Julia-Tests und Python-Replay.
@@ -344,9 +344,11 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 ## Nächste Schritte
 
 1. Die [abweichenden SR-Kontrollläufe](docs/portability.md) auf Manjaro/WSL2
-   diagnostisch einordnen: gespeicherte numerische Eingaben, Seeds, Optionen
-   und Numerikumgebungen vergleichen. Die Ausführung beider Vollprofile
-   am sauberen Referenzcommit `6ed493d` ist bestätigt.
+   mit dem [lesenden Diagnosewerkzeug](docs/portability_diagnostics.md)
+   einordnen: gespeicherte numerische Eingaben, Seeds, Optionen und
+   Numerikumgebungen vergleichen. Die Ausführung beider Vollprofile am
+   sauberen Referenzcommit `6ed493d` ist bestätigt; die Ursache ihrer
+   unterschiedlichen SR-Ergebnisse ist weiterhin offen.
 2. Vor einem späteren Parameterexport die geplanten Alias-/Phasenfälle
    umsetzen und prüfen.
 3. Wissenschaftliche Formelauswahl und statistischen Versuchsplan gesondert
