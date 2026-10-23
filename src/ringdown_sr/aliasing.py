@@ -226,7 +226,7 @@ def reduce_alias(
         if (
             frequency_field["status"] == "available"
             and degeneracy == "none"
-            and Fraction.from_float(frequency_field["value"]) in (0, fs / 2)
+            and not 0 < Fraction.from_float(frequency_field["value"]) < fs / 2
         ):
             frequency_field = _unresolved("boundary_rounding")
         result["frequency_alias_hz"] = frequency_field

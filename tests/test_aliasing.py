@@ -221,6 +221,71 @@ def test_inner_alias_cannot_become_an_exact_dc(tiny):
     assert report["degeneracy"] == "none"
 
 
+@pytest.mark.parametrize(
+    "sample_rate,rounded_hz",
+    [(Fraction(2, 5), 0.2), (2**54 + 3, float(2**53 + 2))],
+)
+@pytest.mark.parametrize("sign", [-1, 1])
+@pytest.mark.parametrize("side", [-1, 1])
+def test_inner_alias_rounding_above_exact_nyquist_is_unresolved(
+    sample_rate, rounded_hz, sign, side
+):
+    nyquist = Fraction(sample_rate) / 2
+    epsilon = Fraction(1, 10**30)
+    # Both sides fold to this inner value, whose nearest Float64 exceeds fs/2.
+    expected_alias = nyquist - epsilon
+    assert 0 < expected_alias < nyquist
+    assert float(expected_alias) == rounded_hz
+    assert Fraction.from_float(rounded_hz) > nyquist
+
+    report = reduce_alias(
+        sample_rate_hz=sample_rate,
+        frequency_hz=sign * (nyquist + side * epsilon),
+        phase=Phase("radian_rational", 0),
+    )
+    assert report["status"] == "numerical_unresolved"
+    assert report["reason"] == "boundary_rounding"
+    assert report["frequency_alias_hz"] == {
+        "value": None,
+        "status": "numerical_unresolved",
+        "reason": "boundary_rounding",
+    }
+    assert report["degeneracy"] == "none"
+    assert report["frequency_turns"] == ("0" if side < 0 else str(sign))
+    assert report["orientation"] == (sign if side < 0 else -sign)
+    assert report["phase_alias_rad"] == {
+        "value": 0.0,
+        "status": "available",
+        "reason": None,
+    }
+    assert ratio(report["sample_rate_hz_exact"]) == sample_rate
+    json.dumps(report, allow_nan=False)
+
+
+@pytest.mark.parametrize("sample_rate", [Fraction(2, 5), 2**54 + 3])
+@pytest.mark.parametrize(
+    "rate_fraction,degeneracy",
+    [(Fraction(0), "dc"), (Fraction(1, 4), "none"), (Fraction(1, 2), "nyquist")],
+)
+def test_nonrepresentable_nyquist_preserves_exact_boundaries_and_inner_values(
+    sample_rate, rate_fraction, degeneracy
+):
+    frequency = sample_rate * rate_fraction
+    report = reduce_alias(
+        sample_rate_hz=sample_rate,
+        frequency_hz=frequency,
+        phase=Phase("radian_rational", 0),
+    )
+    assert report["status"] == "available"
+    assert report["degeneracy"] == degeneracy
+    assert report["frequency_alias_hz"] == {
+        "value": float(frequency),
+        "status": "available",
+        "reason": None,
+    }
+    json.dumps(report, allow_nan=False)
+
+
 def test_extreme_angles_exhaust_the_budget_without_a_modulo_fallback():
     frequency = reduce_alias(
         sample_rate_hz=4096,

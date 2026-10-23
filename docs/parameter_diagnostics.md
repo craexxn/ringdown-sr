@@ -97,8 +97,11 @@ bestimmte Teilfelder bleiben bei einem später nicht bestimmbaren Feld
 erhalten. Die Gesamtverfügbarkeit erfordert beide numerischen Aliasfelder
 und eine bestimmte Randklassifikation.
 
-Ein nachweislich innerer Frequenzwert, der als Float64 auf null oder
-Nyquist rundet, bleibt `null` mit `boundary_rounding`. Beispiel:
+Ein nachweislich innerer Frequenzwert muss auch nach der Float64-Rundung
+strikt zwischen null und der exakten rationalen Nyquistgrenze `fs/2` liegen.
+Rundet er auf null, an die Nyquistgrenze oder darüber hinaus, bleibt er
+`null` mit `boundary_rounding`. Dies gilt auch, wenn `fs/2` selbst nicht als
+Float64 darstellbar ist. Beispiel:
 `c=2*float(pi)*2048` liegt mathematisch knapp unter Nyquist. Die rohe
 Hz-Ausgabe darf korrekt auf `2048` runden; die Aliasdiagnose kennzeichnet
 ihn dennoch als inneren Wert und gibt keinen falschen exakten Nyquistwert
