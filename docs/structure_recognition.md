@@ -3,8 +3,9 @@
 Stand: 23.10.2026. `src/ringdown_sr/structure.py` setzt Schritt 1 des
 [geprüften Methodenplans](parameter_interpretation_plan.md) um:
 Erkennung eines begrenzten Musters und Extraktion seiner rohen Koeffizienten.
-Numerische Nachrechnung, Parameterumrechnung, Aliasreduktion und der
-geplante Diagnoseexport sind noch nicht implementiert.
+Die separate [Parameter-/Aliasdiagnose](parameter_diagnostics.md) ergänzt
+inzwischen numerische Nachrechnung, Parameterumrechnung und Aliasreduktion.
+Der vollständige lesende Diagnoseexport steht noch aus.
 
 ## Schnittstelle und Ergebnis
 

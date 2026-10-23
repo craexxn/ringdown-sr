@@ -4,10 +4,11 @@ Stand: 23.10.2026. **Plan für einen nachgelagerten Diagnosebaustein.**
 Dieser Plan ergänzt den [SR-Methodenplan](symbolic_regression_method_plan.md)
 und die [Alias-/Phasenreferenzen](alias_references.md). Er ist noch keine
 vollständige Implementierung oder wissenschaftliche Identifikationsbewertung.
-Der [Strukturerkenner](structure_recognition.md) setzt inzwischen Schritt 1
-mit exakten rohen Koeffizienten um. Alle Aussagen zu Umrechnung,
-Nachrechnung, Aliasdiagnose und Diagnoseexport bleiben Anforderungen an
-die nachfolgenden Schritte.
+Der [Strukturerkenner](structure_recognition.md) setzt Schritt 1 mit exakten
+rohen Koeffizienten um. Die separate
+[Parameter-/Aliasdiagnose](parameter_diagnostics.md) ergänzt in Schritt 2
+abgesicherte Umrechnung und numerische Nachrechnung. Der lesende
+Diagnoseexport für vollständige gespeicherte Läufe bleibt Schritt 3.
 
 ## 1. Ziel und Abgrenzung
 
@@ -298,8 +299,9 @@ Suchläufe wird gesondert entschieden.
 Vor der Umsetzung sind besonders das begrenzte Erkennungsmuster, die
 Trennung reeller Algebra und Float64-Replay, Intervall-/Rundungsregeln
 sowie die Degenerationskennzeichnung methodisch zu prüfen. Die zusätzliche
-Intervallarithmetik ist ein konservativer Vorschlag für verlässliche
-Diagnosen; ihre Implementierung wird nicht durch dieses Dokument belegt.
+Intervallarithmetik ist eine konservative Vorgabe für verlässliche
+Diagnosen; ihre konkrete Umsetzung und Prüfgrenzen beschreibt die
+[Moduldokumentation](parameter_diagnostics.md).
 
 Wissenschaftliche Formelauswahl, Generalisierung, SNR-Studien und die
 Leistungsbewertung bleiben gesonderte Aufgaben. Die bisherigen Unterschiede
