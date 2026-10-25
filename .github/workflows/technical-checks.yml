@@ -62,6 +62,13 @@ jobs:
       - name: Check paired schema-3 symbolic pilots and independent metrics
         run: uv run --locked python scripts/check_symbolic_pilot.py --output results/ci-sr-controls
 
+      - name: Probe fixed trees and actual optimizer paths in fresh workers
+        run: >-
+          env OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+          uv run --locked python scripts/probe_symbolic_numerics.py
+          results/ci-sr-controls/white/symbolic/ordinary --label ci
+          --output results/ci-fixed-numerics
+
       - name: Check read-only diagnostic export and comparison
         run: |
           uv run --locked python scripts/diagnose_symbolic_pilot.py export results/ci-sr-controls --label ci --output results/ci-diagnostics
