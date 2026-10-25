@@ -46,6 +46,9 @@ Implementierter Stand:
   vorgegebene Ausdruckspaare, einschließlich kleiner Amplituden und Randfälle.
 - Begrenzter [Strukturerkenner](docs/structure_recognition.md) für exportierte
   Ringdown-Ausdrücke mit exakter rationaler Koeffizientenextraktion.
+- Separate [Parameter-/Aliasdiagnose](docs/parameter_diagnostics.md) mit
+  rationalen π-Einschlüssen, abgesicherten Rundungsentscheidungen und
+  Vorhersagevergleich gegen den unveränderten Originalbaum.
 
 Ein vollständiger kleiner Durchlauf mit bekanntem Formansatz ist vorhanden.
 Die Kovarianzschätzung ist mit Hintergrundrollen, drei Fit-Varianten und
@@ -77,10 +80,11 @@ rechnerübergreifend identische SR-Ergebnisse liegen nicht vor.
 Auch der gepinnte Julia-Startweg ist lokal
 unter WSL2 bestätigt. Der [PySR-Methodenentwurf](docs/symbolic_regression_method_plan.md)
 wurde separat geprüft und um die Reviewpunkte präzisiert. Die freie Suche
-ist im Dreiarm-Pilot integriert. Schritt 1 der
+ist im Dreiarm-Pilot integriert. Schritte 1 und 2 der
 [geplanten Parameterinterpretation](docs/parameter_interpretation_plan.md)
-ist als begrenzte Strukturerkennung umgesetzt. Numerische Nachrechnung,
-Parameterumrechnung und Aliasdiagnose stehen noch aus;
+sind als begrenzte Strukturerkennung und separate numerisch abgesicherte
+[Parameter-/Aliasdiagnose](docs/parameter_diagnostics.md) umgesetzt.
+Der lesende Export für vollständige gespeicherte Läufe steht noch aus;
 wissenschaftliche Formelauswahl bleibt eine gesonderte Aufgabe.
 
 ## Konfigurierter Durchlauf mit gespeicherten Ergebnissen
@@ -358,9 +362,9 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
    unterschiedlichen SR-Ergebnisse ist weiterhin offen.
 2. Die bereits geprüften [Alias-/Phasenreferenzen](docs/alias_references.md)
    für die [geplante Parameterinterpretation](docs/parameter_interpretation_plan.md)
-   nutzen: Der begrenzte Erkenner und die rohen Koeffizienten sind umgesetzt.
-   Als Nächstes folgen abgesicherte Umrechnungen, numerische Nachrechnung
-   und anschließend ein lesender Diagnoseexport gemäß geprüftem Plan.
+   nutzen: Erkenner, rohe Koeffizienten, abgesicherte Umrechnungen und
+   numerische Nachrechnung sind als separate Module umgesetzt. Als Nächstes
+   folgt der lesende Diagnoseexport gemäß geprüftem Plan.
 3. Wissenschaftliche Formelauswahl und statistischen Versuchsplan gesondert
    begründen, bevor Leistungs- und Identifikationsaussagen untersucht werden.
 

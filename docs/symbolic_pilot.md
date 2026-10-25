@@ -112,8 +112,10 @@ bleibt Voraussetzung für einen späteren Parameterexport.
 Der [Methoden- und Abnahmeplan](parameter_interpretation_plan.md) beschreibt
 den vorgesehenen begrenzten Erkenner und die nachgelagerte Diagnose;
 der [Erkenner mit rohen Koeffizienten](structure_recognition.md) ist als
-separates Modul umgesetzt. Numerische Parameter-/Aliasdiagnose und deren
-Export stehen noch aus; die bisherigen Pilotdateien bleiben unverändert.
+separates Modul umgesetzt. Die ebenfalls separate
+[Parameter-/Aliasdiagnose](parameter_diagnostics.md) ergänzt Umrechnung
+und numerische Nachrechnung. Ihr lesender Export steht noch aus;
+die bisherigen Pilotdateien bleiben unverändert.
 
 ## Dateien, Herkunft und Fehler
 
