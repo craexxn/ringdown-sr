@@ -127,3 +127,12 @@ ein Betriebsystemwechsel automatisch als Erklärung festgelegt.
 Die drei Dateien eines Diagnosepakets gemeinsam sichern bzw. übertragen.
 Die vollständigen ursprünglichen Ergebnisordner und vorhandenen
 Terminalprotokolle zusätzlich behalten; das kleine Paket ersetzt sie nicht.
+
+## Kontrollierte lokale Wiederholung
+
+Für zwei neue Suchen mit exakt denselben gespeicherten Eingaben und dem
+unveränderten Budget steht der separate
+[Wiederholungstest eines SR-Arms](symbolic_repeatability.md) bereit.
+Er verwendet einen vollständigen ursprünglichen Armordner und startet
+zwei frische Worker. Das lesende Export-/Vergleichswerkzeug selbst bleibt
+unverändert und startet weiterhin keine Suche.

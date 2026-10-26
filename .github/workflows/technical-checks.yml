@@ -82,3 +82,11 @@ jobs:
         run: |
           uv run --locked python scripts/diagnose_symbolic_pilot.py export results/ci-sr-controls --label ci --output results/ci-diagnostics
           uv run --locked python scripts/diagnose_symbolic_pilot.py compare results/ci-diagnostics results/ci-diagnostics --output results/ci-diagnostics-comparison.json
+
+      - name: Verify common BLAS core before and after two actual free searches
+        run: >-
+          env OPENBLAS_CORETYPE=Haswell
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+          uv run --locked python scripts/repeat_symbolic_arm.py
+          results/ci-sr-controls/white/symbolic/ordinary --label ci-haswell
+          --require-openblas-core Haswell --output results/ci-free-search-haswell

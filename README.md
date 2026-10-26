@@ -328,6 +328,13 @@ die noch ausstehenden methodischen Prüfungen und Experimente.
   Installationssperre; Details stehen im [Startweg](docs/julia_startup.md).
 - Die lokale `.venv` wird nicht mit Git versioniert.
 
+Die Rolle exakter Wiederholbarkeit gegenüber wissenschaftlicher Robustheit
+und die vorläufige gemeinsame BLAS-Kontrolle sind im
+[Entscheidungsvermerk](docs/reproducibility_decisions.md) festgehalten.
+Für den nächsten begrenzten Rechnervergleich steht der
+[wirkungsgeprüfte freie Suchlauf](docs/symbolic_repeatability.md#kontrollierte-freie-suche-mit-gemeinsamem-blas-kern)
+bereit. Diese Diagnose legt keine zusätzlichen Formelrestriktionen fest.
+
 Python-Aufrufe mit PySR oder JuliaCall werden über das Startskript
 ausgeführt. Beispiel aus dem Projektordner:
 

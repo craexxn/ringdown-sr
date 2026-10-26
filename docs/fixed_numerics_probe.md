@@ -5,7 +5,7 @@ WSL2-Eingaben liefern auf jedem Rechner lokal bitgleiche Fronten, zwischen
 Manjaro und WSL2 jedoch unterschiedliche Fronten. Die übermittelten
 BLAS-/OpenMP-Kontrollen mit Limit 1 ändern diese Fronten auf keinem der
 beiden Rechner. Das ist ein begrenzter Diagnosebefund; eine Ursache ist
-weiterhin nicht nachgewiesen.
+der unterschiedlichen freien Suchfronten weiterhin nicht nachgewiesen.
 
 `scripts/probe_symbolic_numerics.py` untersucht deshalb feste Bäume und
 ihre tatsächliche Konstantenoptimierung außerhalb der freien Suchgeschichte.
@@ -228,3 +228,31 @@ Intervention prüft deshalb nur den Einfluss dieser konkret bestätigten
 Kernwahl. Ein möglicher Effekt ist zunächst an den festen Diagnosen zu
 beurteilen; eine Erklärung der ursprünglichen freien Suchfronten benötigt
 gegebenenfalls deren anschließende kontrollierte Wiederholung.
+
+## Übermittelter Haswell-Vergleich vom 26.10.2026
+
+Beide übermittelten Archive `sr-core-control-manjaro-001.tar.gz` und
+`sr-core-control-wsl2-001.tar.gz` wurden gemeinsam unabhängig nachgerechnet.
+Alle vier Bedingungen liefen am protokollierten sauberen Referenzcommit
+`6ed493d` mit Treiber `ac41251` und identischen Quellen und Eingangsdaten.
+Die neuen Basis-Ergebnisdateien reproduzieren jeweils die alten Dateien.
+Unter Haswell sind die vollständigen numerischen Ergebnisdateien beider
+Rechner für alle acht Fälle bytegleich, einschließlich der gespeicherten
+Optimiererzustände. Ohne die gemeinsame Kernwahl bleiben zehn von 88
+Zuständen eines Workerpaars verschieden; zwei Endkonstanten unterscheiden
+sich um je eine Float64-Abstandsstufe. Die acht Endverluste sind schon
+ohne die gemeinsame Kernwahl bitgleich.
+
+Die Nachrechnung bestätigt 80 Paket-Prüfsummen, 32 übereinstimmende
+Herkunftsaufnahmen und 128 unabhängige Vorhersage-/Verlust-Replays. Die
+maximale Abweichung des produktiven Verlusts von der aus gespeicherten
+Float64-Residuen exakt rational berechneten Referenz beträgt drei ULP.
+Es wurden für diese Auswertung keine neuen Julia-Suchen gestartet.
+
+Damit ist die Kernwahl als Einflussfaktor für diese festen Fälle belegt.
+Die vollständige freie Suchgeschichte wurde nicht nachgestellt. Ihre
+anschließende Kontrolle ist in
+[`symbolic_repeatability.md`](symbolic_repeatability.md#kontrollierte-freie-suche-mit-gemeinsamem-blas-kern)
+beschrieben. Die methodische Reichweite dieser Vorgabe und die offene
+Entscheidung zum späteren Forschungsprofil stehen im
+[Entscheidungsvermerk](reproducibility_decisions.md).
