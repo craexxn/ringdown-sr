@@ -1,14 +1,19 @@
 # Lokaler Portabilitätscheck des Piloten
 
-Prüfstand: 22.10.2026. Der Schema-1-Kontrollvergleich vom 19.10.2026
+Prüfstand: 26.10.2026. Der Schema-1-Kontrollvergleich vom 19.10.2026
 wurde auf einem Manjaro-Laptop und einem Windows-Rechner mit Ubuntu unter
 WSL2 ausgeführt. Für Schema 2 sind inzwischen beide Rechner am selben
 Referenzcommit geprüft. Für Schema 3 sind Manjaro und WSL2 einschließlich
 der gespeicherten Git-Herkunft am selben Referenzcommit bestätigt. Die
-freien SR-Suchergebnisse unterscheiden sich zwischen diesen Rechnern.
-Die folgenden Nachweise beruhen auf den vom Nutzer übermittelten
+freien SR-Suchergebnisse der ursprünglichen Vollprofile unterscheiden sich
+zwischen diesen Rechnern. Die spätere Haswell-Kontrolle bestätigt gleiche
+freie Fronten für einen einzelnen eingefrorenen Weißrauscharm; sie ersetzt
+nicht die ursprünglichen Vollprofil-Nachweise.
+Die historischen Nachweise beruhen auf den vom Nutzer übermittelten
 Terminalausgaben und Diagrammbestätigungen sowie ergänzenden Diagnoseläufen
-in der Codex-Umgebung. Die lokalen Ergebnisdateien wurden nicht in dieses
+in der Codex-Umgebung. Neuere Diagnosepakete wurden dagegen an ihren
+übermittelten Dateibytes geprüft; ihr Umfang ist im jeweiligen späteren
+Abschnitt ausgewiesen. Die lokalen Ergebnisdateien wurden nicht in dieses
 Repository übernommen und müssen separat gesichert werden.
 
 ## Schema 1 vom 19.10.2026: Umfang und Codezustand
@@ -467,7 +472,38 @@ der einzelnen Arme zwischen Rechnern verglichen werden. Auch die
 Wiederholbarkeit auf demselben Rechner wurde mit diesen Einzelstarts
 nicht gesondert geprüft.
 
-Alle hier dokumentierten lokalen Nachweise wurden vom Nutzer übermittelt;
-die Manjaro-/WSL2-Ergebnisdateien wurden hier nicht eingelesen und keine
-neuen Suchen dafür ausgeführt. Die wissenschaftliche Leistungsbewertung,
+Die Nachweise dieser beiden ursprünglichen Vollprofile wurden vom Nutzer
+als Terminalausgaben und Diagrammbestätigungen übermittelt. Ihre vollständigen
+lokalen Ergebnisordner wurden damals nicht hier eingelesen und keine
+neuen Suchen dafür ausgeführt. Spätere Diagnosepakete werden gesondert
+ausgewiesen. Die wissenschaftliche Leistungsbewertung,
 unabhängige Generalisierung und Parameteridentifikation bleiben offen.
+
+## Diagnose vom 26.10.2026: gemeinsamer BLAS-Kern für einen freien Arm
+
+Nach Einfrieren derselben WSL2-Eingaben blieb der gewöhnliche Weißrauscharm
+auf jedem Gerät lokal wiederholbar, zwischen Geräten jedoch verschieden.
+Poollimits 1 allein änderten das nicht. Die folgende feste, gepaarte
+Kernkontrolle und zwei neue freie Haswell-Suchen je Gerät sind im
+[gemeinsamen Befund](symbolic_core_results.md) dokumentiert.
+
+Am protokollierten sauberen Prüfcommit `6ed493d` mit externem Werkzeugcommit
+`6b3d156` liefern alle vier freien Haswell-Läufe dieselbe vollständige
+Front mit sieben Kandidaten, gewählter Komplexität 12 und gewöhnlicher
+Trainings-MSE `0.054937397171508`. Die eigentlichen Archive wurden diesmal
+hier an ihren Dateibytes geprüft; 98 äußere Dateiprüfsummen und 28 eigene
+Kandidaten-Replays bestehen. Bäume, Konstanten und Vorhersage-/Residualbits
+stimmen überein; die Ergebnisdateien unterscheiden sich bei den Laufzeiten.
+
+Dieser Nachweis betrifft einen gewöhnlichen Weißrauscharm, eine eingefrorene
+Datenrealisierung und einen Seed. Er belegt keine neue rechnerübergreifende
+Gleichheit aller sechs ursprünglichen Schema-3-Arme. Die nativen freien
+Gegenbefunde stammen aus früheren Paketen mit dem damaligen Diagnosetreiber;
+eine frische gepaarte freie Baseline mit demselben umschlossenen Einstieg
+wurde nicht ausgeführt. Die genaue erste abweichende interne Operation
+der früheren freien Suche ist weiterhin nicht nachgestellt.
+
+Haswell bleibt eine explizite Diagnosevorgabe. Exakte Wiederholbarkeit,
+wissenschaftliche Robustheit und die offene Festlegung eines späteren
+Referenzprofils werden im
+[Entscheidungsvermerk](reproducibility_decisions.md) getrennt behandelt.

@@ -1,11 +1,14 @@
 # Feste SR-Bäume und Konstantenoptimierung vergleichen
 
-Stand: 26.10.2026. Die bisherigen Wiederholungen mit denselben eingefrorenen
-WSL2-Eingaben liefern auf jedem Rechner lokal bitgleiche Fronten, zwischen
-Manjaro und WSL2 jedoch unterschiedliche Fronten. Die übermittelten
-BLAS-/OpenMP-Kontrollen mit Limit 1 ändern diese Fronten auf keinem der
-beiden Rechner. Das ist ein begrenzter Diagnosebefund; eine Ursache ist
-der unterschiedlichen freien Suchfronten weiterhin nicht nachgewiesen.
+Stand: 26.10.2026. Ausgangspunkt waren lokal wiederholbare, zwischen
+Manjaro und WSL2 aber unterschiedliche freie Fronten bei denselben
+eingefrorenen WSL2-Eingaben. BLAS-/OpenMP-Poollimits 1 allein änderten
+diese Fronten auf keinem der beiden Rechner. Deshalb wurden feste Bäume
+und anschließend ein gemeinsamer OpenBLAS-Kern untersucht. Die festen
+Ergebnisse stehen unten; die nachfolgende freie Haswell-Suche liefert
+inzwischen dieselbe vollständige Front auf beiden Rechnern. Deren
+[begrenzter Befund](symbolic_core_results.md) erklärt nicht pauschal
+sämtliche historischen Schema-3-Ergebnisse.
 
 `scripts/probe_symbolic_numerics.py` untersucht deshalb feste Bäume und
 ihre tatsächliche Konstantenoptimierung außerhalb der freien Suchgeschichte.
@@ -250,9 +253,10 @@ Float64-Residuen exakt rational berechneten Referenz beträgt drei ULP.
 Es wurden für diese Auswertung keine neuen Julia-Suchen gestartet.
 
 Damit ist die Kernwahl als Einflussfaktor für diese festen Fälle belegt.
-Die vollständige freie Suchgeschichte wurde nicht nachgestellt. Ihre
-anschließende Kontrolle ist in
-[`symbolic_repeatability.md`](symbolic_repeatability.md#kontrollierte-freie-suche-mit-gemeinsamem-blas-kern)
-beschrieben. Die methodische Reichweite dieser Vorgabe und die offene
-Entscheidung zum späteren Forschungsprofil stehen im
+Die ursprüngliche freie Suchgeschichte wurde dabei nicht nachgestellt.
+Die inzwischen ausgeführte [freie Haswell-Kontrolle](symbolic_core_results.md)
+ergänzt den festen Befund; ihr
+[Ablauf](symbolic_repeatability.md#kontrollierte-freie-suche-mit-gemeinsamem-blas-kern)
+ist separat beschrieben. Die methodische Reichweite dieser Vorgabe und
+die offene Entscheidung zum späteren Forschungsprofil stehen im
 [Entscheidungsvermerk](reproducibility_decisions.md).

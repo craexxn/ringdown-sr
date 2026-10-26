@@ -331,9 +331,13 @@ die noch ausstehenden methodischen Prüfungen und Experimente.
 Die Rolle exakter Wiederholbarkeit gegenüber wissenschaftlicher Robustheit
 und die vorläufige gemeinsame BLAS-Kontrolle sind im
 [Entscheidungsvermerk](docs/reproducibility_decisions.md) festgehalten.
-Für den nächsten begrenzten Rechnervergleich steht der
-[wirkungsgeprüfte freie Suchlauf](docs/symbolic_repeatability.md#kontrollierte-freie-suche-mit-gemeinsamem-blas-kern)
-bereit. Diese Diagnose legt keine zusätzlichen Formelrestriktionen fest.
+Der [wirkungsgeprüfte freie Suchlauf](docs/symbolic_repeatability.md#kontrollierte-freie-suche-mit-gemeinsamem-blas-kern)
+wurde inzwischen zweimal je Rechner ausgeführt. Unter gemeinsamem Haswell-
+Kern stimmen die vollständigen Fronten des eingefrorenen gewöhnlichen
+Weißrauscharms auf Manjaro und WSL2 exakt überein. Der
+[Befund mit Prüfgrenzen](docs/symbolic_core_results.md) dokumentiert sieben
+Kandidaten je Lauf, die Nachrechnung und den historischen nativen Vergleich.
+Diese Diagnose legt keine zusätzlichen Formelrestriktionen fest.
 
 Python-Aufrufe mit PySR oder JuliaCall werden über das Startskript
 ausgeführt. Beispiel aus dem Projektordner:
@@ -361,12 +365,13 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 
 ## Nächste Schritte
 
-1. Die [abweichenden SR-Kontrollläufe](docs/portability.md) auf Manjaro/WSL2
-   mit dem [lesenden Diagnosewerkzeug](docs/portability_diagnostics.md)
-   einordnen: gespeicherte numerische Eingaben, Seeds, Optionen und
-   Numerikumgebungen vergleichen. Die Ausführung beider Vollprofile am
-   sauberen Referenzcommit `6ed493d` ist bestätigt; die Ursache ihrer
-   unterschiedlichen SR-Ergebnisse ist weiterhin offen.
+1. Den [begrenzten Haswell-Befund](docs/symbolic_core_results.md) einschließlich
+   Diagnosecode, Primärnachweisen und Aussagegrenzen prüfen. Für einen
+   eingefrorenen freien Arm ist Ergebnisgleichheit auf beiden Geräten
+   bestätigt; eine Erklärung sämtlicher ursprünglicher Vollprofil-
+   Unterschiede wird nicht behauptet. Das numerische Forschungsprofil und
+   Robustheitskontrollen über weitere Seeds und Rauschrealisierungen bleiben
+   vor einer Leistungsstudie gesondert festzulegen.
 2. Die bereits geprüften [Alias-/Phasenreferenzen](docs/alias_references.md)
    für die [geplante Parameterinterpretation](docs/parameter_interpretation_plan.md)
    nutzen: Erkenner, rohe Koeffizienten, abgesicherte Umrechnungen und

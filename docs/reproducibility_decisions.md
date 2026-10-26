@@ -54,8 +54,13 @@ unterstützen Haswell; daraus folgt keine allgemeine Vorgabe für andere Geräte
 Die [festen Kontrollfälle](fixed_numerics_probe.md) stimmen unter bestätigtem
 Haswell-Kern auf Manjaro und WSL2 bytegleich überein. Die neuen Basisläufe
 reproduzieren die früheren Unterschiede. Ob diese Kontrolle auch die bisher
-verschiedenen vollständigen freien Fronten vereinheitlicht, prüft der
-[nächste begrenzte Versuch](symbolic_repeatability.md#kontrollierte-freie-suche-mit-gemeinsamem-blas-kern).
+verschiedenen vollständigen freien Fronten vereinheitlicht, wurde inzwischen
+für den eingefrorenen gewöhnlichen Weißrauscharm geprüft: Alle vier
+Haswell-Läufe liefern auf den beiden Geräten dieselbe vollständige Front
+mit sieben Kandidaten. [Bedingungen, Nachrechnung und Grenzen](symbolic_core_results.md)
+sind gesondert dokumentiert. Die nativen freien Gegenbefunde stammen aus
+früheren Paketen mit dem damaligen Diagnosetreiber; eine neue gepaarte freie
+Baseline mit identischem umschlossenen Einstieg liegt nicht vor.
 
 **Vorläufige Entscheidung:** Haswell und Poollimit 1 dienen diesem gezielten
 Kontrollversuch. Sie sind noch keine dauerhaft beschlossene Anforderung an

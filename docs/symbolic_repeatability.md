@@ -1,6 +1,7 @@
 # Zwei lokale Wiederholungen mit eingefrorenen SR-Eingaben
 
-Stand: 23.10.2026. Das Skript `scripts/repeat_symbolic_arm.py` führt einen
+Ursprünglicher Ablauf: 23.10.2026; ergänzter Prüfstand: 26.10.2026.
+Das Skript `scripts/repeat_symbolic_arm.py` führt einen
 vorhandenen erfolgreichen SR-Arm zweimal über den bestehenden Suchadapter
 aus. Jeder Lauf erhält einen eigenen neuen Workerprozess und Ausgabeordner.
 Es gibt keine neue Datenerzeugung oder Kovarianzschätzung und keine Änderung
@@ -10,7 +11,10 @@ Ziel ist eine erste Prüfung lokaler Wiederholbarkeit. Die ursprünglichen
 Manjaro-/WSL2-Snapshots enthielten bereits geringfügig unterschiedliche
 Messdaten. Sie isolieren deshalb keinen reinen Rechnerwechsel bei bitgleichen
 Eingaben. Auch bei zwei identischen lokalen Wiederholungen wäre eine
-rechnerübergreifend identische Suche noch nicht belegt.
+rechnerübergreifend identische Suche noch nicht belegt. Inzwischen wurden
+identische Eingaben und die optionale Haswell-Kontrolle auf beiden Geräten
+geprüft: Der [gemeinsame Befund](symbolic_core_results.md) dokumentiert vier
+übereinstimmende freie Fronten und die Grenzen dieses einzelnen Kontrollfalls.
 
 ## Ausführung am bisherigen Referenzcheckout
 
@@ -234,3 +238,9 @@ Es ersetzt nicht die beiden Rechnerläufe mit dem unveränderten vollständigen
 Budget. Die zusätzlichen Python-Tests prüfen insbesondere Ablehnung vor
 der Suche, erhaltene Fehlernachweise, beidseitige Snapshot-Grenzen und die
 Unabhängigkeit des Abschlussstatus von exakter Frontgleichheit.
+
+Die beiden vollständigen Rechnerläufe sind inzwischen ausgeführt und an
+ihren übermittelten Artefakten nachgerechnet. Ihre sieben Kandidaten pro
+Lauf und vollständigen Fronten stimmen in allen vier Wiederholungen
+überein. [Befund und Reviewumfang](symbolic_core_results.md) unterscheiden
+diesen Nachweis vom kleinen CI-Aufruf und den vorherigen nativen Paketen.
