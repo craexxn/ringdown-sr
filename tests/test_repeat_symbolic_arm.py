@@ -315,3 +315,281 @@ def test_non_float64_inputs_are_rejected(source, tmp_path):
     seal(source)
     with pytest.raises(ValueError, match="Float64"):
         REPEAT.repeat(source, tmp_path / "out", label="test")
+
+
+def pool_environment():
+    return {
+        "numerical_libraries": {
+            "threadpools": {
+                "status": "available",
+                "details": [
+                    {
+                        "filepath": path,
+                        "architecture": "Haswell",
+                        "num_threads": 1,
+                        "user_api": "blas",
+                        "internal_api": "openblas",
+                    }
+                    for path in (
+                        "/venv/site-packages/numpy.libs/libnumpy.so",
+                        "/venv/site-packages/scipy.libs/libscipy.so",
+                        "/venv/julia/install/lib/julia/libopenblas64_.so",
+                    )
+                ],
+            }
+        }
+    }
+
+
+@pytest.fixture
+def core_probe(monkeypatch):
+    probe = REPEAT.load_core_probe()
+    monkeypatch.setattr(REPEAT, "load_core_probe", lambda: probe)
+    for key in (
+        "OPENBLAS_NUM_THREADS",
+        "OMP_NUM_THREADS",
+        "MKL_NUM_THREADS",
+        "NUMEXPR_NUM_THREADS",
+    ):
+        monkeypatch.setenv(key, "1")
+    monkeypatch.setenv("OPENBLAS_CORETYPE", "Haswell")
+    monkeypatch.setattr(
+        probe,
+        "metadata",
+        lambda: {
+            "provenance": {"git": {"commit": "source", "dirty": False}},
+            "adapter_source_sha256": {"adapter": "frozen-source"},
+            "environment": pool_environment(),
+        },
+    )
+    return probe
+
+
+def write_control(directory, probe):
+    metadata = REPEAT.read_json((directory / "metadata.json").read_bytes())
+    metadata.update(
+        environment=pool_environment(), environment_after_search=pool_environment()
+    )
+    write(directory / "metadata.json", metadata)
+    info = {
+        "format": REPEAT.CONTROL_FORMAT,
+        "status": "verified",
+        "required_openblas_core": "Haswell",
+        "tool_source_sha256": REPEAT.tool_hashes(),
+        "snapshots": {
+            phase: {
+                "environment": pool_environment(),
+                "openblas_coretype_environment": "Haswell",
+                "blas_control": probe.verify_blas_control(
+                    pool_environment(), "Haswell", require_julia=True
+                ),
+            }
+            for phase in ("before_fit", "after_search")
+        },
+    }
+    write(directory / "blas_control.json", info)
+    seal(directory)
+    checksum = REPEAT.read_json((directory / "checksums.json").read_bytes())
+    checksum["blas_control.json"] = hashlib.sha256(
+        (directory / "blas_control.json").read_bytes()
+    ).hexdigest()
+    write(directory / "checksums.json", checksum)
+
+
+def test_controlled_repeat_keeps_policy_and_seals_all_evidence(
+    source, tmp_path, monkeypatch, core_probe
+):
+    calls = []
+    dispatch = REPEAT.symbolic._run_worker
+    monkeypatch.setattr(
+        REPEAT,
+        "run_search_arm",
+        fake_runner(calls, change=lambda _, d: write_control(d, core_probe)),
+    )
+    report = REPEAT.repeat(
+        source, tmp_path / "out", label="controlled", required_openblas_core="Haswell"
+    )
+    assert report["status"] == "completed" and all(report["comparison"].values())
+    assert REPEAT.symbolic._run_worker is dispatch
+    assert len(calls) == 2 and calls[0]["budget"] == calls[1]["budget"]
+    assert report["control_initial"]["blas_control"]["status"] == "verified"
+    assert report["control_final"]["blas_control"]["status"] == "verified"
+    for run in report["runs"]:
+        assert set(run["blas_control"]["snapshots"]) == {"before_fit", "after_search"}
+    root = tmp_path / "out"
+    for name, expected in REPEAT.read_json(
+        (root / "checksums.json").read_bytes()
+    ).items():
+        assert hashlib.sha256((root / name).read_bytes()).hexdigest() == expected
+    assert (root / "probe_symbolic_numerics.py").read_bytes() == Path(
+        core_probe.__file__
+    ).read_bytes()
+
+
+def test_controlled_repetition_does_not_require_front_identity(
+    source, tmp_path, monkeypatch, core_probe
+):
+    calls = []
+
+    def change(number, directory):
+        if number == 2:
+            result = REPEAT.read_json((directory / "result.json").read_bytes())
+            result["candidates"][0]["loss"] = np.nextafter(1.0, 2.0)
+            write(directory / "result.json", result)
+        write_control(directory, core_probe)
+
+    monkeypatch.setattr(REPEAT, "run_search_arm", fake_runner(calls, change=change))
+    report = REPEAT.repeat(
+        source, tmp_path / "out", label="test", required_openblas_core="Haswell"
+    )
+    assert report["status"] == "completed"
+    assert report["comparison"]["front_bitwise_equal"] is False
+    assert report["comparison"]["source_matches_second_signature"] is False
+
+
+@pytest.mark.parametrize(
+    "failure",
+    [
+        "missing",
+        "wrong_core_before",
+        "wrong_core_after",
+        "changed_tools",
+        "mismatched_metadata",
+    ],
+)
+def test_worker_pool_proof_is_rechecked_by_parent(
+    source, tmp_path, monkeypatch, core_probe, failure
+):
+    calls = []
+    original = REPEAT.symbolic._run_worker
+
+    def change(_, directory):
+        write_control(directory, core_probe)
+        if failure == "missing":
+            (directory / "blas_control.json").unlink()
+            return
+        info = REPEAT.read_json((directory / "blas_control.json").read_bytes())
+        if failure.startswith("wrong_core"):
+            phase = "before_fit" if failure.endswith("before") else "after_search"
+            info["snapshots"][phase]["environment"]["numerical_libraries"][
+                "threadpools"
+            ]["details"][2]["architecture"] = "Zen"
+            metadata = REPEAT.read_json((directory / "metadata.json").read_bytes())
+            field = (
+                "environment" if phase == "before_fit" else "environment_after_search"
+            )
+            metadata[field] = info["snapshots"][phase]["environment"]
+            write(directory / "metadata.json", metadata)
+            seal(directory)
+        elif failure == "changed_tools":
+            info["tool_source_sha256"]["driver.py"] = "different"
+        else:
+            info["snapshots"]["before_fit"]["environment"]["different"] = True
+        write(directory / "blas_control.json", info)
+        checksums = REPEAT.read_json((directory / "checksums.json").read_bytes())
+        checksums["blas_control.json"] = hashlib.sha256(
+            (directory / "blas_control.json").read_bytes()
+        ).hexdigest()
+        write(directory / "checksums.json", checksums)
+
+    monkeypatch.setattr(REPEAT, "run_search_arm", fake_runner(calls, change=change))
+    with pytest.raises((ValueError, FileNotFoundError)):
+        REPEAT.repeat(
+            source, tmp_path / "out", label="test", required_openblas_core="Haswell"
+        )
+    report = REPEAT.read_json((tmp_path / "out/report.json").read_bytes())
+    assert report["status"] == "failed" and report["runs"][0]["status"] == "failed"
+    assert report["control_initial"] and (tmp_path / "out/checksums.json").is_file()
+    assert len(calls) == 1 and REPEAT.symbolic._run_worker is original
+
+
+@pytest.mark.parametrize(
+    "failure",
+    ["before_fit", "after_search", "fit_exception", "missing_boundaries", None],
+)
+def test_checks_execute_at_actual_worker_boundaries(
+    tmp_path, monkeypatch, core_probe, failure
+):
+    fits = []
+
+    def worker(directory):
+        if failure == "missing_boundaries":
+            return
+
+        # The captured original returns the selected phase's genuine fixture.
+        REPEAT.symbolic._environment_snapshot("before_fit", julia_used=True)
+        fits.append("fit")
+        if failure == "fit_exception":
+            raise RuntimeError("backend failed")
+        REPEAT.symbolic._environment_snapshot("after_search", julia_used=True)
+        # The real worker seals its control snapshot before returning.
+        write(
+            directory / "checksums.json",
+            {
+                "blas_control.json": hashlib.sha256(
+                    (directory / "blas_control.json").read_bytes()
+                ).hexdigest()
+            },
+        )
+
+    def environment(phase, **kwargs):
+        env = pool_environment()
+        if failure == phase:
+            env["numerical_libraries"]["threadpools"]["details"][2]["architecture"] = (
+                "Zen"
+            )
+        return env
+
+    monkeypatch.setattr(REPEAT.symbolic, "_environment_snapshot", environment)
+    monkeypatch.setattr(REPEAT.symbolic, "worker", worker)
+    if failure is None:
+        REPEAT.controlled_worker(tmp_path, "Haswell")
+        info = REPEAT.read_json((tmp_path / "blas_control.json").read_bytes())
+        assert info["status"] == "verified" and fits == ["fit"]
+        checksum = REPEAT.read_json((tmp_path / "checksums.json").read_bytes())
+        assert (
+            checksum["blas_control.json"]
+            == hashlib.sha256((tmp_path / "blas_control.json").read_bytes()).hexdigest()
+        )
+    else:
+        with pytest.raises((ValueError, RuntimeError)):
+            REPEAT.controlled_worker(tmp_path, "Haswell")
+        info = REPEAT.read_json((tmp_path / "blas_control.json").read_bytes())
+        assert info["status"] == "failed"
+        assert len(fits) == (
+            0 if failure in ("before_fit", "missing_boundaries") else 1
+        )
+    assert REPEAT.symbolic._environment_snapshot is environment
+
+
+def test_control_redirect_preserves_launcher_and_process_handler(tmp_path):
+    received = []
+
+    def original(command, **kwargs):
+        received.append((command, kwargs))
+        return "completed"
+
+    dispatch = REPEAT.controlled_dispatch(tmp_path, "Haswell", original)
+    command = [
+        REPEAT.sys.executable,
+        str(REPEAT.symbolic.ROOT / "scripts/run_python.py"),
+        str(REPEAT.symbolic.ROOT / "scripts/run_symbolic_worker.py"),
+        str(tmp_path / "run-1"),
+    ]
+    assert dispatch(command, stdout="log") == "completed"
+    assert received == [
+        (
+            [
+                *command[:2],
+                str(tmp_path / "driver.py"),
+                "--worker",
+                command[-1],
+                "--require-openblas-core",
+                "Haswell",
+            ],
+            {"stdout": "log"},
+        )
+    ]
+    with pytest.raises(ValueError, match="Unexpected worker command"):
+        dispatch([*command, "extra"], stdout="log")
+    assert len(received) == 1

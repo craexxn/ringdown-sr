@@ -62,7 +62,31 @@ jobs:
       - name: Check paired schema-3 symbolic pilots and independent metrics
         run: uv run --locked python scripts/check_symbolic_pilot.py --output results/ci-sr-controls
 
+      - name: Probe fixed trees and actual optimizer paths in fresh workers
+        run: >-
+          env -u OPENBLAS_CORETYPE
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+          uv run --locked python scripts/probe_symbolic_numerics.py
+          results/ci-sr-controls/white/symbolic/ordinary --label ci
+          --output results/ci-fixed-numerics
+
+      - name: Verify common Haswell BLAS core in fresh fixed-tree workers
+        run: >-
+          env OPENBLAS_CORETYPE=Haswell
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+          uv run --locked python scripts/probe_symbolic_numerics.py
+          results/ci-sr-controls/white/symbolic/ordinary --label ci-haswell
+          --require-openblas-core Haswell --output results/ci-fixed-numerics-haswell
+
       - name: Check read-only diagnostic export and comparison
         run: |
           uv run --locked python scripts/diagnose_symbolic_pilot.py export results/ci-sr-controls --label ci --output results/ci-diagnostics
           uv run --locked python scripts/diagnose_symbolic_pilot.py compare results/ci-diagnostics results/ci-diagnostics --output results/ci-diagnostics-comparison.json
+
+      - name: Verify common BLAS core before and after two actual free searches
+        run: >-
+          env OPENBLAS_CORETYPE=Haswell
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+          uv run --locked python scripts/repeat_symbolic_arm.py
+          results/ci-sr-controls/white/symbolic/ordinary --label ci-haswell
+          --require-openblas-core Haswell --output results/ci-free-search-haswell

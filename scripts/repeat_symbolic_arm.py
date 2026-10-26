@@ -2,14 +2,18 @@
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import math
+import os
+import sys
 from dataclasses import asdict
 from io import BytesIO
 from pathlib import Path
 
 import numpy as np
 
+from ringdown_sr import symbolic
 from ringdown_sr.pilot import _environment, _provenance, _utc_now, _write_json
 from ringdown_sr.symbolic import FORMAT, SearchBudget, run_search_arm, search_parameters
 
@@ -23,6 +27,141 @@ FILES = (
     "backend_options.json",
 )
 REPORT_FORMAT = "ringdown-sr-arm-repeatability-1"
+CONTROL_FORMAT = "ringdown-sr-search-blas-control-1"
+
+
+def load_core_probe():
+    """Load the unchanged, co-delivered fixed probe's verified pool checks."""
+    path = Path(__file__).resolve().with_name("probe_symbolic_numerics.py")
+    spec = importlib.util.spec_from_file_location("repeat_core_probe", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def controlled_worker(directory, required):
+    """Observe the existing worker at its own pre-fit and post-search boundaries."""
+    if required != "Haswell":
+        raise ValueError("The diagnostic worker requires the Haswell control.")
+    probe = load_core_probe()
+    probe.validate_core_request(required)
+    info = {
+        "format": CONTROL_FORMAT,
+        "status": "running",
+        "required_openblas_core": required,
+        "tool_source_sha256": tool_hashes(),
+        "snapshots": {},
+    }
+    path = directory / "blas_control.json"
+    _write_json(path, info)
+    original = symbolic._environment_snapshot
+
+    def snapshot(phase, *, julia_used):
+        environment = original(phase, julia_used=julia_used)
+        if phase in ("before_fit", "after_search"):
+            record = {
+                "captured_at_utc": _utc_now(),
+                "environment": environment,
+                "openblas_coretype_environment": os.environ.get("OPENBLAS_CORETYPE"),
+            }
+            info["snapshots"][phase] = record
+            _write_json(path, info)
+            probe.validate_core_request(required)
+            if not julia_used:
+                raise ValueError("The search boundary must include loaded Julia.")
+            record["blas_control"] = probe.verify_blas_control(
+                environment, required, require_julia=True
+            )
+            if phase == "after_search":
+                if set(info["snapshots"]) != {"before_fit", "after_search"}:
+                    raise ValueError("Missing pre-fit BLAS control.")
+                info["status"] = "verified"
+            _write_json(path, info)
+            print(f"Verified Haswell BLAS pools at {phase}; limits 1.", flush=True)
+        return environment
+
+    symbolic._environment_snapshot = snapshot
+    try:
+        symbolic.worker(directory)
+        if info["status"] != "verified":
+            raise ValueError("The worker did not visit both BLAS control boundaries.")
+    except BaseException as error:
+        info.update(status="failed", error=f"{type(error).__name__}: {error}")
+        _write_json(path, info)
+        raise
+    finally:
+        symbolic._environment_snapshot = original
+
+
+def tool_hashes():
+    parent = Path(__file__).resolve().parent
+    return {
+        name: digest((parent / filename).read_bytes())
+        for name, filename in (
+            ("driver.py", Path(__file__).name),
+            ("probe_symbolic_numerics.py", "probe_symbolic_numerics.py"),
+        )
+    }
+
+
+def controlled_dispatch(output, required, original):
+    """Redirect only the standard worker entry; preserve launcher and process handling."""
+
+    def run(command, *, stdout):
+        expected = [
+            sys.executable,
+            str(symbolic.ROOT / "scripts/run_python.py"),
+            str(symbolic.ROOT / "scripts/run_symbolic_worker.py"),
+        ]
+        if len(command) != 4 or command[:3] != expected:
+            raise ValueError("Unexpected worker command for the controlled search.")
+        return original(
+            [
+                *command[:2],
+                str(output / "driver.py"),
+                "--worker",
+                command[3],
+                "--require-openblas-core",
+                required,
+            ],
+            stdout=stdout,
+        )
+
+    return run
+
+
+def verify_worker_control(directory, metadata, required, expected_tools, probe):
+    content = (directory / "blas_control.json").read_bytes()
+    checksums = read_json((directory / "checksums.json").read_bytes())
+    if checksums.get("blas_control.json") != digest(content):
+        raise ValueError("Missing or mismatched worker BLAS control checksum.")
+    info = read_json(content)
+    if (
+        info["format"] != CONTROL_FORMAT
+        or info["status"] != "verified"
+        or info["required_openblas_core"] != required
+        or info["tool_source_sha256"] != expected_tools
+        or set(info["snapshots"]) != {"before_fit", "after_search"}
+    ):
+        raise ValueError("Incomplete worker BLAS control or changed diagnostic tools.")
+    for phase, field in (
+        ("before_fit", "environment"),
+        ("after_search", "environment_after_search"),
+    ):
+        record = info["snapshots"][phase]
+        if (
+            record["environment"] != metadata[field]
+            or record["openblas_coretype_environment"] != required
+        ):
+            raise ValueError("Worker BLAS control differs from its search metadata.")
+        if (
+            probe.verify_blas_control(
+                record["environment"], required, require_julia=True
+            )
+            != record["blas_control"]
+        ):
+            raise ValueError("Worker BLAS control does not match the loaded pools.")
+    return info
 
 
 def read_json(data):
@@ -99,13 +238,24 @@ def source_bytes(source):
     return contents
 
 
-def repeat(source, output, *, label):
+def repeat(source, output, *, label, required_openblas_core=None):
     """Run two fresh workers, recording exact snapshots and descriptive equality."""
     source, output = Path(source).resolve(), Path(output).resolve()
     if output.is_relative_to(source):
         raise ValueError("Output must be outside the source arm.")
     if not label.strip():
         raise ValueError("A nonempty machine label is required.")
+    probe = None
+    initial_control = None
+    expected_tools = None
+    if required_openblas_core is not None:
+        probe = load_core_probe()
+        probe.validate_core_request(required_openblas_core)
+        initial_control = probe.metadata()
+        initial_control["blas_control"] = probe.verify_blas_control(
+            initial_control["environment"], required_openblas_core, require_julia=False
+        )
+        expected_tools = tool_hashes()
     contents = source_bytes(source)
     request = read_json(contents["request.json"])
     if set(request) != {"format", "budget"} or request["format"] != FORMAT:
@@ -141,6 +291,10 @@ def repeat(source, output, *, label):
     for name, data in contents.items():
         (frozen / name).write_bytes(data)
     (output / "driver.py").write_bytes(Path(__file__).read_bytes())
+    if probe is not None:
+        (output / "probe_symbolic_numerics.py").write_bytes(
+            Path(probe.__file__).read_bytes()
+        )
     report = {
         "format": REPORT_FORMAT,
         "status": "running",
@@ -157,9 +311,17 @@ def repeat(source, output, *, label):
         "source_signature": original,
         "runs": [],
         "comparison": None,
+        "required_openblas_core": required_openblas_core,
+        "control_initial": initial_control,
+        "tool_source_sha256": expected_tools,
     }
     _write_json(output / "report.json", report)
+    original_dispatch = symbolic._run_worker
     try:
+        if probe is not None:
+            symbolic._run_worker = controlled_dispatch(
+                output, required_openblas_core, original_dispatch
+            )
         for number in (1, 2):
             if source_bytes(source) != contents:
                 raise ValueError(
@@ -202,6 +364,24 @@ def repeat(source, output, *, label):
                 raise ValueError("A repetition changed the recorded search policy.")
             result = read_json((directory / "result.json").read_bytes())
             metadata = read_json((directory / "metadata.json").read_bytes())
+            if probe is not None:
+                record.update(search_status=run.status, status="running")
+                record["blas_control"] = verify_worker_control(
+                    directory, metadata, required_openblas_core, expected_tools, probe
+                )
+                for key in ("provenance", "worker_provenance"):
+                    if metadata[key] != initial_control["provenance"]:
+                        raise ValueError("Search source provenance changed.")
+                for key in ("adapter_source_sha256", "worker_adapter_source_sha256"):
+                    if metadata[key] != initial_control["adapter_source_sha256"]:
+                        raise ValueError("Search adapter sources changed.")
+                if tool_hashes() != expected_tools:
+                    raise ValueError("The diagnostic tool sources changed.")
+                print(
+                    "Verified OpenBLAS: Haswell for NumPy, SciPy and Julia; pool limits 1.",
+                    flush=True,
+                )
+                record["status"] = "success"
             record.update(
                 signature=signature(result),
                 parameters=parameters_without_output(actual_parameters),
@@ -219,9 +399,33 @@ def repeat(source, output, *, label):
                     )
                 },
             )
+            selected = result["candidates"][result["selected_index"]]
+            print(
+                f"Repetition {number}: {len(result['candidates'])} candidates; "
+                f"selected loss {float(selected['loss']):.17g}.",
+                flush=True,
+            )
             _write_json(output / "report.json", report)
         if source_bytes(source) != contents:
             raise ValueError("Source artifacts changed during the repetition check.")
+        if probe is not None:
+            final_control = probe.metadata()
+            report["control_final"] = final_control
+            final_control["blas_control"] = probe.verify_blas_control(
+                final_control["environment"],
+                required_openblas_core,
+                require_julia=False,
+            )
+            if (
+                any(
+                    final_control[key] != initial_control[key]
+                    for key in ("provenance", "adapter_source_sha256")
+                )
+                or tool_hashes() != expected_tools
+            ):
+                raise ValueError(
+                    "Runtime or diagnostic sources changed during repetition."
+                )
         first, second = report["runs"]
         a, b = first["signature"], second["signature"]
         report["comparison"] = {
@@ -250,8 +454,18 @@ def repeat(source, output, *, label):
         report.update(status="failed", error=f"{type(error).__name__}: {error}")
         raise
     finally:
+        symbolic._run_worker = original_dispatch
         report["finished_at_utc"] = _utc_now()
         _write_json(output / "report.json", report)
+        if probe is not None:
+            _write_json(
+                output / "checksums.json",
+                {
+                    path.relative_to(output).as_posix(): digest(path.read_bytes())
+                    for path in sorted(output.rglob("*"))
+                    if path.is_file() and path != output / "checksums.json"
+                },
+            )
     print(json.dumps(report["comparison"], indent=2), flush=True)
     print(f"Report: {output / 'report.json'}", flush=True)
     return report
@@ -259,11 +473,27 @@ def repeat(source, output, *, label):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("source", type=Path, help="A completed symbolic arm directory")
-    parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--label", required=True)
+    parser.add_argument(
+        "source", type=Path, nargs="?", help="A completed symbolic arm directory"
+    )
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--label")
+    parser.add_argument("--require-openblas-core", choices=("Haswell",))
+    parser.add_argument("--worker", type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args()
-    repeat(args.source, args.output, label=args.label)
+    if args.worker:
+        if args.require_openblas_core != "Haswell":
+            parser.error("The diagnostic worker requires the Haswell control.")
+        controlled_worker(args.worker.resolve(), args.require_openblas_core)
+    elif args.source and args.output and args.label:
+        repeat(
+            args.source,
+            args.output,
+            label=args.label,
+            required_openblas_core=args.require_openblas_core,
+        )
+    else:
+        parser.error("Provide source, --output and --label.")
 
 
 if __name__ == "__main__":
