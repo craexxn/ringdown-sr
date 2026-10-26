@@ -1,6 +1,6 @@
 # Feste SR-Bäume und Konstantenoptimierung vergleichen
 
-Stand: 25.10.2026. Die bisherigen Wiederholungen mit denselben eingefrorenen
+Stand: 26.10.2026. Die bisherigen Wiederholungen mit denselben eingefrorenen
 WSL2-Eingaben liefern auf jedem Rechner lokal bitgleiche Fronten, zwischen
 Manjaro und WSL2 jedoch unterschiedliche Fronten. Die übermittelten
 BLAS-/OpenMP-Kontrollen mit Limit 1 ändern diese Fronten auf keinem der
@@ -12,6 +12,23 @@ ihre tatsächliche Konstantenoptimierung außerhalb der freien Suchgeschichte.
 Es ist ein Diagnosewerkzeug für den gewöhnlichen Weißrausch-Arm, keine
 Änderung des Piloten, seiner Zielfunktion oder seiner wissenschaftlichen
 Auswahlregeln. Es erzeugt keine neuen Daten und startet keine freie Suche.
+
+Die am 25.10.2026 übermittelten und gemeinsam nachgerechneten festen
+Diagnosepakete bestätigen lokal jeweils zwei identische Wiederholungen.
+Alle acht Ausgangsvorhersagen und -verluste sowie alle vier Newton-
+Optimiererverläufe stimmen zwischen den Rechnern bitgenau überein.
+Drei von vier BFGS-Fällen enthalten unterschiedliche Zwischenzustände;
+bei zwei Fällen bleibt eine Konstante um eine Float64-Abstandsstufe
+verschieden. Die acht Endverluste sind jeweils bitgleich. Alle 64
+Ausgangs-/Endauswertungen wurden unabhängig nachgerechnet; der maximale
+Verlustabstand zur exakt rational berechneten Quadratsumme der gespeicherten
+Residuen beträgt drei ULP. Das belegt keine Ursache der früheren
+verschiedenen freien Fronten.
+
+Die NumPy-/SciPy-/Julia-OpenBLAS-Kerne waren trotz Poollimit 1 unterschiedlich:
+WSL2 meldete Haswell/Haswell/Zen, Manjaro dreimal SkylakeX. Das separate
+Skalarprodukt unterscheidet sich teilweise schon bei bitgleichen Residuen.
+Dies begründet die folgende gezielte Kontrolle der Kernwahl.
 
 ## Fälle und feste Vorgaben
 
@@ -145,3 +162,69 @@ weißen Schema-3-Kontrollarm aus. Dabei müssen beide echten Worker alle
 acht Fälle, tatsächlichen Optimiererpfade und Python-Replays bestehen.
 Dieser kleine CI-Lauf ersetzt die folgenden Manjaro-/WSL2-Vergleiche mit
 den ursprünglichen 128 Samples nicht.
+
+## Optionale Kontrolle mit gemeinsamem OpenBLAS-Kern
+
+Für die nächste Intervention wird vor dem Start aller Python-/Julia-Prozesse
+`OPENBLAS_CORETYPE=Haswell` gesetzt, zusammen mit den vier Threadlimits 1.
+Die [offizielle OpenBLAS-Anleitung](https://github.com/OpenMathLib/OpenBLAS/blob/develop/USAGE.md)
+beschreibt diese Kernwahl für `DYNAMIC_ARCH`-Builds. Die beiden untersuchten
+CPUs unterstützen den gemeinsamen Haswell-Befehlssatz; die geladenen
+Bibliotheken müssen den Kern tatsächlich anbieten und auswählen.
+
+Das zusätzliche Argument `--require-openblas-core Haswell` aktiviert eine
+strikte Wirkungskontrolle. Die Kernvariable wird vom Treiber aufgezeichnet,
+jedoch nicht nachträglich im laufenden Prozess geändert. Der Elternprozess
+prüft die bereits geladenen Python-BLAS-Bibliotheken. Jeder frische Worker
+prüft nach dem Julia-Import vor dem ersten Optimierungsfall und nach dem
+letzten Fall alle geladenen BLAS-Pools. Erforderlich sind verifizierte
+NumPy-, SciPy- und Julia-Bibliotheken, ausschließlich OpenBLAS mit gemeldetem
+Kern `Haswell`, sowie Limit 1 für alle erfassten BLAS-/OpenMP-Pools.
+Fehlende Diagnosen, eine fehlende Julia-Bibliothek, ein anderer Kern oder
+ein anderes Limit brechen den Kontrolllauf mit erhaltenen Metadaten ab.
+Der Elternprozess prüft zusätzlich die gespeicherten Workeraufnahmen.
+
+Die acht Fälle, Starts und der eingebettete Julia-Code der tatsächlichen
+Optimierung bleiben unverändert. Dessen SHA-256 ist weiterhin
+`8481613c28f91e01772f7c30686ba17f0746d4c77e580bfb1af2e597ce4d33df`.
+Ein Regressionstest sichert diese Übereinstimmung mit den beiden
+ursprünglichen festen Diagnosepaketen ab. Neu sind ausschließlich die
+optionalen Kontrollprüfungen und Herkunftsfelder im Python-Treiber.
+
+Auf jedem Rechner werden mit genau demselben neuen Werkzeugcommit zwei
+Teilversuche gestartet, jeweils wieder mit zwei frischen Workern:
+
+1. `baseline/`: `OPENBLAS_CORETYPE` ausdrücklich nicht gesetzt;
+   bisherige automatische Kernwahl, vier Threadlimits 1.
+2. `haswell/`: `OPENBLAS_CORETYPE=Haswell` und
+   `--require-openblas-core Haswell`; dieselben Threadlimits 1.
+
+Die neue Baseline kontrolliert zugleich den aktualisierten Treiber gegen
+die vorhandenen festen Diagnoseergebnisse. Als Quelle dient jeweils
+`results/sr-fixed-numerics-RECHNER-001/source`, also dieselbe bereits
+gesicherte Armausgabe. Beide neuen Teilversuche werden gemeinsam unter
+`results/sr-core-control-RECHNER-001/` gespeichert und in ein Archiv
+`sr-core-control-RECHNER-001.tar.gz` im Home-Verzeichnis gepackt.
+Neue Ausgabeordner und ein neuer Archivname sind erforderlich.
+
+Nach jedem kontrollierten Worker erscheint bei bestandener Kernprüfung:
+
+```text
+Verified OpenBLAS: Haswell for NumPy, SciPy and Julia; pool limits 1.
+```
+
+`report.json.required_openblas_core` und
+`openblas_coretype_environment` in den Herkunftsaufnahmen nennen die
+Vorgabe. `blas_control` enthält den bestätigten Status und die tatsächlich
+gemeldeten Bibliotheken. Ohne Kontrollargument lautet der Status
+`not_requested`; dies ist die Baseline, kein bestätigter gemeinsamer Kern.
+Die Ergebnisdateien und alle numerischen Werte behalten ihr bisheriges
+Format. Die CI führt neben der Baseline auch den neuen wirkungsgeprüften
+Haswell-Durchlauf aus.
+
+Gleiche BLAS-Kernnamen vereinheitlichen weder alle Maschinenbefehle noch
+Julia-CPU-/GC-Einstellungen, Systembibliotheken oder Builds. Die
+Intervention prüft deshalb nur den Einfluss dieser konkret bestätigten
+Kernwahl. Ein möglicher Effekt ist zunächst an den festen Diagnosen zu
+beurteilen; eine Erklärung der ursprünglichen freien Suchfronten benötigt
+gegebenenfalls deren anschließende kontrollierte Wiederholung.

@@ -1,5 +1,6 @@
 """Probe input integrity, fixed starts, scaling and retained failure evidence."""
 
+import copy
 import hashlib
 import importlib.util
 import json
@@ -61,14 +62,25 @@ def source(tmp_path):
     return directory
 
 
-def install_worker(monkeypatch, *, fail=False, different=False, mutate=None):
+def install_worker(
+    monkeypatch, *, fail=False, different=False, mutate=None, worker_environment=None
+):
     def run(command, *, stdout):
         directory = Path(command[-1])
         assert command[-2] == "--worker"
         assert Path(command[2]).name == "driver.py"
         assert Path(command[2]).read_bytes() == PATH.read_bytes()
         stdout.write("controlled worker output\n")
-        write(directory / "metadata.json", {"phase": "failed" if fail else "completed"})
+        info = {"phase": "failed" if fail else "completed"}
+        if worker_environment is not None:
+            assert command[3:5] == ["--require-openblas-core", "Haswell"]
+            info.update(
+                {
+                    phase: {"environment": worker_environment}
+                    for phase in ("before", "after")
+                }
+            )
+        write(directory / "metadata.json", info)
         if fail:
             write(directory / "result.json", {"cases": ["partial"]})
             return SimpleNamespace(returncode=1)
@@ -246,3 +258,181 @@ def test_nonfinite_trace_values_are_explicit_json_safe():
     json.dumps(result, allow_nan=False)
     assert all(value["value"] is None for value in result[:3])
     assert result[-1]["hex"] == "-0x0.0p+0"
+
+
+def control_environment(*, julia=True):
+    paths = [
+        "/venv/site-packages/numpy.libs/libnumpy.so",
+        "/venv/site-packages/scipy.libs/libscipy.so",
+    ]
+    if julia:
+        paths.append("/venv/julia/install/lib/julia/libopenblas64_.so")
+    pools = [
+        {
+            "filepath": path,
+            "architecture": "Haswell",
+            "num_threads": 1,
+            "user_api": "blas",
+            "internal_api": "openblas",
+        }
+        for path in paths
+    ]
+    pools.append({"user_api": "openmp", "num_threads": 1})
+    return {
+        "numerical_libraries": {
+            "threadpools": {"status": "available", "details": pools}
+        }
+    }
+
+
+def set_control_environment(monkeypatch):
+    monkeypatch.setenv("OPENBLAS_CORETYPE", "Haswell")
+    for key in (
+        "OPENBLAS_NUM_THREADS",
+        "OMP_NUM_THREADS",
+        "MKL_NUM_THREADS",
+        "NUMEXPR_NUM_THREADS",
+    ):
+        monkeypatch.setenv(key, "1")
+
+
+def test_numerical_julia_payload_matches_original_diagnosis():
+    # Golden hash from both independently audited 25 October packages.
+    assert (
+        hashlib.sha256(PROBE.JULIA_SOURCE.encode()).hexdigest()
+        == "8481613c28f91e01772f7c30686ba17f0746d4c77e580bfb1af2e597ce4d33df"
+    )
+
+
+def test_native_mode_does_not_require_a_specific_core():
+    assert (
+        PROBE.verify_blas_control({}, None, require_julia=True)["status"]
+        == "not_requested"
+    )
+
+
+def test_control_requires_numpy_scipy_and_julia_pools():
+    result = PROBE.verify_blas_control(
+        control_environment(), "Haswell", require_julia=True
+    )
+    assert result["status"] == "verified"
+    assert result["roles"] == ["julia", "numpy", "scipy"]
+    assert len(result["pools"]) == 3
+
+
+def test_parent_can_verify_python_pools_before_julia_loads():
+    env = control_environment(julia=False)
+    assert (
+        PROBE.verify_blas_control(env, "Haswell", require_julia=False)["status"]
+        == "verified"
+    )
+    with pytest.raises(ValueError, match="julia"):
+        PROBE.verify_blas_control(env, "Haswell", require_julia=True)
+
+
+@pytest.mark.parametrize("index", [0, 1, 2])
+def test_each_wrong_blas_core_is_rejected(index):
+    env = control_environment()
+    env["numerical_libraries"]["threadpools"]["details"][index]["architecture"] = (
+        "SkylakeX"
+    )
+    with pytest.raises(ValueError, match="does not report Haswell"):
+        PROBE.verify_blas_control(env, "Haswell", require_julia=True)
+
+
+@pytest.mark.parametrize(
+    "failure",
+    [
+        "unavailable",
+        "missing_details",
+        "unknown_architecture",
+        "other_blas",
+        "unknown_role",
+        "blas_threads",
+        "openmp_threads",
+    ],
+)
+def test_unverifiable_or_incomplete_control_is_rejected(failure):
+    env = control_environment()
+    snap = env["numerical_libraries"]["threadpools"]
+    pools = snap["details"]
+    if failure == "unavailable":
+        snap["status"] = "unavailable"
+    elif failure == "missing_details":
+        snap["details"] = None
+    elif failure == "unknown_architecture":
+        pools[2]["architecture"] = None
+    elif failure == "other_blas":
+        pools[2]["internal_api"] = "mkl"
+    elif failure == "unknown_role":
+        pools[2]["filepath"] = "/unknown/lib.so"
+    else:
+        pools[0 if failure == "blas_threads" else 3]["num_threads"] = 2
+    with pytest.raises(ValueError):
+        PROBE.verify_blas_control(env, "Haswell", require_julia=True)
+
+
+@pytest.mark.parametrize(
+    "missing",
+    [
+        "OPENBLAS_CORETYPE",
+        "OPENBLAS_NUM_THREADS",
+        "OMP_NUM_THREADS",
+        "MKL_NUM_THREADS",
+        "NUMEXPR_NUM_THREADS",
+    ],
+)
+def test_control_request_must_be_set_before_parent_starts(
+    source, tmp_path, monkeypatch, missing
+):
+    set_control_environment(monkeypatch)
+    monkeypatch.delenv(missing)
+    output = tmp_path / "output"
+    with pytest.raises(ValueError, match="before starting"):
+        PROBE.probe(source, output, label="test", required_openblas_core="Haswell")
+    assert not output.exists()
+
+
+def test_control_flag_reaches_workers_and_actual_pools_are_rechecked(
+    source, tmp_path, monkeypatch
+):
+    set_control_environment(monkeypatch)
+    original = PROBE.metadata
+
+    def controlled_metadata(**kwargs):
+        info = original(**kwargs)
+        info["environment"].update(control_environment(julia=False))
+        return info
+
+    monkeypatch.setattr(PROBE, "metadata", controlled_metadata)
+    install_worker(monkeypatch, worker_environment=control_environment())
+    result = PROBE.probe(
+        source, tmp_path / "output", label="test", required_openblas_core="Haswell"
+    )
+    assert result["required_openblas_core"] == "Haswell"
+    assert result["initial"]["openblas_coretype_environment"] == "Haswell"
+    assert result["initial"]["blas_control"]["status"] == "verified"
+
+
+def test_worker_success_without_actual_julia_core_is_rejected(
+    source, tmp_path, monkeypatch
+):
+    set_control_environment(monkeypatch)
+    original = PROBE.metadata
+
+    def controlled_metadata(**kwargs):
+        info = original(**kwargs)
+        info["environment"].update(control_environment(julia=False))
+        return info
+
+    monkeypatch.setattr(PROBE, "metadata", controlled_metadata)
+    env = copy.deepcopy(control_environment())
+    env["numerical_libraries"]["threadpools"]["details"][2]["architecture"] = "Zen"
+    install_worker(monkeypatch, worker_environment=env)
+    output = tmp_path / "output"
+    with pytest.raises(ValueError, match="does not report Haswell"):
+        PROBE.probe(source, output, label="test", required_openblas_core="Haswell")
+    result = json.loads((output / "report.json").read_text())
+    assert result["status"] == "failed"
+    assert result["initial"]["blas_control"]["status"] == "verified"
+    assert (output / "run-1/metadata.json").exists()

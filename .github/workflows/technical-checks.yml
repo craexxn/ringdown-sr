@@ -64,10 +64,19 @@ jobs:
 
       - name: Probe fixed trees and actual optimizer paths in fresh workers
         run: >-
-          env OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+          env -u OPENBLAS_CORETYPE
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
           uv run --locked python scripts/probe_symbolic_numerics.py
           results/ci-sr-controls/white/symbolic/ordinary --label ci
           --output results/ci-fixed-numerics
+
+      - name: Verify common Haswell BLAS core in fresh fixed-tree workers
+        run: >-
+          env OPENBLAS_CORETYPE=Haswell
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+          uv run --locked python scripts/probe_symbolic_numerics.py
+          results/ci-sr-controls/white/symbolic/ordinary --label ci-haswell
+          --require-openblas-core Haswell --output results/ci-fixed-numerics-haswell
 
       - name: Check read-only diagnostic export and comparison
         run: |

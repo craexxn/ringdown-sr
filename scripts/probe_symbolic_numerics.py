@@ -272,16 +272,91 @@ def metadata(*, julia_used=False):
         "provenance": _provenance(),
         "adapter_source_sha256": _adapter_source_hashes(),
         "environment": environment,
+        "openblas_coretype_environment": os.environ.get("OPENBLAS_CORETYPE"),
     }
 
 
-def worker(directory):
+def validate_core_request(required):
+    """Require a process-start setting; never change loaded libraries in place."""
+    if required is None:
+        return
+    if required != "Haswell":
+        raise ValueError("Only the common Haswell control is supported.")
+    if os.environ.get("OPENBLAS_CORETYPE") != required:
+        raise ValueError("Set OPENBLAS_CORETYPE=Haswell before starting Python.")
+    for key in (
+        "OPENBLAS_NUM_THREADS",
+        "OMP_NUM_THREADS",
+        "MKL_NUM_THREADS",
+        "NUMEXPR_NUM_THREADS",
+    ):
+        if os.environ.get(key) != "1":
+            raise ValueError(f"Set {key}=1 before starting the controlled probe.")
+
+
+def verify_blas_control(environment, required, *, require_julia):
+    """Verify actual loaded pools, including the separately loaded Julia BLAS."""
+    if required is None:
+        return {"status": "not_requested", "required_core": None}
+    if required != "Haswell":
+        raise ValueError("Only the common Haswell control is supported.")
+    snapshot = environment["numerical_libraries"]["threadpools"]
+    if snapshot["status"] != "available" or not isinstance(snapshot["details"], list):
+        raise ValueError("Threadpool information is required to verify the core.")
+    roles = set()
+    observed = []
+    for pool in snapshot["details"]:
+        if pool.get("user_api") not in ("blas", "openmp"):
+            continue
+        if type(pool.get("num_threads")) is not int or pool["num_threads"] != 1:
+            raise ValueError(f"A loaded pool does not report limit 1: {pool}")
+        if pool["user_api"] != "blas":
+            continue
+        if (
+            pool.get("internal_api") != "openblas"
+            or pool.get("architecture") != required
+        ):
+            raise ValueError(f"A loaded BLAS pool does not report {required}: {pool}")
+        path = str(pool.get("filepath", "")).replace("\\", "/").lower()
+        role = (
+            "numpy"
+            if "/numpy.libs/" in path or "/numpy/.libs/" in path
+            else "scipy"
+            if "/scipy.libs/" in path or "/scipy/.libs/" in path
+            else "julia"
+            if "/lib/julia/" in path
+            else None
+        )
+        if role:
+            roles.add(role)
+        observed.append(
+            {
+                "role": role,
+                "filepath": pool["filepath"],
+                "architecture": pool["architecture"],
+                "num_threads": pool["num_threads"],
+            }
+        )
+    needed = {"numpy", "scipy"} | ({"julia"} if require_julia else set())
+    if not needed.issubset(roles):
+        raise ValueError(f"Missing verified BLAS roles: {sorted(needed - roles)}")
+    return {
+        "status": "verified",
+        "required_core": required,
+        "roles": sorted(roles),
+        "pools": observed,
+    }
+
+
+def worker(directory, *, required_openblas_core=None):
     if os.environ.get("PYTHON_JULIACALL_PROJECT") != str(ROOT / "julia"):
         raise RuntimeError("Run the worker through the pinned launcher.")
     info = metadata()
+    info["required_openblas_core"] = required_openblas_core
     info["phase"] = "before_julia_import"
     _write_json(directory / "metadata.json", info)
     try:
+        validate_core_request(required_openblas_core)
         import pysr
         from juliacall import Main as jl
         from juliacall import convert as jl_convert
@@ -315,7 +390,14 @@ def worker(directory):
         jl.include(str(directory / "RingdownSRLoss.jl"))
         jl.seval(JULIA_SOURCE)
         backend = jl.FixedNumericsProbe
-        info.update(phase="before_probes", before=metadata(julia_used=True))
+        info.update(
+            phase="blas_control_before_probes", before=metadata(julia_used=True)
+        )
+        _write_json(directory / "metadata.json", info)
+        info["before"]["blas_control"] = verify_blas_control(
+            info["before"]["environment"], required_openblas_core, require_julia=True
+        )
+        info["phase"] = "before_probes"
         runtime = backend.runtime()
         info["julia"] = {
             key: str(getattr(runtime, key))
@@ -407,12 +489,17 @@ def worker(directory):
                 f"{name}: {expected_kind}; loss {float(outcome.before.loss):.17g} -> {float(outcome.after.loss):.17g}",
                 flush=True,
             )
-        info.update(phase="completed", after=metadata(julia_used=True))
+        info.update(phase="blas_control_after_probes", after=metadata(julia_used=True))
+        _write_json(directory / "metadata.json", info)
+        info["after"]["blas_control"] = verify_blas_control(
+            info["after"]["environment"], required_openblas_core, require_julia=True
+        )
         if any(
             info["after"][key] != info[key]
             for key in ("provenance", "adapter_source_sha256")
         ):
             raise ValueError("The runtime source files changed during the worker.")
+        info["phase"] = "completed"
     except BaseException as error:
         info.update(phase="failed", error=f"{type(error).__name__}: {error}")
         raise
@@ -421,12 +508,16 @@ def worker(directory):
         _write_json(directory / "metadata.json", info)
 
 
-def probe(source, output, *, label):
+def probe(source, output, *, label, required_openblas_core=None):
     source, output = Path(source).resolve(), Path(output).resolve()
     if not label.strip() or output.is_relative_to(source):
         raise ValueError("Use a nonempty label and a new output outside the source.")
+    validate_core_request(required_openblas_core)
     contents, arrays = source_snapshot(source)
     initial = metadata()
+    initial["blas_control"] = verify_blas_control(
+        initial["environment"], required_openblas_core, require_julia=False
+    )
     output.mkdir(parents=True, exist_ok=False)
     frozen = output / "source"
     frozen.mkdir()
@@ -442,6 +533,7 @@ def probe(source, output, *, label):
         "scope": "fixed ordinary trees; diagnostic starts; no free search or causal claim",
         "started_at_utc": _utc_now(),
         "initial": initial,
+        "required_openblas_core": required_openblas_core,
         "source_sha256": {name: digest(data) for name, data in contents.items()},
         "inputs": input_fingerprints(arrays),
         "driver_sha256": digest(driver),
@@ -457,17 +549,16 @@ def probe(source, output, *, label):
             report["runs"].append(record)
             _write_json(output / "report.json", report)
             print(f"Starting fixed-tree probe {index}/2.", flush=True)
+            command = [
+                sys.executable,
+                str(ROOT / "scripts" / "run_python.py"),
+                str(output / "driver.py"),
+            ]
+            if required_openblas_core:
+                command.extend(["--require-openblas-core", required_openblas_core])
+            command.extend(["--worker", str(directory)])
             with (directory / "worker.log").open("w") as log:
-                completed = _run_worker(
-                    [
-                        sys.executable,
-                        str(ROOT / "scripts" / "run_python.py"),
-                        str(output / "driver.py"),
-                        "--worker",
-                        str(directory),
-                    ],
-                    stdout=log,
-                )
+                completed = _run_worker(command, stdout=log)
             if completed.returncode:
                 print((directory / "worker.log").read_text()[-8000:], file=sys.stderr)
                 raise RuntimeError(
@@ -476,6 +567,22 @@ def probe(source, output, *, label):
             result = read_json((directory / "result.json").read_bytes())
             if len(result["cases"]) != len(CASES):
                 raise ValueError("A worker did not finish every diagnostic case.")
+            if required_openblas_core:
+                worker_metadata = read_json((directory / "metadata.json").read_bytes())
+                if worker_metadata["phase"] != "completed":
+                    raise ValueError(
+                        "The controlled worker did not complete its checks."
+                    )
+                for phase in ("before", "after"):
+                    verify_blas_control(
+                        worker_metadata[phase]["environment"],
+                        required_openblas_core,
+                        require_julia=True,
+                    )
+                print(
+                    "Verified OpenBLAS: Haswell for NumPy, SciPy and Julia; pool limits 1.",
+                    flush=True,
+                )
             record["status"] = "completed"
             if source_snapshot(source)[0] != contents:
                 raise ValueError("Source artifacts changed during the probe.")
@@ -520,12 +627,18 @@ def main():
     parser.add_argument("source", type=Path, nargs="?")
     parser.add_argument("--label")
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--require-openblas-core", choices=("Haswell",))
     parser.add_argument("--worker", type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.worker:
-        worker(args.worker)
+        worker(args.worker, required_openblas_core=args.require_openblas_core)
     elif args.source and args.label and args.output:
-        probe(args.source, args.output, label=args.label)
+        probe(
+            args.source,
+            args.output,
+            label=args.label,
+            required_openblas_core=args.require_openblas_core,
+        )
     else:
         parser.error("source, --label and --output are required")
 
