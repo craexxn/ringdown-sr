@@ -114,7 +114,7 @@ den vorgesehenen begrenzten Erkenner und die nachgelagerte Diagnose;
 der [Erkenner mit rohen Koeffizienten](structure_recognition.md) ist als
 separates Modul umgesetzt. Die ebenfalls separate
 [Parameter-/Aliasdiagnose](parameter_diagnostics.md) ergänzt Umrechnung
-und numerische Nachrechnung. Ihr lesender Export steht noch aus;
+und numerische Nachrechnung. Ihr [lesender Export](parameter_export.md) ist separat umgesetzt;
 die bisherigen Pilotdateien bleiben unverändert.
 
 ## Dateien, Herkunft und Fehler

@@ -5,7 +5,7 @@ Stand: 23.10.2026. `src/ringdown_sr/structure.py` setzt Schritt 1 des
 Erkennung eines begrenzten Musters und Extraktion seiner rohen Koeffizienten.
 Die separate [Parameter-/Aliasdiagnose](parameter_diagnostics.md) ergänzt
 inzwischen numerische Nachrechnung, Parameterumrechnung und Aliasreduktion.
-Der vollständige lesende Diagnoseexport steht noch aus.
+Der vollständige [lesende Diagnoseexport](parameter_export.md) ist separat umgesetzt.
 
 ## Schnittstelle und Ergebnis
 

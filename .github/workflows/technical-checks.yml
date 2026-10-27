@@ -78,6 +78,11 @@ jobs:
           results/ci-sr-controls/white/symbolic/ordinary --label ci-haswell
           --require-openblas-core Haswell --output results/ci-fixed-numerics-haswell
 
+      - name: Export parameters from the existing schema-3 controls
+        run: |
+          uv run --locked python scripts/export_parameter_diagnostics.py results/ci-sr-controls/white --output results/ci-parameters-white
+          uv run --locked python scripts/export_parameter_diagnostics.py results/ci-sr-controls/ar1 --output results/ci-parameters-ar1
+
       - name: Check read-only diagnostic export and comparison
         run: |
           uv run --locked python scripts/diagnose_symbolic_pilot.py export results/ci-sr-controls --label ci --output results/ci-diagnostics
