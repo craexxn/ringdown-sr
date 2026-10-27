@@ -5,7 +5,7 @@ Stand: 23.10.2026. `parameters.py` und `aliasing.py` setzen Schritt 2 des
 einen einzelnen exportierten Baum und seine Zeiten. Es gibt keinen neuen
 Suchlauf, Fit oder Verlustvergleich. Die bestehende Auswahl, Eingaben und
 Ergebnisdateien bleiben unverändert. Der vollständige lesende Diagnoseexport
-für Schema-3-Läufe ist weiterhin Schritt 3.
+für Schema-3-Läufe ist als [Schritt 3](parameter_export.md) separat umgesetzt.
 
 ## Schnittstelle für einen Baum
 

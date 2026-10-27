@@ -8,7 +8,7 @@ Der [Strukturerkenner](structure_recognition.md) setzt Schritt 1 mit exakten
 rohen Koeffizienten um. Die separate
 [Parameter-/Aliasdiagnose](parameter_diagnostics.md) ergänzt in Schritt 2
 abgesicherte Umrechnung und numerische Nachrechnung. Der lesende
-Diagnoseexport für vollständige gespeicherte Läufe bleibt Schritt 3.
+[Diagnoseexport](parameter_export.md) für vollständige gespeicherte Läufe setzt Schritt 3 um.
 
 ## 1. Ziel und Abgrenzung
 

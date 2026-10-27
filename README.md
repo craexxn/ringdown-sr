@@ -80,11 +80,11 @@ rechnerübergreifend identische SR-Ergebnisse liegen nicht vor.
 Auch der gepinnte Julia-Startweg ist lokal
 unter WSL2 bestätigt. Der [PySR-Methodenentwurf](docs/symbolic_regression_method_plan.md)
 wurde separat geprüft und um die Reviewpunkte präzisiert. Die freie Suche
-ist im Dreiarm-Pilot integriert. Schritte 1 und 2 der
+ist im Dreiarm-Pilot integriert. Die drei Schritte der
 [geplanten Parameterinterpretation](docs/parameter_interpretation_plan.md)
 sind als begrenzte Strukturerkennung und separate numerisch abgesicherte
 [Parameter-/Aliasdiagnose](docs/parameter_diagnostics.md) umgesetzt.
-Der lesende Export für vollständige gespeicherte Läufe steht noch aus;
+Der [lesende Export](docs/parameter_export.md) für vollständige gespeicherte Läufe ist ebenfalls umgesetzt;
 wissenschaftliche Formelauswahl bleibt eine gesonderte Aufgabe.
 
 ## Konfigurierter Durchlauf mit gespeicherten Ergebnissen
@@ -375,8 +375,8 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
 2. Die bereits geprüften [Alias-/Phasenreferenzen](docs/alias_references.md)
    für die [geplante Parameterinterpretation](docs/parameter_interpretation_plan.md)
    nutzen: Erkenner, rohe Koeffizienten, abgesicherte Umrechnungen und
-   numerische Nachrechnung sind als separate Module umgesetzt. Als Nächstes
-   folgt der lesende Diagnoseexport gemäß geprüftem Plan.
+   numerische Nachrechnung und der [lesende Diagnoseexport](docs/parameter_export.md)
+   sind gemäß geprüftem Plan umgesetzt. Vorhandene Läufe können nun separat diagnostiziert werden.
 3. Wissenschaftliche Formelauswahl und statistischen Versuchsplan gesondert
    begründen, bevor Leistungs- und Identifikationsaussagen untersucht werden.
 
