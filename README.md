@@ -377,7 +377,11 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
    nutzen: Erkenner, rohe Koeffizienten, abgesicherte Umrechnungen und
    numerische Nachrechnung und der [lesende Diagnoseexport](docs/parameter_export.md)
    sind gemäß geprüftem Plan umgesetzt. Vorhandene Läufe können nun separat diagnostiziert werden.
-3. Wissenschaftliche Formelauswahl und statistischen Versuchsplan gesondert
+3. Den [rauschfreien Suchkontrollversuch](docs/noiseless_control_plan.md)
+   vor seiner Implementierung unabhängig methodisch prüfen. Vorgeschlagen sind
+   drei Budgets, drei Suchseeds und getrennte Kurven-, Struktur- und
+   Parameterdiagnosen; die geplanten Kontrollläufe wurden noch nicht ausgeführt.
+4. Wissenschaftliche Formelauswahl und statistischen Versuchsplan gesondert
    begründen, bevor Leistungs- und Identifikationsaussagen untersucht werden.
 
 Diese Schritte bilden die Arbeitsplanung für den Pilot.
