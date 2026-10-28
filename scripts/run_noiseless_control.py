@@ -3,6 +3,7 @@
 import argparse
 import importlib.util
 import io
+import re
 import signal
 from collections import Counter
 from pathlib import Path
@@ -10,6 +11,7 @@ from pathlib import Path
 import numpy as np
 
 from ringdown_sr import symbolic
+from ringdown_sr.losses import _real_array, mean_squared_error
 from ringdown_sr.noiseless_control import (
     CURVE_LIMITS,
     FORMAT,
@@ -71,6 +73,144 @@ def core_snapshot(probe):
     return snapshot
 
 
+def verify_backend_policy(fields, budget, rng, support):
+    """Check pinned effective fields in every cell, including the first one.
+
+    PySR 2.6.0 derives the Julia seed from a fresh legacy RandomState. The
+    remaining contracts follow SymbolicRegression 2.5.1 / Optim 2.2.2 fields;
+    Julia repr strings are compared or parsed narrowly, never evaluated.
+    """
+    backend = support.backend_without_output(fields)
+    requested = symbolic.search_parameters(symbolic.SearchBudget(**budget))
+    seed = int(np.random.RandomState(budget["seed"]).randint(0, 2**31 - 1))
+    if not isinstance(rng, dict) or any(
+        type(rng.get(key)) is not int or rng[key] != expected
+        for key, expected in (("python_seed", budget["seed"]), ("backend_seed", seed))
+    ):
+        raise ValueError("Recorded Python/Julia seeds disagree with the reviewed cell.")
+
+    checked = []
+
+    def require(name, kind, value):
+        if backend.get(name) != {"type": kind, "value": value}:
+            raise ValueError(f"Effective backend policy mismatch: {name}")
+        checked.append(name)
+
+    integers = {
+        "seed": seed,
+        "maxsize": requested["maxsize"],
+        "maxdepth": requested["maxsize"],
+        "populations": budget["populations"],
+        "population_size": budget["population_size"],
+        "ncycles_per_iteration": budget["ncycles_per_iteration"],
+        "optimizer_nrestarts": requested["optimizer_nrestarts"],
+    }
+    for name, value in integers.items():
+        require(name, "Int64", str(value))
+    require("parsimony", "Float64", repr(requested["parsimony"]))
+    for name in (
+        "use_frequency",
+        "use_frequency_in_tournament",
+        "dimensionless_constants_only",
+        "deterministic",
+        "batching",
+    ):
+        require(name, "Bool", str(requested[name]).lower())
+    for name in ("turbo", "bumper"):
+        value = str(requested[name]).lower()
+        require(name, f"Val{{{value}}}", f"Val{{{value}}}()")
+    for name in (
+        "nested_constraints",
+        "autodiff_backend",
+        "early_stop_condition",
+        "timeout_in_seconds",
+        "max_evals",
+        "loss_function_expression",
+    ):
+        require(name, "Nothing", "nothing")
+    require("loss_scale", "Symbol", ":log")
+    require("nops", "Tuple{Int64, Int64}", "(3, 4)")
+    constraints = backend.get("op_constraints", {})
+    expected_constraints = "([-1,-1,-1],[(-1,-1),(-1,-1),(-1,-1),(-1,-1)])"
+    if "".join(constraints.get("value", "").split()) != expected_constraints:
+        raise ValueError("Effective backend policy mismatch: op_constraints")
+    checked.append("op_constraints")
+
+    def constructor(name, kind, arguments):
+        field = backend.get(name, {})
+        base = field.get("type", "").split("{", 1)[0].rsplit(".", 1)[-1]
+        value = "".join(field.get("value", "").split())
+        if base != kind or not value.endswith("(" + arguments + ")"):
+            raise ValueError(f"Effective backend policy mismatch: {name}")
+        checked.append(name)
+
+    constructor("operators", "OperatorEnum", "((exp,sin,cos),(+,-,*,/))")
+    constructor(
+        "complexity_mapping", "ComplexityMapping", "true,([1,1,1],[1,1,1,1]),1,1"
+    )
+    algorithm = backend.get("optimizer_algorithm", {}).get("type", "")
+    if algorithm.split("{", 1)[0].rsplit(".", 1)[-1] != "BFGS":
+        raise ValueError("Effective backend policy mismatch: optimizer_algorithm")
+    checked.append("optimizer_algorithm")
+    optimizer = backend.get("optimizer_options", {})
+    iterations = re.findall(
+        r"(?:\(|,)\s*iterations\s*=\s*(\d+)\s*(?=,)", optimizer.get("value", "")
+    )
+    if not optimizer.get("type", "").startswith("Optim.Options{") or iterations != [
+        str(requested["optimizer_iterations"])
+    ]:
+        raise ValueError(
+            "Effective backend policy mismatch: optimizer_options.iterations"
+        )
+    checked.append("optimizer_options.iterations")
+    objective = backend.get("loss_function", {})
+    names = {
+        "objective",
+        "RingdownSRSearch.objective",
+        "Main.RingdownSRSearch.objective",
+    }
+    if objective.get("value") not in names or objective.get("type") not in {
+        f"typeof({name})" for name in names
+    }:
+        raise ValueError("Effective backend policy mismatch: loss_function")
+    checked.append("loss_function")
+    return {
+        "status": "passed",
+        "expected_backend_seed": seed,
+        "seed_derivation": "PySR 2.6.0: RandomState(python_seed).randint(0, 2**31 - 1)",
+        "checked_fields": checked,
+    }
+
+
+def verify_training_loss(candidate, observed):
+    """Replay saved residual bits and ordinary MSE without changing selection."""
+    prediction = _real_array(candidate["prediction"], "saved prediction")
+    residual = _real_array(candidate["residual"], "saved residual")
+    if prediction.shape != observed.shape or residual.shape != observed.shape:
+        raise ValueError("Saved prediction/residual shapes must match observations.")
+    try:
+        with np.errstate(over="raise", invalid="raise"):
+            expected = observed - prediction
+    except FloatingPointError as error:
+        raise ValueError("Recomputed training residual is not finite.") from error
+    if not np.array_equal(residual.view(np.uint64), expected.view(np.uint64)):
+        raise ValueError("Saved training residual disagrees with frozen observations.")
+    mse = mean_squared_error(expected)
+    try:
+        np.testing.assert_allclose(candidate["loss"], mse, rtol=1e-10, atol=0)
+    except AssertionError as error:
+        raise ValueError(
+            "Saved training loss disagrees with recomputed ordinary MSE."
+        ) from error
+    return {
+        "status": "passed",
+        "ordinary_mse": mse,
+        "residual_comparison": "float64_bits",
+        "loss_rtol": 1e-10,
+        "loss_atol": 0.0,
+    }
+
+
 def verify_cell(directory, cell, arrays, support, probe, initial, tools):
     """Validate immutable inputs, original selection, source and worker snapshots."""
     contents = support.source_bytes(directory)
@@ -109,8 +249,6 @@ def verify_cell(directory, cell, arrays, support, probe, initial, tools):
     ):
         raise ValueError("Unexpected recorded selection scope or policy.")
     selected = front["selected_index"]
-    if selected != symbolic.select_candidate(front["candidates"]):
-        raise ValueError("The recorded selection disagrees with its training rule.")
     parameters = read("pysr_parameters.json")
     expected = symbolic.search_parameters(symbolic.SearchBudget(**cell["budget"]))
     if any(
@@ -118,12 +256,22 @@ def verify_cell(directory, cell, arrays, support, probe, initial, tools):
         for key, value in expected.items()
     ):
         raise ValueError("Effective PySR parameters differ from the reviewed policy.")
+    backend_fields = read("backend_options.json")
+    backend_verification = verify_backend_policy(
+        backend_fields, cell["budget"], front["rng"], support
+    )
+    training_checks = []
     for index, candidate in enumerate(front["candidates"]):
         _candidate(candidate, index, selected, arrays["time_s"], FS)
+        training_checks.append(verify_training_loss(candidate, arrays["observed"]))
+    if selected != symbolic.select_candidate(front["candidates"]):
+        raise ValueError("The recorded selection disagrees with its training rule.")
     diagnoses = [
         diagnose_candidate(candidate, index, selected, arrays)
         for index, candidate in enumerate(front["candidates"])
     ]
+    for diagnosis, training_check in zip(diagnoses, training_checks, strict=True):
+        diagnosis["training_verification"] = training_check
     if support.source_bytes(directory) != contents:
         raise ValueError("Worker artifacts changed during diagnosis.")
     if _sha256((directory / "blas_control.json").read_bytes()) != control_digest:
@@ -158,25 +306,22 @@ def verify_cell(directory, cell, arrays, support, probe, initial, tools):
         "timing_seconds": front["timing_seconds"],
         "backend_evaluation_counter": front["backend_evaluation_counter"],
         "effective_parameters": parameters,
-        "effective_backend_options": read("backend_options.json"),
+        "effective_backend_options": backend_fields,
+        "backend_policy_verification": backend_verification,
     }
 
 
 def policy_signature(diagnosis, support):
     parameters = support.parameters_without_output(diagnosis["effective_parameters"])
     backend = support.backend_without_output(diagnosis["effective_backend_options"])
-    # These are the sole planned factors (the backend seed is recorded separately).
+    # Seeds were verified against each budget before exclusion from this comparison.
     return {
         "pysr": {
             key: value
             for key, value in parameters.items()
             if key not in {"random_state", "niterations"}
         },
-        "backend": {
-            key: value
-            for key, value in backend.items()
-            if key not in {"seed", "niterations"}
-        },
+        "backend": {key: value for key, value in backend.items() if key != "seed"},
     }
 
 

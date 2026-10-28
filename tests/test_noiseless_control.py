@@ -22,6 +22,65 @@ SPEC = importlib.util.spec_from_file_location("noiseless_driver", SCRIPT)
 DRIVER = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(DRIVER)
 
+BACKEND_SEEDS = {20261020: 465951028, 20261021: 1616241070, 20261022: 651396412}
+
+
+def backend_fixture(seed):
+    """Represent the pinned backend fields independently of the verifier."""
+    scalar = {
+        "seed": ("Int64", str(BACKEND_SEEDS[seed])),
+        "maxdepth": ("Int64", "20"),
+        "populations": ("Int64", "2"),
+        "population_size": ("Int64", "32"),
+        "ncycles_per_iteration": ("Int64", "50"),
+        "optimizer_nrestarts": ("Int64", "2"),
+        "parsimony": ("Float64", "0.0"),
+        "use_frequency": ("Bool", "false"),
+        "use_frequency_in_tournament": ("Bool", "false"),
+        "dimensionless_constants_only": ("Bool", "false"),
+        "deterministic": ("Bool", "true"),
+        "batching": ("Bool", "false"),
+        "turbo": ("Val{false}", "Val{false}()"),
+        "bumper": ("Val{false}", "Val{false}()"),
+        "nested_constraints": ("Nothing", "nothing"),
+        "autodiff_backend": ("Nothing", "nothing"),
+        "early_stop_condition": ("Nothing", "nothing"),
+        "timeout_in_seconds": ("Nothing", "nothing"),
+        "max_evals": ("Nothing", "nothing"),
+        "loss_scale": ("Symbol", ":log"),
+        "loss_function_expression": ("Nothing", "nothing"),
+        "nops": ("Tuple{Int64, Int64}", "(3, 4)"),
+        "op_constraints": (
+            "Tuple{Vector{Int64}, Vector{Tuple{Int64, Int64}}}",
+            "([-1, -1, -1], [(-1, -1), (-1, -1), (-1, -1), (-1, -1)])",
+        ),
+        "operators": (
+            "DynamicExpressions.OperatorEnumModule.OperatorEnum{Tuple}",
+            "DynamicExpressions.OperatorEnumModule.OperatorEnum{Tuple}(((exp, sin, cos), (+, -, *, /)))",
+        ),
+        "complexity_mapping": (
+            "SymbolicRegression.OptionsStructModule.ComplexityMapping{Int64, Int64, 2}",
+            "SymbolicRegression.OptionsStructModule.ComplexityMapping{Int64, Int64, 2}(true, ([1, 1, 1], [1, 1, 1, 1]), 1, 1)",
+        ),
+        "optimizer_algorithm": (
+            "Optim.BFGS{LineSearches.BackTracking}",
+            "Optim.BFGS(...)",
+        ),
+        "optimizer_options": (
+            "Optim.Options{Float64, Nothing}",
+            "Optim.Options(iterations = 20, outer_iterations = 1000, )\n",
+        ),
+        "loss_function": (
+            "typeof(Main.RingdownSRSearch.objective)",
+            "Main.RingdownSRSearch.objective",
+        ),
+        "maxsize": ("Int64", "20"),
+    }
+    return [
+        {"name": name, "type": kind, "value": value}
+        for name, (kind, value) in scalar.items()
+    ]
+
 
 def reference_tree(frequency=250, amplitude=1, phase=0, rate=-125):
     return model(
@@ -371,21 +430,17 @@ def fake_runtime(monkeypatch):
                 **symbolic.search_parameters(budget),
                 "output_directory": str(output / "pysr"),
             },
-            "backend_options.json": [
-                {"name": key, "type": "fixture", "value": str(value)}
-                for key, value in {
-                    "seed": budget.seed + 10,
-                    "niterations": budget.niterations,
-                    "maxsize": 20,
-                }.items()
-            ],
+            "backend_options.json": backend_fixture(budget.seed),
             "result.json": {
                 "format": symbolic.FORMAT,
                 "evaluation_scope": "fitted_samples_only",
                 "selection": "minimum_training_loss_then_complexity",
                 "candidates": front,
                 "selected_index": 0,
-                "rng": {"python_seed": budget.seed, "backend_seed": budget.seed + 10},
+                "rng": {
+                    "python_seed": budget.seed,
+                    "backend_seed": BACKEND_SEEDS[budget.seed],
+                },
                 "timing_seconds": {"fixture": 0},
                 "backend_evaluation_counter": {"status": "unavailable"},
             },
@@ -440,7 +495,7 @@ def test_complete_orchestration_preserves_all_candidates_selection_and_input_bit
             diagnosis["candidates"][0]["analysis"]["structure"]["structure_status"]
             == "not_supported"
         )
-        assert diagnosis["rng"]["backend_seed"] == cell["budget"]["seed"] + 10
+        assert diagnosis["rng"]["backend_seed"] == BACKEND_SEEDS[cell["budget"]["seed"]]
         assert diagnosis["blas_control"]["status"] == "verified"
     assert all(
         summary["status"] == "complete"
@@ -689,3 +744,244 @@ def test_two_finite_huge_errors_have_finite_median_and_explicit_denominator():
         assert values["finite_count"] == 2 and values["planned_count"] == 3
         assert values["median"] == values["minimum"] == values["maximum"] == 1.6e308
     json.dumps(report, allow_nan=False)
+
+
+@pytest.mark.parametrize("fault", ["all_seeds", "all_maxsize", "forged_selection"])
+def test_review_counterexamples_rejected_at_first_cell_without_repair(
+    fake_runtime, tmp_path, fault
+):
+    def alter(number, directory, docs):
+        if fault == "all_seeds":
+            docs["result.json"]["rng"] = {"python_seed": 123, "backend_seed": 42}
+            next(
+                field
+                for field in docs["backend_options.json"]
+                if field["name"] == "seed"
+            )["value"] = "42"
+        elif fault == "all_maxsize":
+            next(
+                field
+                for field in docs["backend_options.json"]
+                if field["name"] == "maxsize"
+            )["value"] = "19"
+        else:
+            docs["result.json"]["candidates"][1]["loss"] = 0.0
+            docs["result.json"]["selected_index"] = 1
+
+    fake_runtime.hook = alter
+    output = tmp_path / "control"
+    with pytest.raises(ValueError):
+        DRIVER.run_control(output, label="review counterexample")
+    report = load_report(output)
+    assert report["status"] == report["cells"][0]["status"] == "failed"
+    assert len(fake_runtime.calls) == 1
+    assert all(cell["status"] == "planned" for cell in report["cells"][1:])
+    if fault == "forged_selection":
+        stored = json.loads((output / "cell-01/result.json").read_text())
+        assert stored["selected_index"] == 1 and stored["candidates"][1]["loss"] == 0
+
+
+def test_pinned_seed_references_do_not_change_global_numpy_rng():
+    before = np.random.get_state()
+    support = DRIVER.load_support()
+    for seed, expected in BACKEND_SEEDS.items():
+        budget = next(
+            cell["budget"]
+            for cell in control.planned_cells()
+            if cell["budget"]["seed"] == seed
+        )
+        check = DRIVER.verify_backend_policy(
+            backend_fixture(seed),
+            budget,
+            {"python_seed": seed, "backend_seed": expected},
+            support,
+        )
+        assert (
+            check["expected_backend_seed"] == expected and check["status"] == "passed"
+        )
+    after = np.random.get_state()
+    assert before[0] == after[0] and before[2:] == after[2:]
+    np.testing.assert_array_equal(before[1], after[1])
+
+
+@pytest.mark.parametrize(
+    "fault",
+    [
+        "python",
+        "python_float",
+        "backend",
+        "options",
+        "consistent_wrong_backend",
+        "missing",
+        "boolean",
+    ],
+)
+def test_individual_seed_claims_must_match_budget_and_each_other(
+    fake_runtime, tmp_path, fault
+):
+    def alter(number, directory, docs):
+        rng = docs["result.json"]["rng"]
+        option = next(
+            field for field in docs["backend_options.json"] if field["name"] == "seed"
+        )
+        if fault == "python":
+            rng["python_seed"] = 123
+        elif fault == "python_float":
+            rng["python_seed"] = float(rng["python_seed"])
+        elif fault == "backend":
+            rng["backend_seed"] = 42
+        elif fault == "options":
+            option["value"] = "42"
+        elif fault == "consistent_wrong_backend":
+            rng["backend_seed"] = 42
+            option["value"] = "42"
+        elif fault == "missing":
+            rng.pop("backend_seed")
+        else:
+            rng["backend_seed"] = True
+
+    fake_runtime.hook = alter
+    with pytest.raises(ValueError, match="seed"):
+        DRIVER.run_control(tmp_path / "control", label="seed counterexample")
+    assert len(fake_runtime.calls) == 1
+
+
+def test_reusing_first_backend_seed_fails_when_python_seed_block_changes(
+    fake_runtime, tmp_path
+):
+    def alter(number, directory, docs):
+        docs["result.json"]["rng"]["backend_seed"] = BACKEND_SEEDS[20261020]
+        next(
+            field for field in docs["backend_options.json"] if field["name"] == "seed"
+        )["value"] = str(BACKEND_SEEDS[20261020])
+
+    fake_runtime.hook = alter
+    output = tmp_path / "control"
+    with pytest.raises(ValueError, match="seed"):
+        DRIVER.run_control(output, label="reused seed")
+    assert len(fake_runtime.calls) == 4
+    assert [cell["status"] for cell in load_report(output)["cells"]] == [
+        "completed"
+    ] * 3 + ["failed"] + ["planned"] * 5
+
+
+@pytest.mark.parametrize(
+    "name,value",
+    [
+        ("maxdepth", "19"),
+        ("populations", "3"),
+        ("population_size", "64"),
+        ("ncycles_per_iteration", "51"),
+        ("optimizer_nrestarts", "3"),
+        ("parsimony", "0.1"),
+        ("use_frequency", "true"),
+        ("use_frequency_in_tournament", "true"),
+        ("dimensionless_constants_only", "true"),
+        ("deterministic", "false"),
+        ("batching", "true"),
+        ("turbo", "Val{true}()"),
+        ("bumper", "Val{true}()"),
+        ("nested_constraints", "[]"),
+        ("autodiff_backend", "AutoZygote()"),
+        ("early_stop_condition", "1.0"),
+        ("timeout_in_seconds", "10.0"),
+        ("max_evals", "100"),
+        ("loss_scale", ":linear"),
+        ("loss_function_expression", "objective"),
+        ("nops", "(3, 3)"),
+        ("op_constraints", "([-1, -1, 2], [(-1, -1), (-1, -1), (-1, -1), (-1, -1)])"),
+        ("operators", "OperatorEnum(((log, sin, cos), (+, -, *, /)))"),
+        (
+            "complexity_mapping",
+            "ComplexityMapping(true, ([2, 1, 1], [1, 1, 1, 1]), 1, 1)",
+        ),
+        (
+            "optimizer_options",
+            "Optim.Options(iterations = 19, outer_iterations = 20, )\n",
+        ),
+        ("loss_function", "different_objective"),
+    ],
+)
+def test_uniform_backend_deviations_fail_in_first_cell(
+    fake_runtime, tmp_path, name, value
+):
+    def alter(number, directory, docs):
+        next(field for field in docs["backend_options.json"] if field["name"] == name)[
+            "value"
+        ] = value
+
+    fake_runtime.hook = alter
+    with pytest.raises(ValueError, match="backend policy"):
+        DRIVER.run_control(tmp_path / "control", label="uniform option counterexample")
+    assert len(fake_runtime.calls) == 1
+
+
+@pytest.mark.parametrize("fault", ["missing", "duplicate", "type", "algorithm"])
+def test_backend_missing_duplicate_or_wrong_types_rejected(
+    fake_runtime, tmp_path, fault
+):
+    def alter(number, directory, docs):
+        fields = docs["backend_options.json"]
+        item = next(field for field in fields if field["name"] == "maxsize")
+        if fault == "missing":
+            fields.remove(item)
+        elif fault == "duplicate":
+            fields.append(copy.deepcopy(item))
+        elif fault == "type":
+            item["type"] = "Float64"
+        else:
+            next(field for field in fields if field["name"] == "optimizer_algorithm")[
+                "type"
+            ] = "Optim.NelderMead{Float64}"
+
+    fake_runtime.hook = alter
+    with pytest.raises(ValueError):
+        DRIVER.run_control(tmp_path / "control", label="invalid option record")
+    assert len(fake_runtime.calls) == 1
+
+
+@pytest.mark.parametrize(
+    "fault", ["residual", "residual_and_loss", "nonselected_loss", "selected_loss"]
+)
+def test_each_candidate_residual_and_mse_checked_without_reranking(
+    fake_runtime, tmp_path, fault
+):
+    def alter(number, directory, docs):
+        front = docs["result.json"]
+        if fault.startswith("residual"):
+            front["candidates"][0]["residual"][0] += 0.5
+            if fault == "residual_and_loss":
+                front["candidates"][0]["loss"] = float(
+                    np.mean(np.square(front["candidates"][0]["residual"]))
+                )
+        elif fault == "nonselected_loss":
+            front["candidates"][1]["loss"] *= 1.01
+        else:
+            front["candidates"][0]["loss"] = 0.0
+
+    fake_runtime.hook = alter
+    output = tmp_path / "control"
+    with pytest.raises(ValueError, match="residual|MSE"):
+        DRIVER.run_control(output, label="training integrity counterexample")
+    stored = json.loads((output / "cell-01/result.json").read_text())
+    assert stored["selected_index"] == 0
+    assert len(fake_runtime.calls) == 1
+
+
+@pytest.mark.parametrize("scale", [1.0, 1e-150, 1e150])
+def test_training_mse_has_independent_reference_and_zero_absolute_tolerance(scale):
+    observed = np.array([3.0, 4.0]) * scale
+    item = {
+        "prediction": [0.0, 0.0],
+        "residual": observed.tolist(),
+        "loss": 12.5 * scale * scale,
+    }
+    original = copy.deepcopy(item)
+    check = DRIVER.verify_training_loss(item, observed)
+    assert check["ordinary_mse"] == pytest.approx(
+        12.5 * scale * scale, rel=1e-14, abs=0
+    )
+    assert item == original
+    item["loss"] = 0.0
+    with pytest.raises(ValueError, match="MSE"):
+        DRIVER.verify_training_loss(item, observed)

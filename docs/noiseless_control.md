@@ -64,6 +64,52 @@ Diagnoseherkunft bleibt von den originalen Workeraufnahmen getrennt.
 Prüfsummen bestätigen gespeicherte Konsistenz, keine externe Authentizität.
 Dieses neue Gesamtformat ist kein Schema-3-Parameterexport.
 
+### Prüfung von Seeds, Backendvorgaben und Trainingsverlusten
+
+Jede Zelle wird auch gegen absolute Vorgaben geprüft, einschließlich der ersten
+Zelle. Der zusätzliche Vergleich mit der ersten Zelle ersetzt diese Prüfung
+nicht. Der Pythonseed muss zum Zellbudget und zu den angeforderten PySR-Parametern
+passen. Der tatsächliche Backendseed muss sowohl im Ergebnis als auch in den
+exportierten Backendoptionen dem durch PySR 2.6.0 abgeleiteten Seed entsprechen:
+`RandomState(python_seed).randint(0, 2**31 - 1)`. Die Nachrechnung nutzt einen
+lokalen Generator und verändert keinen globalen NumPy-Zufallszustand.
+
+| Pythonseed | Erwarteter Julia-Backendseed |
+| --- | --- |
+| `20261020` | `465951028` |
+| `20261021` | `1616241070` |
+| `20261022` | `651396412` |
+
+Die tatsächlichen Backendfelder werden gegen Größe/Tiefe, Populationszahlen,
+Zyklen, Operatorfolge und -anzahl, uneingeschränkte Operatorbedingungen,
+Einheitskomplexitäten, Parsimony-/Frequenzmechanismen, Batching, Determinismus,
+Turbo/Bumper, BFGS mit 20 Optimiereriterationen und zwei Neustarts,
+Verlustcallback/-skala sowie die vorgesehenen leeren Zusatz-/Abbruchbedingungen
+geprüft. Fehlende, doppelte oder widersprüchliche relevante Felder werden
+abgelehnt. Übrige gepinnte Bibliotheksdefaults bleiben vollständig gespeichert
+und werden zusätzlich zwischen Zellen verglichen. Nur der bereits einzeln
+geprüfte Backendseed wird aus diesem Vergleich ausgeblendet.
+
+Die Zuordnung folgt den gepinnten Quellen:
+[PySR 2.6.0](https://github.com/astroautomata/PySR/blob/v2.6.0/pysr/sr.py),
+[SymbolicRegression 2.5.1](https://github.com/astroautomata/SymbolicRegression.jl/blob/v2.5.1/src/OptionsStruct.jl),
+[DynamicExpressions 2.12.0](https://github.com/astroautomata/DynamicExpressions.jl/blob/v2.12.0/src/OperatorEnum.jl)
+und [Optim 2.2.2](https://github.com/JuliaNLSolvers/Optim.jl/blob/v2.2.2/src/types.jl).
+Die nötigen Julia-Darstellungen werden eng verglichen bzw. ausgewertet;
+es wird kein gespeicherter Ausdruck als Code ausgeführt.
+
+Vor der Auswahlprüfung wird für **jeden** Kandidaten aus den eingefrorenen
+Beobachtungen und gespeicherten Vorhersagen das Residuum nachgerechnet.
+Gespeicherte Residuen müssen in Form und Float64-Bits übereinstimmen. Die
+gewöhnliche MSE wird numerisch abgesichert aus diesem Residuum berechnet und
+mit dem gespeicherten Trainingsverlust verglichen (`rtol=1e-10`, `atol=0`,
+wie bei den bestehenden Verlust-Replays). Dies sind technische
+Konsistenzgrenzen, nicht die Entwicklungsmarkierungen für Kurven oder Parameter.
+Erst danach wird die ursprüngliche Auswahl gegen die gespeicherte Trainingsregel
+geprüft. Bei Widerspruch wird abgebrochen; Verlust oder Auswahlindex werden
+nicht korrigiert. Auch passend neu berechnete Workerprüfsummen ersetzen diese
+inhaltlichen Prüfungen nicht. Die Prüfnachweise werden im Bericht erhalten.
+
 ## Getrennte Bewertungen und Grenzen
 
 - Kurvenfehler benutzen die Referenznorm ohne Kandidatenmaßstab oder
