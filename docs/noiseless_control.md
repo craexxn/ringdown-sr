@@ -20,7 +20,8 @@ auch ein besser interpretierbarer Frontkandidat ersetzt ihn nicht.
 Trainingsdaten (`128` Werte, `fs=4096 Hz`) und analytische Referenzwerte auf
 `889` Zwischenpunkten entstehen einmalig. Die Suchfunktion erhält ausschließlich
 die Trainingszeiten, beobachteten Werte und das jeweilige Suchbudget.
-Diagnosegitter und Wahrheitsparameter werden erst nach dem Suchergebnis benutzt.
+Nur Datenerzeugung und nachgelagerte Diagnose nutzen die Wahrheitsparameter;
+Diagnosepunkte und Wahrheitsparameter werden dem Suchworker nicht übergeben.
 Die vorhandene [BLAS-Kontrolle](symbolic_repeatability.md) prüft die tatsächlich
 geladenen Haswell-Pools mit Limit 1 vor Fit und nach Suche in jedem Worker.
 Hinzu kommen anfängliche und abschließende Aufnahmen im Elternprozess.

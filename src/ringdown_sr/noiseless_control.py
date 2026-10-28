@@ -3,7 +3,6 @@
 import math
 from collections import Counter
 from dataclasses import asdict
-from statistics import median
 
 import numpy as np
 
@@ -250,7 +249,7 @@ def budget_summaries(cells):
                         "finite_count": len(values),
                         "planned_count": 3,
                         "minimum": min(values) if values else None,
-                        "median": median(values) if values else None,
+                        "median": _finite_median(values) if values else None,
                         "maximum": max(values) if values else None,
                     }
             summary.update(
@@ -272,3 +271,13 @@ def budget_summaries(cells):
             )
         summaries[str(iterations)] = summary
     return summaries
+
+
+def _finite_median(values):
+    """Average nonnegative middle errors without overflowing their raw sum."""
+    ordered = sorted(values)
+    middle = len(ordered) // 2
+    if len(ordered) % 2:
+        return ordered[middle]
+    lower, upper = ordered[middle - 1 : middle + 1]
+    return lower + (upper - lower) / 2

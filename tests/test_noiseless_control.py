@@ -670,3 +670,22 @@ def test_changed_frozen_diagnostic_file_prevents_completion(fake_runtime, tmp_pa
     assert all(
         summary["statistics"] is None for summary in report["budget_summaries"].values()
     )
+
+
+def test_two_finite_huge_errors_have_finite_median_and_explicit_denominator():
+    arrays = control.frozen_data()
+    diagnosis = control.diagnose_candidate(candidate(constant(0), arrays), 0, 0, arrays)
+    cells = control.planned_cells()
+    for index, cell in enumerate(cells):
+        cell["status"] = "completed"
+        selected = copy.deepcopy(diagnosis)
+        selected["curve_errors"]["diagnostic"]["relative_rms"] = (
+            None if index >= 6 else 1.6e308
+        )
+        cell["diagnostics"] = {"selected_index": 0, "candidates": [selected]}
+    report = control.budget_summaries(cells)
+    for summary in report.values():
+        values = summary["statistics"]["diagnostic"]["relative_rms"]
+        assert values["finite_count"] == 2 and values["planned_count"] == 3
+        assert values["median"] == values["minimum"] == values["maximum"] == 1.6e308
+    json.dumps(report, allow_nan=False)
