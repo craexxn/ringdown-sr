@@ -378,9 +378,10 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
    numerische Nachrechnung und der [lesende Diagnoseexport](docs/parameter_export.md)
    sind gemäß geprüftem Plan umgesetzt. Vorhandene Läufe können nun separat diagnostiziert werden.
 3. Den [rauschfreien Suchkontrollversuch](docs/noiseless_control_plan.md)
-   vor seiner Implementierung unabhängig methodisch prüfen. Vorgeschlagen sind
-   drei Budgets, drei Suchseeds und getrennte Kurven-, Struktur- und
-   Parameterdiagnosen; die geplanten Kontrollläufe wurden noch nicht ausgeführt.
+   gemäß geprüftem Methodenplan durchführen. Die
+   [Implementierung und Bedienung](docs/noiseless_control.md) mit drei Budgets,
+   drei Suchseeds und getrennten Kurven-, Struktur- und Parameterdiagnosen
+   ist ergänzt; Implementierungsreview und die neun Kontrollläufe stehen aus.
 4. Wissenschaftliche Formelauswahl und statistischen Versuchsplan gesondert
    begründen, bevor Leistungs- und Identifikationsaussagen untersucht werden.
 
