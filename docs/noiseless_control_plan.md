@@ -317,6 +317,27 @@ unterscheiden sie sich. Ein Austausch durch die passende Aliasform würde
 diesen Unterschied verdecken. Aliasreplay auf Trainingszeiten und
 Originalbaum-Prüfung zwischen Samples sind verschiedene Nachweise.
 
+**Systematischer Alias-Blindfleck dieses Rasters:** Trainingspunkte und
+Diagnosepunkte liegen gemeinsam auf dem Raster `k/(8*fs)`.
+Für die hier verwendete Kosinusreferenz sind daher auch Frequenzen mit
+Abstand `8*fs = 32768 Hz` auf sämtlichen diesen Punkten identisch
+in exakter Arithmetik. Bei Float64-Auswertung bleiben kleine Rundungsfehler.
+Insbesondere kann `33018 Hz = 250 Hz + 8*fs` sowohl die Kurvenmarkierung
+auf beiden Gittern als auch die vorhandenen Parameter-Replays und den
+Vergleich der passenden Aliasklasse bestehen.
+
+Außerhalb dieses gemeinsamen Rasters können die Verläufe dennoch deutlich
+abweichen: Bei `t = 1/(16*fs)` ist die zusätzliche Phase dieses
+Gegenfalls genau `pi`; sein Signal hat dort gegenüber der Referenz
+das entgegengesetzte Vorzeichen. Der Gegenfall `4346 Hz = 250 Hz + fs`
+wird dagegen schon auf dem Achtelraster sichtbar. Beide Fälle werden in
+der späteren Implementierung als unterschiedliche Grenzen des Nachweises
+getestet. Ein bestandener Gittervergleich beseitigt weder sämtliche
+Frequenzalias-Mehrdeutigkeiten noch belegt er einen korrekten Verlauf zu
+beliebigen Zwischenzeiten; `physical_identification` bleibt auch beim
+zweiten Gegenfall `not_assessed`. Das Raster wird für diese begrenzte
+Entwicklungsdiagnose unverändert beibehalten.
+
 Nicht endliche Zwischenwerte und große Fehler werden gesondert sichtbar.
 Ein bestandenes endliches Gitter beweist jedoch keine Singularitätsfreiheit
 zwischen sämtlichen reellen Zeitpunkten. Dieser begrenzte Versuch führt
@@ -367,9 +388,12 @@ Technische Abnahme der späteren Implementierung umfasst:
    anfänglicher und abschließender Aufnahmen.
 4. Unabhängige Referenzen für Rasterzahl/-grenzen, normierte Fehler und
    Vorzeichen-/Phasenmehrdeutigkeit; unveränderte alte Aliasreferenzen.
-5. Gegenfälle mit passendem Alias auf dem Trainingsraster, aber anderem Verlauf
-   zwischen Samples; fehlgeschlagene, nicht endliche und nicht beurteilbare
-   Diagnosen bleiben unterscheidbar.
+5. Beide Alias-Gegenfälle aus Abschnitt 7: `250 Hz + fs` wird auf
+   dem Achtelraster sichtbar; `250 Hz + 8*fs` kann Training, Achtelraster
+   und Parameter-/Aliasklassendiagnose bestehen, weicht aber bei
+   `t = 1/(16*fs)` mit entgegengesetztem Vorzeichen ab. Auch dieser
+   Fall darf keine physikalische Identifikation erhalten. Fehlgeschlagene,
+   nicht endliche und nicht beurteilbare Diagnosen bleiben unterscheidbar.
 6. Exklusive Ausgaben, Quellen-/Eingabeprüfsummen und erhaltene Artefakte bei
    Fehlern oder Abbrüchen über die bestehenden Prozess-Behandlungspfade.
 7. Regression der vorhandenen Suche, Auswahl, Parameterdiagnose und Ergebnisformate.
@@ -382,7 +406,15 @@ Toleranzänderung grün gemacht.
 
 ## 9. Review, Implementierung und spätere Entscheidungen
 
-Vor der Implementierung sind durch das unabhängige Astra-Review zu prüfen:
+Für den Planstand `10aef8f` wurde ein unabhängiger Astra-High-Methodenbefund
+mitgeteilt: keine blockierenden Befunde, freigabefähig für die beschriebene
+Entwicklungsdiagnose. Der nicht blockierende Hinweis zum systematischen
+Alias-Blindfleck ist in Abschnitt 7 und den vorgesehenen Gegenfalltests
+ergänzt. Diese Ergänzung ändert weder Raster noch Suche, Auswahl oder
+Entwicklungsmarkierungen. Die Methodenprüfung ersetzt kein Review der
+späteren Implementierung oder Ergebnisse.
+
+Gegenstand der Methodenprüfung waren:
 
 - Reicht diese isolierte Bedingung aus, um die Budgetfrage sinnvoll zu erkunden?
 - Sind Datenzugriff, eingefrorene Auswahl, Diagnosegitter und Aliasvergleich
