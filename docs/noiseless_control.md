@@ -4,8 +4,10 @@ Die Implementierung folgt dem separat geprüften
 [Methodenplan](noiseless_control_plan.md) aus PR #32. Dessen eingefrorener
 Dokumentstand wird durch Commit und SHA-256 identifiziert. Suche, Erkenner,
 Parameterdiagnose, Abhängigkeiten und bestehende Ergebnisformate bleiben
-unverändert. Die Implementierung benötigt ein eigenes Review; die neun
-Kontrollsuchen wurden für diesen PR noch nicht ausgeführt.
+unverändert. Implementierungsreview und gezieltes Nachreview zu PR #34
+sind abgeschlossen. Die anschließend auf Manjaro ausgeführte erste
+[Neun-Zellen-Serie](noiseless_control_results_manjaro_001.md) ist vollständig
+übermittelt; sie erreicht die festgelegten Kurvenfehlergrenzen nicht.
 
 ## Feste Serie
 
