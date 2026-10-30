@@ -111,3 +111,20 @@ Kurz berichten:
 - `julia/Manifest.toml` nicht manuell bearbeiten.
 - Der Launcher bindet PythonCall an den aktuellen Python-Interpreter und setzt
   CondaPkg auf `Null`. Fremde oder aktive Sperrdateien nicht löschen.
+
+## CI und Reviews
+
+- Reine Änderungen an `README.md`, `AGENTS.md` und Markdown unter `docs/`
+  erhalten schlanke Format- und lokale Linkprüfungen. Dokumente, die zur
+  Laufzeit konsumiert werden, benötigen weiterhin die volle CI; aktuell gilt
+  dies für `docs/noiseless_control_plan.md`.
+- Code-, Test-, Konfigurations-, Abhängigkeits- und CI-Änderungen benötigen
+  vor dem Merge die vollständigen technischen Prüfungen. Unklare Änderungen
+  werden vollständig geprüft. Die Zuordnung ist in `docs/ci.md` beschrieben.
+- Kleine zusammengehörige Nachbesserungen bündeln, um unnötige neue Läufe
+  zu vermeiden. Bestehende erforderliche Checks nicht umgehen.
+- KI-basierte Reviews gezielt bei wesentlichen Methodenentscheidungen oder
+  konkretem Prüfbedarf einsetzen. Nachreviews nur bei notwendigen
+  Gegenprüfungen; keine automatische zusätzliche Reviewrunde pro PR.
+- Reviews in Dokumentation und PR-Texten als KI-basiert bezeichnen;
+  konkrete Modellnamen sind dafür nicht erforderlich.

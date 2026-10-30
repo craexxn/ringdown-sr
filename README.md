@@ -257,9 +257,11 @@ im pytest-Verzeichnis. Für bewusst gespeicherte Ergebnisse und Diagramme
 die obigen CLI-Kontrollläufe ausführen. Nur die Schema-3-Konfigurationen
 starten dabei freie Formelsuchen.
 
-Der Workflow `.github/workflows/technical-checks.yml` führt dieselben
-Prüfungen bei Pull Requests und Änderungen an `main` auf einem
-Ubuntu-Rechner aus.
+Der [CI-Workflow](docs/ci.md) führt diese Prüfungen bei Code-, Test-,
+Konfigurations-, Abhängigkeits- und CI-Änderungen auf Ubuntu aus.
+Reine Dokumentationsänderungen erhalten schlanke Format- und lokale
+Linkprüfungen; zur Laufzeit konsumierte Dokumente bleiben ausgenommen.
+Manuelle und nicht eindeutig einordenbare Läufe prüfen vollständig.
 
 Bisherige Prüfnachweise:
 

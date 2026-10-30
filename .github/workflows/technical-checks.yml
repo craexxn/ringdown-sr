@@ -28,41 +28,60 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+            fetch-depth: 0
+
+      - name: Select CI coverage
+        id: scope
+        run: python3 scripts/check_ci.py scope
+
+      - name: Check documentation
+        run: python3 scripts/check_ci.py docs
 
       - name: Install uv
+        if: steps.scope.outputs.full == 'true'
         uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           version: "0.12.21"
           enable-cache: false
 
       - name: Install locked Python environment
+        if: steps.scope.outputs.full == 'true'
         run: uv sync --locked --dev
 
       - name: Check Python code
+        if: steps.scope.outputs.full == 'true'
         run: uv run --locked ruff check .
 
       - name: Check formatting
+        if: steps.scope.outputs.full == 'true'
         run: uv run --locked ruff format --check .
 
       - name: Run unit tests
+        if: steps.scope.outputs.full == 'true'
         run: uv run --locked pytest -q
 
       - name: Check Python and Julia environment
+        if: steps.scope.outputs.full == 'true'
         run: uv run --locked python scripts/run_python.py scripts/check_environment.py
 
       - name: Check repeated and concurrent Julia startup
+        if: steps.scope.outputs.full == 'true'
         run: uv run --locked python scripts/check_julia_startup.py
 
       - name: Check Julia loss, constant optimization and Python replay
+        if: steps.scope.outputs.full == 'true'
         run: uv run --locked python scripts/run_python.py scripts/check_julia_loss.py
 
       - name: Check isolated free PySR searches and expression replay
+        if: steps.scope.outputs.full == 'true'
         run: uv run --locked python scripts/run_python.py scripts/check_symbolic_search.py
 
       - name: Check paired schema-3 symbolic pilots and independent metrics
+        if: steps.scope.outputs.full == 'true'
         run: uv run --locked python scripts/check_symbolic_pilot.py --output results/ci-sr-controls
 
       - name: Probe fixed trees and actual optimizer paths in fresh workers
+        if: steps.scope.outputs.full == 'true'
         run: >-
           env -u OPENBLAS_CORETYPE
           OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
@@ -71,6 +90,7 @@ jobs:
           --output results/ci-fixed-numerics
 
       - name: Verify common Haswell BLAS core in fresh fixed-tree workers
+        if: steps.scope.outputs.full == 'true'
         run: >-
           env OPENBLAS_CORETYPE=Haswell
           OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
@@ -79,16 +99,19 @@ jobs:
           --require-openblas-core Haswell --output results/ci-fixed-numerics-haswell
 
       - name: Export parameters from the existing schema-3 controls
+        if: steps.scope.outputs.full == 'true'
         run: |
           uv run --locked python scripts/export_parameter_diagnostics.py results/ci-sr-controls/white --output results/ci-parameters-white
           uv run --locked python scripts/export_parameter_diagnostics.py results/ci-sr-controls/ar1 --output results/ci-parameters-ar1
 
       - name: Check read-only diagnostic export and comparison
+        if: steps.scope.outputs.full == 'true'
         run: |
           uv run --locked python scripts/diagnose_symbolic_pilot.py export results/ci-sr-controls --label ci --output results/ci-diagnostics
           uv run --locked python scripts/diagnose_symbolic_pilot.py compare results/ci-diagnostics results/ci-diagnostics --output results/ci-diagnostics-comparison.json
 
       - name: Verify common BLAS core before and after two actual free searches
+        if: steps.scope.outputs.full == 'true'
         run: >-
           env OPENBLAS_CORETYPE=Haswell
           OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
