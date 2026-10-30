@@ -27,6 +27,12 @@ der [Fortsetzungsstand in der README](README.md#projektstatus).
   auf Englisch.
 - Commit-Nachrichten und Branch-Namen auf Englisch.
 - Etablierte Fachbegriffe und Bibliotheksnamen nicht künstlich übersetzen.
+- In Projektdokumentation, Issues und PRs Entscheidungen, Begründungen und
+  Belege sachlich beschreiben, etwa „Auf Grundlage dieses Befunds wurde …
+  beschlossen“. Formulierungen wie „der Nutzer hat …“ oder „der User …“
+  vermeiden, wenn die handelnde Person sachlich unerheblich ist.
+  Erforderliche Verantwortungs- und Freigabezuordnungen sowie Herkunft und
+  Prüfstatus übermittelter Befunde dabei erhalten.
 
 ## Änderungen und Versionsverwaltung
 
