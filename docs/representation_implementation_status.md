@@ -1,11 +1,117 @@
-# Fortsetzungsstand: Zeitdarstellungs-Kontrolle
+# Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 30.10.2026. Implementierung, gezieltes Review und die geplante
-Manjaro-Kontrollserie sind abgeschlossen. Das vollständige Originalarchiv
-wurde hier unabhängig nachgerechnet; der neue Entwicklungsbefund steht im
-[Ergebnisprotokoll](representation_control_results_manjaro_001.md).
+Stand: 30.10.2026. Freie Zeitdarstellungskontrolle und anschließende feste
+Konstantendiagnose sind ausgeführt. Beide vollständigen Originalarchive
+wurden unabhängig nachgerechnet. Der aktuelle Befund steht im
+[Ergebnisprotokoll der Konstantendiagnose](constant_diagnostic_results_manjaro_001.md).
 
-## Aktueller Fortsetzungsstand nach der Kontrollserie
+## Freier Budgetvergleich nach übermitteltem Methodenreview
+
+Der [überarbeitete Entwurf](free_optimizer_budget_plan_draft.md) liegt weiterhin
+im bestehenden Ergebnisbranch `codex/constant-diagnostic-results` und
+[PR #44](https://github.com/craexxn/ringdown-sr/pull/44). Das gemeinsame KI-basierte
+Methodenreview ist übermittelt, sein Beschlussvorschlag noch nicht angenommen.
+
+- Einstieg erneut geprüft: sauberer Checkout, ein Worktree, lokaler und aktueller
+  Remote-Head `7ee5f38067ba0b2161ab3ddaf9775d6aa4fc1fbd`; PR #44 weiterhin
+  offen, keine weiteren offenen PRs. `main` unverändert auf
+  `0a70f19e16e173aedf2e071a5f5b09d045ecbf69`. Ergebnisanker `ad32d4b`;
+  den nach dieser Korrektur aktuellen Head mit `git rev-parse HEAD` oder im PR
+  bestimmen. Historische Remote-Branches wurden geladen, nicht übernommen.
+- Übermitteltes Review: geprüfter Head `7ee5f38`, vollständige Vergleichsbasis
+  und Ergebnisanker wie oben; beide PR-Commits mit allen fünf Dokumentations-
+  dateien, Grundlagen und relevanten unveränderten Aufrufern/Backendquellen.
+  Quellen-/Dokumentprüfung und `git diff --check` berichtet; keine numerische
+  Ausführung. Archive fehlten dort, daher keine erneute unabhängige Bestätigung
+  der Archivhashes oder Zahlen. Details im Entwurf, Abschnitt 9.
+- Ein Befund P2: Gute 100/2-Kurven allein belegen keinen Vergleichsvorteil.
+  Die Entscheidungstabelle trennt nun vollständig `C100 > C20`, Gleichstand
+  ohne/mit Erfolg und `C100 < C20`; unvollständige oder abschließend nicht
+  verifizierte Serien bleiben davor gesperrt. Struktur-/Parameterbefunde folgen
+  unabhängig und müssen dieselbe erfolgreiche Originalauswahl betreffen.
+- Empfohlenes Profil im Entwurf übernommen: beide Häufigkeitsschalter in beiden
+  Armen an, ursprüngliche Sekundenkoordinate; sechs frische Suchen, drei bekannte
+  Entwicklungsseeds, je 200 Suchiterationen, Vergleich 20/2 gegen 100/2. Dies ist
+  adaptive Methodenentwicklung am bekannten besseren Approximationsprofil,
+  keine neue Validierung. Die feste Diagnose ohne Populationsauswahl privilegiert
+  das ausgeschaltete Profil nicht. Dieses und ein 2×2 bleiben Alternativen.
+- Unverändert vorgeschlagen: Reihenfolge 20–100 / 100–20 / 20–100, 60 Minuten
+  Gesamtlimit einschließlich Vorprüfungen und Abschlussprüfung, Originalauswahl,
+  Grenzen, sechs vollständig verifizierte Zellen vor Gruppen/Paardifferenzen.
+  Eine Übersicht der Erfolgswechsel ergänzt die bestehenden drei Seed-Paare;
+  kein neuer Endpunkt. Keine Behauptung gleicher freier Suchpfade oder Kosten.
+- Gezielt gegen die neue Regel abgeglichen: `C20=3, C100=1` mit guter, aber
+  nicht unterstützter 100/2-Kurve bleibt weniger Erfolg; `3=3` bleibt Gleichstand;
+  `0=0` bleibt ohne erfolgreiche Auswahl, auch bei kleineren Fehlern. Gemischte
+  Seed-Wechsel bei `1→2` erlauben einen Mehrerfolg mit sichtbarem Verlust;
+  gegensinnige Wechsel bei `1→1` bleiben ohne Mehrerfolg. Gute ungewählte Bäume
+  oder Parameter eines anderen Baums erzeugen keinen unterstützten Originalfall.
+  Unvollständigkeit oder späte Verifikationsfehler sperren sämtliche Gruppen
+  und Paardifferenzen unabhängig von guten Einzelresultaten.
+- Keine neue Optimierung, freie Suche, Julia-Ausführung oder Archivaudit. Keine
+  zweite vollständige Reviewrunde: die Gegenfälle betreffen gezielt den P2-Befund.
+  Alle drei eingefrorenen Laufzeitpläne und konsumierten Quellen bleiben erhalten;
+  der neue Entwurf wird noch nicht zur Laufzeit konsumiert.
+- Prüfungen der Korrektur: Dokumentations-/Linkprüfung für 40 Markdown-Dateien,
+  `git diff --check`, unveränderte drei Planprüfsummen und explizite Zuordnung
+  zur Dokumentations-CI. Der frühere grüne Lauf
+  [41075733824](https://github.com/craexxn/ringdown-sr/actions/runs/41075733824)
+  gehört ausschließlich zu `7ee5f38`; den Nachweis der Korrektur am aktuellen
+  PR-Head prüfen. Dieser Zwischenstand ändert ausschließlich README, Entwurf
+  und Fortsetzungsdatei; keine weiteren lokalen Arbeiten beim Einstieg vorhanden.
+
+Nächster abgegrenzter Schritt: den Beschlussentwurf in Abschnitt 9 ausdrücklich
+annehmen oder ändern. Erst nach Annahme diesen Plan einfrieren und den getrennten
+Kontrollpfad mit vollständiger CI implementieren; anschließend einmalige
+Manjaro-Ausführung am geprüften Stand. Ein Dokumentationsmerge allein beschließt
+oder startet keine Suchserie. Weitere Übertragbarkeits-/Gewichtungsstudien und
+ein Produktionsprofil sind damit nicht freigegeben.
+
+## Aktueller Stand nach der Konstantendiagnose
+
+- Beim Einstieg sauberer Checkout auf Implementierungshead `9202d20`, ein
+  Worktree, keine offenen PRs. Remote-Branches und aktuelles `main` geprüft:
+  `0a70f19e16e173aedf2e071a5f5b09d045ecbf69`, Merge von PR #42. Gegenüber dem
+  CI-geprüften Implementierungshead nur zusätzliche Sprachregeln in `AGENTS.md`.
+- Neuer Ergebnisbranch `codex/constant-diagnostic-results` ab diesem Merge;
+  den aktuellen Dokumentationshead mit `git rev-parse HEAD` bestimmen.
+  Dieser Nachtrag ändert ausschließlich Dokumentation und keine Laufzeiteingabe.
+- Übermitteltes Originalarchiv `constant-manjaro-001.tar.gz`, 2.418.382 Bytes,
+  tatsächliche SHA-256 vor Entpacken bestätigt:
+  `346459d953468c81975670577b92aa155a1eaec884cebd462fe61e1ab23d492b`.
+- Archivierter Ausführungsstand `0a70f19`, Git sauber, alle 48 Aufrufe
+  abgeschlossen, Abschlussprüfung bestanden; etwa 20 Minuten Gesamtwandzeit.
+- Selbst ausgeführter lesender Audit: alle 259 Dateien mit 258 Manifesthashes,
+  47 Quell-/Pin-/Planhashes gegen den Ausführungscommit, 50 Workermanifeste,
+  68 Optionsfelder je Snapshot einschließlich konkreter Plugins, Seeds,
+  Restartvektoren und gespeicherte BLAS-Aufnahmen geprüft. Daten und Original-
+  auswahl erhalten; beide Fehlergitter und sämtliche Paardifferenzen nachgerechnet.
+- Zusätzlich eigener Whitelist-Bauminterpreter, Residuen-MSE mit `math.fsum`,
+  direkte Parameterfehler und 6.506 Zustandsreplays. Alle 72 Anfangsverläufe
+  bis Schritt 20 exakt identisch; alle 48 Rückgaben entsprechen den ursprünglich
+  gewählten beobachteten Schlussminima. Originaldateien abschließend unverändert.
+- Ergebnis: 20/2 besteht 0/24 Kurven- und Parameterprüfungen, 100/2 besteht
+  24/24. Größter Zwischenpunkte-RMS unter 100/2 etwa `2,46e-8`.
+  Physikalische Identifikation bleibt `not_assessed`; kein Nachweis freier Suche.
+- Keine Julia-Ausführung, Fits oder Optimierungen im Audit. Gespeicherte native
+  Options-/RNG-/BLAS-Nachweise sind von den neuen Python-Nachrechnungen getrennt.
+  Die anfangs nicht verfügbare Umgebung wurde wieder erreichbar; für diesen
+  Audit nur der gesperrte Pythonweg verwendet. Keine neue Umgebungsvalidierung
+  durch Julia und keine erneute numerische CI behauptet.
+- Reproduktionshilfen lokal unter `results/constant-audit-001/`: `audit.py`,
+  `audit.json`, Diagramm als PNG/SVG; separat gesichertes Originalarchiv.
+  Vollständige Zahlen und Prüfgrenzen im verlinkten Befund. Reine Dokumentation
+  erhält schlanke CI; der aktuelle Nachweis gehört zum Ergebnis-PR.
+- Lokal bestanden: Dokumentations-/Linkprüfung für 39 Markdown-Dateien,
+  `git diff --check`, explizite Dokumentations-CI-Zuordnung und erneute Prüfung
+  unveränderter konsumierter Quellen sowie aller 259 Originaldateien.
+  Auditpaket zusätzlich unter `results/constant-audit-001.tar.gz` gesichert.
+
+Der darauf aufbauende, weiterhin nicht beschlossene Planentwurf ist oben
+verlinkt. Die folgenden historischen Implementierungsstände und Prüfnachweise
+bleiben davon getrennt; ein neuer Lauf ist nicht freigegeben.
+
+## Vorheriger Fortsetzungsstand nach der freien Kontrollserie
 
 ### Angenommene Diagnose A: implementierter Kontrollpfad
 
@@ -282,12 +388,13 @@ Abschlussprüfung dem eingefrorenen Plan.
 
 ## Offen und nächster abgegrenzter Schritt
 
-1. Implementierungs-PR der angenommenen Diagnose A vollständig technisch prüfen;
-   Head, Basis und CI-Nachweis dort festhalten. Kein eigenständiger Merge.
-2. Nach Prüfung die 48 Aufrufe einmalig auf Manjaro gemäß dem neuen Plan
-   ausführen und das vollständige Ergebnisarchiv zur Nachrechnung sichern.
-3. Erst anhand dieses Befunds über die nächste Forschungsetappe entscheiden.
-   Keine routinemäßige weitere Reviewrunde oder automatische Budgeterweiterung.
+1. Den unabhängig nachgerechneten [Diagnosebefund](constant_diagnostic_results_manjaro_001.md)
+   als abgeschlossenen Entwicklungsbefund sichern und beurteilen.
+2. Den neuen [Entwurf](free_optimizer_budget_plan_draft.md) gemeinsam mit diesem
+   Befund einmalig methodisch prüfen; Reviewhead, Basis und Umfang nennen.
+3. Erst danach genau ein Design und alle Zahlen/Gates beschließen und einfrieren.
+   Keine automatische Implementierung, Budgeterhöhung oder weitere Suchserie;
+   kein eigenständiger Merge.
 
 Der Plan und beide Laufzeitplanprüfsummen sind unverändert. Keine zusätzlichen
 wissenschaftlichen Suchen in der Cloud und keine automatische Wiederholung.

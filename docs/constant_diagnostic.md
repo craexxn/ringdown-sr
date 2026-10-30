@@ -5,6 +5,11 @@ Der [angenommene und eingefrorene Plan](constant_diagnostic_plan.md) legt
 wahrheitsnahe Starts sind privilegierte Methodenentwicklung. Die Diagnose
 liefert keinen Nachweis freier Strukturentdeckung oder physikalischer Eindeutigkeit.
 
+Die geplante Manjaro-Serie ist inzwischen vollständig ausgeführt und ihr
+Originalarchiv unabhängig nachgerechnet. [Befund und Aussagegrenzen](constant_diagnostic_results_manjaro_001.md).
+Die folgenden Befehle dokumentieren den Ausführungsweg; sie sind keine
+Freigabe für eine automatische Wiederholung der abgeschlossenen Serie.
+
 ## Technische Prüfung und wissenschaftliche Ausführung
 
 `check_constant_diagnostic.py` führt zehn reine Referenz-/Einheiten-/Aliasprüfungen
