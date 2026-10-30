@@ -1,8 +1,42 @@
 # Entscheidungsgrundlage: nächster Schritt nach der rauschfreien Kontrollserie
 
-Stand: 30.10.2026. Vorbereitung eines KI-basierten Methodenreviews.
-**Offene Optionen und vorläufige Empfehlung; kein beschlossener Versuchsplan.**
+Stand: 30.10.2026. KI-basiertes Methodenreview vom Nutzer übermittelt.
+**Empfehlung für Option A liegt vor; kein beschlossener Versuchsplan.**
 Die abgeschlossene Serie und ihre eingefrorenen Vorgaben bleiben unverändert.
+
+## Aktueller Entscheidungsstand nach dem Review
+
+Der [vollständige übermittelte Befund](#übermittelter-ki-basierter-reviewbefund)
+bezieht sich auf PR #41, Head
+`1c816e5e40b16a0fd03b268df24cf869d6a33a57`, gegen
+`97672ed9b14b81ca90663dc178072b515ee252bc`. Er empfiehlt einmalig
+**Option A: Konstantenanpassung einer fest vorgegebenen Ringdown-Struktur**.
+Das Review berichtet keine entscheidungsblockierende Unstimmigkeit in der
+beschriebenen Optimiererlücke. Ein Defekt oder eine Ursache der historischen
+Suchergebnisse ist damit nicht nachgewiesen.
+
+Zur Entscheidung stehen gemeinsam folgende vorgeschlagene Grenzen:
+
+- Ein Baum mit vier freien Konstanten, acht deklarierte Starts und drei
+  kontrollierte RNG-Initialisierungen (20261020, 20261021, 20261022).
+- 20 beziehungsweise 100 Optimiereriterationen, jeweils zwei zusätzliche
+  Neustarts: 48 Backendaufrufe, höchstens 144 lokale Optimierungen.
+- 60 Minuten Gesamtwandzeit einschließlich Prozessstarts; feste Kontrollen,
+  unveränderte Kurvengrenzen, unabhängige Nachrechnungen und sichere Teilstände.
+- Vorgegebene Struktur und wahrheitsnahe Starts sind privilegierte
+  Methodenentwicklung. Freies Suchbudget null; keine zusätzlichen Koordinaten,
+  Solver, Startgitter oder automatischen Folgeversuche.
+
+Der Nutzer hat den Befund übermittelt, diesen Diagnoseumfang aber noch nicht
+beschlossen. Ein Merge des Ergebnis-PRs dokumentiert die Empfehlung und ersetzt
+keinen Methodenbeschluss. Nach Annahme sind der neue Plan festzuhalten und sein
+Diagnosepfad technisch zu prüfen; dieser Nachtrag implementiert oder startet ihn
+nicht. Ein weiteres Methodenreview ist ohne konkreten neuen Prüfbedarf nicht
+vorgesehen.
+
+Die folgenden Abschnitte bis einschließlich des kopierbaren Prompts bewahren
+die ursprüngliche Entscheidungsgrundlage und den bereits bearbeiteten Auftrag.
+Sie lösen keine erneute Reviewrunde aus.
 
 ## Was jetzt zu entscheiden ist
 
@@ -266,3 +300,165 @@ Erwartete Antwort:
 
 Grenzen: Der abgeschlossene Methodenplan ist eingefroren und endet nach diesen neun Zellen. Keine rückwirkende Änderung von Schwellen, Auswahl oder Originalartefakten. Kein neuer Suchlauf, keine Implementierung, kein automatischer größerer oder kombinierter Arm, keine neue Rauschstudie und keine zusätzlichen Agenten. Fest vorgegebene Formeln oder wahrheitsnahe Starts sind privilegierte Diagnosebedingungen und keine freie Formelrekonstruktion. Drei bekannte Entwicklungsseeds sind keine unabhängige Validierung; gleiche nominelle Budgets keine gleichen Rechenkosten; der Achtelraster-Blindfleck bei 8*fs bleibt bestehen. Eine Eingrenzung der Modellklasse oder eine andere Fragestellung muss ausdrücklich als neuer Anspruch beschlossen werden. Sprache Deutsch; Review als KI-basiert bezeichnen, ohne Modellnamen.
 ```
+
+## Übermittelter KI-basierter Reviewbefund
+
+Vom Nutzer am 30.10.2026 als `Pasted text.txt` übermittelt; SHA-256 der
+unveränderten Eingabedatei:
+`7ff8aa29fd9e589d41ffdb3c5f3ce2a578ba8904242b96d08d3e56528539fbaf`.
+Der folgende Wortlaut ist als Zitat übernommen. Aussagen in erster Person
+beziehen sich auf das übermittelte Review, nicht auf neue Prüfungen bei seiner
+Dokumentation. Empfehlungen und Beschlussentwurf sind keine Nutzerfreigabe.
+Nur Zitatmarkierungen und Markdown-Zeilenumbrüche sind angepasst.
+
+> [PR #41](https://github.com/craexxn/ringdown-sr/pull/41) — **KI-basiertes Methodenreview**
+>
+> Gelesener Head: `1c816e5e40b16a0fd03b268df24cf869d6a33a57`
+> Vergleichsbasis: `97672ed9b14b81ca90663dc178072b515ee252bc`
+> Verankerter Ergebnisstand: `73e1c6748fb6683b99336d81271f332e60034d9f`
+>
+> PR #41 ist weiterhin offen. Seit dem verankerten Ergebnisstand wurden nur Dokumentationsnachträge ergänzt; Ergebniszahlen, wissenschaftlicher Code und eingefrorene Pläne sind unverändert. Geprüft wurden die Pflichtdokumente, relevante Projektquellen und der versionsgebundene Optimiererpfad.
+>
+> **Empfehlung: genau ein begrenzter Diagnoseschritt nach Option A — Konstantenanpassung einer fest vorgegebenen Ringdown-Struktur, mit dem bestehenden Profil 20/2 und einer ausschließlich diagnostischen Vergleichsbedingung 100/2.**
+>
+> Die vorläufige Präferenz für A ist begründet, sofern die Diagnose ausdrücklich eine begrenzte Ausschlussprüfung bleibt. Sie untersucht eine bislang offene Voraussetzung erfolgreicher Suche. Sie beweist weder einen Optimiererdefekt noch erklärt ein positiver Ausgang die Strukturentdeckung.
+>
+> **Befund und offene Ursachen.** Die dokumentierte Serie zeigt eine erhebliche Verbesserung der Approximation durch die gemeinsam aktivierten Häufigkeitsschalter. Die gerundeten Tabellenwerte ergeben tatsächlich MSE-Senkungen von 89,7 %, 96,3 % und 97,0 %. Dennoch liegt selbst der beste ausgewählte Zwischenpunkte-RMS dieses Arms ungefähr beim **178-Fachen** der Grenze. Die Verbesserung ist somit substanziell, der Abstand zum festgelegten Rekonstruktionsziel ebenfalls.
+>
+> Daraus folgt:
+>
+> - **Kurvenapproximation:** verbessert, aber kein exportierter Kandidat erfüllt die Anforderungen.
+> - **Freie Strukturentdeckung:** kein erfolgreicher Rekonstruktionsnachweis. `not_supported` beschreibt die Erkennerabdeckung; es belegt nicht, dass geeignete Teilstrukturen während der Suche niemals entstanden.
+> - **Physikalische Parameter:** weiterhin nicht beurteilt. Weder kleinere MSE noch passende Einheiten ersetzen Parameterreplays und Identifizierbarkeitsannahmen.
+> - **Ursache:** offen bleiben insbesondere Strukturentstehung und -erhaltung, Konstantenstarts, lokale Anpassung, numerische Darstellung und Budgetwirkung. Fronten und Callbackzahlen trennen diese Erklärungen nicht.
+>
+> Das Originalarchiv mit SHA-256 `a5b0cdae4262a7f759c72fbe1e7e9c142d817fbffa088107953250da861050db` liegt hier nicht vor. Diese Aussagen verwenden den [dokumentierten Audit](https://github.com/craexxn/ringdown-sr/blob/73e1c6748fb6683b99336d81271f332e60034d9f/docs/representation_control_results_manjaro_001.md), keinen von mir wiederholten Originalartefaktaudit.
+>
+> Die Alternativen bewerte ich folgendermaßen:
+>
+> | Option | Erkenntnisgewinn | Grenze und Einordnung |
+> |---|---|---|
+> | **A: Konstantenoptimiererdiagnose** | Trennt bei bekannter Struktur die Anpassungsfähigkeit von deren evolutionärer Entdeckung; erlaubt einen überschaubaren Budgetvergleich. | Privilegierte Struktur und künstliche Starts. Nur unter striktem Endpunkt sinnvoll; **meine Empfehlung**. |
+> | **B: Freie Suchintervention oder Verlaufsauswertung** | Liegt näher an der eigentlichen Forschungsfrage. Ein Verlauf könnte Entstehung, Optimierung und Verwerfung geeigneter Strukturen unterscheiden. | Eine weitere reine Budgeterhöhung wäre schwach begründet. Aussagekräftiges Tracing benötigt zusätzliche Instrumentierung und ihre Prüfung. Stärkste Alternative, falls A bereits ausreichend belegt wäre. |
+> | **C: Profilübertragbarkeit** | Könnte zeigen, ob die Fehlerverbesserung über den bekannten Fall hinausgeht — auch ohne bestandenen Kurvenmarker eine legitime Frage. | Untersucht primär Übertragbarkeit einer weiterhin unzureichenden Approximation. Für das derzeitige Rekonstruktionsproblem weniger unmittelbar aufschlussreich. |
+> | **D: Engere Grammatik oder Template** | Kann den Schwerpunkt schneller auf kontrollierte Rauschgewichtung lenken. | Ändert den Forschungsanspruch. Ein vollständig vorgegebenes Ein-Moden-Template ist zunächst Parameteranpassung; sein zusätzlicher Nutzen gegenüber dem vorhandenen separablen Referenzfit müsste begründet werden. |
+> | **E: Breite freie Suche pausieren/beenden** | Begrenzt Aufwand und ermöglicht Konzentration auf bereits tragfähige Bausteine. | Bei engem verbleibendem Zeitbudget durchaus vorrangig. Die bisherigen Ergebnisse rechtfertigen aber keine allgemeine Unmöglichkeitsaussage; eine einzelne begrenzte Prüfung von A ist noch vertretbar. |
+>
+> **Warum die Optimiererlücke trägt.** Die [bestehenden Backendtests](https://github.com/craexxn/ringdown-sr/blob/4057caaffd9c4de5791ded14431c6e289db75b73/julia/test/constant_optimization.jl#L23) verwenden tatsächlich konstante beziehungsweise lineare Modelle, 100 Iterationen und keine zufälligen Neustarts. Die [Ringdown-Kontrolle](https://github.com/craexxn/ringdown-sr/blob/4057caaffd9c4de5791ded14431c6e289db75b73/julia/test/runtests.jl#L274) bewertet einen bereits passenden Baum.
+>
+> Im [Backend 2.5.1](https://github.com/astroautomata/SymbolicRegression.jl/blob/v2.5.1/src/ConstantOptimization.jl#L202) bedeuten zwei Neustarts zwei zusätzliche lokale Optimierungen. Ihre Startvektoren werden vom ursprünglichen Vektor abgeleitet. Der beste Optimiererwert wird bei strikter Verbesserung übernommen; eine bestätigte Konvergenz wird dabei nicht verlangt. Deshalb müssen **Optimiererstatus, numerische Konsistenz und fachliche Güte getrennt** erfasst werden.
+>
+> Der stärkste Einwand gegen A bleibt: Gute Ergebnisse an absichtlich vorgegebenen Bäumen können für tatsächlich besuchte Suchbäume wenig repräsentativ sein. Ich begrenze A deshalb auf einen Budgetvergleich und endlich viele Starts. Koordinatenwechsel, alternative Solver und neue Parameterdarstellungen werden nicht zusätzlich untersucht.
+>
+> **Planentwurf — sämtliche folgenden Zahlen und Entscheidungsregeln sind Vorschläge zur Annahme, keine bereits beschlossenen Vorgaben.**
+>
+> 1. **Frage und Hypothesen**
+>
+>    Kann der tatsächliche Mehrkonstantenpfad die bekannte Ringdown-Struktur unter 20/2 von festgelegten abweichenden Starts aus ausreichend anpassen?
+>
+>    Unterschieden werden:
+>
+>    - **Budgethypothese:** 20 Iterationen begrenzen die Anpassung; 100 helfen bei ansonsten identischen Bedingungen.
+>    - **Startabhängigkeit:** Nahe Starts funktionieren, weiter entfernte scheitern auch mit 100 Iterationen.
+>    - **Andere lokale Begrenzung:** Schon nahe Starts bleiben unzureichend, etwa wegen Abbruchverhalten, numerischer Ableitungen oder ungünstiger Parametrisierung.
+>    - **Kein nachgewiesener Engpass in diesen Fällen:** Bereits 20/2 liefert gute Anpassungen. Die historische freie Suche ist damit weiterhin nicht erklärt.
+>
+> 2. **Daten, Struktur und erlaubtes Vorwissen**
+>
+>    Verwendet werden ausschließlich die unveränderten 128 Trainingswerte der abgeschlossenen Serie. Die 889 Zwischenpunkte bleiben nachgelagerte Diagnosepunkte.
+>
+>    Ein einziger, unverändert geklammerter Baum wird vorgegeben:
+>
+>    \[
+>    h(t)=A\,[\exp(bt)\,\cos(ct+\phi)].
+>    \]
+>
+>    Er besitzt 13 Knoten und vier optimierbare Konstanten. Insbesondere wird die wahre Phase nicht festgehalten. `b` und `c` sind einzelne Konstanten; die lesbaren Startangaben werden einmalig durch \(b=-1/\tau\), \(c=2\pi f\) umgerechnet.
+>
+>    Die bekannte Struktur und wahrheitsnahe Starts sind **privilegierte Diagnosebedingungen**. Sie gelangen weder in freie Suchpopulationen noch in die alten Ergebnisse. Die neue Diagnose ist ebenfalls Methodenentwicklung, keine unabhängige Validierung.
+>
+> 3. **Acht vorab festgelegte Starts**
+>
+>    Vier bewusst wahrheitsnahe Starts:
+>
+>    | Start | \(A\) | \(f\) in Hz | \(\tau\) in s | \(\phi\) in rad |
+>    |---|---:|---:|---:|---:|
+>    | L1 | 0,9 | 247,5 | 0,0072 | −0,1 |
+>    | L2 | 1,1 | 252,5 | 0,0088 | +0,1 |
+>    | L3 | 0,9 | 252,5 | 0,0088 | −0,1 |
+>    | L4 | 1,1 | 247,5 | 0,0072 | +0,1 |
+>
+>    Hinzu kommen vier weiter entfernte Starts als kartesisches Produkt:
+>
+>    \[
+>    f\in\{4/T,16/T\}=\{128,512\}\,\mathrm{Hz},\qquad
+>    \tau\in\{T/8,T/2\},
+>    \]
+>    mit \(T=128/4096\,\mathrm{s}\), \(A=\max_j|y_j|\) und \(\phi=\pi/2\).
+>
+>    Diese Auswahl deckt zwei Startbereiche ab; sie schätzt weder das Volumen eines Einzugsgebiets noch eine Erfolgswahrscheinlichkeit. Die Zahlen sind begrenzte Entwicklungsentscheidungen, keine wissenschaftlich hergeleitete optimale Stichprobe.
+>
+> 4. **Numerischer Pfad und Budget**
+>
+>    Direkter Aufruf von `SymbolicRegression.optimize_constants` mit dem vorhandenen vollständigen Verlustcallback und Einheitencheck. Float64, Sekunden, gewöhnliche MSE, BFGS mit Backtracking, numerische Differentiation und bisherige Abbruchtoleranzen bleiben erhalten. Keine zusätzliche Frequenz-/Dämpfungsbeschränkung und keine analytische Voranpassung.
+>
+>    Zwei Bedingungen:
+>
+>    - **20 Iterationen, zwei Neustarts:** bestehendes Profil.
+>    - **100 Iterationen, zwei Neustarts:** ausschließlich diagnostischer Budgetfaktor. Die 100 knüpfen an das vorhandene technische Prüfbudget an; sie sind keine belegte ausreichende Obergrenze.
+>
+>    Drei kontrollierte RNG-Initialisierungen je Start: die bekannten Seedkennungen 20261020/21/22 mit der bestehenden Backendabbildung. Je Paar werden RNG-Typ, Anfangszustand und tatsächliche Restartvektoren geprüft. Das rekonstruiert **nicht** den fortgeschrittenen Zufallszustand einer historischen freien Suche.
+>
+>    Insgesamt **8 Starts × 3 Seeds × 2 Budgets = 48 Backendaufrufe**, mit höchstens 144 lokalen Optimierungen. Jeder Aufruf startet frisch; keine Wiederholung bis zum Erfolg. Die Paarreihenfolge wird vorab abwechselnd festgelegt.
+>
+>    **Freies Suchbudget: null.** Beide Häufigkeitsschalter bleiben für diese isolierte Diagnose aus. Ihre Populationsmechanismen werden hier nicht untersucht. `complexity_frequency` bleibt Entwicklungskandidat für eine spätere freie Untersuchung mit frischer Baseline. `time_stretch` wird in diesem Schritt zurückgestellt; sein Mischbefund beweist keine grundsätzliche Untauglichkeit.
+>
+> 5. **Kontrollen, Messgrößen und Auswahl**
+>
+>    Je Budgetprofil fünf reine Kontrollen ohne Optimierung: passender Referenzbaum, optimale Konstante, dimensionswidriges `sin(t)` sowie die Aliasfälle 4346 und 33018 Hz. Damit werden Verlustpfad, Einheiten und bekannte Diagnosegrenzen kontrolliert.
+>
+>    Für alle 48 Aufrufe werden Startbaum, Restartreihenfolge, Rückgabebaum, Anfangs-/Endverlust, tatsächlicher Optimiererzustand, verfügbare Abbruchinformationen, Callbackzahlen und Zeiten gespeichert. Beobachtende Instrumentierung darf weder RNG noch Optimiererzustand verändern oder Abbruchentscheidungen treffen. Nicht verfügbare Status bleiben ausdrücklich nicht verfügbar.
+>
+>    Die Auswahl entspricht dem unveränderten Backendverhalten: bester lokaler Trainingsverlust; ohne strikte Verbesserung bleibt der Ausgangsbaum. Keine Auswahl nach Wahrheit oder Zwischenpunkten, kein „bester Seed“ als Gesamtergebnis.
+>
+>    Ausgewertet werden:
+>
+>    - unabhängig nachgerechnete Vorhersagen, Residuen und MSE;
+>    - RMS-/Maximalfehler auf beiden bestehenden Rastern mit unveränderten Grenzen;
+>    - rohe und aliasbezogene Parameter samt bisherigen Replay-Gates;
+>    - gepaarte Unterschiede **100 minus 20**, getrennt für nahe und entfernte Starts;
+>    - Abbruchursachen und Aufwand, ohne Gleichsetzung von Iterationen und Rechenkosten.
+>
+>    Eine nachgelagerte analytische Gradientenrechnung kann die numerische Diagnose ergänzen:
+>    \[
+>    \nabla_\theta L=\frac{2}{N}J^\top(h-y).
+>    \]
+>    Sie wird dem Optimierer nicht übergeben. Der klassische [separable Referenzfit](https://github.com/craexxn/ringdown-sr/blob/4057caaffd9c4de5791ded14431c6e289db75b73/docs/reference_fit.md) ist keine gleichartige Solverkontrolle und wird diesem begrenzten Versuch nicht als weiterer Fitarm hinzugefügt.
+>
+> 6. **Abbruch und Konsequenzen**
+>
+>    Quellen-, Daten-, Options- oder Replayfehler stoppen die Serie; Teilstände bleiben erhalten. Nichtkonvergenz und schlechte Kurven sind dagegen fachliche Ergebnisse und kein Anlass für Ersatzläufe. Nach 48 Aufrufen endet die Diagnose unabhängig vom Ergebnis.
+>
+>    Als organisatorische Obergrenze schlage ich **60 Minuten Gesamtwandzeit einschließlich Prozessstarts** vor. Das ist ein zu beschließendes Ressourcenlimit, keine Laufzeitprognose. Die dokumentierten 435 Sekunden der früheren Serie erlauben keine proportionale Hochrechnung. Ein Ressourcenabbruch bleibt unvollständig und wird nicht automatisch wiederholt.
+>
+>    | Beobachtung | Konsequenz für die anschließende Entscheidung |
+>    |---|---|
+>    | Alle zwölf nahen Fälle bestehen bereits unter 20/2 die Kurvengrenzen | Ein allgemeines lokales Anpassungsversagen ist für diese Fälle nicht gestützt. Als nächstes wäre eine gezielte Strukturverlaufsfrage zu begründen; keine weitere Optimierer-Rastererweiterung. |
+>    | 20 erreicht das Iterationslimit; 100 führt dieselben Starts zu guten Kurven | Budgetbegrenzung ist für diese Fälle belegt. Eine spätere freie Budgetintervention wäre begründbar, aber noch nicht freigegeben. |
+>    | Nahe Starts funktionieren, entfernte bleiben schlecht | Startabhängigkeit ist belegt. Unbekannt bleibt, welche Starts die freie Suche tatsächlich erzeugt; kein automatischer Schluss „mehr Iterationen“. |
+>    | Nahe Starts bleiben auch unter 100 unzureichend oder stoppen früh mit großem Fehler | Keine weitere Budgeteskalation. Breite freie Versuche bleiben ausgesetzt; Parametrisierung oder Forschungsumfang benötigen einen neuen Beschluss. |
+>    | Gemischte oder technisch unklare Ergebnisse | Keine eindeutige Ursachenbehauptung und keine automatische Zusatzserie. |
+>
+>    Die Zwölf-von-zwölf-Regel ist ein vorgeschlagenes konservatives Entwicklungsgate für diese nahe Startmenge, keine statistische Garantie.
+>
+> **Gate vor einem Rausch-/Gewichtungsvergleich.** Für den Anspruch *freie Ringdown-Rekonstruktion* reicht ein positives Ergebnis von A nicht. Zuerst sollte ein eingefrorenes freies Verfahren auf einer separat geplanten, begrenzten rauschfreien Entwicklungsmenge die erforderliche Kurvengüte zeigen. Danach braucht der Gewichtungsvergleich getrennte Signal-/Rauschfälle, unabhängige Hintergrundrollen und vorab festgelegte gemeinsame Bewertungsmaße. Eine fehlerfreie Rekonstruktion jeder denkbaren Formel ist dafür nicht erforderlich.
+>
+> Für den ausdrücklich engeren Anspruch *Parameteranpassung innerhalb bekannter Ringdown-Struktur* könnte ein Gewichtungsvergleich früher sinnvoll sein. Dieser Wechsel müsste beschlossen werden; bei vollständig vorgegebener Formel wäre der vorhandene klassische Referenzfit eine wesentliche Vergleichsgrundlage. Der Alias-Blindfleck bei \(8f_s\) bleibt bestehen, `physical_identification` bleibt auch nach guten Rasterreplays `not_assessed`.
+>
+> **Entscheidungsstand und Prüfgrenzen.** Ich sehe keine entscheidungsblockierende Unstimmigkeit in der beschriebenen Optimiererlücke. Vor einer Ausführung erforderlich sind jedoch der Beschluss über privilegierte Starts, Budgetvergleich und Ressourcenlimit sowie ein eingefrorener, technisch geprüfter Diagnosepfad mit nachgewiesener Eingabeherkunft. Weitere Koordinaten, Solver, Startgitter und Erkennererweiterungen sind optionale spätere Fragen.
+>
+> Hier wurden Quellen und dokumentierte Zahlen geprüft. Python- und Julia-Installationen sind vorhanden; für dieses Review wurden keine Tests, Fits, Optimierungen oder Suchläufe gestartet und keine zusätzlichen Agenten eingesetzt.
+>
+> **Beschlussentwurf:** „Wir wählen einmalig Option A im beschriebenen Umfang: eine feste Vierkonstantenstruktur, acht deklarierte Starts, drei kontrollierte RNG-Initialisierungen und die Profile 20/2 sowie 100/2. Wir akzeptieren die Diagnoseprivilegien und die feste Aufwandsgrenze. Die abgeschlossene Serie bleibt unverändert; Folgeversuche benötigen einen neuen Beschluss.“
+>
+> Gegen diese Empfehlung sprächen bereits vorhandene belastbare Ringdown-Optimierernachweise unter 20/2 mit vergleichbaren Starts, aussagekräftige Suchverläufe mit eindeutig anderem Engpass oder ein verbleibendes Arbeitsbudget, das selbst diese begrenzte Diagnose nicht rechtfertigt. Dann hätten B beziehungsweise ein ausdrücklich beschlossener Wechsel zu D/E Vorrang.

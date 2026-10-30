@@ -36,13 +36,15 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   drei Seeds um rund 90–97 % gegenüber der frischen Baseline. Trotzdem
   erfüllt kein Kandidat die Kurvengrenzen; der Erkenner unterstützt keine
   gefundene Struktur, Parameter und Identifikation bleiben `not_assessed`.
-- **Nächster abgegrenzter Schritt:** Die [Entscheidungsgrundlage mit
-  kopierbarem Review-Prompt](docs/representation_next_step_review.md) für ein
-  KI-basiertes Methodenreview verwenden. Zu entscheiden ist zwischen gezielter
-  Ursachendiagnose, weiterer freier Suche, Übertragbarkeitsprüfung und einer
-  ausdrücklich engeren Modellklasse beziehungsweise Pause. Es ist noch kein
-  neuer Plan beschlossen. Der eingefrorene Plan ist mit diesen neun Zellen
-  erfüllt; weitere Budgets, Seeds oder Varianten folgen nicht automatisch.
+- **Nächster abgegrenzter Schritt:** Über den [übermittelten KI-basierten
+  Reviewvorschlag](docs/representation_next_step_review.md#aktueller-entscheidungsstand-nach-dem-review)
+  entscheiden: einmalige Konstantenoptimiererdiagnose an einer festen
+  Ringdown-Struktur, acht Starts, drei RNG-Initialisierungen und Vergleich
+  20/2 gegen 100/2; 48 Backendaufrufe mit 60 Minuten Gesamtwandzeit als Grenze.
+  Vorgegebene Struktur und wahrheitsnahe Starts sind Diagnoseprivilegien.
+  Der neue Umfang ist noch nicht beschlossen, implementiert oder ausgeführt.
+  Die abgeschlossene Kontrollserie bleibt unverändert; ein Merge des
+  Ergebnis-PRs gibt keine neuen Versuche frei.
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
   bestand am Head `cfe44bf`: 1.288 Python-Tests, Julia- und technische
   Integrationsprüfungen. Der Mergecommit hat denselben Dateibaum. Die

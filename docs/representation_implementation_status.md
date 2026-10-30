@@ -36,7 +36,7 @@ wurde hier unabhängig nachgerechnet; der neue Entwicklungsbefund steht im
   Review werden ohne Codeänderung nicht erneut ausgeführt.
 
 
-## Vorbereitete nächste Methodenentscheidung
+## Nächste Methodenentscheidung nach übermitteltem Review
 
 Auf Nutzerauftrag ist die [Entscheidungsgrundlage samt vollständigem
 Review-Prompt](representation_next_step_review.md) im bestehenden Ergebnisbranch
@@ -44,17 +44,41 @@ und PR #41 ergänzt. Gesicherter Ergebnisstand vor dieser Ergänzung:
 `73e1c6748fb6683b99336d81271f332e60034d9f`; Vergleichsbasis
 `97672ed9b14b81ca90663dc178072b515ee252bc`.
 
-Die Unterlage trennt belegte Fehlerverbesserung, fehlende Rekonstruktion und
-unbekannte Ursachen. Sie vergleicht fünf Optionen und beschreibt die offene
-Prüfgrenze der nichtlinearen Konstantenanpassung gegenüber den vorhandenen
-konstanten/linearen Backendtests. Eine begrenzte Diagnose ist lediglich eine
-vorläufige Empfehlung zur kritischen Prüfung. Keine Ursache, kein neuer
-numerischer Versuchsplan und kein Produktionsprofil sind beschlossen.
+Der Nutzer hat das KI-basierte Methodenreview zu PR #41 übermittelt:
+gelesener Head `1c816e5e40b16a0fd03b268df24cf869d6a33a57`, Vergleichsbasis
+`97672ed9b14b81ca90663dc178072b515ee252bc`. Der vollständige Befund steht
+mit Herkunft und Prüfgrenzen in der bestehenden
+[Entscheidungsgrundlage](representation_next_step_review.md#übermittelter-ki-basierter-reviewbefund).
+Er empfiehlt Option A und berichtet keine entscheidungsblockierende
+Unstimmigkeit in der beschriebenen Optimiererlücke.
 
-Nächster Schritt: Prompt für ein KI-basiertes Methodenreview verwenden;
-priorisierte Empfehlung und genau einen begrenzten Planentwurf beurteilen.
-Dieses Review ist hier noch nicht ausgeführt. Keine neuen numerischen
-Prüfungen oder Suchläufe; nur Dokumentation und Quellenabgleich ergänzt.
+Vorgeschlagen sind eine feste Vierkonstantenstruktur, acht Starts, drei
+RNG-Initialisierungen, 20/2 und 100/2 sowie 60 Minuten Gesamtwandzeit:
+48 Backendaufrufe, höchstens 144 lokale Optimierungen, freies Suchbudget null.
+Die konkreten Starts, Kontrollen, Auswertung und Weiterentscheidungen stehen im
+übermittelten Entwurf. Diese Zahlen und Diagnoseprivilegien sind noch nicht
+vom Nutzer beschlossen; es gibt weder eine neue Implementierung noch Ergebnisse.
+
+Prüfgrenze des übermittelten Reviews: Quellen und dokumentierte Zahlen gelesen;
+kein eigener Originalarchiv-Audit, keine Tests, Fits, Optimierungen oder Suchen.
+Diese Aussagen sind übermittelte Nachweise und wurden bei der Übernahme nicht
+neu ausgeführt. Der vorherige eigene Archivaudit bleibt davon getrennt.
+
+Beim Einstieg zu diesem Nachtrag: sauberer Checkout und ein Worktree auf
+`codex/representation-control-results` am gelesenen Head; Remote-Branches und
+PRs abgeglichen, PR #41 weiterhin offen, `main` unverändert auf `97672ed`.
+Die [Dokumentations-CI des gelesenen Heads](https://github.com/craexxn/ringdown-sr/actions/runs/41054721398)
+bestand. Dieser Nachtrag aktualisiert ausschließlich README, Entscheidungs-
+und Fortsetzungsdokument; seinen genauen Head mit `git rev-parse HEAD` bestimmen.
+Lokal bestanden: Dokumentations-/Linkprüfung für 36 Markdown-Dateien und
+`git diff --check`; Wortlaut des Zitats gegen die Eingabe abgeglichen,
+schlanken CI-Umfang und beide unveränderten Planprüfsummen bestätigt.
+Der neue CI-Status gehört zum neuen Head in PR #41.
+
+Nächster abgegrenzter Schritt: Nutzerentscheidung über den konkreten Vorschlag.
+Bei Annahme einen eigenen eingefrorenen Methodenplan und einen technisch
+geprüften Diagnosepfad erarbeiten. Keine automatische weitere Reviewrunde,
+keine neuen numerischen Läufe und kein eigenständiger Merge.
 
 ## Vorheriger Fortsetzungsstand nach Merge und Review
 
@@ -197,12 +221,12 @@ Abschlussprüfung dem eingefrorenen Plan.
 
 ## Offen und nächster abgegrenzter Schritt
 
-1. Das vorbereitete [KI-basierte Methodenreview](representation_next_step_review.md)
-   anhand des verankerten Befunds durchführen; Empfehlung, Alternativen und
-   Aussagegrenzen getrennt beurteilen. Keine routinemäßige Wiederholung des
-   Implementierungsreviews oder des Originalarchiv-Audits.
-2. Als Nutzer den nächsten abgegrenzten Schritt bewusst beschließen. Bei
-   neuen Versuchen zuerst einen eigenen vollständigen Methodenplan festhalten.
+1. Über den [übermittelten KI-basierten Reviewvorschlag](representation_next_step_review.md#aktueller-entscheidungsstand-nach-dem-review)
+   entscheiden: einmalige Diagnose A mit den dort konkret genannten Grenzen.
+   Keine routinemäßige Wiederholung des Methoden-/Implementierungsreviews
+   oder des Originalarchiv-Audits.
+2. Nach Nutzerbeschluss für neue Versuche zuerst einen eigenen vollständigen
+   Methodenplan festhalten und den Diagnosepfad implementieren und prüfen.
    Die abgeschlossene Serie endet nach genau diesen neun Zellen; ein günstigerer
    Fehlerbefund ist noch keine Freigabe eines Produktionsprofils.
 3. Neue Suchbudgets, Seeds, Kombinationen, Operatorrestriktionen, Grenzen
