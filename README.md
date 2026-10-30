@@ -387,8 +387,11 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
    Implementierungsreview und Nachreview zu PR #34 sind abgeschlossen;
    alle neun geplanten Manjaro-Zellen sind als `completed` übermittelt.
    Sechs Auswahlen sind konstante Näherungen; auch die übrigen Kandidaten
-   verfehlen die Kurvenfehlergrenzen. Die nächste gezielte Ursachenprüfung
-   wird auf dieser Grundlage festgelegt.
+   verfehlen die Kurvenfehlergrenzen. Der
+   [nächste Methodenplan](docs/search_representation_plan.md) trennt eine
+   feste Zeitstreckung von aktivierten Komplexitätshäufigkeitsmechanismen.
+   Der Plan ist methodisch geprüft und wird nach Übernahme für die
+   anschließende Implementierung eingefroren.
 4. Wissenschaftliche Formelauswahl und statistischen Versuchsplan gesondert
    begründen, bevor Leistungs- und Identifikationsaussagen untersucht werden.
 
