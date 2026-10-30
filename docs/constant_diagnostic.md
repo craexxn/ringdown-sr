@@ -59,6 +59,8 @@ Ein konsistent neu gehashtes, später verändertes Artefakt wird dadurch nicht
 akzeptiert. Jeder technische Fehler sperrt alle Gruppen- und Paaraussagen.
 Teilstände und Einzelresultate bleiben lesbar. Es gibt keine automatische
 Fortsetzung, Ersatzstarts oder Wiederholungen.
+Zeitüberschreitung, Tastaturabbruch und `SIGTERM` beenden die eigens gestartete
+Worker-Prozessgruppe und sichern den unvollständigen Bericht.
 
 Die Optimiererbeobachtung kopiert Zustandswerte und liefert immer `false`;
 die RNG-Hülle delegiert jede normale Vektorziehung genau einmal. Die nativen

@@ -49,6 +49,16 @@ Lokale Prüfnachweise:
   ist ausdrücklich als Laufzeitdokument mit voller CI erfasst.
 - Originalarchiv mit dem neuen Leser identitätsgeprüft und ohne Extraktion
   gelesen: 128 Trainings- und 889 Diagnosedaten, 48 geplante Anfragen.
+- Abschließende Codeprüfung: auch `SIGTERM` in die kontrollierte Beendigung
+  der eigenen Prozessgruppe und Teilstandssicherung einbezogen; eigener
+  Gegenfall einschließlich gesperrter Zusammenfassungen im Abbruchbericht.
+  Danach 83 fokussierte Tests, Ruff, Format-, Dokumentations- und Diffprüfung
+  bestanden. Diese notwendige Abbruchkorrektur erfordert volle CI am neuen Head.
+- Die [erste vollständige CI](https://github.com/craexxn/ringdown-sr/actions/runs/41060066819)
+  bestand am Vorhead `32feb9d5174fed4e5c86ea3ba519256d6de48cb4`, einschließlich
+  des neuen nativen Diagnosechecks und aller bestehenden Integrationen.
+  Sie ist kein Nachweis für die nachträgliche SIGTERM-Korrektur; der aktuelle
+  CI-Nachweis wird in [PR #42](https://github.com/craexxn/ringdown-sr/pull/42) geführt.
 
 Keine der 48 wissenschaftlichen Zellen oder freie Suchen im Rahmen dieser
 Diagnoseimplementierung ausgeführt. Die vollständige technische CI kann die

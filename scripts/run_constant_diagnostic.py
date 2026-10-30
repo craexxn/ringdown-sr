@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import signal
 import subprocess
 import sys
 import time
@@ -25,6 +26,11 @@ from ringdown_sr.constant_diagnostic import (
     verify_result,
 )
 from ringdown_sr.pilot import _provenance, _sha256, _utc_now, _write_json
+
+
+def cancel(signum, frame):
+    """Unwind the active child wait and preserve the incomplete report."""
+    raise KeyboardInterrupt(f"Diagnostic interrupted by signal {signum}.")
 
 
 def launch(command, log, remaining):
@@ -221,4 +227,5 @@ if __name__ == "__main__":
     parser.add_argument("--archive", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
+    signal.signal(signal.SIGTERM, cancel)
     run(args.archive.resolve(), args.output.resolve())

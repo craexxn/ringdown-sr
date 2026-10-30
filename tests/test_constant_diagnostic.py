@@ -223,7 +223,15 @@ def test_synthetic_tree_preserves_phase_and_binary_grouping():
 
 @pytest.mark.parametrize(
     "failure",
-    ["none", "worker", "timeout", "late_artifact", "late_input", "late_source"],
+    [
+        "none",
+        "worker",
+        "timeout",
+        "signal",
+        "late_artifact",
+        "late_input",
+        "late_source",
+    ],
 )
 def test_driver_preserves_partial_results_and_blocks_late_failures(
     tmp_path, monkeypatch, failure
@@ -254,6 +262,8 @@ def test_driver_preserves_partial_results_and_blocks_late_failures(
                 raise RuntimeError("injected worker error")
             if failure == "timeout":
                 raise TimeoutError("injected timeout")
+            if failure == "signal":
+                driver.cancel(15, None)
             result = synthetic_result(request, arrays)
         _write_json(directory / "result.json", result)
 
@@ -276,7 +286,7 @@ def test_driver_preserves_partial_results_and_blocks_late_failures(
     if failure == "none":
         driver.run(archive, output)
     else:
-        with pytest.raises((ValueError, TimeoutError, RuntimeError)):
+        with pytest.raises((ValueError, TimeoutError, RuntimeError, KeyboardInterrupt)):
             driver.run(archive, output)
     report = json.loads((output / "report.json").read_bytes())
     assert (output / "checksums.json").is_file()
@@ -356,7 +366,8 @@ def test_absolute_options_and_rng_reject_first_call_tampering(field):
         d.verify_options_record(result, reference)
 
 
-def test_launcher_terminates_own_worker_on_timeout(monkeypatch, tmp_path):
+@pytest.mark.parametrize("interrupted", [False, True])
+def test_launcher_terminates_own_worker_on_timeout(monkeypatch, tmp_path, interrupted):
     import subprocess
 
     monkeypatch.syspath_prepend(str(d.ROOT / "scripts"))
@@ -365,11 +376,16 @@ def test_launcher_terminates_own_worker_on_timeout(monkeypatch, tmp_path):
 
     class Process:
         def wait(self, timeout):
+            if interrupted:
+                driver.cancel(15, None)
             raise subprocess.TimeoutExpired("fixture", timeout)
 
     process = Process()
     monkeypatch.setattr(driver.subprocess, "Popen", lambda *a, **k: process)
     monkeypatch.setattr(driver.symbolic, "_stop_worker", lambda p: stopped.append(p))
-    with (tmp_path / "log").open("w") as log, pytest.raises(subprocess.TimeoutExpired):
+    with (
+        (tmp_path / "log").open("w") as log,
+        pytest.raises((subprocess.TimeoutExpired, KeyboardInterrupt)),
+    ):
         driver.launch(["fixture"], log, 0.1)
     assert stopped == [process]
