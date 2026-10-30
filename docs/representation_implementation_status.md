@@ -1,10 +1,86 @@
 # Fortsetzungsstand: Zeitdarstellungs-Kontrolle
 
-Stand: 30.10.2026. Implementierung und gezieltes Review abgeschlossen.
-Nächster Schritt ist die geplante Ausführung auf dem Manjaro-Referenzrechner;
-wissenschaftliche Kontrollsuchen und ihre Auswertung stehen noch aus.
+Stand: 30.10.2026. Implementierung, gezieltes Review und die geplante
+Manjaro-Kontrollserie sind abgeschlossen. Das vollständige Originalarchiv
+wurde hier unabhängig nachgerechnet; der neue Entwicklungsbefund steht im
+[Ergebnisprotokoll](representation_control_results_manjaro_001.md).
 
-## Aktueller Fortsetzungsstand nach Merge und Review
+## Aktueller Fortsetzungsstand nach der Kontrollserie
+
+- Beim Einstieg `main` auf `97672ed` (übernommener Dokumentationsnachtrag
+  aus PR #40), keine offenen PRs und sauberer lokaler Checkout. Neuer
+  Ergebnisbranch `codex/representation-control-results`, Basis `97672ed`.
+  Der genaue Dokumentationshead ergibt sich aus `git rev-parse HEAD`.
+- Ausführungscommit weiterhin `4057caaffd9c4de5791ded14431c6e289db75b73`;
+  im Originalarchiv mit sauberem Git-Zustand protokolliert. Keine Änderung
+  der wissenschaftlichen Vorgaben oder der 41 konsumierten Quelldateien.
+- Vom Nutzer übermitteltes Originalarchiv `representation-manjaro-001.tar.gz`,
+  SHA-256 selbst bestätigt:
+  `a5b0cdae4262a7f759c72fbe1e7e9c142d817fbffa088107953250da861050db`.
+- Archiv vollständig gelesen: 219 Dateien, davon 218 im Artefaktmanifest;
+  sämtliche Datei-, Quell-, Worker-, Eingabe- und Planprüfsummen bestätigt.
+  Alle neun Zellen `completed`, Abschlussprüfung `passed`.
+- 57 Kandidaten mit sämtlichen Originalindizes, Vorhersagen, Residuen und
+  MSE nachgerechnet; beide Raster zusätzlich mit unabhängig geschriebenem
+  Bauminterpreter und `math.fsum` ausgewertet. Vorprüfungsobjekte, konkrete
+  Pluginfelder, Seeds und Haswell-Aufnahmen erneut abgeglichen. Gruppen-
+  statistiken und sechs Seed-Paare reproduziert. Keine Originaldatei verändert.
+- Ergebnis: Häufigkeitsschalter verbessern die Trainings-MSE bei 3/3 Seeds
+  um rund 90–97 %; Zeitstreckung hilft beim Training bei 2/3 Seeds und kann
+  auf Zwischenpunkten deutliche Spitzenfehler erzeugen. Alle 57 Kandidaten
+  verfehlen die Kurvengrenzen; alle Strukturen `not_supported`, Parameter
+  `not_assessed`. Der komplette Auditumfang und alle Zahlen stehen im Befund.
+- In diesem Auswertungsschritt keine neue Suche, kein Fit und kein Julia-Lauf.
+  Die hier abgeglichenen nativen Backendnachweise sind archivierte Aufnahmen.
+  Ergebnisnachtrag ausschließlich als Dokumentation; vollständige CI und
+  Review werden ohne Codeänderung nicht erneut ausgeführt.
+
+
+## Nächste Methodenentscheidung nach übermitteltem Review
+
+Auf Nutzerauftrag ist die [Entscheidungsgrundlage samt vollständigem
+Review-Prompt](representation_next_step_review.md) im bestehenden Ergebnisbranch
+und PR #41 ergänzt. Gesicherter Ergebnisstand vor dieser Ergänzung:
+`73e1c6748fb6683b99336d81271f332e60034d9f`; Vergleichsbasis
+`97672ed9b14b81ca90663dc178072b515ee252bc`.
+
+Der Nutzer hat das KI-basierte Methodenreview zu PR #41 übermittelt:
+gelesener Head `1c816e5e40b16a0fd03b268df24cf869d6a33a57`, Vergleichsbasis
+`97672ed9b14b81ca90663dc178072b515ee252bc`. Der vollständige Befund steht
+mit Herkunft und Prüfgrenzen in der bestehenden
+[Entscheidungsgrundlage](representation_next_step_review.md#übermittelter-ki-basierter-reviewbefund).
+Er empfiehlt Option A und berichtet keine entscheidungsblockierende
+Unstimmigkeit in der beschriebenen Optimiererlücke.
+
+Vorgeschlagen sind eine feste Vierkonstantenstruktur, acht Starts, drei
+RNG-Initialisierungen, 20/2 und 100/2 sowie 60 Minuten Gesamtwandzeit:
+48 Backendaufrufe, höchstens 144 lokale Optimierungen, freies Suchbudget null.
+Die konkreten Starts, Kontrollen, Auswertung und Weiterentscheidungen stehen im
+übermittelten Entwurf. Diese Zahlen und Diagnoseprivilegien sind noch nicht
+vom Nutzer beschlossen; es gibt weder eine neue Implementierung noch Ergebnisse.
+
+Prüfgrenze des übermittelten Reviews: Quellen und dokumentierte Zahlen gelesen;
+kein eigener Originalarchiv-Audit, keine Tests, Fits, Optimierungen oder Suchen.
+Diese Aussagen sind übermittelte Nachweise und wurden bei der Übernahme nicht
+neu ausgeführt. Der vorherige eigene Archivaudit bleibt davon getrennt.
+
+Beim Einstieg zu diesem Nachtrag: sauberer Checkout und ein Worktree auf
+`codex/representation-control-results` am gelesenen Head; Remote-Branches und
+PRs abgeglichen, PR #41 weiterhin offen, `main` unverändert auf `97672ed`.
+Die [Dokumentations-CI des gelesenen Heads](https://github.com/craexxn/ringdown-sr/actions/runs/41054721398)
+bestand. Dieser Nachtrag aktualisiert ausschließlich README, Entscheidungs-
+und Fortsetzungsdokument; seinen genauen Head mit `git rev-parse HEAD` bestimmen.
+Lokal bestanden: Dokumentations-/Linkprüfung für 36 Markdown-Dateien und
+`git diff --check`; Wortlaut des Zitats gegen die Eingabe abgeglichen,
+schlanken CI-Umfang und beide unveränderten Planprüfsummen bestätigt.
+Der neue CI-Status gehört zum neuen Head in PR #41.
+
+Nächster abgegrenzter Schritt: Nutzerentscheidung über den konkreten Vorschlag.
+Bei Annahme einen eigenen eingefrorenen Methodenplan und einen technisch
+geprüften Diagnosepfad erarbeiten. Keine automatische weitere Reviewrunde,
+keine neuen numerischen Läufe und kein eigenständiger Merge.
+
+## Vorheriger Fortsetzungsstand nach Merge und Review
 
 - PR #39 ist auf `main` übernommen, Mergecommit und fester Ausführungsstand:
   `4057caaffd9c4de5791ded14431c6e289db75b73`.
@@ -145,25 +221,20 @@ Abschlussprüfung dem eingefrorenen Plan.
 
 ## Offen und nächster abgegrenzter Schritt
 
-1. Die [Manjaro-Befehle](representation_control.md#ausführung-auf-manjaro)
-   im sauberen Checkout des festen Ausführungscommits ausführen. Die gesperrte
-   Installation und der technische Umgebungscheck müssen bestehen.
-   Die lokalen Manjaro-Voraussetzungen sind in dieser Cloud nicht bestätigt.
-2. Der Kontrolltreiber prüft vor der ersten Suche selbst echte Optionen,
-   feste Koordinaten-/Aliasreferenzen und Haswell mit Threadlimit 1.
-   Danach genau die neun geplanten Zellen; keine zusätzliche technische
-   freie Suche und keine erneute vollständige Test-/Reviewrunde vorgesehen.
-3. Vollständige Originalartefakte einschließlich Teilständen archivieren,
-   `report.json` und `summary.md` sichten und die Ergebnisse unabhängig
-   nachrechnen. Bei Abbruch keine automatische Wiederholung oder Fortsetzung.
-   Den Abbruchgrund samt erhaltenem Archiv prüfen.
+1. Über den [übermittelten KI-basierten Reviewvorschlag](representation_next_step_review.md#aktueller-entscheidungsstand-nach-dem-review)
+   entscheiden: einmalige Diagnose A mit den dort konkret genannten Grenzen.
+   Keine routinemäßige Wiederholung des Methoden-/Implementierungsreviews
+   oder des Originalarchiv-Audits.
+2. Nach Nutzerbeschluss für neue Versuche zuerst einen eigenen vollständigen
+   Methodenplan festhalten und den Diagnosepfad implementieren und prüfen.
+   Die abgeschlossene Serie endet nach genau diesen neun Zellen; ein günstigerer
+   Fehlerbefund ist noch keine Freigabe eines Produktionsprofils.
+3. Neue Suchbudgets, Seeds, Kombinationen, Operatorrestriktionen, Grenzen
+   oder Rauschstudien erst nach gesonderter Methodenentscheidung festlegen.
 
-In der Cloud wurden keine wissenschaftlichen Kontrollsuchen gestartet.
-Keine Forschungsfrage, Seeds, wissenschaftlichen Budgets, Toleranzen,
-Auswahlregeln, Versionspins oder Berechtigungen geändert. Kein kombinierter
-Arm, keine Ersatzseeds. Der Alias-Blindfleck bei `8*fs` bleibt dokumentiert.
-Die nächsten wissenschaftlichen Befunde entstehen erst aus den Originaldaten
-der Manjaro-Serie.
+Der Plan und beide Laufzeitplanprüfsummen sind unverändert. Keine zusätzlichen
+wissenschaftlichen Suchen in der Cloud und keine automatische Wiederholung.
+Der Alias-Blindfleck bei `8*fs` bleibt ausdrücklich bestehen.
 
 ## Historische Nachweise
 

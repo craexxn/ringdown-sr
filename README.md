@@ -5,8 +5,9 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 30.10.2026; abgeglichener Stand auf `main`: `4057caa`
-(übernommene Implementierung aus [PR #39](https://github.com/craexxn/ringdown-sr/pull/39)).
+Fortsetzungsstand: 30.10.2026; abgeglichener Stand auf `main`: `97672ed`
+(Übergabe aus [PR #40](https://github.com/craexxn/ringdown-sr/pull/40));
+Ausführungsstand der Kontrollserie: `4057caa`.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
@@ -24,15 +25,26 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   korrekturbedürftigen Befunde zur beauftragten Methodentreue.
   [Bedienung und Artefakte](docs/representation_control.md) sowie
   [Fortsetzungsstand](docs/representation_implementation_status.md) enthalten
-  Bezugscommits, Prüfumfang und Grenzen. Wissenschaftliche Kontrollsuchen
-  sind noch nicht ausgeführt.
-- **Nächster abgegrenzter Schritt:** Auf dem Manjaro-Referenzrechner den
-  festen Ausführungscommit `4057caaffd9c4de5791ded14431c6e289db75b73`
-  sauber auschecken, die gesperrte Umgebung prüfen und die neun vorgesehenen
-  Kontrollsuchen einmalig ausführen. Der Treiber enthält die Options-,
-  Referenz- und Haswell-Vorprüfungen; eine zusätzliche Reviewrunde ist
-  nach dem übermittelten Befund nicht erforderlich. Anschließend die
-  vollständigen Originalartefakte sichern und unabhängig auswerten.
+  Bezugscommits, Prüfumfang und Grenzen. Die wissenschaftliche Kontrollserie
+  wurde auf Manjaro ausgeführt und ihr vollständiges Originalarchiv hier
+  unabhängig nachgerechnet.
+- **Neuer Entwicklungsbefund:** Die [Zeitdarstellungs-Kontrollserie auf
+  Manjaro](docs/representation_control_results_manjaro_001.md) ist mit neun
+  abgeschlossenen Zellen und bestandener Abschlussprüfung archiviert.
+  Alle 57 Kandidaten, Originalauswahlen, Fehler und Seed-Differenzen wurden
+  nachgerechnet. Die Häufigkeitsschalter senken die Trainings-MSE bei allen
+  drei Seeds um rund 90–97 % gegenüber der frischen Baseline. Trotzdem
+  erfüllt kein Kandidat die Kurvengrenzen; der Erkenner unterstützt keine
+  gefundene Struktur, Parameter und Identifikation bleiben `not_assessed`.
+- **Nächster abgegrenzter Schritt:** Über den [übermittelten KI-basierten
+  Reviewvorschlag](docs/representation_next_step_review.md#aktueller-entscheidungsstand-nach-dem-review)
+  entscheiden: einmalige Konstantenoptimiererdiagnose an einer festen
+  Ringdown-Struktur, acht Starts, drei RNG-Initialisierungen und Vergleich
+  20/2 gegen 100/2; 48 Backendaufrufe mit 60 Minuten Gesamtwandzeit als Grenze.
+  Vorgegebene Struktur und wahrheitsnahe Starts sind Diagnoseprivilegien.
+  Der neue Umfang ist noch nicht beschlossen, implementiert oder ausgeführt.
+  Die abgeschlossene Kontrollserie bleibt unverändert; ein Merge des
+  Ergebnis-PRs gibt keine neuen Versuche frei.
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
   bestand am Head `cfe44bf`: 1.288 Python-Tests, Julia- und technische
   Integrationsprüfungen. Der Mergecommit hat denselben Dateibaum. Die
