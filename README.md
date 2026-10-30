@@ -50,8 +50,9 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   und 60 Minuten Gesamtlimit. Die korrigierten Entscheidungsregeln trennen den
   Zählvergleich von Struktur-/Parameterbefunden derselben Originalauswahl.
   PR #44 ist übernommen; der getrennte Kontrollpfad wird auf
-  `codex/free-optimizer-budget` implementiert. Technische Prüfung und einmalige
-  Manjaro-Ausführung stehen aus. Dies ist adaptive Methodenentwicklung,
+  `codex/free-optimizer-budget` implementiert. Die lokale technische
+  Prozessprüfung ist bestanden; vollständige CI und einmalige Manjaro-Ausführung
+  stehen aus. [Bedienung und Artefakte](docs/free_optimizer_budget.md). Dies ist adaptive Methodenentwicklung,
   keine Festlegung eines Produktionsprofils oder allgemeine Leistungsvalidierung.
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
   bestand am Head `cfe44bf`: 1.288 Python-Tests, Julia- und technische

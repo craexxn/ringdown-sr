@@ -1,0 +1,671 @@
+"""Run exactly six frozen free searches, preserving fail-closed partial states."""
+
+import argparse
+import importlib.util
+import io
+import signal
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+import numpy as np
+
+from ringdown_sr import symbolic
+from ringdown_sr.constant_diagnostic import read_archive
+from ringdown_sr.free_optimizer_budget import (
+    FORMAT,
+    LIMIT_SECONDS,
+    PLAN,
+    PLAN_COMMIT,
+    PLAN_SHA256,
+    PROFILE_FORMAT,
+    RUNTIME,
+    common_options,
+    comparison,
+    planned_cells,
+    profile_parameters,
+    source_hashes,
+    verify_manifest,
+    verify_options,
+)
+from ringdown_sr.noiseless_control import (
+    CURVE_LIMITS,
+    FS,
+    PARAMETER_LIMITS,
+    TRUTH,
+    fingerprint,
+)
+from ringdown_sr.parameter_export import _candidate
+from ringdown_sr.pilot import _sha256, _utc_now, _write_json
+from ringdown_sr.representation_control import diagnose_candidate
+
+ROOT = symbolic.ROOT
+
+
+def load_base():
+    spec = importlib.util.spec_from_file_location(
+        "free_budget_base", ROOT / "scripts/run_noiseless_control.py"
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+BASE = load_base()
+EXTRA_FILES = (
+    "profile.json",
+    "manifest.json",
+    "verification.json",
+    "blas_control.json",
+    "RingdownSRLoss.jl",
+    "RingdownSRSearch.jl",
+    "RepresentationProfiles.jl",
+    "FreeOptimizerBudget.jl",
+)
+
+
+def launch(command, *, stdout, remaining):
+    if remaining <= 0:
+        raise TimeoutError("Free budget comparison reached its wall-time limit.")
+    process = subprocess.Popen(
+        command, stdout=stdout, stderr=subprocess.STDOUT, start_new_session=True
+    )
+    try:
+        code = process.wait(timeout=remaining)
+        if code:
+            symbolic._stop_worker(process)
+        return subprocess.CompletedProcess(command, code)
+    except BaseException:
+        symbolic._stop_worker(process)
+        raise
+
+
+def verify_preflight(record, initial, sources, support, probe):
+    if (
+        record["format"] != FORMAT
+        or record["status"] != "verified"
+        or record["mode"] != "options"
+        or record["callback_calls"] != 0
+        or record["source_sha256"] != sources
+        or len(record["profiles"]) != 6
+    ):
+        raise ValueError("Invalid options-only free-budget preflight.")
+    verify_snapshots(record, initial, probe)
+    expected = {(c["iterations"], c["budget"]["seed"]) for c in planned_cells()}
+    seen, first = set(), None
+    for profile in record["profiles"]:
+        key = profile["iterations"], profile["python_seed"]
+        if key not in expected or key in seen:
+            raise ValueError("Missing or duplicate free-budget preflight cell.")
+        seen.add(key)
+        verify_options(profile, key[1], key[0], BASE, support)
+        current = common_options(profile, support)
+        if first is not None and current != first:
+            raise ValueError("Unplanned native cross-budget option difference.")
+        first = current
+
+
+def verify_snapshots(record, initial, probe):
+    for snapshot in (record["initial"], record["final"]):
+        if any(
+            snapshot[key] != initial[key]
+            for key in ("provenance", "adapter_source_sha256")
+        ):
+            raise ValueError("Preflight source provenance changed.")
+        if snapshot["blas_control"] != probe.verify_blas_control(
+            snapshot["environment"], "Haswell", require_julia=True
+        ):
+            raise ValueError("Preflight actual BLAS snapshot disagrees.")
+
+
+def inspect_backend(output, runtime, initial, sources, support, probe, remaining):
+    documents, consumed = {}, {}
+    for mode in ("options", "references"):
+        filename = mode + ".json"
+        with (output / (filename + ".log")).open("w", encoding="utf-8") as log:
+            result = launch(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts/run_python.py"),
+                    str(runtime / "backend.py"),
+                    "--mode",
+                    mode,
+                    "--output",
+                    str(output / filename),
+                ],
+                stdout=log,
+                remaining=remaining(),
+            )
+        if result.returncode:
+            raise RuntimeError(f"Budget preflight failed; see {filename}.log.")
+        consumed[filename] = (output / filename).read_bytes()
+        documents[mode] = support.read_json(consumed[filename])
+    options, references = documents["options"], documents["references"]
+    verify_preflight(options, initial, sources, support, probe)
+    verify_snapshots(references, initial, probe)
+    if (
+        references["format"] != FORMAT
+        or references["status"] != "verified"
+        or references["mode"] != "references"
+        or references["source_sha256"] != sources
+        or len(references["cases"]) != 6
+    ):
+        raise ValueError("Incomplete native fixed-reference preflight.")
+    if {(c["iterations"], c["frequency_hz"]) for c in references["cases"]} != {
+        (i, f) for i in (20, 100) for f in (250, 4346, 33018)
+    }:
+        raise ValueError("Wrong native fixed-reference coverage.")
+    return options, consumed
+
+
+def dispatch(runtime, cell, sources, frozen, output, remaining, unchanged):
+    def run(command, *, stdout):
+        unchanged()
+        expected = [
+            sys.executable,
+            str(ROOT / "scripts/run_python.py"),
+            str(ROOT / "scripts/run_symbolic_worker.py"),
+        ]
+        if len(command) != 4 or command[:3] != expected:
+            raise ValueError("Unexpected free-budget worker command.")
+        directory = Path(command[3])
+        request = BASE.load_support().read_json(
+            (directory / "request.json").read_bytes()
+        )
+        if request != {"format": symbolic.FORMAT, "budget": cell["budget"]}:
+            raise ValueError("Unexpected free-budget worker request.")
+        _write_json(
+            directory / "profile.json",
+            {"format": PROFILE_FORMAT, "iterations": cell["iterations"]},
+        )
+        _write_json(
+            directory / "manifest.json",
+            {
+                "format": FORMAT,
+                "sources": sources,
+                "runtime": {k: sources[v] for k, v in RUNTIME.items()},
+                "inputs": {
+                    name: _sha256((directory / name).read_bytes())
+                    for name in ("inputs.npz", "request.json", "profile.json")
+                },
+            },
+        )
+        verify_manifest(directory, runtime)
+        for name in ("inputs.npz", "request.json", "profile.json", "manifest.json"):
+            path = directory / name
+            frozen[path.relative_to(output).as_posix()] = _sha256(path.read_bytes())
+        return launch(
+            [*command[:2], str(runtime / "worker.py"), command[3]],
+            stdout=stdout,
+            remaining=remaining(),
+        )
+
+    return run
+
+
+def worker_bytes(directory, support):
+    contents = support.source_bytes(directory)
+    checksums = support.read_json(contents["checksums.json"])
+    for name in EXTRA_FILES:
+        path = directory / name
+        if path.is_symlink():
+            raise ValueError("Worker artifacts must not be symbolic links.")
+        contents[name] = path.read_bytes()
+        if checksums.get(name) != _sha256(contents[name]):
+            raise ValueError("Worker checksum mismatch: " + name)
+    return contents
+
+
+def verify_cell(
+    directory, cell, arrays, support, probe, initial, tools, sources, preflight
+):
+    contents = worker_bytes(directory, support)
+    read = lambda name: support.read_json(contents[name])
+    if read("request.json") != {
+        "format": symbolic.FORMAT,
+        "budget": cell["budget"],
+    } or read("profile.json") != {
+        "format": PROFILE_FORMAT,
+        "iterations": cell["iterations"],
+    }:
+        raise ValueError("Worker changed its request or profile.")
+    with np.load(io.BytesIO(contents["inputs.npz"]), allow_pickle=False) as saved:
+        if set(saved.files) != {"time_s", "observed"} or any(
+            saved[key].dtype != np.float64
+            or fingerprint(saved[key]) != fingerprint(arrays[key])
+            for key in saved.files
+        ):
+            raise ValueError("Worker changed the training input roles or bits.")
+    manifest = verify_manifest(directory, directory.parent / "runtime")
+    if manifest["sources"] != sources:
+        raise ValueError("Worker consumed different sources.")
+    for name in EXTRA_FILES:
+        if (
+            name.endswith(".jl")
+            and _sha256(contents[name]) != sources["julia/src/" + name]
+        ):
+            raise ValueError("Worker consumed a changed native source.")
+    metadata, first = read("metadata.json"), read("metadata_initial.json")
+    if (
+        metadata["phase"] != "success"
+        or metadata["provenance"] != first["provenance"]
+        or any(
+            metadata[key] != initial["provenance"]
+            for key in ("provenance", "worker_provenance")
+        )
+        or any(
+            metadata[key] != initial["adapter_source_sha256"]
+            for key in ("adapter_source_sha256", "worker_adapter_source_sha256")
+        )
+    ):
+        raise ValueError("Worker provenance changed or worker incomplete.")
+    control = support.verify_worker_control(
+        directory, metadata, "Haswell", tools, probe
+    )
+    front = read("result.json")
+    support.signature(front)
+    if (
+        front["evaluation_scope"] != "fitted_samples_only"
+        or front["selection"] != "minimum_training_loss_then_complexity"
+    ):
+        raise ValueError("Changed original selection scope or policy.")
+    parameters = read("pysr_parameters.json")
+    expected = profile_parameters(
+        symbolic.SearchBudget(**cell["budget"]), cell["iterations"]
+    )
+    if any(
+        key not in parameters or parameters[key] != value
+        for key, value in expected.items()
+    ):
+        raise ValueError("Wrong effective free-budget PySR parameters.")
+    record = read("verification.json")
+    backend = read("backend_options.json")
+    reference = next(
+        p
+        for p in preflight["profiles"]
+        if p["iterations"] == cell["iterations"]
+        and p["python_seed"] == cell["budget"]["seed"]
+    )
+    calls = front["callback_calls_during_fit"]
+    if (
+        record["format"] != FORMAT
+        or record["status"] != "verified"
+        or record["iterations"] != cell["iterations"]
+        or record["backend_options"] != backend
+        or record["profile_sha256"] != _sha256(contents["profile.json"])
+        or record["manifest_sha256"] != _sha256(contents["manifest.json"])
+        or type(calls) is not int
+        or calls <= 0
+        or type(record["callback_calls_during_fit"]) is not int
+        or record["callback_calls_during_fit"] != calls
+        or type(record["callback_calls_total"]) is not int
+        or record["callback_calls_total"] != calls + 1
+    ):
+        raise ValueError("Wrong native budget verification or callback accounting.")
+    policy = verify_options(
+        record, cell["budget"]["seed"], cell["iterations"], BASE, support
+    )
+    if any(
+        type(front["rng"].get(key)) is not int or front["rng"][key] != value
+        for key, value in (
+            ("python_seed", cell["budget"]["seed"]),
+            ("backend_seed", record["backend_seed"]),
+        )
+    ):
+        raise ValueError("Wrong recorded free-search RNG seed.")
+    if support.backend_without_output(backend) != support.backend_without_output(
+        reference["backend_options"]
+    ) or any(
+        record[key] != reference[key]
+        for key in ("optimizer_settings", "plugins", "plugins_field")
+    ):
+        raise ValueError("Actual backend differs from the genuine native preflight.")
+    selected = front["selected_index"]
+    diagnoses = []
+    for index, candidate in enumerate(front["candidates"]):
+        _candidate(candidate, index, selected, arrays["time_s"], FS)
+        checked = BASE.verify_training_loss(candidate, arrays["observed"])
+        diagnosis = diagnose_candidate(
+            candidate, index, selected, arrays, "complexity_frequency"
+        )
+        diagnosis["training_verification"] = checked
+        diagnoses.append(diagnosis)
+    if selected != symbolic.select_candidate(front["candidates"]):
+        raise ValueError("The original selection contradicts its training rule.")
+    if worker_bytes(directory, support) != contents:
+        raise ValueError("Consumed worker artifacts changed during diagnosis.")
+    return {
+        "selected_index": selected,
+        "selection_role": "recorded_only; no reranking",
+        "candidate_count": len(diagnoses),
+        "candidates": diagnoses,
+        "source_file_sha256": {k: _sha256(v) for k, v in contents.items()},
+        "blas_control": control,
+        "rng": front["rng"],
+        "timing_seconds": front["timing_seconds"],
+        "callback_calls_during_fit": calls,
+        "callback_calls_total": record["callback_calls_total"],
+        "backend_evaluation_counter": front["backend_evaluation_counter"],
+        "effective_parameters": parameters,
+        "effective_backend_options": backend,
+        "backend_policy_verification": policy,
+        "native_verification": record,
+    }
+
+
+def save_report(output, report):
+    report.update(
+        comparison(
+            report["cells"],
+            final_verified=report["final_verification"] == "passed"
+            and report["status"] == "completed",
+        )
+    )
+    _write_json(output / "report.json", report)
+    lines = [
+        "# Freier Optimiererbudgetvergleich",
+        "",
+        f"Serienstatus: `{report['status']}`, Abschlussverifikation: `{report['final_verification']}`.",
+        "",
+        "Bekannter Entwicklungsfall; beide Häufigkeitsschalter an; physikalische Identifikation `not_assessed`.",
+        "",
+        "| Zelle | Seed | Lokale Iterationen | Status | Auswahlindex | Kurve | Struktur | Parameter |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- |",
+    ]
+    for cell in report["cells"]:
+        diagnosis = cell.get("diagnostics")
+        selected = (
+            diagnosis["candidates"][diagnosis["selected_index"]] if diagnosis else None
+        )
+        values = [
+            cell["number"],
+            cell["budget"]["seed"],
+            cell["iterations"],
+            cell["status"],
+            diagnosis["selected_index"] if diagnosis else "nicht verfügbar",
+            selected["curve_marker"] if selected else "nicht verfügbar",
+            selected["search_analysis"]["structure"]["structure_status"]
+            if selected
+            else "nicht verfügbar",
+            selected["parameter_match"]["status"] if selected else "nicht verfügbar",
+        ]
+        lines.append("| " + " | ".join(map(str, values)) + " |")
+    lines += [
+        "",
+        "Gruppenstatistiken und Paardifferenzen sind bis zu sechs verifizierten Zellen und bestandener Abschlussprüfung gesperrt.",
+        "",
+    ]
+    if report["comparison"] is not None:
+        value = report["comparison"]
+        labels = {
+            "more_successes": "Mehr erfolgreiche Originalauswahlen unter 100/2",
+            "fewer_successes": "Weniger erfolgreiche Originalauswahlen unter 100/2",
+            "no_successes": "Keine erfolgreiche Originalauswahl unter beiden Budgets",
+            "equal_successes": "Kein Mehrerfolg am primären Zählendpunkt",
+        }
+        lines += [
+            f"C20={value['C20']}/3, C100={value['C100']}/3: {labels[value['outcome']]}. Keine allgemeine Überlegenheit ableiten.",
+            "",
+            "| Seed | Erfolg 20/2 | Erfolg 100/2 |",
+            "| --- | --- | --- |",
+        ]
+        lines += [
+            f"| {p['seed']} | {p['success_20']} | {p['success_100']} |"
+            for p in report["pair_differences"]
+        ]
+        lines += [
+            "",
+            "Struktur-/Parameterunterstützung betrifft ausschließlich dieselbe erfolgreiche Originalauswahl. Gute nicht ausgewählte Frontkandidaten bleiben separat.",
+        ]
+    lines += [
+        "",
+        "Vollständige Fronten, Fehler, endliche Nenner, Status, Aufwand und Differenzen stehen in report.json. Das Achtelraster behält den Alias-Blindfleck bei 8·fs = 32768 Hz.",
+        "",
+    ]
+    temporary = output / "summary.md.tmp"
+    temporary.write_text("\n".join(lines), encoding="utf-8")
+    temporary.replace(output / "summary.md")
+
+
+def run(archive, output, *, label):
+    archive, output = Path(archive).resolve(), Path(output).resolve()
+    if (
+        not label.strip()
+        or output.exists()
+        or ROOT.is_relative_to(output)
+        or any(
+            output.is_relative_to(ROOT / name)
+            for name in ("src", "scripts", "docs", "julia", ".git")
+        )
+    ):
+        raise ValueError(
+            "Use a machine label and a new output directory outside sources."
+        )
+    started = time.monotonic()
+    support = BASE.load_support()
+    probe = support.load_core_probe()
+    initial = BASE.core_snapshot(probe)
+    if initial["provenance"]["git"]["dirty"] is not False:
+        raise ValueError("Scientific comparison requires a clean, committed checkout.")
+    original_archive, arrays = read_archive(archive)
+    for values in arrays.values():
+        values.flags.writeable = False
+    fingerprints = {k: fingerprint(v) for k, v in arrays.items()}
+    sources, tools = source_hashes(), support.tool_hashes()
+    output.mkdir(parents=True)
+    files = {}
+    report = {
+        "format": FORMAT,
+        "status": "running",
+        "label": label,
+        "started_at_utc": _utc_now(),
+        "scope": "adaptive development; one known noiseless signal; no general validation",
+        "physical_identification": "not_assessed",
+        "plan": {"commit": PLAN_COMMIT, "sha256": PLAN_SHA256},
+        "configuration": {
+            "truth": TRUTH,
+            "curve_limits": CURVE_LIMITS,
+            "parameter_limits": PARAMETER_LIMITS,
+            "limit_seconds": LIMIT_SECONDS,
+            "use_frequency": True,
+            "use_frequency_in_tournament": True,
+        },
+        "input_fingerprints": fingerprints,
+        "source_sha256": sources,
+        "control_initial": initial,
+        "cells": planned_cells(),
+        "final_verification": "pending",
+        "frozen_file_sha256": files,
+    }
+    original = symbolic._run_worker
+    failure = None
+
+    def remaining():
+        return LIMIT_SECONDS - (time.monotonic() - started)
+
+    def unchanged():
+        if remaining() <= 0:
+            raise TimeoutError("Free budget comparison reached its wall-time limit.")
+        if (
+            source_hashes() != sources
+            or support.tool_hashes() != tools
+            or archive.read_bytes() != original_archive
+            or any(fingerprint(v) != fingerprints[k] for k, v in arrays.items())
+        ):
+            raise ValueError("Sources or frozen scientific input changed.")
+        for name, digest in files.items():
+            path = output / name
+            if path.is_symlink() or _sha256(path.read_bytes()) != digest:
+                raise ValueError("A consumed or verified artifact changed: " + name)
+
+    try:
+        save_report(output, report)
+        runtime = output / "runtime"
+        runtime.mkdir()
+        for name, source in RUNTIME.items():
+            (runtime / name).write_bytes((ROOT / source).read_bytes())
+        (output / "plan.md").write_bytes((ROOT / PLAN).read_bytes())
+        np.savez(
+            output / "training.npz",
+            time_s=arrays["time_s"],
+            observed=arrays["observed"],
+        )
+        np.savez(
+            output / "diagnostic.npz",
+            diagnostic_time_s=arrays["diagnostic_time_s"],
+            diagnostic_truth=arrays["diagnostic_truth"],
+        )
+        for path in [
+            *runtime.iterdir(),
+            output / "plan.md",
+            output / "training.npz",
+            output / "diagnostic.npz",
+        ]:
+            files[path.relative_to(output).as_posix()] = _sha256(path.read_bytes())
+        unchanged()
+        preflight, consumed = inspect_backend(
+            output, runtime, initial, sources, support, probe, remaining
+        )
+        for name, contents in consumed.items():
+            if (output / name).read_bytes() != contents:
+                raise ValueError("Preflight artifact changed during verification.")
+            files[name] = _sha256(contents)
+        first_policy = None
+        for cell in report["cells"]:
+            unchanged()
+            cell.update(status="running", started_at_utc=_utc_now())
+            save_report(output, report)
+            symbolic._run_worker = dispatch(
+                runtime, cell, sources, files, output, remaining, unchanged
+            )
+            before = time.monotonic()
+            print(
+                f"Starting cell {cell['number']}/6: {cell['arm']} seed={cell['budget']['seed']}",
+                flush=True,
+            )
+            worker = symbolic.run_search_arm(
+                arrays["time_s"],
+                arrays["observed"],
+                covariance=None,
+                output=output / cell["directory"],
+                budget=symbolic.SearchBudget(**cell["budget"]),
+            )
+            unchanged()
+            if worker.status != "success":
+                raise RuntimeError("Free budget worker failed; see worker.log.")
+            diagnosis = verify_cell(
+                output / cell["directory"],
+                cell,
+                arrays,
+                support,
+                probe,
+                initial,
+                tools,
+                sources,
+                preflight,
+            )
+            parameters = support.parameters_without_output(
+                diagnosis["effective_parameters"]
+            )
+            common = {
+                k: v
+                for k, v in parameters.items()
+                if k not in {"random_state", "optimizer_iterations"}
+            }
+            if first_policy is not None and first_policy != common:
+                raise ValueError("Unplanned effective PySR cross-cell difference.")
+            first_policy = common
+            diagnosis["worker_wall_seconds"] = time.monotonic() - before
+            cell.update(
+                status="completed", finished_at_utc=_utc_now(), diagnostics=diagnosis
+            )
+            for name, digest in diagnosis["source_file_sha256"].items():
+                relative = f"{cell['directory']}/{name}"
+                if relative in files and files[relative] != digest:
+                    raise ValueError("Consumed input changed before verification.")
+                files[relative] = digest
+            unchanged()
+            save_report(output, report)
+        report["status"] = "completed"
+    except BaseException as error:
+        failure = error
+        report.update(status="incomplete", error=f"{type(error).__name__}: {error}")
+        for cell in report["cells"]:
+            if cell["status"] == "running":
+                cell.update(
+                    status="aborted"
+                    if isinstance(
+                        error,
+                        (
+                            KeyboardInterrupt,
+                            SystemExit,
+                            TimeoutError,
+                            subprocess.TimeoutExpired,
+                        ),
+                    )
+                    else "failed",
+                    error=report["error"],
+                )
+        raise
+    finally:
+        symbolic._run_worker = original
+        final_error = None
+        try:
+            final = BASE.core_snapshot(probe)
+            report["control_final"] = final
+            if any(
+                final[key] != initial[key]
+                for key in ("provenance", "adapter_source_sha256")
+            ):
+                raise ValueError("Final parent provenance changed.")
+            unchanged()
+            if any(path.is_symlink() for path in output.rglob("*")):
+                raise ValueError("Symbolic links are not valid control artifacts.")
+            report["final_verification"] = "passed"
+        except BaseException as error:  # noqa: BLE001 -- Preserve the primary failure and partial report.
+            final_error = error
+            report.update(
+                status="incomplete",
+                final_verification="failed",
+                final_verification_error=f"{type(error).__name__}: {error}",
+            )
+        report["finished_at_utc"] = _utc_now()
+        report["wall_seconds"] = time.monotonic() - started
+        save_report(output, report)
+        _write_json(
+            output / "checksums.json",
+            {
+                path.relative_to(output).as_posix(): _sha256(path.read_bytes())
+                for path in output.rglob("*")
+                if path.is_file()
+                and not path.is_symlink()
+                and path.name != "checksums.json"
+            },
+        )
+        if final_error is not None and failure is None:
+            raise final_error
+    return report
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--archive", required=True, type=Path)
+    parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--label", required=True)
+    args = parser.parse_args()
+
+    def cancel(signum, frame):
+        raise KeyboardInterrupt(
+            f"Free budget comparison interrupted by signal {signum}."
+        )
+
+    previous = signal.signal(signal.SIGTERM, cancel)
+    try:
+        run(args.archive, args.output, label=args.label)
+    finally:
+        signal.signal(signal.SIGTERM, previous)
+
+
+if __name__ == "__main__":
+    main()

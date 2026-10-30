@@ -5,33 +5,75 @@ Konstantendiagnose sind ausgeführt. Beide vollständigen Originalarchive
 wurden unabhängig nachgerechnet. Der aktuelle Befund steht im
 [Ergebnisprotokoll der Konstantendiagnose](constant_diagnostic_results_manjaro_001.md).
 
-## Angenommener Budgetvergleich: Beginn der Implementierung
+## Angenommener Budgetvergleich: implementierter technischer Stand
 
-Am 30.10.2026 wurde der korrigierte Beschluss aus PR #44 ausdrücklich angenommen
-und die Implementierung beauftragt. PR #44 ist nach erneuter Prüfung des Heads
-`8fe947cfad5787609962955b4ce2d2fbbf113c39` und der grünen Dokumentations-CI
-[41105409445](https://github.com/craexxn/ringdown-sr/actions/runs/41105409445)
-als `722437ea4e3662bed4ef61bd363503777e44d2fe` gemergt.
+Der korrigierte Beschluss aus PR #44 ist ausdrücklich angenommen. PR #44 wurde
+nach Prüfung des Heads `8fe947cfad5787609962955b4ce2d2fbbf113c39` und der grünen
+Dokumentations-CI [41105409445](https://github.com/craexxn/ringdown-sr/actions/runs/41105409445)
+als `722437ea4e3662bed4ef61bd363503777e44d2fe` gemergt. Sauberer Einstieg, ein
+Worktree und keine parallele Fortsetzung; eigener Implementierungsbranch
+`codex/free-optimizer-budget` ab diesem Merge.
 
-- Sauberer Checkout, ein Worktree, aktuelle Remote-Branches und offene PRs
-  geprüft; keine parallele Fortsetzung. Neuer Implementierungsbranch
-  `codex/free-optimizer-budget` ab dem Merge, Dateibaum identisch zum PR-Head.
-- Der [Methodenplan](free_optimizer_budget_plan.md) ist separat eingefroren:
-  sechs Suchen, beide Schalter an, 20/2 gegen 100/2, drei bekannte Seeds,
-  feste Reihenfolge, 200 Suchiterationen und 60 Minuten einschließlich Kontrollen.
-  Die korrigierte Entscheidungstabelle und die strikte Vollständigkeitssperre
-  sind verbindlich. Der historische Entwurf bleibt per Commitlink erhalten.
-- Dieser Zwischenstand enthält den angenommenen Plan und Statuspflege;
-  Implementierung und technische Ausführung stehen noch aus. Keine neue
-  wissenschaftliche Suche oder Optimierung. Die drei bisherigen Laufzeitpläne
-  und Originalartefakte bleiben unverändert.
-- Nächster abgegrenzter Schritt: Planprüfsumme und diesen Commit im neuen
-  Kontrollmodul binden; isolierte Optionsvorprüfung, gemeinsamer geprüfter
-  Callback, sechs feste Zellen und vollständige Abschlussverifikation umsetzen.
-  Technische A–B–A-Prüfung verwendet ein eigenes Signal. Neue Laufzeitdateien
-  explizit manifestieren und in die vollständige CI aufnehmen. Manjaro-Suchserie
-  erst nach bestandener technischer Prüfung; neuen Implementierungs-PR nicht
-  eigenständig mergen.
+- **Beschlossen und eingefroren:** [Methodenplan](free_optimizer_budget_plan.md),
+  Commit `bb4862034b49b89dcc37d8341814e42aa02989c5`, SHA-256
+  `b63e66461e3a380f9e8ca5c127e8c5f99cd2a0d574be7be1603f18f56292907b`.
+  Sechs freie Suchen, beide Schalter an, 20/2 gegen 100/2, drei bekannte Seeds,
+  feste Reihenfolge, je 200 Suchiterationen und 60 Minuten einschließlich
+  Vorprüfungen/Abschlussverifikation. Originalauswahl, Grenzen, korrigierte
+  Entscheidungsregeln und vollständige Berichtssperre sind verbindlich.
+- **Implementiert:** `free_optimizer_budget.py`, eigener nativer Guard
+  `FreeOptimizerBudget.jl`, isolierter Worker, Treiber und Options-/Referenzprüfer.
+  Bestehender numerischer Callback und allgemeine Suchdefaults erhalten.
+  Sämtliche Optionen/Plugins/Seeds einschließlich erster Zelle werden absolut
+  geprüft, dann gegen echte Prototypen verglichen. Optimierertoleranzen und
+  Callback bleiben unverändert; Newton- und BFGS-Pfade werden nicht ersetzt.
+- Alle Kandidaten, Reihenfolge und Originalindex bleiben erhalten; Vorhersagen,
+  Residuen und MSE jedes Kandidaten werden geprüft. Getrennte Such-/physikalische
+  Diagnosen und bestehende Replaygates; gleiche erfolgreiche Originalauswahl
+  für unterstützte Rekonstruktion erforderlich. `physical_identification` bleibt
+  `not_assessed`; der Achtelraster-Blindfleck bleibt dokumentiert.
+- Quellen, Pins, Plan, Daten und konsumierte Kopien werden vor Verbrauch und
+  abschließend gegen eingefrorene Bytes geprüft. SIGTERM, Tastaturabbruch,
+  Zeitlimit und Workerfehler erhalten Teilstände und stoppen die Prozessgruppe.
+  Gruppen, Paardifferenzen und Erfolgswechsel bleiben bis zu sechs vollständigen
+  Zellen und bestandener Abschlussprüfung gesperrt.
+- **Hier ausgeführt:** Python-/Julia-Umgebungscheck einschließlich PythonCall-
+  Bindung bestanden: Python 3.12.14, Julia 1.13.1, PySR 2.6.0,
+  SymbolicRegression 2.5.1. Pythonbibliothek aus dem Projektinterpreter ermittelt
+  und vorhanden; Cachepfade beschreibbar. Gespeicherte lokale Startdatei genutzt,
+  Proxy/TLS unverändert, Haswell nur für die Kontrollbefehle.
+- Sechs echte native Optionsobjekte ohne Fit/Suche geprüft; sechs feste
+  250-/4346-/33018-Hz-Referenzbäume, Einheiten- und falsche Seed-/Budgetfälle
+  unter beiden Budgets bestanden. Quellenabgleich der gepinnten Backendaufrufer
+  bestätigt dieselben Optimierereinstellungen auch im Ein-Konstanten-Newtonpfad.
+- **Technische Integration bestanden:** drei frische Worker auf einem separaten
+  Achtpunkt-Signal `y=1+t`, je zwei Suchiterationen, 20–100–20; ursprüngliche
+  20er-Fronten exakt identisch. Tatsächlich geladene BLAS-Pools vor/nach jedem
+  Fit mit Haswell und Limit 1 geprüft. Lokale Artefakte:
+  `results/free-budget-technical-dev-002/`. Dies ist kein wissenschaftlicher
+  Kontrolllauf und keine Leistungsvalidierung.
+- Erster technischer Anlauf unter `results/free-budget-technical-dev-001/`
+  bleibt erhalten: nach erfolgreich exportiertem ersten Worker lehnte der
+  neue Python-Verifier das zusätzliche bestehende RNG-Statusfeld fälschlich ab.
+  Vergleich auf die beiden absolut geprüften Seedfelder korrigiert; vollständige
+  RNG-Aufnahme bleibt erhalten, kein vollständiger RNG-Checkpoint behauptet.
+- 88 neue fokussierte Python-Fälle und zusammen mit CI-Auswahlfällen 131 Tests
+  bestanden; Ruff und Formatprüfung bestanden. Gegenfälle umfassen die
+  Reviewregel, erste/spätere Zellfehler, Profile/Plugins/Optionen, Originalindex,
+  Residuen/MSE, späte konsistent neugehashte Manipulation, Abbruch und Prozess-
+  gruppenstopp. Alle vier Laufzeitpläne sind der vollständigen CI zugeordnet.
+- **Noch offen:** vollständige lokale Python-Suite, komplette Integrations-CI
+  am abschließenden PR-Head und PR-Erstellung. [Bedienung](free_optimizer_budget.md)
+  ergänzt. Dieser Zwischenstand enthält die genannten Implementierungs-, Test-
+  und Dokumentationsdateien; den aktuellen Commit und lokale Änderungen vor
+  Fortsetzung mit `git status --short --branch` und `git rev-parse HEAD` bestimmen.
+
+Nächster abgegrenzter Schritt: vollständige erforderliche Prüfungen, konkreten
+Implementierungs-PR mit finalem Prüfumfang erstellen, grüne CI abwarten. Nicht
+selbstständig mergen. Die sechs wissenschaftlichen Suchen werden im Rahmen
+aller technischen Prüfungen nicht in der Cloud gestartet; einmalige Manjaro-
+Ausführung erst am technisch geprüften Stand. Kein Produktionsprofil und keine
+Übertragbarkeits-/Gewichtungsstudie freigegeben.
 
 ## Historisch: freier Budgetvergleich nach übermitteltem Methodenreview
 

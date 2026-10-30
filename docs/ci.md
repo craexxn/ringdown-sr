@@ -24,7 +24,8 @@ Markdown-Parser. Externe Webadressen und Sprungmarken innerhalb von Dateien
 werden nicht abgerufen beziehungsweise validiert.
 
 **Ausnahmen:** `docs/noiseless_control_plan.md`,
-`docs/search_representation_plan.md` und `docs/constant_diagnostic_plan.md` sind als eingefrorene Kontrollpläne
+`docs/search_representation_plan.md`, `docs/constant_diagnostic_plan.md` und
+`docs/free_optimizer_budget_plan.md` sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
 Laufzeitdokumente müssen ebenso ausdrücklich als Ausnahme erfasst werden.
@@ -34,6 +35,15 @@ Der vollständige Pfad prüft zusätzlich die feste Konstantendiagnose mit
 unverändertes Optimiererverhalten mit/ohne Beobachtung an einem eigenen
 Achtpunkt-Signal und zwei frische Worker samt Export und Verifikation.
 Die beschlossene wissenschaftliche Serie mit 48 Aufrufen ist kein CI-Test.
+
+Der freie Budgetvergleich ergänzt
+`scripts/check_free_optimizer_integration.py`: sechs echte Optionsobjekte ohne
+Fit, feste 250-/4346-/33018-Hz-Bäume unter beiden Budgets, Einheiten- und
+Seed-/Budgetgegenfälle sowie drei frische 20–100–20-Worker mit je zwei
+Suchiterationen auf einem eigenen Achtpunkt-Signal `y=1+t`. Der wiederholte
+20er-Lauf muss dieselbe ursprüngliche Front liefern. Haswell/Threadlimit 1
+gilt nur für diesen Kontrollschritt. Keine der sechs wissenschaftlichen
+Suchzellen wird in der CI ausgeführt.
 
 ## Vollständiger technischer Pfad
 
