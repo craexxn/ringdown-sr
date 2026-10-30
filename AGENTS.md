@@ -1,47 +1,23 @@
 # Arbeitsregeln für Agenten
 
-## Projektstatus und Umfang
-
-Offizieller Bearbeitungsbeginn der Masterarbeit: 12.10.2026.
+## Umfang und Einstieg
 
 Nur die konkret beauftragte Aufgabe bearbeiten. Verbindlicher Einstieg ist
 der [Fortsetzungsstand in der README](README.md#projektstatus).
-
-## Einstieg, Zuständigkeiten und Übergaben
 
 - Vor Arbeitsbeginn README und aufgabenrelevante Pläne/Befunde lesen;
   Branch, Commit, lokale Änderungen, weitere Worktrees und Remote-Stand
   einschließlich offener PRs prüfen. Aktive Arbeiten auf anderen Branches
   berücksichtigen. Fehlenden Zugriff benennen; Chat-Zusammenfassungen
   ersetzen diese Prüfung nicht.
-- Implementierungschats verantworten beauftragten Code, technische Prüfungen
-  und zugehörige Dokumentation. Reviewchats prüfen einen benannten Stand.
-  Brainstorming liefert Alternativen und Entscheidungsvorschläge; diese sind
-  noch kein Implementierungsauftrag. Schreibchats verwenden belegte Befunde
-  und markieren offene Aussagen, statt neue Ergebnisse zu unterstellen.
-- An fachlichen Grenzen wechseln, etwa nach Planentscheidung, prüfbarem
-  Implementierungsschritt oder Auswertung; nicht erst am Chatlimit.
-  Bei längerer Arbeit einen kurzen Fortsetzungsstand am bestehenden
-  Arbeitsdokument oder PR pflegen. Keine parallele Projektchronik anlegen.
+- Bei längerer Arbeit oder Übergabe im bestehenden Arbeitsdokument oder PR
+  knapp festhalten: Branch/Commit, Arbeitsstand einschließlich lokaler
+  Änderungen, Prüfnachweise, offene Punkte und nächster abgegrenzter Schritt.
+  Auf vorhandene Belege verlinken; keine parallele Projektchronik anlegen.
 - Die README hält nur den aktuellen Überblick und verlinkt die Detailquelle.
   Bei Statusänderungen deren Datum und betroffene Statusaussagen abgleichen;
   historische Prüf- und Ausführungsdaten bleiben erhalten. Eingefrorene
   Laufzeitpläne nicht zur Statuspflege verändern.
-
-Eine Übergabe enthält knapp, mit Links statt wiederholten Befundtexten:
-
-```text
-Stand/Datum, Aufgabe und zuständiger Chat:
-Repository, Branch, HEAD, PR/Basis; lokale Änderungen oder laufende Prozesse:
-Gültiger Plan/Entscheidung und vorhandene Artefakte (ggf. Hash/Sicherungsort):
-Geplant / implementiert / ausgeführt / CI-geprüft / unabhängig nachgerechnet:
-  jeweils Bezugscommit, Befehl/Beleg, Ergebnis und Grenze; Ausstehendes nennen.
-Offene Befunde/Entscheidungen; nächster abgegrenzter Schritt:
-```
-
-Der übernehmende Chat prüft den aktuellen Stand erneut. Ein übermittelter
-lokaler Lauf bleibt als solcher gekennzeichnet, bis seine Primärartefakte
-im angegebenen Umfang geprüft wurden.
 
 ## Sprache
 
@@ -98,6 +74,8 @@ im angegebenen Umfang geprüft wurden.
   Toleranzen oder entfernte Prüfungen umgehen.
 - Genau berichten, welche Prüfungen tatsächlich ausgeführt wurden.
 - Nicht ausgeführte Prüfungen und offene Einschränkungen benennen.
+- Übermittelte Prüfnachweise von selbst ausgeführten Prüfungen und
+  unabhängigen Nachrechnungen unterscheiden; jeweils den Bezugsstand nennen.
 - Vorgeschriebene Checks vollständig durchführen. Zusätzliche oder wiederholte
   Prüfungen durch Änderungen, Fehler oder offene Risiken begründen; nach
   bestandenem unverändertem Prüfstand keine routinemäßigen Wiederholungen.
@@ -164,20 +142,7 @@ Kurz berichten:
 - Reviewauftrag und Befund nennen PR, vollständigen Head-Commit, Vergleichsbasis
   und Prüfumfang. Konkrete Fehler/wissenschaftliche Risiken mit Fundstelle,
   Auswirkung und notwendiger Korrektur von optionalen Verbesserungen trennen.
-  Nach Änderungen benennen, welche offenen Befunde oder betroffenen Annahmen
-  erneut geprüft werden müssen; frühere Reviews gelten für ihren Bezugsstand.
 - Ein separater KI-Review ersetzt weder unabhängig hergeleitete Referenzfälle
-  oder Nachrechnungen noch wissenschaftliche Validierung. Umfang und Grundlage
-  einer Nachrechnung getrennt vom Reviewurteil dokumentieren.
+  oder Nachrechnungen noch wissenschaftliche Validierung.
 - Reviews in Dokumentation und PR-Texten als KI-basiert bezeichnen;
   konkrete Modellnamen sind dafür nicht erforderlich.
-
-## Projekt- und Codex-Einstellungen
-
-Technische Regeln bleiben hier und in den verlinkten Repositorydokumenten.
-Projektanweisungen sollen darauf verweisen, statt sie zu kopieren. Als
-Ausgangspunkt für Routinearbeit Sol High verwenden; stärkere Einstellungen
-gezielt bei schwierigen Methoden- oder Fehlerfragen wählen. Kontext nur
-aufgabenbezogen laden und Parallelität nur bei trennbaren Aufgaben einsetzen.
-Nicht einsehbare Modell-, Projekt-, Berechtigungs- oder Umgebungseinstellungen
-als ungeprüft kennzeichnen und bei Bedarf gezielt anfordern.
