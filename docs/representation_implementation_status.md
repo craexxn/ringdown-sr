@@ -36,6 +36,26 @@ wurde hier unabhängig nachgerechnet; der neue Entwicklungsbefund steht im
   Review werden ohne Codeänderung nicht erneut ausgeführt.
 
 
+## Vorbereitete nächste Methodenentscheidung
+
+Auf Nutzerauftrag ist die [Entscheidungsgrundlage samt vollständigem
+Review-Prompt](representation_next_step_review.md) im bestehenden Ergebnisbranch
+und PR #41 ergänzt. Gesicherter Ergebnisstand vor dieser Ergänzung:
+`73e1c6748fb6683b99336d81271f332e60034d9f`; Vergleichsbasis
+`97672ed9b14b81ca90663dc178072b515ee252bc`.
+
+Die Unterlage trennt belegte Fehlerverbesserung, fehlende Rekonstruktion und
+unbekannte Ursachen. Sie vergleicht fünf Optionen und beschreibt die offene
+Prüfgrenze der nichtlinearen Konstantenanpassung gegenüber den vorhandenen
+konstanten/linearen Backendtests. Eine begrenzte Diagnose ist lediglich eine
+vorläufige Empfehlung zur kritischen Prüfung. Keine Ursache, kein neuer
+numerischer Versuchsplan und kein Produktionsprofil sind beschlossen.
+
+Nächster Schritt: Prompt für ein KI-basiertes Methodenreview verwenden;
+priorisierte Empfehlung und genau einen begrenzten Planentwurf beurteilen.
+Dieses Review ist hier noch nicht ausgeführt. Keine neuen numerischen
+Prüfungen oder Suchläufe; nur Dokumentation und Quellenabgleich ergänzt.
+
 ## Vorheriger Fortsetzungsstand nach Merge und Review
 
 - PR #39 ist auf `main` übernommen, Mergecommit und fester Ausführungsstand:
@@ -177,12 +197,14 @@ Abschlussprüfung dem eingefrorenen Plan.
 
 ## Offen und nächster abgegrenzter Schritt
 
-1. Den [unabhängig nachgerechneten Befund](representation_control_results_manjaro_001.md)
-   einschließlich der begrenzten Aussagekraft von drei Entwicklungsseeds
-   und der getrennten Kurven-/Struktur-/Parametermarker berücksichtigen.
-2. Bewusst entscheiden, welche Ursachenprüfung oder Eingrenzung als Nächstes
-   verfolgt wird. Die geplante Serie endet nach genau diesen neun Zellen.
-   Ein günstigerer Fehlerbefund ist noch keine Freigabe eines Produktionsprofils.
+1. Das vorbereitete [KI-basierte Methodenreview](representation_next_step_review.md)
+   anhand des verankerten Befunds durchführen; Empfehlung, Alternativen und
+   Aussagegrenzen getrennt beurteilen. Keine routinemäßige Wiederholung des
+   Implementierungsreviews oder des Originalarchiv-Audits.
+2. Als Nutzer den nächsten abgegrenzten Schritt bewusst beschließen. Bei
+   neuen Versuchen zuerst einen eigenen vollständigen Methodenplan festhalten.
+   Die abgeschlossene Serie endet nach genau diesen neun Zellen; ein günstigerer
+   Fehlerbefund ist noch keine Freigabe eines Produktionsprofils.
 3. Neue Suchbudgets, Seeds, Kombinationen, Operatorrestriktionen, Grenzen
    oder Rauschstudien erst nach gesonderter Methodenentscheidung festlegen.
 

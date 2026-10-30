@@ -36,9 +36,12 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   drei Seeds um rund 90–97 % gegenüber der frischen Baseline. Trotzdem
   erfüllt kein Kandidat die Kurvengrenzen; der Erkenner unterstützt keine
   gefundene Struktur, Parameter und Identifikation bleiben `not_assessed`.
-- **Nächster abgegrenzter Schritt:** Den dokumentierten Befund als Grundlage
-  einer bewussten Entscheidung zur weiteren Ursachenprüfung oder Eingrenzung
-  der Methode verwenden. Der eingefrorene Plan ist mit diesen neun Zellen
+- **Nächster abgegrenzter Schritt:** Die [Entscheidungsgrundlage mit
+  kopierbarem Review-Prompt](docs/representation_next_step_review.md) für ein
+  KI-basiertes Methodenreview verwenden. Zu entscheiden ist zwischen gezielter
+  Ursachendiagnose, weiterer freier Suche, Übertragbarkeitsprüfung und einer
+  ausdrücklich engeren Modellklasse beziehungsweise Pause. Es ist noch kein
+  neuer Plan beschlossen. Der eingefrorene Plan ist mit diesen neun Zellen
   erfüllt; weitere Budgets, Seeds oder Varianten folgen nicht automatisch.
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
   bestand am Head `cfe44bf`: 1.288 Python-Tests, Julia- und technische

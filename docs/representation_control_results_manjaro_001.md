@@ -220,7 +220,9 @@ festen Grenzen; der Befund kann deshalb nicht allein auf eine Begrenzung
 des Erkenners zurückgeführt werden.
 
 Als nächster Schritt ist bewusst zu entscheiden, welche weitere Ursachenprüfung
-oder Eingrenzung der Methode verfolgt wird. Die Häufigkeitsschalter sind in
+oder Eingrenzung der Methode verfolgt wird. Die [offene Entscheidungsgrundlage
+mit Review-Prompt](representation_next_step_review.md) bereitet diese Entscheidung
+vor und enthält noch keinen beschlossenen neuen Versuchsplan. Die Häufigkeitsschalter sind in
 dieser Serie ein günstigerer Entwicklungsbefund, noch kein freigegebenes
 Produktionsprofil. Mehr Budget, neue Seeds, kombinierte Arme, geänderte
 Grenzen oder Rauschstudien sind keine automatische Fortsetzung.
