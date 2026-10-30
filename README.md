@@ -390,7 +390,8 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
    verfehlen die Kurvenfehlergrenzen. Der
    [nächste Methodenplan](docs/search_representation_plan.md) trennt eine
    feste Zeitstreckung von aktivierten Komplexitätshäufigkeitsmechanismen.
-   Er ist vor Implementierung und Ausführung gezielt methodisch zu prüfen.
+   Der Plan ist methodisch geprüft und wird nach Übernahme für die
+   anschließende Implementierung eingefroren.
 4. Wissenschaftliche Formelauswahl und statistischen Versuchsplan gesondert
    begründen, bevor Leistungs- und Identifikationsaussagen untersucht werden.
 

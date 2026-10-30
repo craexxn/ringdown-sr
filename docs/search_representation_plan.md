@@ -1,8 +1,10 @@
 # Methodenplan: Zeitdarstellung und Komplexitätshäufigkeiten
 
-Stand: 30.10.2026. Entwurf für ein gezieltes KI-basiertes Methodenreview
-vor Implementierung und Ausführung. Dieser Plan enthält keine neuen
-Suchergebnisse. Er ergänzt den ursprünglichen, unverändert eingefrorenen
+Stand: 30.10.2026. Methodisch geprüfter Plan nach KI-basiertem
+Methodenreview am Commit `c70163c`, ohne blockierende Befunde. Die
+vorgeschlagenen Differenzen zur Baseline je Seed sind ergänzt. Dieser
+Plan enthält keine neuen Suchergebnisse; Implementierung und Ausführung
+stehen noch aus. Er ergänzt den ursprünglichen, unverändert eingefrorenen
 [Kontrollplan](noiseless_control_plan.md) und den
 [Manjaro-Befund](noiseless_control_results_manjaro_001.md) aus PR #35.
 
@@ -218,6 +220,24 @@ nach Struktur und Erstgrund beschrieben. Frontkandidaten sind keine
 unabhängigen Wiederholungen. Es gibt keine p-Werte, belastbare
 Erfolgswahrscheinlichkeit oder automatische Wahl eines Produktionsprofils.
 
+Zusätzlich wird jede Variante mit der frischen Baseline desselben Seeds
+verglichen. Für Trainings-MSE, relative RMS-/Maximalfehler beider Raster
+und jeweils verfügbare physikalische Parameterfehler wird
+`Delta = Variante - Baseline` berichtet. Negative Differenzen bedeuten bei
+diesen Fehlermaßen eine Verbesserung, positive eine Verschlechterung.
+Beide Ausgangswerte und die zugehörigen Status bleiben daneben sichtbar.
+Laufzeiten und Callbackzahlen werden ebenfalls je Seed gegenübergestellt;
+eine höhere Zahl bedeutet hier Aufwand, keine bessere Kurvenanpassung.
+
+Eine Differenz ist nur verfügbar, wenn beide betreffenden Zellen
+vollständig diagnostiziert sind und beide Kennzahlen endlich und
+vergleichbar in physikalischen Einheiten vorliegen. Sonst bleibt der Wert
+`null`; Status und ein konkreter Grund werden angegeben. Fehlende Befunde
+werden nicht als Nullverbesserung ersetzt. Scheitert die abschließende
+Verifikation, werden auch diese Differenzen als `not_assessed` gesperrt.
+Die Vergleiche ändern weder Auswahl noch Entwicklungsgrenzen und erzeugen
+keine statistische Sicherheit oder Annahme identischer Suchpräfixe.
+
 Der Plan endet nach genau diesen neun Zellen und ihrer gemeinsamen
 Auswertung. Bei weiterhin unzureichenden Kurven folgt eine bewusste
 Entscheidung über weitere Ursachenprüfung oder Eingrenzung der Methode.
@@ -226,6 +246,17 @@ separat untersucht. Ein vielversprechendes Profil muss anschließend mit
 eingefrorenen Einstellungen an weiteren Signalparametern und getrennten
 Validierungsfällen geprüft werden. Weitere Budgets, kombinierte Varianten
 oder Rauschstudien sind keine automatische Fortsetzung dieser Serie.
+
+## Stand des Methodenreviews
+
+Das KI-basierte Methodenreview am Commit `c70163c` fand keine blockierenden
+Befunde. Geprüft wurden insbesondere Zeitstreckung und Rückrechnung, die
+Trennung der drei Bedingungen, unveränderte Originalauswahl sowie der
+begrenzte Entwicklungsanspruch. Raster, Zellpositionen und Referenzen für
+250, 4346 und 33018 Hz wurden unabhängig nachgerechnet. Im Review wurden
+weder freie Suche noch Julia ausgeführt. Der nicht blockierende Hinweis
+zu Differenzen gegenüber der frischen Baseline je Seed ist in Abschnitt 7
+übernommen; ein zusätzliches Nachreview wird dafür nicht vorausgesetzt.
 
 ## Quellen
 
