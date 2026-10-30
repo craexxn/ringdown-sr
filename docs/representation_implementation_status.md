@@ -13,6 +13,55 @@ sie ist kein Ergebnisbericht und keine Freigabe für Suchläufe.
 - Der ältere [Kontrollplan](noiseless_control_plan.md) und sein Hash bleiben
   unverändert. Keine neuen Entwicklungs-Suchläufe wurden gestartet.
 
+## Erneute Bestandsaufnahme am 30.10.2026
+
+Diese Bestandsaufnahme wurde über den GitHub-Zugriff und den tatsächlich
+erreichbaren Executor durchgeführt. Sie ist kein neuer Implementierungs-
+oder Testnachweis.
+
+- Bestätigter Implementierungsstand vor diesem Dokumentationscheckpoint:
+  `0cf7ff18f57f4b575016ce92f4242bf47a680397` auf
+  `codex/representation-control`; keine weitergeführte Änderung an diesem
+  Remote-Branch festgestellt. Keine offenen PRs im Repository gefunden.
+- `main` steht auf `909942d3f3910ea20df1703dd12421abe4867a4e`.
+  PR #38 ist übernommen. Der Vergleich zur bisherigen Basis `311f87d`
+  enthält ausschließlich `AGENTS.md` und `README.md`; beide wurden gelesen.
+  Die Änderungen wurden noch nicht in den Implementierungsbranch integriert.
+  Bei einer späteren Integration die dort bereits ergänzte volle
+  CI-Ausnahme für beide Kontrollpläne erhalten.
+- Den vollständigen Inhalt von `docs/search_representation_plan.md` vom
+  aktuellen Implementierungsbranch erneut abgerufen und mit `sha256sum`
+  geprüft: exakt
+  `16cfe818c312fb5bb0a6c594505ad76ba41e41bd7f4a37decc245677c6b8ad86`.
+  Der Methodenplan wurde nicht verändert.
+- Der erreichbare Executor hat im bereitgestellten Arbeitsverzeichnis
+  keinen gültigen Git-Checkout. Er meldet Python 3.14.7 und uv 0.12.21;
+  Julia ist nicht im ausführbaren Suchpfad. Die Cloudpfade `/workspace`
+  und `/etc/codex/network-policy.json` sind dort nicht vorhanden.
+- Ein Statuswerkzeug für die verwaltete Cloudinstanz ist in diesem Chat
+  nicht verfügbar. Die Abfragen gespeicherter Cloud-Umgebungen und
+  angehängter Arbeitsbereiche scheitern mit
+  `Codex app tool request failed`. Daraus folgt keine Aussage darüber,
+  ob eine andere Cloudinstanz existiert oder betriebsbereit ist.
+- Lokale Änderungen, weitere Worktrees, Cache-/Depotbereitschaft,
+  PythonCall-Bibliotheksbindung und gespeicherte Startdateien der
+  vorgesehenen Cloudinstanz konnten deshalb nicht geprüft werden.
+  Im erreichbaren Arbeitsverzeichnis wurden keine Projektdateien angelegt.
+- Keine neue Codeänderung, kein Ruff-/Formatlauf, kein Python-/Julia-Test,
+  kein Fit und keine wissenschaftliche Kontrollsuche ausgeführt.
+  Frühere Prüfnachweise gelten weiterhin nur für ihre angegebenen Stände.
+  Dieser Checkpoint ergänzt ausschließlich diese Fortsetzungsdatei.
+
+**Nächster abgegrenzter Schritt:** Den vorgesehenen Cloud-Executor für
+diesen Chat erreichbar zuordnen. Dort zuerst den tatsächlichen Checkout,
+lokale Änderungen und Remote-Head erneut prüfen. Anschließend mit den
+vorgegebenen Cache-/Depotvariablen und der tatsächlich vorhandenen
+Python-Bibliothek die gepinnte Umgebung prüfen; dann Ruff, Formatprüfung
+und die drei fokussierten Testdateien ausführen. Erst danach die echten
+Backendoptionen ohne Fit prüfen und die Treiberintegration fortsetzen.
+Die neun wissenschaftlichen Suchen bleiben dem Manjaro-Referenzrechner
+am später geprüften Stand vorbehalten.
+
 ## Arbeitsstand
 
 Schritt 1 ist implementiert und lokal geprüft. Schritt 2 ist als noch
