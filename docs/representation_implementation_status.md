@@ -57,13 +57,21 @@ Worktree und keine parallele Fortsetzung; eigener Implementierungsbranch
   neue Python-Verifier das zusätzliche bestehende RNG-Statusfeld fälschlich ab.
   Vergleich auf die beiden absolut geprüften Seedfelder korrigiert; vollständige
   RNG-Aufnahme bleibt erhalten, kein vollständiger RNG-Checkpoint behauptet.
-- 88 neue fokussierte Python-Fälle und zusammen mit CI-Auswahlfällen 131 Tests
-  bestanden; Ruff und Formatprüfung bestanden. Gegenfälle umfassen die
+- Am Implementierungscheckpoint `a92c77d8e1c74d1bafd5232490c712378d7f0acc`
+  bestanden alle 1.419 Python-Tests in 90,61 Sekunden; zuvor 88 neue fokussierte
+  Fälle und zusammen mit CI-Auswahlfällen 131 Tests. Ruff, Format- und
+  Dokumentationsprüfung bestanden.
+- Anschließend den Abgleich der Laufzeitkopien vor dem ersten Vorprüfungsstart
+  ergänzt: bereits beim Kopieren an ursprüngliche Quellhashes binden und vor
+  jedem Verbrauch alle Laufzeitdateien erneut gegen diese Anker prüfen.
+  Vier neue Gegenfälle weisen die Ablehnung veränderter Kopien vor jedem
+  Codeaufruf nach. Danach 135 gezielte Tests bestanden (92 neue Kontrollfälle
+  und 43 CI-Auswahlfälle); die vollständige CI prüft den abschließenden Stand. Gegenfälle umfassen die
   Reviewregel, erste/spätere Zellfehler, Profile/Plugins/Optionen, Originalindex,
   Residuen/MSE, späte konsistent neugehashte Manipulation, Abbruch und Prozess-
   gruppenstopp. Alle vier Laufzeitpläne sind der vollständigen CI zugeordnet.
-- **Noch offen:** vollständige lokale Python-Suite, komplette Integrations-CI
-  am abschließenden PR-Head und PR-Erstellung. [Bedienung](free_optimizer_budget.md)
+- **Noch offen:** komplette Integrations-CI am abschließenden PR-Head und
+  PR-Erstellung. [Bedienung](free_optimizer_budget.md)
   ergänzt. Dieser Zwischenstand enthält die genannten Implementierungs-, Test-
   und Dokumentationsdateien; den aktuellen Commit und lokale Änderungen vor
   Fortsetzung mit `git status --short --branch` und `git rev-parse HEAD` bestimmen.

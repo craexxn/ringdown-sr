@@ -122,6 +122,10 @@ def verify_snapshots(record, initial, probe):
 def inspect_backend(output, runtime, initial, sources, support, probe, remaining):
     documents, consumed = {}, {}
     for mode in ("options", "references"):
+        for name, source in RUNTIME.items():
+            path = runtime / name
+            if path.is_symlink() or _sha256(path.read_bytes()) != sources[source]:
+                raise ValueError("Runtime source changed before preflight consumption.")
         filename = mode + ".json"
         with (output / (filename + ".log")).open("w", encoding="utf-8") as log:
             result = launch(
@@ -170,6 +174,8 @@ def dispatch(runtime, cell, sources, frozen, output, remaining, unchanged):
         if len(command) != 4 or command[:3] != expected:
             raise ValueError("Unexpected free-budget worker command.")
         directory = Path(command[3])
+        if directory.resolve() != output / cell["directory"]:
+            raise ValueError("Unexpected free-budget worker directory.")
         request = BASE.load_support().read_json(
             (directory / "request.json").read_bytes()
         )
@@ -504,7 +510,11 @@ def run(archive, output, *, label):
         runtime = output / "runtime"
         runtime.mkdir()
         for name, source in RUNTIME.items():
-            (runtime / name).write_bytes((ROOT / source).read_bytes())
+            contents = (ROOT / source).read_bytes()
+            if _sha256(contents) != sources[source]:
+                raise ValueError("Source changed before runtime copy.")
+            (runtime / name).write_bytes(contents)
+            files[f"runtime/{name}"] = sources[source]
         (output / "plan.md").write_bytes((ROOT / PLAN).read_bytes())
         np.savez(
             output / "training.npz",
@@ -517,7 +527,6 @@ def run(archive, output, *, label):
             diagnostic_truth=arrays["diagnostic_truth"],
         )
         for path in [
-            *runtime.iterdir(),
             output / "plan.md",
             output / "training.npz",
             output / "diagnostic.npz",

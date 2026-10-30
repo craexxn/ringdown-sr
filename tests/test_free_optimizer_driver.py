@@ -385,3 +385,22 @@ def test_sigterm_handler_restored_after_retained_abort(monkeypatch, tmp_path):
         DRIVER.main()
     assert seen and seen[0] != previous
     assert signal.getsignal(signal.SIGTERM) == previous
+
+
+@pytest.mark.parametrize(
+    "name", ["backend.py", "worker.py", "driver.py", "FreeOptimizerBudget.jl"]
+)
+def test_changed_runtime_copy_fails_before_any_preflight_code_executes(
+    monkeypatch, tmp_path, name
+):
+    runtime = tmp_path / "runtime"
+    runtime.mkdir()
+    sources = control.source_hashes()
+    for key, source in control.RUNTIME.items():
+        (runtime / key).write_bytes((control.ROOT / source).read_bytes())
+    (runtime / name).write_text("changed before consumption")
+    calls = []
+    monkeypatch.setattr(DRIVER, "launch", lambda *args, **kwargs: calls.append(args))
+    with pytest.raises(ValueError, match="before preflight consumption"):
+        DRIVER.inspect_backend(tmp_path, runtime, None, sources, None, None, lambda: 60)
+    assert not calls
