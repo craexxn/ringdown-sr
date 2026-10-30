@@ -15,7 +15,9 @@ sie ist kein Ergebnisbericht und keine Freigabe für Suchläufe.
 
 ## Arbeitsstand
 
-Schritt 1 ist implementiert und lokal geprüft:
+Schritt 1 ist implementiert und lokal geprüft. Schritt 2 ist als noch
+unvollständig geprüfter Entwurf gesichert; die Ausführungsumgebung wurde
+während der Arbeit nicht mehr verfügbar.
 
 - `src/ringdown_sr/representation_control.py`: feste neun Zellen,
   schreibgeschützte Koordinaten, getrennte Such-/physikalische Diagnosen,
@@ -23,8 +25,9 @@ Schritt 1 ist implementiert und lokal geprüft:
 - `tests/test_representation_control.py`: 23 Referenz-/Fehlerfälle.
 - Der neue Plan ist zusätzlich als eingefrorenes Dokument in der vollen
   CI-Ausnahme erfasst; der entsprechende CI-Gegenfall ist ergänzt.
-- Noch kein Implementierungs-PR geöffnet. Worker, Treiber und die
-  tatsächliche Julia-Profilprüfung sind noch nicht implementiert.
+- Noch kein Implementierungs-PR geöffnet; keine Suchfreigabe.
+- Worker- und Optionsvorprüfung sind als Entwurf angelegt. Der eigentliche
+  Kontrolltreiber und die tatsächliche Julia-Ausführung sind noch offen.
 
 Zwischenstände werden auf diesem Branch gesichert, damit Teiländerungen
 nicht bei jedem Sicherungspunkt die vollständige CI starten.
@@ -58,42 +61,88 @@ nicht bei jedem Sicherungspunkt die vollständige CI starten.
   Zusammenfassungen und Seed-Differenzen sperren. Teilstände erhalten.
 - KI-basierte Reviews gezielt, keine automatische zusätzliche Nachreviewrunde.
 
+## Gesicherter Entwurf für Schritt 2
+
+- `src/ringdown_sr/representation_profiles.py`: strikt erlaubte Profile,
+  unveränderte gewöhnliche Vorgaben mit zwei Häufigkeitsschaltern und einer
+  gemeinsamen Verifikationshülle um den bestehenden numerischen Callback.
+  Tatsächliche Felder werden erst nach Einzelprüfung für die alten 29
+  Backendverträge normalisiert; Originalfelder bleiben unverändert.
+- `julia/src/RepresentationProfiles.jl`: genuine Options-Prototypen,
+  Pluginaufnahmen und native Prüfung vor der ersten Verlustauswertung.
+  Backend-spezialisierte Optionskopien werden erneut geprüft. Die Guard
+  konstruiert während der Suche keine Prototypen und verbraucht keinen RNG.
+- `scripts/run_representation_worker.py`: verwendet später eine benachbarte
+  `driver.py`-Kopie des unveränderten `repeat_symbolic_arm.py`. Direkter
+  Aufruf aus `scripts/` ist noch kein unterstützter Suchbefehl.
+- `scripts/check_representation_backend.py`: Entwurf für neun echte
+  Optionsobjekte ohne Fit/Suche/Optimierung, mit Launcher- und Haswellprüfung.
+- `tests/test_representation_profiles.py`: 22 Python-Fälle für
+  Profileinschränkungen, alle Seeds, erhaltene Felder und manipulierte Angaben.
+
+Die zusätzliche absolute Prüfung der strukturierten Pluginfelder
+(`validate_plugin_records`) wurde zuletzt ergänzt. Für diesen letzten
+Zusatz und die über den Connector wiederhergestellten Entwurfsdateien ist
+nach dem Umgebungsausfall **noch kein erneuter Test-/Formatlauf erfolgt**.
+Die Julia-Datei und der Worker sind insgesamt noch nicht ausgeführt.
+Diese Dateien sind ein Arbeitsstand, kein fertig verifizierter Suchpfad.
+
 ## Nächster konkreter Schritt
 
-Schritt 2: einen eng begrenzten Worker-Wrapper und eine technische
-Options-/Pluginprüfung ohne Fit implementieren. Bestandspfade der Suche
-sollen ihre unveränderten Vorgaben behalten. Anschließend den separaten
-Treiber analog zu `scripts/run_noiseless_control.py` anbinden.
+1. Diesen Branch in einer verfügbaren Ausführungsumgebung laden.
+2. Ruff/Formatierung und die fokussierten Python-Tests erneut ausführen;
+   Tests für die neu ergänzte absolute Pluginfeldprüfung hinzufügen.
+3. Die Optionsvorprüfung mit tatsächlichem gepinntem Julia ausführen,
+   ohne Fit/Suche. Transitive Optim-/LineSearches-Abhängigkeiten werden
+   über `SymbolicRegression.ConstantOptimizationModule` geladen.
+4. Neuen Treiber `scripts/run_representation_control.py` implementieren.
+   Er muss die drei Runtime-Dateien `driver.py`, Probe und Profilworker
+   kopieren, strikt passende Profilmanifeste vor Workerstart schreiben und
+   den vorhandenen isolierten Launcher/Prozessabbruchpfad wiederverwenden.
+5. Preflight vor den neun Zellen starten; echte Plugins und alle absoluten
+   Seed-/Optionsvorgaben je Zelle verifizieren. Zusätzlich zu den alten
+   Quelldateien Profil, native Verifikationsdatei und Julia-Kopie gegen das
+   Workermanifest und nachträglich gegen ihre konsumierten Bytes prüfen.
+6. Residuen/MSE aller Kandidaten und Originalauswahl prüfen. `_candidate`
+   muss die Suchzeiten und `FS/alpha` erhalten. Neue Diagnosen verwenden
+   physikalische Zeiten mit vollständiger Auswertung `q(alpha*t)`.
+7. Vollständige Berichte, Seed-Differenzen, Abbruch-/Fehler-Injektionstests,
+   CLI-Dokumentation und vollständige Integrations-CI ergänzen. Erst dann
+   einen konkreten Implementierungs-PR öffnen.
 
-Bereits im gepinnten Backendquellcode verifiziert:
+Der Profilworker speichert Callbackaufrufe während Fit getrennt vom
+Gesamtzähler: Der bisherige Worker führt nach dem Fit eine zusätzliche
+Nullkurvenauswertung aus. Dies darf nicht als weitere Fitaktivität erscheinen.
 
-- `SymbolicRegression 2.5.1`, `src/Options.jl`, erzeugt Defaultplugins aus
-  den beiden Häufigkeitsschaltern.
-- `src/plugins/AdaptiveParsimony.jl`:
-  `default_adaptive_parsimony_plugin` liefert bei `False/False` kein Plugin,
-  bei `True/True` einen `AdaptiveParsimonyPlugin` mit `tournament=true`
-  und `mutation_acceptance=true`. Weitere Defaultplugins müssen gleich bleiben.
-- Es genügt daher nicht, nur die exportierten Boolfelder zu prüfen oder
-  das komplette Pluginfeld ungeprüft aus einer Signatur auszublenden.
-  Tatsächliche Objekte/Felder sind vorab und nach jedem Worker zu verifizieren.
+## Bereits geklärte Backendverträge
 
-Der bestehende Worker nimmt nur `format` und `budget` in `request.json`
-an. Eine mögliche Integration ist ein eigener kontrollierter Wrapper mit
-strengem Profilmanifest; keine frei übergebenen Optionsüberschreibungen.
-Die vorhandenen Seed-, Verlust-, Manifest- und Haswell-Prüfungen müssen
-auch im neuen Pfad erhalten bleiben.
+Gepinnte Quellen: SymbolicRegression 2.5.1, `src/Options.jl` und
+`src/plugins/{AdaptiveParsimony,SimulatedAnnealing,AdaptiveMutationWeights}.jl`.
 
-## Prüfungen dieses Sicherungspunkts
+- `False/False`: kein adaptives Parsimony-Plugin.
+- `True/True`: zusätzlich `AdaptiveParsimonyPlugin` mit
+  `tournament=true`, `mutation_acceptance=true`.
+- Beide Fälle behalten `SimulatedAnnealingPlugin` und
+  `AdaptiveMutationWeightsPlugin`. Ihre konkreten Felder werden mitgeprüft.
+- Das komplette Pluginfeld darf nicht ungeprüft aus Signaturen verschwinden.
+  Die tatsächliche Julia-Repräsentation und der gemeinsame Callbackname sind
+  vor einer Integration noch anhand des echten Backends zu bestätigen.
 
-64 fokussierte Python-Tests bestanden: 23 für den neuen Diagnosekern und
-41 für die CI-Auswahl. Ruff bestanden. Geprüft sind unter anderem beide
-Alias-Gegenfälle einschließlich eines zusätzlichen Zwischenzeitpunkts,
-Vorzeichen/Phase, nicht unterstützte gute Kurven, fehlgeschlagene Replays,
-Über-/Unterlauf, fehlende Seedpaare und gesperrte Zusammenfassungen.
+## Prüfstand und Einschränkungen
 
-Validierung unter Windows mit vorhandener gesperrter Python-3.12.14-Umgebung,
-lokalem Quellpfad und `uv`; keine Abhängigkeit oder Lockdatei geändert.
-Eine frische Offline-Installation war mangels SciPy-Wheel im Cache nicht
-möglich. Noch kein lokaler Julia-Lauf und keine neuen Entwicklungs-Suchen.
-Die vollständige Integrations-CI steht für den späteren Implementierungs-PR
-aus. Der volle Nachweis aus PR #36 gehört nur zur unveränderten Grundlage.
+Vor dem Umgebungsausfall bestanden **86 fokussierte Python-Tests**:
+23 Diagnosekern-, 22 Profil- und 41 CI-Auswahlfälle. Ruff/Formatierung waren
+für den damaligen Python-Stand bereinigt. Die letzte Ergänzung der absoluten
+Pluginfeldprüfung und der wiederhergestellte Entwurf wurden nicht nachgetestet.
+
+Der gesonderte erste Codecheckpoint `91f95e2` enthält den mit 64 Tests
+geprüften Diagnose-/CI-Kern. Der nachfolgende Sicherungspunkt enthält
+zusätzlich den ausdrücklich ungeprüften Restentwurf.
+
+Validierung zuvor unter Windows mit vorhandener gesperrter
+Python-3.12.14-Umgebung, lokalem Quellpfad und `uv`; keine Abhängigkeit
+oder Lockdatei geändert. Eine frische Offline-Installation war mangels
+SciPy-Wheel im Cache nicht möglich. Derzeit ist keine nutzbare native
+Ausführungsumgebung verfügbar. Kein lokaler Julia-Lauf und keine neuen
+Entwicklungs-Suchen wurden ausgeführt. Die vollständige Integrations-CI
+steht für den späteren Implementierungs-PR aus.
