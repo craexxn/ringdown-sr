@@ -23,11 +23,17 @@ bleiben zulässig. Dies ist eine begrenzte Prüfung, kein vollständiger
 Markdown-Parser. Externe Webadressen und Sprungmarken innerhalb von Dateien
 werden nicht abgerufen beziehungsweise validiert.
 
-**Ausnahmen:** `docs/noiseless_control_plan.md` und
-`docs/search_representation_plan.md` sind als eingefrorene Kontrollpläne
+**Ausnahmen:** `docs/noiseless_control_plan.md`,
+`docs/search_representation_plan.md` und `docs/constant_diagnostic_plan.md` sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
 Laufzeitdokumente müssen ebenso ausdrücklich als Ausnahme erfasst werden.
+
+Der vollständige Pfad prüft zusätzlich die feste Konstantendiagnose mit
+`scripts/check_constant_diagnostic.py`: zehn reine Referenzkontrollen,
+unverändertes Optimiererverhalten mit/ohne Beobachtung an einem eigenen
+Achtpunkt-Signal und zwei frische Worker samt Export und Verifikation.
+Die beschlossene wissenschaftliche Serie mit 48 Aufrufen ist kein CI-Test.
 
 ## Vollständiger technischer Pfad
 

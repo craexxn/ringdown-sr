@@ -1,7 +1,8 @@
 # Entscheidungsgrundlage: nächster Schritt nach der rauschfreien Kontrollserie
 
 Stand: 30.10.2026. KI-basiertes Methodenreview vom Nutzer übermittelt.
-**Empfehlung für Option A liegt vor; kein beschlossener Versuchsplan.**
+**Option A wurde anschließend vom Nutzer angenommen; siehe den
+[eigenen Diagnoseplan](constant_diagnostic_plan.md).**
 Die abgeschlossene Serie und ihre eingefrorenen Vorgaben bleiben unverändert.
 
 ## Aktueller Entscheidungsstand nach dem Review
@@ -27,12 +28,11 @@ Zur Entscheidung stehen gemeinsam folgende vorgeschlagene Grenzen:
   Methodenentwicklung. Freies Suchbudget null; keine zusätzlichen Koordinaten,
   Solver, Startgitter oder automatischen Folgeversuche.
 
-Der Nutzer hat den Befund übermittelt, diesen Diagnoseumfang aber noch nicht
-beschlossen. Ein Merge des Ergebnis-PRs dokumentiert die Empfehlung und ersetzt
-keinen Methodenbeschluss. Nach Annahme sind der neue Plan festzuhalten und sein
-Diagnosepfad technisch zu prüfen; dieser Nachtrag implementiert oder startet ihn
-nicht. Ein weiteres Methodenreview ist ohne konkreten neuen Prüfbedarf nicht
-vorgesehen.
+Der Nutzer hat am 30.10.2026 nach Übermittlung des Befunds die Umsetzung dieses
+Umfangs ausdrücklich beauftragt. Der eigene Diagnoseplan hält diesen Beschluss
+fest. Die folgenden Reviewempfehlungen und der Wortlaut dokumentieren weiterhin
+ihren damaligen Vorschlagsstand; sie sind keine Ausführungsnachweise.
+Ein weiteres Methodenreview ist ohne konkreten neuen Prüfbedarf nicht vorgesehen.
 
 Die folgenden Abschnitte bis einschließlich des kopierbaren Prompts bewahren
 die ursprüngliche Entscheidungsgrundlage und den bereits bearbeiteten Auftrag.
