@@ -1,11 +1,56 @@
-# Fortsetzungsstand: Zeitdarstellungs-Kontrolle
+# Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 30.10.2026. Implementierung, gezieltes Review und die geplante
-Manjaro-Kontrollserie sind abgeschlossen. Das vollständige Originalarchiv
-wurde hier unabhängig nachgerechnet; der neue Entwicklungsbefund steht im
-[Ergebnisprotokoll](representation_control_results_manjaro_001.md).
+Stand: 30.10.2026. Freie Zeitdarstellungskontrolle und anschließende feste
+Konstantendiagnose sind ausgeführt. Beide vollständigen Originalarchive
+wurden unabhängig nachgerechnet. Der aktuelle Befund steht im
+[Ergebnisprotokoll der Konstantendiagnose](constant_diagnostic_results_manjaro_001.md).
 
-## Aktueller Fortsetzungsstand nach der Kontrollserie
+## Aktueller Stand nach der Konstantendiagnose
+
+- Beim Einstieg sauberer Checkout auf Implementierungshead `9202d20`, ein
+  Worktree, keine offenen PRs. Remote-Branches und aktuelles `main` geprüft:
+  `0a70f19e16e173aedf2e071a5f5b09d045ecbf69`, Merge von PR #42. Gegenüber dem
+  CI-geprüften Implementierungshead nur zusätzliche Sprachregeln in `AGENTS.md`.
+- Neuer Ergebnisbranch `codex/constant-diagnostic-results` ab diesem Merge;
+  den aktuellen Dokumentationshead mit `git rev-parse HEAD` bestimmen.
+  Dieser Nachtrag ändert ausschließlich Dokumentation und keine Laufzeiteingabe.
+- Übermitteltes Originalarchiv `constant-manjaro-001.tar.gz`, 2.418.382 Bytes,
+  tatsächliche SHA-256 vor Entpacken bestätigt:
+  `346459d953468c81975670577b92aa155a1eaec884cebd462fe61e1ab23d492b`.
+- Archivierter Ausführungsstand `0a70f19`, Git sauber, alle 48 Aufrufe
+  abgeschlossen, Abschlussprüfung bestanden; etwa 20 Minuten Gesamtwandzeit.
+- Selbst ausgeführter lesender Audit: alle 259 Dateien mit 258 Manifesthashes,
+  47 Quell-/Pin-/Planhashes gegen den Ausführungscommit, 50 Workermanifeste,
+  68 Optionsfelder je Snapshot einschließlich konkreter Plugins, Seeds,
+  Restartvektoren und gespeicherte BLAS-Aufnahmen geprüft. Daten und Original-
+  auswahl erhalten; beide Fehlergitter und sämtliche Paardifferenzen nachgerechnet.
+- Zusätzlich eigener Whitelist-Bauminterpreter, Residuen-MSE mit `math.fsum`,
+  direkte Parameterfehler und 6.506 Zustandsreplays. Alle 72 Anfangsverläufe
+  bis Schritt 20 exakt identisch; alle 48 Rückgaben entsprechen den ursprünglich
+  gewählten beobachteten Schlussminima. Originaldateien abschließend unverändert.
+- Ergebnis: 20/2 besteht 0/24 Kurven- und Parameterprüfungen, 100/2 besteht
+  24/24. Größter Zwischenpunkte-RMS unter 100/2 etwa `2,46e-8`.
+  Physikalische Identifikation bleibt `not_assessed`; kein Nachweis freier Suche.
+- Keine Julia-Ausführung, Fits oder Optimierungen im Audit. Gespeicherte native
+  Options-/RNG-/BLAS-Nachweise sind von den neuen Python-Nachrechnungen getrennt.
+  Die anfangs nicht verfügbare Umgebung wurde wieder erreichbar; für diesen
+  Audit nur der gesperrte Pythonweg verwendet. Keine neue Umgebungsvalidierung
+  durch Julia und keine erneute numerische CI behauptet.
+- Reproduktionshilfen lokal unter `results/constant-audit-001/`: `audit.py`,
+  `audit.json`, Diagramm als PNG/SVG; separat gesichertes Originalarchiv.
+  Vollständige Zahlen und Prüfgrenzen im verlinkten Befund. Reine Dokumentation
+  erhält schlanke CI; der aktuelle Nachweis gehört zum Ergebnis-PR.
+- Lokal bestanden: Dokumentations-/Linkprüfung für 39 Markdown-Dateien,
+  `git diff --check`, explizite Dokumentations-CI-Zuordnung und erneute Prüfung
+  unveränderter konsumierter Quellen sowie aller 259 Originaldateien.
+  Auditpaket zusätzlich unter `results/constant-audit-001.tar.gz` gesichert.
+
+Nächster abgegrenzter Schritt: anhand dieses Befunds einen eigenen begrenzten
+Plan für eine freie Budgetintervention beschließen. Suchprofil, Vergleichsarme,
+Seeds und Suchbudget sind offen. Keine automatische neue Serie oder zusätzliche
+Reviewrunde; kein eigenständiger Merge.
+
+## Vorheriger Fortsetzungsstand nach der freien Kontrollserie
 
 ### Angenommene Diagnose A: implementierter Kontrollpfad
 
@@ -282,12 +327,13 @@ Abschlussprüfung dem eingefrorenen Plan.
 
 ## Offen und nächster abgegrenzter Schritt
 
-1. Implementierungs-PR der angenommenen Diagnose A vollständig technisch prüfen;
-   Head, Basis und CI-Nachweis dort festhalten. Kein eigenständiger Merge.
-2. Nach Prüfung die 48 Aufrufe einmalig auf Manjaro gemäß dem neuen Plan
-   ausführen und das vollständige Ergebnisarchiv zur Nachrechnung sichern.
-3. Erst anhand dieses Befunds über die nächste Forschungsetappe entscheiden.
-   Keine routinemäßige weitere Reviewrunde oder automatische Budgeterweiterung.
+1. Den unabhängig nachgerechneten [Diagnosebefund](constant_diagnostic_results_manjaro_001.md)
+   als abgeschlossenen Entwicklungsbefund sichern und beurteilen.
+2. Die nächste Forschungsetappe gesondert planen: begrenzte freie
+   Budgetintervention als Prüfidee; keine automatische Änderung des Suchprofils.
+3. Umfang, Vergleichsbedingungen und Entscheidungskriterien vor weiteren Läufen
+   beschließen. Kein routinemäßiger Wiederholungsaudit oder weiteres Review ohne
+   konkreten Prüfbedarf; kein eigenständiger Merge.
 
 Der Plan und beide Laufzeitplanprüfsummen sind unverändert. Keine zusätzlichen
 wissenschaftlichen Suchen in der Cloud und keine automatische Wiederholung.

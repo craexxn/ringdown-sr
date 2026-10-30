@@ -5,9 +5,9 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 30.10.2026; abgeglichener Stand auf `main`: `978738c`
-([PR #41](https://github.com/craexxn/ringdown-sr/pull/41));
-Ausführungsstand der Kontrollserie: `4057caa`.
+Fortsetzungsstand: 30.10.2026; abgeglichener Stand auf `main`: `0a70f19`
+([PR #42](https://github.com/craexxn/ringdown-sr/pull/42));
+Ausführungsstand der Konstantendiagnose: `0a70f19`, der freien Kontrollserie: `4057caa`.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
@@ -36,15 +36,18 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   drei Seeds um rund 90–97 % gegenüber der frischen Baseline. Trotzdem
   erfüllt kein Kandidat die Kurvengrenzen; der Erkenner unterstützt keine
   gefundene Struktur, Parameter und Identifikation bleiben `not_assessed`.
-- **Beschlossener nächster Schritt:** Den [angenommenen Diagnoseplan](docs/constant_diagnostic_plan.md)
-  umsetzen: einmalige Konstantenoptimiererdiagnose an einer festen
-  Ringdown-Struktur, acht Starts, drei RNG-Initialisierungen und Vergleich
-  20/2 gegen 100/2; 48 Backendaufrufe mit 60 Minuten Gesamtwandzeit als Grenze.
-  Vorgegebene Struktur und wahrheitsnahe Starts sind Diagnoseprivilegien.
-  Der isolierte Diagnosepfad ist auf `codex/ringdown-constant-diagnostic`
-  implementiert; [Bedienung und Artefakte](docs/constant_diagnostic.md).
-  Lokale technische Prüfungen sind bestanden; die vollständige CI gehört zum
-  Implementierungs-PR. Die wissenschaftliche Serie ist noch nicht ausgeführt.
+- **Konstantendiagnose abgeschlossen:** Der [angenommene Diagnoseplan](docs/constant_diagnostic_plan.md)
+  ist mit PR #42 implementiert und auf Manjaro ausgeführt. Das vollständige
+  [Originalarchiv ist unabhängig nachgerechnet](docs/constant_diagnostic_results_manjaro_001.md):
+  Unter 20/2 bestehen 0/24, unter 100/2 alle 24 Fits die festen Kurvengrenzen;
+  Parameterbefunde wechseln von `mismatched` zu `matched`. Bei allen 72 lokalen
+  Paaren sind die ersten 20 Schritte exakt gleich. Das belegt Budgetabhängigkeit
+  für die vorgegebene Struktur und das deklarierte Startgitter; freie
+  Strukturentdeckung und Übertragbarkeit bleiben offen.
+- **Nächste Methodenentscheidung:** Eine begrenzte freie Budgetintervention
+  als nächste Prüfidee planen. Profil, Vergleiche, Seeds, Suchbudget und
+  Entscheidungsregeln sind gesondert festzulegen; ein neuer Lauf oder ein
+  Produktionsprofil sind noch nicht beschlossen. Kein automatischer Folgeversuch.
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
   bestand am Head `cfe44bf`: 1.288 Python-Tests, Julia- und technische
   Integrationsprüfungen. Der Mergecommit hat denselben Dateibaum. Die
@@ -55,6 +58,9 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   [rauschfreie Manjaro-Befund](docs/noiseless_control_results_manjaro_001.md)
   beruht dagegen auf übermittelten Berichtsauszügen; ein unabhängiger Audit
   aller Originalartefakte ist dort ausdrücklich nicht belegt.
+  Die [vollständige CI zu PR #42](https://github.com/craexxn/ringdown-sr/actions/runs/41062609710)
+  bestand am Head `9202d20`. Der neue Originalarchiv-Audit prüft 48 Fits,
+  144 lokale Verläufe und 6.506 Zustände; dabei keine neue Optimierung.
 - **Offen:** Ursache der Suchstagnation; wissenschaftliche Formelauswahl,
   numerisches Forschungsprofil und statistischer Versuchsplan vor einer
   Leistungsstudie. Dazu die [offenen Reproduzierbarkeitsentscheidungen](docs/reproducibility_decisions.md)
