@@ -76,6 +76,14 @@ jobs:
         if: steps.scope.outputs.full == 'true'
         run: uv run --locked python scripts/run_python.py scripts/check_symbolic_search.py
 
+      - name: Verify representation profiles, fixed references and tiny technical workers
+        if: steps.scope.outputs.full == 'true'
+        run: >-
+          env OPENBLAS_CORETYPE=Haswell
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+          uv run --locked python scripts/check_representation_integration.py
+          --output results/ci-representation-technical
+
       - name: Check paired schema-3 symbolic pilots and independent metrics
         if: steps.scope.outputs.full == 'true'
         run: uv run --locked python scripts/check_symbolic_pilot.py --output results/ci-sr-controls

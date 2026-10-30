@@ -9,7 +9,10 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-RUNTIME_DOCUMENTS = {"docs/noiseless_control_plan.md"}
+RUNTIME_DOCUMENTS = {
+    "docs/noiseless_control_plan.md",
+    "docs/search_representation_plan.md",
+}
 SHA = re.compile(r"[0-9a-f]{40}\Z")
 LINK = re.compile(
     r"!?\[[^\]\n]*\]\(\s*(?:<([^>\n]+)>|([^\s)\n]+))(?:\s+[\"'][^\n]*?[\"'])?\s*\)"

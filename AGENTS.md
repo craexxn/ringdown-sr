@@ -130,7 +130,7 @@ Kurz berichten:
 - Reine Änderungen an `README.md`, `AGENTS.md` und Markdown unter `docs/`
   erhalten schlanke Format- und lokale Linkprüfungen. Dokumente, die zur
   Laufzeit konsumiert werden, benötigen weiterhin die volle CI; aktuell gilt
-  dies für `docs/noiseless_control_plan.md`.
+  dies für die beiden in `docs/ci.md` aufgeführten Kontrollpläne.
 - Code-, Test-, Konfigurations-, Abhängigkeits- und CI-Änderungen benötigen
   vor dem Merge die vollständigen technischen Prüfungen. Unklare Änderungen
   werden vollständig geprüft. Die Zuordnung ist in `docs/ci.md` beschrieben.
