@@ -86,6 +86,9 @@ sind als begrenzte Strukturerkennung und separate numerisch abgesicherte
 [Parameter-/Aliasdiagnose](docs/parameter_diagnostics.md) umgesetzt.
 Der [lesende Export](docs/parameter_export.md) für vollständige gespeicherte Läufe ist ebenfalls umgesetzt;
 wissenschaftliche Formelauswahl bleibt eine gesonderte Aufgabe.
+Die [erste rauschfreie Kontrollserie auf Manjaro](docs/noiseless_control_results_manjaro_001.md)
+ist vollständig übermittelt: Alle neun Zellen wurden abgeschlossen, aber keiner
+der 28 exportierten Kandidaten erfüllt die festgelegten Kurvenfehlergrenzen.
 
 ## Konfigurierter Durchlauf mit gespeicherten Ergebnissen
 
@@ -377,11 +380,13 @@ eine Installationsprüfung und keine Ringdown-Rekonstruktion.
    nutzen: Erkenner, rohe Koeffizienten, abgesicherte Umrechnungen und
    numerische Nachrechnung und der [lesende Diagnoseexport](docs/parameter_export.md)
    sind gemäß geprüftem Plan umgesetzt. Vorhandene Läufe können nun separat diagnostiziert werden.
-3. Den [rauschfreien Suchkontrollversuch](docs/noiseless_control_plan.md)
-   gemäß geprüftem Methodenplan durchführen. Die
-   [Implementierung und Bedienung](docs/noiseless_control.md) mit drei Budgets,
-   drei Suchseeds und getrennten Kurven-, Struktur- und Parameterdiagnosen
-   ist ergänzt; Implementierungsreview und die neun Kontrollläufe stehen aus.
+3. Die [abgeschlossene rauschfreie Kontrollserie](docs/noiseless_control_results_manjaro_001.md)
+   als Entwicklungsbefund sichern und die Suchstagnation eingrenzen.
+   Implementierungsreview und Nachreview zu PR #34 sind abgeschlossen;
+   alle neun geplanten Manjaro-Zellen sind als `completed` übermittelt.
+   Sechs Auswahlen sind konstante Näherungen; auch die übrigen Kandidaten
+   verfehlen die Kurvenfehlergrenzen. Die nächste gezielte Ursachenprüfung
+   wird auf dieser Grundlage festgelegt.
 4. Wissenschaftliche Formelauswahl und statistischen Versuchsplan gesondert
    begründen, bevor Leistungs- und Identifikationsaussagen untersucht werden.
 
