@@ -18,7 +18,11 @@ def plugin_records(records):
         {
             "type": str(plugin.type),
             "fields": [
-                {"name": str(field.name), "type": str(field.type), "value": str(field.value)}
+                {
+                    "name": str(field.name),
+                    "type": str(field.type),
+                    "value": str(field.value),
+                }
                 for field in plugin.fields
             ],
         }
@@ -69,12 +73,28 @@ def validate_plugin_records(records, condition):
             1,
             (
                 "AdaptiveParsimonyPlugin",
-                {"tournament": ("Bool", "true"), "mutation_acceptance": ("Bool", "true")},
+                {
+                    "tournament": ("Bool", "true"),
+                    "mutation_acceptance": ("Bool", "true"),
+                },
             ),
         )
-    if len(records) != len(specs):
+    if not isinstance(records, list) or len(records) != len(specs):
         raise ValueError("Unexpected actual plugin count.")
     for record, (name, expected) in zip(records, specs, strict=True):
+        if (
+            not isinstance(record, dict)
+            or set(record) != {"type", "fields"}
+            or not isinstance(record["type"], str)
+            or not isinstance(record["fields"], list)
+            or any(
+                not isinstance(field, dict)
+                or set(field) != {"name", "type", "value"}
+                or any(not isinstance(value, str) for value in field.values())
+                for field in record["fields"]
+            )
+        ):
+            raise ValueError("Invalid actual plugin record schema.")
         if record["type"].split("{", 1)[0].rsplit(".", 1)[-1] != name:
             raise ValueError("Unexpected actual plugin type/order.")
         fields = {field["name"]: field for field in record["fields"]}
@@ -121,7 +141,10 @@ def normalized_backend_fields(fields, condition, expected_plugins):
         }:
             raise ValueError("Representation backend mismatch: loss_function")
     plugins = by_name.get("plugins")
-    if plugins is None or {key: plugins[key] for key in ("type", "value")} != expected_plugins:
+    if (
+        plugins is None
+        or {key: plugins[key] for key in ("type", "value")} != expected_plugins
+    ):
         raise ValueError("Representation backend mismatch: actual plugin configuration")
     normalized = copy.deepcopy(fields)
     for field in normalized:

@@ -13,6 +13,39 @@ sie ist kein Ergebnisbericht und keine Freigabe für Suchläufe.
 - Der ältere [Kontrollplan](noiseless_control_plan.md) und sein Hash bleiben
   unverändert. Keine neuen Entwicklungs-Suchläufe wurden gestartet.
 
+## Aktueller Cloud-Fortschritt am 30.10.2026
+
+- Einstieg auf Remote-Head `9c18af2ca6b761eb0ed2e0d8375aaab1dfe484e4`;
+  sauberer Checkout und ein Worktree, keine offenen PRs. `main` auf
+  `909942d3f3910ea20df1703dd12421abe4867a4e` gelesen und integriert:
+  ausschließlich die geprüften organisatorischen Änderungen aus PR #38;
+  beide Laufzeitpläne bleiben in der vollen CI-Ausnahme.
+- Diese Cloudinstanz ist erreichbar. Gesperrte Installation mit Python
+  3.12.14; Umgebungscheck bestätigt Julia 1.13.1, PySR 2.6.0,
+  SymbolicRegression 2.5.1, PythonCall 0.9.36, Interpreterbindung und Erweiterung.
+- Lokale, nicht versionierte Startdatei `/workspace/ringdown-cloud-env.sh`:
+  vorgegebenes Cache-/Depotprofil, Agg und zwei Vorkompilieraufgaben.
+  `JULIA_PYTHONCALL_LIB` wurde aus dem Projektinterpreter ermittelt und die
+  Datei geprüft. Nachfolgende Befehle laden diese Datei ausdrücklich;
+  Haswell/Threadlimit 1 werden nur für die dafür vorgesehenen Prüfungen gesetzt.
+- Gesicherter Entwurf erneut geprüft: Ruff bestanden, vier Dateien anschließend
+  formatiert; alle 86 bisherigen fokussierten Fälle bestanden. Zusätzlich
+  48 Fälle zur absoluten Pluginprüfung ergänzt; alle 70 Profiltests bestanden.
+- Echte Optionsvorprüfung erfolgreich: neun Optionsobjekte, null
+  Callbackaufrufe, kein Fit/Such-/Optimiererlauf. Konkrete Plugins und gemeinsamer
+  Callbackname sowie die 29 absoluten gemeinsamen Verträge bestätigt;
+  geladene NumPy-/SciPy-/Julia-Pools mit Haswell und Threadlimit 1 geprüft.
+  Lokaler Nachweis: `results/representation-options-001.json`, nicht versioniert.
+- Eingefrorener Planhash unverändert. Keine Pins oder Berechtigungen geändert.
+  Keine wissenschaftlichen Kontrollsuchen gestartet, keine Integrations-CI
+  für diesen Arbeitsstand und noch kein Implementierungs-PR.
+
+Nächster Schritt: vollständigen isolierten Kontrolltreiber mit Vorprüfung,
+Quell-/Worker-/Datenverifikation und Fehler-Injektionstests implementieren;
+danach echte Referenzprüfungen, CI-Einbindung und Bedienungsdokumentation.
+Die nachstehenden Abschnitte beschreiben frühere Sicherungsstände und werden
+bei Abschluss der Integration zusammengeführt.
+
 ## Erneute Bestandsaufnahme am 30.10.2026
 
 Diese Bestandsaufnahme wurde über den GitHub-Zugriff und den tatsächlich

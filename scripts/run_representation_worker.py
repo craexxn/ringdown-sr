@@ -48,8 +48,12 @@ def run(directory):
             record = jl.RepresentationProfiles.verification_record(
                 jl.RingdownSRSearch.LAST_OPTIONS[()]
             )
-            if (directory / "representation_profile.json").read_bytes() != profile_bytes:
-                raise ValueError("The representation profile changed during the worker.")
+            if (
+                directory / "representation_profile.json"
+            ).read_bytes() != profile_bytes:
+                raise ValueError(
+                    "The representation profile changed during the worker."
+                )
             result = json.loads((directory / "result.json").read_bytes())
             _write_json(
                 directory / "representation_verification.json",

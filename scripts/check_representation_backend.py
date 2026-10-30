@@ -40,7 +40,10 @@ def inspect_profiles():
         or str(jl.seval("string(Base.pkgversion(SymbolicRegression))")) != "2.5.1"
     ):
         raise RuntimeError("Unexpected pinned backend versions.")
-    if Path(str(jl.seval("Base.active_project()"))).resolve() != ROOT / "julia/Project.toml":
+    if (
+        Path(str(jl.seval("Base.active_project()"))).resolve()
+        != ROOT / "julia/Project.toml"
+    ):
         raise RuntimeError("Unexpected active Julia project.")
     base = load_base()
     support = base.load_support()
@@ -50,19 +53,31 @@ def inspect_profiles():
     initial["blas_control"] = probe.verify_blas_control(
         initial["environment"], "Haswell", require_julia=True
     )
-    for name in ("RingdownSRLoss.jl", "RingdownSRSearch.jl", "RepresentationProfiles.jl"):
+    for name in (
+        "RingdownSRLoss.jl",
+        "RingdownSRSearch.jl",
+        "RepresentationProfiles.jl",
+    ):
         jl.include(str(ROOT / "julia/src" / name))
     profiles = []
     for condition in CONDITIONS:
         for seed in (20261020, 20261021, 20261022):
             backend_seed = int(np.random.RandomState(seed).randint(0, 2**31 - 1))
-            options = jl.RepresentationProfiles.reference_options(condition, backend_seed)
-            expected = jl.RepresentationProfiles.expected_plugins(condition, backend_seed)
+            options = jl.RepresentationProfiles.reference_options(
+                condition, backend_seed
+            )
+            expected = jl.RepresentationProfiles.expected_plugins(
+                condition, backend_seed
+            )
             jl.RepresentationProfiles.verify_options(
                 options, condition, backend_seed, expected
             )
             fields = [
-                {"name": str(field.name), "type": str(field.type), "value": str(field.value)}
+                {
+                    "name": str(field.name),
+                    "type": str(field.type),
+                    "value": str(field.value),
+                }
                 for field in jl.RingdownSRSearch.option_fields(options)
             ]
             plugins_field = plugin_field_record(
