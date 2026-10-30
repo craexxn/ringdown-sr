@@ -4,6 +4,7 @@ import copy
 import json
 import signal
 import subprocess
+import sys
 from types import SimpleNamespace
 
 import numpy as np
@@ -404,3 +405,326 @@ def test_changed_runtime_copy_fails_before_any_preflight_code_executes(
     with pytest.raises(ValueError, match="before preflight consumption"):
         DRIVER.inspect_backend(tmp_path, runtime, None, sources, None, None, lambda: 60)
     assert not calls
+
+
+@pytest.mark.parametrize("fault", ["summary_interrupt", "manifest_error", "mutation"])
+def test_finalization_failures_never_leave_a_released_comparison(
+    runtime, monkeypatch, tmp_path, fault
+):
+    output = tmp_path / "finalization"
+    save, write_json = DRIVER.save_report, DRIVER._write_json
+    write_text = type(output).write_text
+    finalizing, injected = False, False
+
+    def save_report(directory, report):
+        nonlocal finalizing, injected
+        finalizing = report["final_verification"] == "passed"
+        save(directory, report)
+        if finalizing and fault == "mutation" and not injected:
+            injected = True
+            path = output / "cell-01/result.json"
+            path.write_bytes(path.read_bytes() + b"\n")
+            checksums = json.loads((path.parent / "checksums.json").read_text())
+            checksums[path.name] = _sha256(path.read_bytes())
+            _write_json(path.parent / "checksums.json", checksums)
+
+    def summary(path, *args, **kwargs):
+        nonlocal injected
+        if (
+            finalizing
+            and fault == "summary_interrupt"
+            and not injected
+            and path.name == "summary.md.tmp"
+        ):
+            injected = True
+            raise KeyboardInterrupt("interrupted final summary")
+        return write_text(path, *args, **kwargs)
+
+    def manifest(path, value):
+        nonlocal injected
+        if (
+            finalizing
+            and fault == "manifest_error"
+            and not injected
+            and path.name == "checksums.json"
+        ):
+            injected = True
+            raise OSError("cannot write final manifest")
+        return write_json(path, value)
+
+    monkeypatch.setattr(DRIVER, "save_report", save_report)
+    monkeypatch.setattr(type(output), "write_text", summary)
+    monkeypatch.setattr(DRIVER, "_write_json", manifest)
+    expected = {"summary_interrupt": KeyboardInterrupt, "manifest_error": OSError}
+    with pytest.raises(expected.get(fault, ValueError)):
+        DRIVER.run(runtime.archive, output, label="fixture")
+    result = json.loads((output / "report.json").read_text())
+    assert injected and len(runtime.calls) == 6
+    assert result["status"] == "incomplete"
+    assert result["final_verification"] == "failed"
+    assert all(
+        result[key] is None for key in ("summaries", "pair_differences", "comparison")
+    )
+    assert "C20=" not in (output / "summary.md").read_text()
+
+
+def assert_locked_package(output):
+    report = json.loads((output / "report.json").read_text())
+    assert report["status"] == "incomplete"
+    assert report["final_verification"] == "failed"
+    assert all(
+        report[key] is None for key in ("summaries", "pair_differences", "comparison")
+    )
+    assert "C20=" not in (output / "summary.md").read_text()
+    assert not (output / "checksums.json").exists()
+    assert not (output / "report.json.tmp").exists()
+    return report
+
+
+@pytest.mark.parametrize("name", ["summary.md", "checksums.json", "report.json"])
+@pytest.mark.parametrize("after_replace", [False, True])
+@pytest.mark.parametrize("error_type", [OSError, KeyboardInterrupt])
+def test_publication_failures_revoke_success_even_after_the_final_rename(
+    runtime, monkeypatch, tmp_path, name, after_replace, error_type
+):
+    output = tmp_path / "publication"
+    replace = type(output).replace
+    injected = False
+
+    def publish(path, target):
+        nonlocal injected
+        final = False
+        if target == output / name:
+            final = (
+                path.parent != output
+                if name != "report.json"
+                else json.loads(path.read_bytes())["final_verification"] == "passed"
+            )
+        if final and not injected:
+            injected = True
+            if after_replace:
+                replace(path, target)
+            raise error_type("publication interrupted")
+        return replace(path, target)
+
+    monkeypatch.setattr(type(output), "replace", publish)
+    with pytest.raises(error_type):
+        DRIVER.run(runtime.archive, output, label="fixture")
+    assert injected and len(runtime.calls) == 6
+    assert_locked_package(output)
+
+
+@pytest.mark.parametrize(
+    "phase",
+    [
+        "source_hashes",
+        "hash_read",
+        "summary",
+        "manifest",
+        "summary_publish",
+        "manifest_publish",
+        "report_publish",
+        "stage_cleanup",
+    ],
+)
+def test_deadline_applies_throughout_finalization(
+    runtime, monkeypatch, tmp_path, phase
+):
+    output = tmp_path / "deadline"
+    now = SimpleNamespace(value=0.0)
+    monkeypatch.setattr(DRIVER, "time", SimpleNamespace(monotonic=lambda: now.value))
+    save, sources, hashing = (
+        DRIVER.save_report,
+        DRIVER.source_hashes,
+        DRIVER.checked_hash,
+    )
+    write_json, write_text = DRIVER._write_json, type(output).write_text
+    replace, cleanup = type(output).replace, DRIVER.tempfile.TemporaryDirectory.__exit__
+    finalizing, injected = False, False
+
+    def advance(current):
+        nonlocal injected
+        if finalizing and phase == current and not injected:
+            injected = True
+            now.value = control.LIMIT_SECONDS + 1.0
+
+    def save_report(path, report):
+        nonlocal finalizing
+        finalizing = report["final_verification"] == "passed"
+        return save(path, report)
+
+    def source_hashes():
+        result = sources()
+        advance("source_hashes")
+        return result
+
+    def checked_hash(path, check):
+        result = hashing(path, check)
+        advance("hash_read")
+        return result
+
+    def summary(path, *args, **kwargs):
+        result = write_text(path, *args, **kwargs)
+        if path.name == "summary.md.tmp":
+            advance("summary")
+        return result
+
+    def manifest(path, value):
+        result = write_json(path, value)
+        if path.name == "checksums.json":
+            advance("manifest")
+        return result
+
+    def publish(path, target):
+        result = replace(path, target)
+        if target.parent == output:
+            advance(
+                {
+                    "summary.md": "summary_publish",
+                    "checksums.json": "manifest_publish",
+                    "report.json": "report_publish",
+                }.get(target.name)
+            )
+        return result
+
+    def stage_exit(*args):
+        result = cleanup(*args)
+        advance("stage_cleanup")
+        return result
+
+    monkeypatch.setattr(DRIVER, "save_report", save_report)
+    monkeypatch.setattr(DRIVER, "source_hashes", source_hashes)
+    monkeypatch.setattr(DRIVER, "checked_hash", checked_hash)
+    monkeypatch.setattr(DRIVER, "_write_json", manifest)
+    monkeypatch.setattr(type(output), "write_text", summary)
+    monkeypatch.setattr(type(output), "replace", publish)
+    monkeypatch.setattr(DRIVER.tempfile.TemporaryDirectory, "__exit__", stage_exit)
+    with pytest.raises(TimeoutError):
+        DRIVER.run(runtime.archive, output, label="fixture")
+    assert injected and len(runtime.calls) == 6
+    report = assert_locked_package(output)
+    assert report["wall_seconds"] > control.LIMIT_SECONDS
+
+
+def test_real_parent_timer_interrupts_blocking_work_and_restores_signal_state():
+    script = """
+import signal
+import run_free_optimizer_budget as driver
+previous = signal.getsignal(signal.SIGALRM)
+try:
+    with driver.WallTimeLimit(0.05):
+        signal.pause()
+except TimeoutError:
+    pass
+else:
+    raise AssertionError('blocking parent work escaped its deadline')
+assert signal.getsignal(signal.SIGALRM) == previous
+assert signal.getitimer(signal.ITIMER_REAL) == (0.0, 0.0)
+"""
+    result = subprocess.run(
+        [sys.executable, "-c", "import sys; sys.path.insert(0, 'scripts');" + script],
+        cwd=control.ROOT,
+        capture_output=True,
+        text=True,
+        timeout=20,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+
+
+def test_rehashed_cell_mutation_after_manifest_publication_is_not_adopted(
+    runtime, monkeypatch, tmp_path
+):
+    output = tmp_path / "late-publication-mutation"
+    replace = type(output).replace
+    injected = False
+
+    def publish(path, target):
+        nonlocal injected
+        result = replace(path, target)
+        if target == output / "checksums.json" and not injected:
+            injected = True
+            artifact = output / "cell-01/result.json"
+            artifact.write_bytes(artifact.read_bytes() + b"\n")
+            local = artifact.parent / "checksums.json"
+            entries = json.loads(local.read_bytes())
+            entries[artifact.name] = _sha256(artifact.read_bytes())
+            _write_json(local, entries)
+            entries = json.loads(target.read_bytes())
+            for changed in (artifact, local):
+                entries[changed.relative_to(output).as_posix()] = _sha256(
+                    changed.read_bytes()
+                )
+            _write_json(target, entries)
+        return result
+
+    monkeypatch.setattr(type(output), "replace", publish)
+    with pytest.raises(ValueError, match="artifact changed"):
+        DRIVER.run(runtime.archive, output, label="fixture")
+    assert injected
+    assert_locked_package(output)
+
+
+def test_repeated_abort_summary_failure_still_retains_a_locked_machine_report(
+    runtime, monkeypatch, tmp_path
+):
+    output = tmp_path / "unwritable-summary"
+    original = type(output).write_text
+    failed = False
+
+    def write(path, *args, **kwargs):
+        nonlocal failed
+        if path.name == "summary.md.tmp" and len(runtime.calls) == 6:
+            failed = True
+            raise OSError("summary persistence remains unavailable")
+        return original(path, *args, **kwargs)
+
+    monkeypatch.setattr(type(output), "write_text", write)
+    with pytest.raises(OSError, match="summary persistence"):
+        DRIVER.run(runtime.archive, output, label="fixture")
+    assert failed
+    report = json.loads((output / "report.json").read_bytes())
+    assert report["status"] == "incomplete" and report["comparison"] is None
+    assert "abort_persistence_error" in report
+    assert not (output / "summary.md").exists()
+    assert not (output / "checksums.json").exists()
+
+
+def test_existing_parent_timer_is_preserved():
+    previous = signal.getsignal(signal.SIGALRM)
+    signal.setitimer(signal.ITIMER_REAL, 60)
+    try:
+        with (
+            pytest.raises(RuntimeError, match="existing parent wall timer"),
+            DRIVER.WallTimeLimit(1),
+        ):
+            pytest.fail("foreign timer was overwritten")
+        assert signal.getsignal(signal.SIGALRM) == previous
+        assert signal.getitimer(signal.ITIMER_REAL)[0] > 0
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, 0)
+
+
+def test_deadline_exceeded_during_final_directory_walk_blocks_release(
+    runtime, monkeypatch, tmp_path
+):
+    output = tmp_path / "late-deadline"
+    clock = SimpleNamespace(now=0.0)
+    monkeypatch.setattr(DRIVER, "time", SimpleNamespace(monotonic=lambda: clock.now))
+    rglob = type(output).rglob
+
+    def walk(path, pattern):
+        yield from rglob(path, pattern)
+        if path == output and len(runtime.calls) == 6:
+            clock.now = control.LIMIT_SECONDS + 1.0
+
+    monkeypatch.setattr(type(output), "rglob", walk)
+    with pytest.raises(TimeoutError):
+        DRIVER.run(runtime.archive, output, label="fixture")
+    result = json.loads((output / "report.json").read_text())
+    assert result["status"] == "incomplete"
+    assert result["final_verification"] == "failed"
+    assert result["wall_seconds"] > control.LIMIT_SECONDS
+    assert all(
+        result[key] is None for key in ("summaries", "pair_differences", "comparison")
+    )

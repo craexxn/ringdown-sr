@@ -7,6 +7,73 @@ wurden unabhängig nachgerechnet. Der aktuelle Befund steht im
 
 ## Angenommener Budgetvergleich: implementierter technischer Stand
 
+### Korrektur nach übermitteltem Implementierungsreview zu PR #45
+
+Erneuter Einstieg am 30.10.2026: sauberer Checkout auf
+`592a5fbca6ca0f3e8414183c227c7585ca7ea943`, Branch
+`codex/free-optimizer-budget`, ein Worktree, lokaler/Remote-Head identisch.
+PR #45 ist der einzige offene PR; Basis und aktuelles `main` weiterhin
+`722437ea4e3662bed4ef61bd363503777e44d2fe`. Keine parallele Fortsetzung
+übernommen. Der folgende übermittelte Befund bezieht sich auf diesen Head
+und diese Basis, nicht auf den nun geänderten Stand.
+
+- **Übermitteltes KI-basiertes Review:** alle 18 PR-Dateien und relevante
+  unveränderte Abhängigkeiten geprüft; 135 gezielte Tests und vier separate
+  Fehlergegenprüfungen ausgeführt. CI [41109750849](https://github.com/craexxn/ringdown-sr/actions/runs/41109750849)
+  mit 1.423 Python-Tests und nativen Integrationen über GitHub verifiziert.
+  Temporärer CI-Mergecommit `a3ff9cf29d9a2049f108b96f6d374958ce9ae423`
+  hat denselben Dateibaum wie der geprüfte PR-Head. Keine neuen nativen Tests,
+  wissenschaftlichen Suchen/Fits oder Archivaudits im Review berichtet.
+- **P1:** Positive Berichte konnten nach einer unterbrochenen Zusammenfassung,
+  fehlgeschlagenem Gesamtmanifest oder spät konsistent neugehashten Zellartefakten
+  zurückbleiben. **P2:** Während letzter Prüfoperationen überschrittene
+  Gesamtwandzeit konnte trotzdem zur Freigabe führen. Die übrige Methodentreue
+  wurde im geprüften Umfang bestätigt. Gezieltes Nachreview dieser zwei
+  Korrekturen erforderlich; keine vollständige zusätzliche Reviewrunde.
+- **Hier selbst reproduziert:** vier neue Gegenfälle am tatsächlichen Treiber
+  mit simulierten Workern schlagen am unveränderten Reviewstand erwartungsgemäß
+  fehl: Tastaturabbruch der letzten Zusammenfassung, Schreibfehler des
+  Gesamtmanifests, späte Änderung samt Zellneuhashung und Zeitüberschreitung
+  während des letzten Verzeichnisdurchlaufs. Keine Suche oder Optimierung.
+- **Korrektur implementiert:** gesamte Abschlussphase im Fehlerpfad; Berichte
+  und Manifest zunächst vorbereiten, alle konsumierten Bytes auch bei der
+  Manifestbildung gegen die ursprünglichen Anker prüfen. Weitere Paketdateien
+  beim ersten Abschlusslesen einfrieren; Zellmanifeste im Gesamtmanifest erhalten.
+  Positiver `report.json` als letzter atomarer Veröffentlichungsschritt nach
+  erneuter Integritäts-/Zeitprüfung. Bei Fehler oder Unterbrechung werden
+  positive Abschlussdateien entfernt, Aggregate gesperrt und Einzelartefakte
+  erhalten; fehlgeschlagene Abbruchsicherung erzeugt keinen Ersatz-Erfolg.
+- **Zeitbegrenzung implementiert:** unverändert 3.600 Sekunden; Prüfungen
+  vor/nach Dateioperationen und während blockweiser Hashbildung, zusätzlich
+  POSIX-Wandzeittimer für blockierende Elternprozessarbeit. Abschließende
+  Zeitprüfung auch nach dem Berichtsrename; Zeitüberschreitung widerruft die
+  Freigabe. Fremden aktiven Timer ablehnen, eigenen Timer/Signalzustand
+  anschließend wiederherstellen. Nach einem Abbruch nur Teilstandssicherung.
+- **Lokal geprüft:** 163 gezielte Tests bestanden (120 Kontroll- und 43
+  CI-Auswahlfälle), darunter 28 neue Gegenfälle: die vier Reproduktionen,
+  Fehler vor/nach allen drei Veröffentlichungen, Zeitüberschreitungen in acht
+  Abschlussphasen, echter Timerabbruch blockierender Elternprozessarbeit und
+  Erhalt eines fremden Timers. Zusätzliche Fälle prüfen spätere Zelländerung
+  samt konsistenter Zell-/Gesamtneuhashung und wiederholtes Scheitern der
+  Abbruchzusammenfassung. Ruff, Formatprüfung für 122 Pythondateien,
+  Dokumentations-/Linkprüfung für 42 Markdown-Dateien und Diffprüfung bestanden.
+  Alle vier eingefrorenen
+  Planprüfsummen unverändert; keine Pins, Budgets, Seeds oder Kriterien geändert.
+- **Fortsetzbarer Stand:** Treiber, Gegenfälle, Bedienungsdokumentation, README
+  und dieses Dokument bilden einen zusammenhängenden Korrekturcommit im
+  bestehenden Branch. Den gesicherten Head nach Commit/Push mit
+  `git rev-parse HEAD` und PR #45 bestimmen;
+  vor Fortsetzung lokale Änderungen erneut prüfen. Der grüne CI-Nachweis
+  `41109750849` gehört ausschließlich zum vorherigen Head, nicht zur Korrektur.
+
+Nächster abgegrenzter Schritt: vollständige technische CI am Korrekturhead im
+bestehenden PR #45 prüfen und ein gezieltes
+Nachreview der Finalisierung/Zeitbegrenzung durchführen lassen. Nicht mergen;
+keine wissenschaftliche Cloud-Serie. Erst nach diesen Prüfungen folgt der
+gesonderte Manjaro-Start am freigegebenen Stand.
+
+### Historischer Implementierungs- und Prüfnachweis vor dem Review
+
 Der korrigierte Beschluss aus PR #44 ist ausdrücklich angenommen. PR #44 wurde
 nach Prüfung des Heads `8fe947cfad5787609962955b4ce2d2fbbf113c39` und der grünen
 Dokumentations-CI [41105409445](https://github.com/craexxn/ringdown-sr/actions/runs/41105409445)
@@ -79,7 +146,7 @@ Worktree und keine parallele Fortsetzung; eigener Implementierungsbranch
   vor Fortsetzung Commit und lokale Änderungen mit `git status --short --branch`
   und `git rev-parse HEAD` erneut bestimmen.
 
-Nächster abgegrenzter Schritt: vollständige Integrations-CI am finalen PR-Head
+Damals nächster abgegrenzter Schritt: vollständige Integrations-CI am finalen PR-Head
 prüfen und den Nachweis im PR ergänzen; anschließend kann PR #45 übernommen
 werden. Nicht selbstständig mergen. Die sechs wissenschaftlichen Suchen werden im Rahmen
 aller technischen Prüfungen nicht in der Cloud gestartet; einmalige Manjaro-

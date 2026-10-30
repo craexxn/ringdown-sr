@@ -1,11 +1,13 @@
 """Run exactly six frozen free searches, preserving fail-closed partial states."""
 
 import argparse
+import hashlib
 import importlib.util
 import io
 import signal
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -63,6 +65,81 @@ EXTRA_FILES = (
     "RepresentationProfiles.jl",
     "FreeOptimizerBudget.jl",
 )
+
+
+class WallTimeLimit:
+    """Bound child waits and interrupt blocking parent work on the reference OS."""
+
+    def __init__(self, seconds):
+        self.started = time.monotonic()
+        self.seconds = seconds
+        self.active = False
+
+    def check(self):
+        if self.remaining() <= 0:
+            raise TimeoutError("Free budget comparison reached its wall-time limit.")
+
+    def remaining(self):
+        return self.seconds - (time.monotonic() - self.started)
+
+    def __enter__(self):
+        if signal.getitimer(signal.ITIMER_REAL) != (0.0, 0.0):
+            raise RuntimeError("An existing parent wall timer must not be replaced.")
+        self.previous = signal.getsignal(signal.SIGALRM)
+
+        def expire(signum, frame):
+            raise TimeoutError("Free budget comparison reached its wall-time limit.")
+
+        signal.signal(signal.SIGALRM, expire)
+        self.active = True
+        try:
+            self.check()
+            signal.setitimer(signal.ITIMER_REAL, self.remaining())
+        except BaseException:
+            self.cancel()
+            raise
+        return self
+
+    def cancel(self):
+        if self.active:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+            signal.signal(signal.SIGALRM, self.previous)
+            self.active = False
+
+    def __exit__(self, *args):
+        self.cancel()
+
+
+def checked_hash(path, check):
+    check()
+    if path.is_symlink():
+        raise ValueError("Symbolic links are not valid control artifacts.")
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        while chunk := stream.read(1024 * 1024):
+            digest.update(chunk)
+            check()
+    check()
+    return digest.hexdigest()
+
+
+def artifact_hashes(output, anchors, check):
+    """Check the bytes consumed for the final manifest against original anchors."""
+    hashes = {}
+    check()
+    for path in output.rglob("*"):
+        check()
+        if path.is_symlink():
+            raise ValueError("Symbolic links are not valid control artifacts.")
+        name = path.relative_to(output).as_posix()
+        if path.is_file() and name != "checksums.json":
+            hashes[name] = checked_hash(path, check)
+            if name in anchors and hashes[name] != anchors[name]:
+                raise ValueError("A consumed or verified artifact changed: " + name)
+    check()
+    if not anchors.keys() <= hashes.keys():
+        raise ValueError("A consumed or verified artifact is missing.")
+    return hashes
 
 
 def launch(command, *, stdout, remaining):
@@ -368,7 +445,6 @@ def save_report(output, report):
             and report["status"] == "completed",
         )
     )
-    _write_json(output / "report.json", report)
     lines = [
         "# Freier Optimiererbudgetvergleich",
         "",
@@ -432,9 +508,108 @@ def save_report(output, report):
     temporary = output / "summary.md.tmp"
     temporary.write_text("\n".join(lines), encoding="utf-8")
     temporary.replace(output / "summary.md")
+    _write_json(output / "report.json", report)
+
+
+def finalize(output, report, anchors, unchanged, clock):
+    """Stage the complete package; publish the positive report as the last commit."""
+    observed = artifact_hashes(output, anchors, clock.check)
+    anchors.update(
+        (name, digest)
+        for name, digest in observed.items()
+        if name not in {"report.json", "summary.md"}
+    )
+    report.update(
+        status="completed",
+        final_verification="passed",
+        finished_at_utc=_utc_now(),
+        wall_seconds=time.monotonic() - clock.started,
+    )
+    with tempfile.TemporaryDirectory(
+        prefix=f".{output.name}-finalizing-", dir=output.parent
+    ) as temporary:
+        stage = Path(temporary)
+        save_report(stage, report)
+        clock.check()
+        staged = {
+            name: checked_hash(stage / name, clock.check)
+            for name in ("report.json", "summary.md")
+        }
+        hashes = artifact_hashes(output, anchors, clock.check)
+        hashes.update(staged)
+        _write_json(stage / "checksums.json", hashes)
+        manifest_hash = checked_hash(stage / "checksums.json", clock.check)
+        unchanged()
+        for name in ("summary.md", "checksums.json"):
+            expected = manifest_hash if name == "checksums.json" else staged[name]
+            if checked_hash(stage / name, clock.check) != expected:
+                raise ValueError("Staged final artifact changed: " + name)
+            (stage / name).replace(output / name)
+            clock.check()
+        report_bytes = (stage / "report.json").read_bytes()
+        if _sha256(report_bytes) != staged["report.json"]:
+            raise ValueError("Staged positive report changed.")
+    # Stage cleanup is part of finalization, before the public commit point.
+    clock.check()
+    pending = output / "report.json.tmp"
+    pending.write_bytes(report_bytes)
+    # A manifest must never bless new bytes in place of consumed artifacts.
+    final_hashes = artifact_hashes(output, anchors, clock.check)
+    if final_hashes.pop("report.json.tmp") != staged["report.json"]:
+        raise ValueError("Pending positive report changed.")
+    final_hashes["report.json"] = staged["report.json"]
+    if (
+        final_hashes != hashes
+        or checked_hash(output / "checksums.json", clock.check) != manifest_hash
+    ):
+        raise ValueError("Final package changed during publication.")
+    unchanged()
+    if checked_hash(pending, clock.check) != staged["report.json"]:
+        raise ValueError("Pending positive report changed.")
+    pending.replace(output / "report.json")
+    clock.check()
+    clock.cancel()
+
+
+def retain_incomplete(output, report, error, clock):
+    """Revoke public success artifacts before attempting best-effort abort output."""
+    clock.cancel()
+    report.update(
+        status="incomplete",
+        final_verification="failed",
+        final_verification_error=f"{type(error).__name__}: {error}",
+        finished_at_utc=_utc_now(),
+        wall_seconds=time.monotonic() - clock.started,
+    )
+    report.update(comparison(report["cells"], final_verified=False))
+    for name in (
+        "report.json",
+        "summary.md",
+        "checksums.json",
+        "report.json.tmp",
+        "summary.md.tmp",
+        "checksums.json.tmp",
+    ):
+        (output / name).unlink(missing_ok=True)
+    try:
+        save_report(output, report)
+    except BaseException as persistence_error:  # noqa: BLE001 -- Never retain a positive report when abort persistence fails.
+        report["abort_persistence_error"] = (
+            f"{type(persistence_error).__name__}: {persistence_error}"
+        )
+        # A failed summary must not prevent retaining the locked machine report.
+        try:
+            _write_json(output / "report.json", report)
+        except BaseException:  # noqa: BLE001 -- Missing report is safer than a stale positive one.
+            (output / "report.json").unlink(missing_ok=True)
 
 
 def run(archive, output, *, label):
+    with WallTimeLimit(LIMIT_SECONDS) as clock:
+        return run_with_deadline(archive, output, label=label, clock=clock)
+
+
+def run_with_deadline(archive, output, *, label, clock):
     archive, output = Path(archive).resolve(), Path(output).resolve()
     if (
         not label.strip()
@@ -448,7 +623,6 @@ def run(archive, output, *, label):
         raise ValueError(
             "Use a machine label and a new output directory outside sources."
         )
-    started = time.monotonic()
     support = BASE.load_support()
     probe = support.load_core_probe()
     initial = BASE.core_snapshot(probe)
@@ -485,14 +659,12 @@ def run(archive, output, *, label):
         "frozen_file_sha256": files,
     }
     original = symbolic._run_worker
-    failure = None
 
     def remaining():
-        return LIMIT_SECONDS - (time.monotonic() - started)
+        return clock.remaining()
 
     def unchanged():
-        if remaining() <= 0:
-            raise TimeoutError("Free budget comparison reached its wall-time limit.")
+        clock.check()
         if (
             source_hashes() != sources
             or support.tool_hashes() != tools
@@ -500,10 +672,12 @@ def run(archive, output, *, label):
             or any(fingerprint(v) != fingerprints[k] for k, v in arrays.items())
         ):
             raise ValueError("Sources or frozen scientific input changed.")
+        clock.check()
         for name, digest in files.items():
             path = output / name
-            if path.is_symlink() or _sha256(path.read_bytes()) != digest:
+            if checked_hash(path, clock.check) != digest:
                 raise ValueError("A consumed or verified artifact changed: " + name)
+        clock.check()
 
     try:
         save_report(output, report)
@@ -596,9 +770,16 @@ def run(archive, output, *, label):
                 files[relative] = digest
             unchanged()
             save_report(output, report)
-        report["status"] = "completed"
+        final = BASE.core_snapshot(probe)
+        report["control_final"] = final
+        if any(
+            final[key] != initial[key]
+            for key in ("provenance", "adapter_source_sha256")
+        ):
+            raise ValueError("Final parent provenance changed.")
+        unchanged()
+        finalize(output, report, files, unchanged, clock)
     except BaseException as error:
-        failure = error
         report.update(status="incomplete", error=f"{type(error).__name__}: {error}")
         for cell in report["cells"]:
             if cell["status"] == "running":
@@ -616,44 +797,10 @@ def run(archive, output, *, label):
                     else "failed",
                     error=report["error"],
                 )
+        retain_incomplete(output, report, error, clock)
         raise
     finally:
         symbolic._run_worker = original
-        final_error = None
-        try:
-            final = BASE.core_snapshot(probe)
-            report["control_final"] = final
-            if any(
-                final[key] != initial[key]
-                for key in ("provenance", "adapter_source_sha256")
-            ):
-                raise ValueError("Final parent provenance changed.")
-            unchanged()
-            if any(path.is_symlink() for path in output.rglob("*")):
-                raise ValueError("Symbolic links are not valid control artifacts.")
-            report["final_verification"] = "passed"
-        except BaseException as error:  # noqa: BLE001 -- Preserve the primary failure and partial report.
-            final_error = error
-            report.update(
-                status="incomplete",
-                final_verification="failed",
-                final_verification_error=f"{type(error).__name__}: {error}",
-            )
-        report["finished_at_utc"] = _utc_now()
-        report["wall_seconds"] = time.monotonic() - started
-        save_report(output, report)
-        _write_json(
-            output / "checksums.json",
-            {
-                path.relative_to(output).as_posix(): _sha256(path.read_bytes())
-                for path in output.rglob("*")
-                if path.is_file()
-                and not path.is_symlink()
-                and path.name != "checksums.json"
-            },
-        )
-        if final_error is not None and failure is None:
-            raise final_error
     return report
 
 

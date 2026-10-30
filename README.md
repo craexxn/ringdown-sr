@@ -53,7 +53,11 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   `codex/free-optimizer-budget` implementiert. Die lokale technische
   Prozessprüfung ist bestanden. Implementierung und aktueller vollständiger
   CI-Nachweis stehen in [PR #45](https://github.com/craexxn/ringdown-sr/pull/45);
-  die einmalige Manjaro-Ausführung steht aus.
+  das übermittelte KI-basierte Implementierungsreview fand zwei Fehler bei
+  Abschlussfreigabe und Zeitlimit. Die Korrektur mit Fehlergegenfällen ist im
+  selben Branch umgesetzt; vollständige CI und gezieltes Nachreview des
+  korrigierten Abschlusses sind vor der Serie zu prüfen.
+  Die einmalige Manjaro-Ausführung steht aus.
   [Bedienung und Artefakte](docs/free_optimizer_budget.md).
   Dies ist adaptive Methodenentwicklung,
   keine Festlegung eines Produktionsprofils oder allgemeine Leistungsvalidierung.

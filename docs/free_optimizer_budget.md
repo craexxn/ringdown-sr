@@ -69,7 +69,14 @@ sha256sum results/free-budget-manjaro-001.tar.gz
 ```
 
 Das Gesamtlimit von 60 Minuten umfasst serienbezogene Vorprüfungen, Starts
-und Abschlussverifikation. Der Befehl darf nach einem Abbruch nicht mit einem
+und Abschlussverifikation einschließlich Berichts- und Manifestbildung.
+Der Elternprozess prüft das verbleibende Budget während der Dateiprüfungen
+und vor der Freigabe; ein eigener POSIX-Wandzeittimer unterbricht auch
+blockierende Elternprozessarbeit. Dieser Kontrolltreiber ist für Linux/Manjaro
+vorgesehen. Ein bereits aktiver fremder Wandzeittimer wird nicht überschrieben.
+Nach einem Ressourcenabbruch erfolgt ausschließlich die Sicherung des gesperrten
+Teilstands; daraus wird kein nachträglich abgeschlossener Vergleich.
+Der Befehl darf nach einem Abbruch nicht mit einem
 Ersatzseed oder automatisch größerem Budget wiederholt werden. Teilstände
 einschließlich Logs bleiben erhalten und können mit denselben Archivbefehlen
 gesichert werden. Über einen erneuten Versuch ist gesondert zu entscheiden.
@@ -98,12 +105,24 @@ Haswell/Threadlimit 1 gilt für diesen Kontrollpfad, nicht als allgemeiner Stand
   Fit-Callbackzahlen und Gesamtzahlen bleiben getrennt; die zusätzliche
   Nullkurve nach dem Fit erhöht nur den Gesamtzähler. Nicht exportierte RNG-
   oder Solverzustände werden nicht aus Zählern rekonstruiert.
+  Der positive Bericht wird erst nach vorbereiteten Berichten, Manifestbildung,
+  erneuter Ankerprüfung und erfolgreicher Zeitprüfung atomar veröffentlicht.
+  Bis dahin bleibt der öffentliche Bericht gesperrt; vorbereitete Dateien
+  sind keine Freigabe. Fehler oder Unterbrechungen während der gesamten
+  Abschlussphase hinterlassen einen unvollständigen Bericht mit gesperrten
+  Aggregaten. Auch eine bereits erfolgte Veröffentlichung wird im Fehlerfall
+  zurückgenommen. Verifizierte Zellartefakte und Logs bleiben erhalten.
 - `summary.md`: kurze Übersicht der Zellen und des vergleichenden Kurvenbefunds.
   Gruppenstatistiken mit endlichen Nennern, Seed-Differenzen und Erfolgswechsel
   werden erst nach sechs vollständig geprüften Zellen und bestandener
   Abschlussverifikation freigegeben. Sonst bleiben alle Aggregate `null`.
 - `checksums.json`: abschließendes Dateimanifest zur Paketkonsistenz. Es ist
-  keine externe Authentifizierung von Gerät oder Ausführung.
+  keine externe Authentifizierung von Gerät oder Ausführung. Der Verzeichnis-
+  durchlauf prüft konsumierte Dateien unmittelbar gegen ihre ursprünglichen
+  Anker; konsistent neu berechnete Zellmanifeste ersetzen diese Anker nicht.
+  Bei einem fehlgeschlagenen Abschluss wird das Gesamtmanifest entfernt.
+  Scheitert auch die Sicherung des Abbruchberichts, bleibt keine alte positive
+  Berichtsdatei als Ersatz stehen. Fehlende Abschlussdateien sind keine Freigabe.
 
 `C100 > C20` bedeutet mehr, `C100 < C20` weniger erfolgreiche Originalauswahlen
 in diesen drei Entwicklungsfällen. Gleichstand und Nullerfolg bleiben getrennt.
