@@ -1,10 +1,42 @@
 # Fortsetzungsstand: Zeitdarstellungs-Kontrolle
 
-Stand: 30.10.2026. Implementierung und gezieltes Review abgeschlossen.
-Nächster Schritt ist die geplante Ausführung auf dem Manjaro-Referenzrechner;
-wissenschaftliche Kontrollsuchen und ihre Auswertung stehen noch aus.
+Stand: 30.10.2026. Implementierung, gezieltes Review und die geplante
+Manjaro-Kontrollserie sind abgeschlossen. Das vollständige Originalarchiv
+wurde hier unabhängig nachgerechnet; der neue Entwicklungsbefund steht im
+[Ergebnisprotokoll](representation_control_results_manjaro_001.md).
 
-## Aktueller Fortsetzungsstand nach Merge und Review
+## Aktueller Fortsetzungsstand nach der Kontrollserie
+
+- Beim Einstieg `main` auf `97672ed` (übernommener Dokumentationsnachtrag
+  aus PR #40), keine offenen PRs und sauberer lokaler Checkout. Neuer
+  Ergebnisbranch `codex/representation-control-results`, Basis `97672ed`.
+  Der genaue Dokumentationshead ergibt sich aus `git rev-parse HEAD`.
+- Ausführungscommit weiterhin `4057caaffd9c4de5791ded14431c6e289db75b73`;
+  im Originalarchiv mit sauberem Git-Zustand protokolliert. Keine Änderung
+  der wissenschaftlichen Vorgaben oder der 41 konsumierten Quelldateien.
+- Vom Nutzer übermitteltes Originalarchiv `representation-manjaro-001.tar.gz`,
+  SHA-256 selbst bestätigt:
+  `a5b0cdae4262a7f759c72fbe1e7e9c142d817fbffa088107953250da861050db`.
+- Archiv vollständig gelesen: 219 Dateien, davon 218 im Artefaktmanifest;
+  sämtliche Datei-, Quell-, Worker-, Eingabe- und Planprüfsummen bestätigt.
+  Alle neun Zellen `completed`, Abschlussprüfung `passed`.
+- 57 Kandidaten mit sämtlichen Originalindizes, Vorhersagen, Residuen und
+  MSE nachgerechnet; beide Raster zusätzlich mit unabhängig geschriebenem
+  Bauminterpreter und `math.fsum` ausgewertet. Vorprüfungsobjekte, konkrete
+  Pluginfelder, Seeds und Haswell-Aufnahmen erneut abgeglichen. Gruppen-
+  statistiken und sechs Seed-Paare reproduziert. Keine Originaldatei verändert.
+- Ergebnis: Häufigkeitsschalter verbessern die Trainings-MSE bei 3/3 Seeds
+  um rund 90–97 %; Zeitstreckung hilft beim Training bei 2/3 Seeds und kann
+  auf Zwischenpunkten deutliche Spitzenfehler erzeugen. Alle 57 Kandidaten
+  verfehlen die Kurvengrenzen; alle Strukturen `not_supported`, Parameter
+  `not_assessed`. Der komplette Auditumfang und alle Zahlen stehen im Befund.
+- In diesem Auswertungsschritt keine neue Suche, kein Fit und kein Julia-Lauf.
+  Die hier abgeglichenen nativen Backendnachweise sind archivierte Aufnahmen.
+  Ergebnisnachtrag ausschließlich als Dokumentation; vollständige CI und
+  Review werden ohne Codeänderung nicht erneut ausgeführt.
+
+
+## Vorheriger Fortsetzungsstand nach Merge und Review
 
 - PR #39 ist auf `main` übernommen, Mergecommit und fester Ausführungsstand:
   `4057caaffd9c4de5791ded14431c6e289db75b73`.
@@ -145,25 +177,18 @@ Abschlussprüfung dem eingefrorenen Plan.
 
 ## Offen und nächster abgegrenzter Schritt
 
-1. Die [Manjaro-Befehle](representation_control.md#ausführung-auf-manjaro)
-   im sauberen Checkout des festen Ausführungscommits ausführen. Die gesperrte
-   Installation und der technische Umgebungscheck müssen bestehen.
-   Die lokalen Manjaro-Voraussetzungen sind in dieser Cloud nicht bestätigt.
-2. Der Kontrolltreiber prüft vor der ersten Suche selbst echte Optionen,
-   feste Koordinaten-/Aliasreferenzen und Haswell mit Threadlimit 1.
-   Danach genau die neun geplanten Zellen; keine zusätzliche technische
-   freie Suche und keine erneute vollständige Test-/Reviewrunde vorgesehen.
-3. Vollständige Originalartefakte einschließlich Teilständen archivieren,
-   `report.json` und `summary.md` sichten und die Ergebnisse unabhängig
-   nachrechnen. Bei Abbruch keine automatische Wiederholung oder Fortsetzung.
-   Den Abbruchgrund samt erhaltenem Archiv prüfen.
+1. Den [unabhängig nachgerechneten Befund](representation_control_results_manjaro_001.md)
+   einschließlich der begrenzten Aussagekraft von drei Entwicklungsseeds
+   und der getrennten Kurven-/Struktur-/Parametermarker berücksichtigen.
+2. Bewusst entscheiden, welche Ursachenprüfung oder Eingrenzung als Nächstes
+   verfolgt wird. Die geplante Serie endet nach genau diesen neun Zellen.
+   Ein günstigerer Fehlerbefund ist noch keine Freigabe eines Produktionsprofils.
+3. Neue Suchbudgets, Seeds, Kombinationen, Operatorrestriktionen, Grenzen
+   oder Rauschstudien erst nach gesonderter Methodenentscheidung festlegen.
 
-In der Cloud wurden keine wissenschaftlichen Kontrollsuchen gestartet.
-Keine Forschungsfrage, Seeds, wissenschaftlichen Budgets, Toleranzen,
-Auswahlregeln, Versionspins oder Berechtigungen geändert. Kein kombinierter
-Arm, keine Ersatzseeds. Der Alias-Blindfleck bei `8*fs` bleibt dokumentiert.
-Die nächsten wissenschaftlichen Befunde entstehen erst aus den Originaldaten
-der Manjaro-Serie.
+Der Plan und beide Laufzeitplanprüfsummen sind unverändert. Keine zusätzlichen
+wissenschaftlichen Suchen in der Cloud und keine automatische Wiederholung.
+Der Alias-Blindfleck bei `8*fs` bleibt ausdrücklich bestehen.
 
 ## Historische Nachweise
 
