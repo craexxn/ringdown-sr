@@ -68,3 +68,12 @@ Dokumentationspfad bedeutet, dass die beschriebenen Dokuprüfungen bestanden
 sind; er behauptet keine erneute Python-/Julia-Integration. KI-basierte
 Reviews werden gezielt bei Methodenentscheidungen oder konkretem Bedarf
 eingesetzt, Nachreviews nur bei notwendigen Gegenprüfungen.
+
+Die vollständige CI führt außerdem
+`check_representation_integration.py` mit dem begrenzten Haswell-Profil aus.
+Zuerst prüft sie neun echte Optionsobjekte ohne Callback/Fit sowie neun feste
+Koordinaten-/Aliasreferenzen ohne Suche. Anschließend prüft sie drei frische
+Profilworker mit jeweils zwei Iterationen am technischen linearen Signal
+`y=1+t`. Dieses gesonderte technische Budget ändert keine Vorgabe der
+wissenschaftlichen Neun-Zellen-Serie und liefert keinen Rekonstruktionsbefund.
+Die Fehler-Injektionstests des Treibers gehören zum regulären pytest-Lauf.

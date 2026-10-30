@@ -8,12 +8,13 @@ from pathlib import Path
 import numpy as np
 
 from ringdown_sr import symbolic
-from ringdown_sr.pilot import _sha256, _utc_now, _write_json
+from ringdown_sr.pilot import _utc_now, _write_json
 from ringdown_sr.representation_profiles import (
     CONDITIONS,
     normalized_backend_fields,
     plugin_field_record,
     plugin_records,
+    source_hashes,
     validate_plugin_records,
 )
 
@@ -30,6 +31,7 @@ def load_base():
 
 
 def inspect_profiles():
+    sources = source_hashes()
     if os.environ.get("PYTHON_JULIACALL_PROJECT") != str(ROOT / "julia"):
         raise RuntimeError("Use the pinned scripts/run_python.py launcher.")
     import pysr
@@ -116,7 +118,7 @@ def inspect_profiles():
     final["blas_control"] = probe.verify_blas_control(
         final["environment"], "Haswell", require_julia=True
     )
-    if initial["provenance"] != final["provenance"]:
+    if initial["provenance"] != final["provenance"] or source_hashes() != sources:
         raise ValueError("Sources changed during the options preflight.")
     return {
         "format": "ringdown-sr-representation-preflight-1",
@@ -127,16 +129,7 @@ def inspect_profiles():
         "callback_calls": 0,
         "initial": initial,
         "final": final,
-        "source_sha256": {
-            name: _sha256((ROOT / name).read_bytes())
-            for name in (
-                "scripts/check_representation_backend.py",
-                "src/ringdown_sr/representation_profiles.py",
-                "julia/src/RepresentationProfiles.jl",
-                "julia/src/RingdownSRSearch.jl",
-                "julia/src/RingdownSRLoss.jl",
-            )
-        },
+        "source_sha256": sources,
     }
 
 

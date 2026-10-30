@@ -48,6 +48,8 @@ function reference_options(condition, seed)
         parsimony=0.0, use_frequency=active, use_frequency_in_tournament=active,
         dimensionless_constants_only=false, deterministic=true, batching=false,
         turbo=false, bumper=false, autodiff_backend=nothing,
+        # PySR 2.6.0 passes these explicitly; bare Julia Options has other defaults.
+        should_simplify=true, define_helper_functions=false, input_stream=devnull,
         optimizer_algorithm=Optim.BFGS(; linesearch=Backend.LineSearches.BackTracking()),
         optimizer_options=(; iterations=20), optimizer_nrestarts=2,
     )
@@ -64,6 +66,9 @@ function verify_options(options, condition, seed, expected)
         options.ncycles_per_iteration == 50 && options.parsimony == 0.0 &&
         options.adaptive_parsimony_scaling == 1040.0 ||
         throw(ArgumentError("Wrong reviewed representation backend settings."))
+    options.should_simplify === true && options.define_helper_functions === false &&
+        options.input_stream === devnull ||
+        throw(ArgumentError("Wrong pinned PySR integration settings."))
     plugin_field(options) == expected.field && plugin_records(options) == expected.records ||
         throw(ArgumentError("Unexpected actual representation plugins."))
     return nothing

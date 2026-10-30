@@ -14,17 +14,21 @@ from ringdown_sr.representation_profiles import (
     plugin_field_record,
     plugin_records,
     profile_parameters,
+    verify_manifest,
 )
 
 
 def run(directory):
     directory = Path(directory).resolve()
+    parent = Path(__file__).resolve().parent
+    manifest_bytes = (directory / "representation_manifest.json").read_bytes()
+    manifest = json.loads(manifest_bytes)
+    verify_manifest(manifest, directory, parent)
     profile_bytes = (directory / "representation_profile.json").read_bytes()
     condition = checked_profile(json.loads(profile_bytes))
     request = json.loads((directory / "request.json").read_bytes())
     budget = symbolic.SearchBudget(**request["budget"])
     expected_seed = int(np.random.RandomState(budget.seed).randint(0, 2**31 - 1))
-    parent = Path(__file__).resolve().parent
     spec = importlib.util.spec_from_file_location(
         "representation_repeat", parent / "driver.py"
     )
@@ -40,6 +44,11 @@ def run(directory):
             source = symbolic.ROOT / "julia/src/RepresentationProfiles.jl"
             copy = directory / "RepresentationProfiles.jl"
             copy.write_bytes(source.read_bytes())
+            if (
+                _sha256(copy.read_bytes())
+                != manifest["sources"]["julia/src/RepresentationProfiles.jl"]
+            ):
+                raise ValueError("Native profile source changed before consumption.")
             jl.include(str(copy))
             jl.RepresentationProfiles.configure(condition, expected_seed)
         elif phase == "after_search":
@@ -55,6 +64,11 @@ def run(directory):
                     "The representation profile changed during the worker."
                 )
             result = json.loads((directory / "result.json").read_bytes())
+            verify_manifest(manifest, directory, parent)
+            if (
+                directory / "representation_manifest.json"
+            ).read_bytes() != manifest_bytes:
+                raise ValueError("Worker manifest changed during consumption.")
             _write_json(
                 directory / "representation_verification.json",
                 {
@@ -67,6 +81,7 @@ def run(directory):
                     "callback_calls_total": int(record.callback_calls),
                     "callback_calls_during_fit": result["callback_calls_during_fit"],
                     "profile_sha256": _sha256(profile_bytes),
+                    "manifest_sha256": _sha256(manifest_bytes),
                     "julia_source_sha256": _sha256(
                         (directory / "RepresentationProfiles.jl").read_bytes()
                     ),

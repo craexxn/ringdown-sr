@@ -1,12 +1,75 @@
 """Restricted search-profile changes; no truth, data generation or free overrides."""
 
 import copy
+from pathlib import Path
 
+from .pilot import _sha256
+from .symbolic import ROOT
 from .symbolic import search_parameters as _ordinary_parameters
 
 PROFILE_FORMAT = "ringdown-sr-representation-profile-1"
 OBJECTIVE = "Main.RepresentationProfiles.objective"
 CONDITIONS = ("baseline", "time_stretch", "complexity_frequency")
+RUNTIME_FILES = {
+    "driver.py": "scripts/repeat_symbolic_arm.py",
+    "probe_symbolic_numerics.py": "scripts/probe_symbolic_numerics.py",
+    "run_representation_worker.py": "scripts/run_representation_worker.py",
+    "check_representation_backend.py": "scripts/check_representation_backend.py",
+    "check_representation_references.py": "scripts/check_representation_references.py",
+    "orchestrator.py": "scripts/run_representation_control.py",
+}
+
+
+def source_hashes():
+    """Cover every consumed module, runtime copy, native source and frozen pin."""
+    names = {
+        *RUNTIME_FILES.values(),
+        "scripts/run_noiseless_control.py",
+        "scripts/check_representation_integration.py",
+        "scripts/run_python.py",
+        "scripts/run_symbolic_worker.py",
+        "docs/search_representation_plan.md",
+        "docs/noiseless_control_plan.md",
+        "pyproject.toml",
+        "uv.lock",
+        ".python-version",
+        "src/ringdown_sr/juliapkg.json",
+        "julia/Project.toml",
+        "julia/Manifest.toml",
+    }
+    names.update(
+        path.relative_to(ROOT).as_posix()
+        for path in (ROOT / "src/ringdown_sr").glob("*.py")
+    )
+    names.update(
+        path.relative_to(ROOT).as_posix() for path in (ROOT / "julia/src").glob("*.jl")
+    )
+    return {name: _sha256((ROOT / name).read_bytes()) for name in sorted(names)}
+
+
+def verify_manifest(manifest, directory, runtime):
+    """Check source and input bytes before consumption and again after the worker."""
+    if (
+        not isinstance(manifest, dict)
+        or set(manifest) != {"format", "sources", "runtime", "inputs"}
+        or manifest["format"] != "ringdown-sr-representation-manifest-1"
+        or manifest["sources"] != source_hashes()
+        or set(manifest["runtime"]) != set(RUNTIME_FILES)
+        or set(manifest["inputs"])
+        != {"request.json", "inputs.npz", "representation_profile.json"}
+    ):
+        raise ValueError("Invalid or changed representation worker manifest.")
+    for name, source in RUNTIME_FILES.items():
+        if manifest["runtime"][name] != manifest["sources"][source]:
+            raise ValueError("Runtime copy does not match its source manifest.")
+    for root, hashes in (
+        (Path(runtime), manifest["runtime"]),
+        (Path(directory), manifest["inputs"]),
+    ):
+        for name, digest in hashes.items():
+            path = root / name
+            if path.is_symlink() or _sha256(path.read_bytes()) != digest:
+                raise ValueError(f"Changed representation consumed file: {name}")
 
 
 def plugin_field_record(record):
