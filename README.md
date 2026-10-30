@@ -19,17 +19,19 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   ist mit PR #37 übernommen. Er ergänzt den unveränderten
   [rauschfreien Kontrollplan](docs/noiseless_control_plan.md).
 - **Laufende Implementierung:** Im Chat „2_Implementierungspipeline“ auf
-  `codex/representation-control`; gelesener Sicherungspunkt `91f95e2`.
-  Der dortige [Fortsetzungsstand](https://github.com/craexxn/ringdown-sr/blob/91f95e27dede8e0012019cf468807b6989ecef32/docs/representation_implementation_status.md)
-  dokumentiert den implementierten Diagnosekern, 64 lokal bestandene Tests
-  und Ruff sowie die noch ausstehende volle Integrations-CI und Julia-Prüfung.
-  Diese Nachweise wurden hier gelesen, nicht erneut ausgeführt; neue
-  Entwicklungs-Suchläufe sind an diesem Sicherungspunkt nicht ausgeführt.
+  `codex/representation-control`; gelesener Sicherungspunkt `0cf7ff1`.
+  Der dortige [Fortsetzungsstand](https://github.com/craexxn/ringdown-sr/blob/0cf7ff18f57f4b575016ce92f4242bf47a680397/docs/representation_implementation_status.md)
+  trennt den lokal geprüften Diagnosekern von einem nach Umgebungsausfall
+  gesicherten Worker-/Profilentwurf. Dessen letzte Ergänzungen sind noch
+  ungeprüft; echte Julia-Prüfung und volle Integrations-CI stehen aus.
+  Frühere lokale Nachweise wurden hier gelesen, nicht erneut ausgeführt.
+  Neue Entwicklungs-Suchläufe sind an diesem Sicherungspunkt nicht ausgeführt.
 - **Nächster abgegrenzter Schritt:** Die bestehende Implementierung dort
-  fortsetzen: kontrollierten Worker und tatsächliche Backend-/Pluginprüfung
-  ohne Fit ergänzen. Vor Beginn den neuesten Branchstand prüfen; keine
-  zweite Umsetzung starten. Integration, Review und spätere Suchläufe bleiben
-  getrennte Schritte gemäß Plan und bestehendem Auftrag.
+  in einer verfügbaren Umgebung fortsetzen: Formatierung und fokussierte
+  Python-Prüfungen für den gesicherten Entwurf abschließen, danach die
+  tatsächlichen Julia-Optionen/Plugins ohne Fit prüfen. Vor Beginn den neuesten
+  Branchstand prüfen; keine zweite Umsetzung starten. Treiberintegration,
+  Review und spätere Suchläufe bleiben getrennte Schritte gemäß Plan und Auftrag.
 - **Prüfnachweise:** Die [schlanke CI zu PR #37](https://github.com/craexxn/ringdown-sr/actions/runs/41022224068)
   bestand am Head `e92152a`; sie prüft Dokumentation, keine Numerik.
   Der [Haswell-Befund](docs/symbolic_core_results.md) enthält die unabhängige
