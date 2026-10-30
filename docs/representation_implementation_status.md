@@ -5,7 +5,35 @@ Konstantendiagnose sind ausgeführt. Beide vollständigen Originalarchive
 wurden unabhängig nachgerechnet. Der aktuelle Befund steht im
 [Ergebnisprotokoll der Konstantendiagnose](constant_diagnostic_results_manjaro_001.md).
 
-## Freier Budgetvergleich nach übermitteltem Methodenreview
+## Angenommener Budgetvergleich: Beginn der Implementierung
+
+Am 30.10.2026 wurde der korrigierte Beschluss aus PR #44 ausdrücklich angenommen
+und die Implementierung beauftragt. PR #44 ist nach erneuter Prüfung des Heads
+`8fe947cfad5787609962955b4ce2d2fbbf113c39` und der grünen Dokumentations-CI
+[41105409445](https://github.com/craexxn/ringdown-sr/actions/runs/41105409445)
+als `722437ea4e3662bed4ef61bd363503777e44d2fe` gemergt.
+
+- Sauberer Checkout, ein Worktree, aktuelle Remote-Branches und offene PRs
+  geprüft; keine parallele Fortsetzung. Neuer Implementierungsbranch
+  `codex/free-optimizer-budget` ab dem Merge, Dateibaum identisch zum PR-Head.
+- Der [Methodenplan](free_optimizer_budget_plan.md) ist separat eingefroren:
+  sechs Suchen, beide Schalter an, 20/2 gegen 100/2, drei bekannte Seeds,
+  feste Reihenfolge, 200 Suchiterationen und 60 Minuten einschließlich Kontrollen.
+  Die korrigierte Entscheidungstabelle und die strikte Vollständigkeitssperre
+  sind verbindlich. Der historische Entwurf bleibt per Commitlink erhalten.
+- Dieser Zwischenstand enthält den angenommenen Plan und Statuspflege;
+  Implementierung und technische Ausführung stehen noch aus. Keine neue
+  wissenschaftliche Suche oder Optimierung. Die drei bisherigen Laufzeitpläne
+  und Originalartefakte bleiben unverändert.
+- Nächster abgegrenzter Schritt: Planprüfsumme und diesen Commit im neuen
+  Kontrollmodul binden; isolierte Optionsvorprüfung, gemeinsamer geprüfter
+  Callback, sechs feste Zellen und vollständige Abschlussverifikation umsetzen.
+  Technische A–B–A-Prüfung verwendet ein eigenes Signal. Neue Laufzeitdateien
+  explizit manifestieren und in die vollständige CI aufnehmen. Manjaro-Suchserie
+  erst nach bestandener technischer Prüfung; neuen Implementierungs-PR nicht
+  eigenständig mergen.
+
+## Historisch: freier Budgetvergleich nach übermitteltem Methodenreview
 
 Der [überarbeitete Entwurf](free_optimizer_budget_plan_draft.md) liegt weiterhin
 im bestehenden Ergebnisbranch `codex/constant-diagnostic-results` und
