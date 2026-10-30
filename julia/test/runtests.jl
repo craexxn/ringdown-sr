@@ -268,4 +268,50 @@ end
     end
 end
 
+
+include(joinpath(@__DIR__, "..", "src", "RingdownSRSearch.jl"))
+
+@testset "Frozen noiseless signal through the search callback" begin
+    time = Float64.(0:127) ./ 4096.0
+    observed = exp.(-time ./ 0.008) .* cos.(2pi * 250 .* time)
+    dataset = full_dataset(time, observed)
+    RingdownSRSearch.bind_context(time, observed, nothing)
+    options = loss_options(
+        loss_function=RingdownSRSearch.objective,
+        dimensionless_constants_only=false, maxsize=20,
+    )
+    reference = bin_node(
+        3, const_node(1),
+        bin_node(
+            3,
+            un_node(1, bin_node(3, const_node(-125), time_node())),
+            un_node(3, bin_node(3, const_node(2pi * 250), time_node())),
+        ),
+    )
+    @test SymbolicRegression.compute_complexity(reference, options) == 11
+    @test SymbolicRegression.compute_complexity(reference, options) <= options.maxsize
+
+    reference_loss = SymbolicRegression.eval_loss(reference, dataset, options)
+    @test isfinite(reference_loss)
+    @test reference_loss < 1e-24
+    @test RingdownSRSearch.CALLS[] == 1
+
+    mean_value = sum(observed) / length(observed)
+    expected_constant_loss = sum(abs2, observed .- mean_value) / length(observed)
+    constant_loss = SymbolicRegression.eval_loss(const_node(mean_value), dataset, options)
+    @test constant_loss ≈ expected_constant_loss rtol=64eps(Float64)
+    @test constant_loss ≈ 0.06829567962376913 rtol=64eps(Float64)
+    @test reference_loss < constant_loss
+
+    # A numerically evaluable tree still has to obey the original units.
+    @test SymbolicRegression.eval_loss(un_node(2, time_node()), dataset, options) == Inf
+    @test RingdownSRSearch.CALLS[] == 3
+    @test RingdownSRSearch.LAST_OPTIONS[] === options
+    @test RingdownSRSearch.LAST_DATASET[] === dataset
+    println(
+        "Noiseless search-callback control passed: nodes=11, reference_MSE=",
+        reference_loss, ", constant_MSE=", constant_loss,
+    )
+end
+
 include(joinpath(@__DIR__, "constant_optimization.jl"))

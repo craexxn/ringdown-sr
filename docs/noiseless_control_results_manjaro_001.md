@@ -1,6 +1,7 @@
 # Rauschfreie Kontrollserie auf Manjaro: Ergebnis 001
 
-Stand: 28.10.2026. Die neun geplanten Zellen wurden mit Serienstatus
+Ergebnisse vom 28.10.2026, ergänzt am 30.10.2026 um Callbackzähler und
+technische Gegenprüfung. Die neun geplanten Zellen wurden mit Serienstatus
 `completed` übermittelt. Alle 28 exportierten Kandidaten verfehlen die
 vorab festgelegten Kurvenfehlergrenzen. Sechs der neun ursprünglichen
 Auswahlen sind konstante Näherungen des Trainingsmittelwerts.
@@ -173,15 +174,45 @@ zugleich sind die beiden genannten Mechanismen zur Häufigkeitsgewichtung
 von Komplexitäten deaktiviert. Diese Beobachtungen begründen Hypothesen,
 keinen kausalen Nachweis.
 
-Zunächst werden die vorhandenen Workerartefakte lesend auf tatsächliche
-Suchaktivität geprüft: `callback_calls_during_fit`, gespeicherte Zustände
-und Logs. Der Callbackzähler zählt Aufrufe des Verlustcallbacks, keine
-verschiedenen Ausdrücke und keine unabhängigen Wiederholungen; der
-separate Backend-Evaluationszähler ist nicht verfügbar. Auch eine einzelne
-Pareto-Konstante beweist keine vollständig konstante Suchpopulation.
+Die am 30.10.2026 zusätzlich übermittelten `callback_calls_during_fit`
+aus den bestehenden `cell-*/result.json` zeigen bei jedem Seed mehr
+Verlustaufrufe mit höherem nominalem Budget:
 
-Danach ist eine begrenzte technische Gegenprüfung des exakten
-Referenzbaums am tatsächlichen gepinnten Julia-Callback sinnvoll.
+| Seed | 10 Iterationen | 50 Iterationen | 200 Iterationen |
+| --- | --- | --- | --- |
+| 20261020 | 28 311 | 230 917 | 1 179 348 |
+| 20261021 | 15 600 | 48 261 | 167 829 |
+| 20261022 | 9 584 | 42 239 | 159 598 |
+
+Insgesamt sind dies 1 881 687 Callback-Aufrufe. Auch die sechs Zellen mit
+konstantem Ergebnis haben jeweils viele Verlustaufrufe. Das spricht gegen
+einen bloß ausgebliebenen Suchstart, erklärt aber noch nicht die
+Stagnation. Die Zahlen zählen Aufrufe des Verlustcallbacks, einschließlich
+solcher während der Konstantenoptimierung, keine verschiedenen Ausdrücke
+und keine unabhängigen Wiederholungen. Sie belegen weder linear mit dem
+Budget skalierende Rechenkosten noch die vollständige Absolvierung aller
+Backendzyklen. Der separate Backend-Evaluationszähler ist nicht verfügbar.
+Populationszustände und Logs wurden weiterhin nicht unabhängig gelesen;
+eine einzelne Pareto-Konstante beweist keine vollständig konstante
+Suchpopulation.
+
+Die technische Gegenprüfung ist in der bestehenden
+[Julia-Prüfung](../julia/test/runtests.jl) ergänzt. Sie erzeugt das feste
+128-Punkte-Signal aus den analytischen Vorgaben und reicht den konstruierten
+11-Knoten-Referenzbaum durch `SymbolicRegression.eval_loss` an
+`RingdownSRSearch.objective` weiter, mit den ursprünglichen Einheiten und
+der harten Einheitenprüfung. Eine optimale konstante Vorhersage wird gegen
+ihre unabhängig berechnete MSE geprüft; `sin(t)` muss wegen seiner Einheiten
+zurückgewiesen werden. Die Kontrolle führt weder Fit noch Suche oder
+Konstantenoptimierung aus. Sie wird über den bestehenden Befehl
+`scripts/check_julia_loss.py` im gepinnten Launcher ausgeführt, auch im
+unveränderten CI-Schritt. Ihre Optionen bilden die für feste Bäume relevante
+Grammatik, Komplexitätsgrenze und Einheiten-/Callbackregeln ab; sie laden
+keine originalen Optionen oder Zustände des Manjaro-Laufs. Ein bestandener
+Test belegt deshalb die Zulässigkeit der Referenz am geprüften Callback,
+keine Erreichbarkeit durch die evolutionäre Suche und keinen unabhängigen
+Audit der Manjaro-Artefakte.
+
 Eine anschließende neue Suchserie benötigt eine separat festgelegte
 Änderung und Vergleichsbedingung, etwa zur Zeitskalierung oder zur
 Komplexitätsvielfalt. Mehrere Faktoren zugleich zu ändern würde ihre
