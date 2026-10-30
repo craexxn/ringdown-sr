@@ -1,20 +1,23 @@
 # Arbeitsregeln für Agenten
 
-## Projektstatus und Umfang
+## Umfang und Einstieg
 
-Offizieller Bearbeitungsbeginn der Masterarbeit: 12.10.2026.
+Nur die konkret beauftragte Aufgabe bearbeiten. Verbindlicher Einstieg ist
+der [Fortsetzungsstand in der README](README.md#projektstatus).
 
-Vor diesem Datum sind Aufgaben in diesem Repository auf technische
-und organisatorische Vorbereitung beschränkt:
-- Entwicklungsumgebung und Installation dokumentieren.
-- Git-Arbeitsabläufe und allgemeine Entwicklungsregeln vorbereiten.
-- Allgemeine, fachlich unabhängige Installationsprüfungen durchführen.
-
-Keine Ringdown-Implementierung, eigene Kovarianzschätzung,
-wissenschaftliche Verlustfunktion oder Forschungsexperimente
-vor dem Bearbeitungsbeginn umsetzen.
-
-Auch nach dem Startdatum nur die konkret beauftragte Aufgabe bearbeiten.
+- Vor Arbeitsbeginn README und aufgabenrelevante Pläne/Befunde lesen;
+  Branch, Commit, lokale Änderungen, weitere Worktrees und Remote-Stand
+  einschließlich offener PRs prüfen. Aktive Arbeiten auf anderen Branches
+  berücksichtigen. Fehlenden Zugriff benennen; Chat-Zusammenfassungen
+  ersetzen diese Prüfung nicht.
+- Bei längerer Arbeit oder Übergabe im bestehenden Arbeitsdokument oder PR
+  knapp festhalten: Branch/Commit, Arbeitsstand einschließlich lokaler
+  Änderungen, Prüfnachweise, offene Punkte und nächster abgegrenzter Schritt.
+  Auf vorhandene Belege verlinken; keine parallele Projektchronik anlegen.
+- Die README hält nur den aktuellen Überblick und verlinkt die Detailquelle.
+  Bei Statusänderungen deren Datum und betroffene Statusaussagen abgleichen;
+  historische Prüf- und Ausführungsdaten bleiben erhalten. Eingefrorene
+  Laufzeitpläne nicht zur Statuspflege verändern.
 
 ## Sprache
 
@@ -56,6 +59,11 @@ Auch nach dem Startdatum nur die konkret beauftragte Aufgabe bearbeiten.
 - Technische Funktionsfähigkeit und wissenschaftliche Validierung
   ausdrücklich unterscheiden.
 - Ergebnisse, Laufzeiten und Testerfolge niemals erfinden.
+- Wesentliche Entscheidungen im zuständigen Methodenplan oder Befunddokument
+  festhalten: Beschluss und Begründung, erwogene/verworfene Alternativen,
+  Belege mit Version/Commit sowie Aussagegrenzen und offene Fragen.
+  Ideen, beschlossene Vorgaben, Implementierung und Ausführung unterscheiden.
+  Externe Fachquellen konkret zitieren; fehlenden Quellenzugriff offenlegen.
 
 ## Prüfungen
 
@@ -66,6 +74,11 @@ Auch nach dem Startdatum nur die konkret beauftragte Aufgabe bearbeiten.
   Toleranzen oder entfernte Prüfungen umgehen.
 - Genau berichten, welche Prüfungen tatsächlich ausgeführt wurden.
 - Nicht ausgeführte Prüfungen und offene Einschränkungen benennen.
+- Übermittelte Prüfnachweise von selbst ausgeführten Prüfungen und
+  unabhängigen Nachrechnungen unterscheiden; jeweils den Bezugsstand nennen.
+- Vorgeschriebene Checks vollständig durchführen. Zusätzliche oder wiederholte
+  Prüfungen durch Änderungen, Fehler oder offene Risiken begründen; nach
+  bestandenem unverändertem Prüfstand keine routinemäßigen Wiederholungen.
 
 Verfügbare Prüfbefehle:
 
@@ -126,5 +139,10 @@ Kurz berichten:
 - KI-basierte Reviews gezielt bei wesentlichen Methodenentscheidungen oder
   konkretem Prüfbedarf einsetzen. Nachreviews nur bei notwendigen
   Gegenprüfungen; keine automatische zusätzliche Reviewrunde pro PR.
+- Reviewauftrag und Befund nennen PR, vollständigen Head-Commit, Vergleichsbasis
+  und Prüfumfang. Konkrete Fehler/wissenschaftliche Risiken mit Fundstelle,
+  Auswirkung und notwendiger Korrektur von optionalen Verbesserungen trennen.
+- Ein separater KI-Review ersetzt weder unabhängig hergeleitete Referenzfälle
+  oder Nachrechnungen noch wissenschaftliche Validierung.
 - Reviews in Dokumentation und PR-Texten als KI-basiert bezeichnen;
   konkrete Modellnamen sind dafür nicht erforderlich.

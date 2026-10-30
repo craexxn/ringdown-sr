@@ -5,11 +5,47 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Dokumentationsstand: 23.10.2026.
+Fortsetzungsstand: 30.10.2026; abgeglichene Basis auf `main`: `311f87d`
+(übernommener Methodenplan aus [PR #37](https://github.com/craexxn/ringdown-sr/pull/37)).
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
-Implementierter Stand:
+Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
+Übergaberegeln stehen in [AGENTS.md](AGENTS.md); vor Fortsetzung sind lokale
+Änderungen, Branches und PRs erneut zu prüfen.
+
+- **Gültige nächste Methodengrundlage:** Der geprüfte
+  [Plan für Zeitdarstellung und Komplexitätshäufigkeiten](docs/search_representation_plan.md)
+  ist mit PR #37 übernommen. Er ergänzt den unveränderten
+  [rauschfreien Kontrollplan](docs/noiseless_control_plan.md).
+- **Laufende Implementierung:** Im Chat „2_Implementierungspipeline“ auf
+  `codex/representation-control`; gelesener Sicherungspunkt `0cf7ff1`.
+  Der dortige [Fortsetzungsstand](https://github.com/craexxn/ringdown-sr/blob/0cf7ff18f57f4b575016ce92f4242bf47a680397/docs/representation_implementation_status.md)
+  trennt den lokal geprüften Diagnosekern von einem nach Umgebungsausfall
+  gesicherten Worker-/Profilentwurf. Dessen letzte Ergänzungen sind noch
+  ungeprüft; echte Julia-Prüfung und volle Integrations-CI stehen aus.
+  Frühere lokale Nachweise wurden hier gelesen, nicht erneut ausgeführt.
+  Neue Entwicklungs-Suchläufe sind an diesem Sicherungspunkt nicht ausgeführt.
+- **Nächster abgegrenzter Schritt:** Die bestehende Implementierung dort
+  in einer verfügbaren Umgebung fortsetzen: Formatierung und fokussierte
+  Python-Prüfungen für den gesicherten Entwurf abschließen, danach die
+  tatsächlichen Julia-Optionen/Plugins ohne Fit prüfen. Vor Beginn den neuesten
+  Branchstand prüfen; keine zweite Umsetzung starten. Treiberintegration,
+  Review und spätere Suchläufe bleiben getrennte Schritte gemäß Plan und Auftrag.
+- **Prüfnachweise:** Die [schlanke CI zu PR #37](https://github.com/craexxn/ringdown-sr/actions/runs/41022224068)
+  bestand am Head `e92152a`; sie prüft Dokumentation, keine Numerik.
+  Der [Haswell-Befund](docs/symbolic_core_results.md) enthält die unabhängige
+  Nachrechnung übermittelter Originalarchive. Der
+  [rauschfreie Manjaro-Befund](docs/noiseless_control_results_manjaro_001.md)
+  beruht dagegen auf übermittelten Berichtsauszügen; ein unabhängiger Audit
+  aller Originalartefakte ist dort ausdrücklich nicht belegt.
+- **Offen:** Ursache der Suchstagnation; wissenschaftliche Formelauswahl,
+  numerisches Forschungsprofil und statistischer Versuchsplan vor einer
+  Leistungsstudie. Dazu die [offenen Reproduzierbarkeitsentscheidungen](docs/reproducibility_decisions.md)
+  und die Grenzen des neuen Methodenplans verwenden. Hauptversuche und
+  wissenschaftliche Leistungsvalidierung stehen weiterhin aus.
+
+## Implementierter Pilot auf der abgeglichenen Basis
 
 - Gleichmäßige Zeitachse und Generator für ein einzelnes gedämpftes
   Sinussignal: `src/ringdown_sr/signals.py`.
@@ -76,7 +112,9 @@ sauberen Commit `6ed493d` übermittelt. Zusätzliche Prüfungen bestätigen
 die gespeicherte Git-Herkunft aller Stufen. Die freie SR-Suche liefert dabei
 unterschiedliche Kandidatenzahlen und Verluste; die Ursache ist noch
 nicht bestimmt. Ausführbarkeit und lokale Konsistenz sind bestätigt,
-rechnerübergreifend identische SR-Ergebnisse liegen nicht vor.
+für diese ursprünglichen Vollprofile liegen keine rechnerübergreifend
+identischen SR-Ergebnisse vor. Der spätere begrenzte
+[Haswell-Vergleich](docs/symbolic_core_results.md) ist davon zu unterscheiden.
 Auch der gepinnte Julia-Startweg ist lokal
 unter WSL2 bestätigt. Der [PySR-Methodenentwurf](docs/symbolic_regression_method_plan.md)
 wurde separat geprüft und um die Reviewpunkte präzisiert. Die freie Suche
@@ -355,7 +393,8 @@ Für eine Python-Datei wird anstelle von `-c "..."` deren Pfad angegeben.
 
 Der Startweg wurde am 06.10.2026 auf Manjaro erfolgreich geprüft:
 PySR 2.6.0, Julia 1.13.1, SymbolicRegression 2.5.1 und PythonCall 0.9.36.
-Der aktuelle GitHub-Durchlauf bestätigt ihn außerdem auf Ubuntu.
+Die oben verlinkte technische CI zu `600e95b` bestätigte ihn außerdem
+auf Ubuntu; eine spätere reine Dokumentations-CI ist kein neuer Startwegnachweis.
 Am 20.10.2026 bestätigte der Nutzer den Startweg außerdem lokal unter WSL2:
 `Technical environment check passed.`, Python 3.12.14, PySR 2.6.0,
 Julia 1.13.1, SymbolicRegression 2.5.1 und PythonCall 0.9.36;
@@ -367,34 +406,3 @@ Der frühere allgemeine PySR-Test rekonstruierte `y = x² + 2x + 1`
 auf dem Manjaro-Laptop als `x(x + 2) + 1` mit einem mittleren
 quadratischen Fehler von ungefähr `3,94 × 10⁻³³`. Dieser Test ist
 eine Installationsprüfung und keine Ringdown-Rekonstruktion.
-
-## Nächste Schritte
-
-1. Den [begrenzten Haswell-Befund](docs/symbolic_core_results.md) einschließlich
-   Diagnosecode, Primärnachweisen und Aussagegrenzen prüfen. Für einen
-   eingefrorenen freien Arm ist Ergebnisgleichheit auf beiden Geräten
-   bestätigt; eine Erklärung sämtlicher ursprünglicher Vollprofil-
-   Unterschiede wird nicht behauptet. Das numerische Forschungsprofil und
-   Robustheitskontrollen über weitere Seeds und Rauschrealisierungen bleiben
-   vor einer Leistungsstudie gesondert festzulegen.
-2. Die bereits geprüften [Alias-/Phasenreferenzen](docs/alias_references.md)
-   für die [geplante Parameterinterpretation](docs/parameter_interpretation_plan.md)
-   nutzen: Erkenner, rohe Koeffizienten, abgesicherte Umrechnungen und
-   numerische Nachrechnung und der [lesende Diagnoseexport](docs/parameter_export.md)
-   sind gemäß geprüftem Plan umgesetzt. Vorhandene Läufe können nun separat diagnostiziert werden.
-3. Die [abgeschlossene rauschfreie Kontrollserie](docs/noiseless_control_results_manjaro_001.md)
-   als Entwicklungsbefund sichern und die Suchstagnation eingrenzen.
-   Implementierungsreview und Nachreview zu PR #34 sind abgeschlossen;
-   alle neun geplanten Manjaro-Zellen sind als `completed` übermittelt.
-   Sechs Auswahlen sind konstante Näherungen; auch die übrigen Kandidaten
-   verfehlen die Kurvenfehlergrenzen. Der
-   [nächste Methodenplan](docs/search_representation_plan.md) trennt eine
-   feste Zeitstreckung von aktivierten Komplexitätshäufigkeitsmechanismen.
-   Der Plan ist methodisch geprüft und wird nach Übernahme für die
-   anschließende Implementierung eingefroren.
-4. Wissenschaftliche Formelauswahl und statistischen Versuchsplan gesondert
-   begründen, bevor Leistungs- und Identifikationsaussagen untersucht werden.
-
-Diese Schritte bilden die Arbeitsplanung für den Pilot.
-Parameterbereiche, SNR-Konvention und Kriterien für die Hauptversuche
-werden gesondert begründet und dokumentiert.
