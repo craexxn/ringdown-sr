@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 
 from ringdown_sr import symbolic
-from ringdown_sr.constant_diagnostic import backend_seed, verify_manifest
+from ringdown_sr.constant_diagnostic import SEEDS, backend_seed, verify_manifest
 from ringdown_sr.noiseless_control import diagnose_candidate
 from ringdown_sr.pilot import _environment, _write_json
 from ringdown_sr.representation_profiles import plugin_records, validate_plugin_records
@@ -74,6 +74,25 @@ def blas_check():
     }
 
 
+def verify_blas_snapshots(result):
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "diagnostic_blas_verifier", symbolic.ROOT / "scripts/probe_symbolic_numerics.py"
+    )
+    probe = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(probe)
+    for phase in ("blas_before", "blas_after"):
+        record = result[phase]
+        if (
+            probe.verify_blas_control(
+                record["environment"], "Haswell", require_julia=True
+            )
+            != record["verification"]
+        ):
+            raise ValueError("Contradictory actual BLAS snapshot.")
+
+
 def run(directory):
     runtime = Path(__file__).resolve().parent
     verify_manifest(directory, runtime)
@@ -101,6 +120,14 @@ def run(directory):
             records.append({"tree": tree, "loss_hex": loss.hex()})
         result = {"request": request, "controls": records}
         result.update(option_record(jl, controls[0].options))
+        result["rng_references"] = {}
+        for python_seed in SEEDS:
+            ref = module.rng_reference(backend_seed(python_seed))
+            result["rng_references"][str(python_seed)] = {
+                "before": [str(x) for x in ref.before],
+                "after": [str(x) for x in ref.after],
+                "draws": [vector(x) for x in ref.draws],
+            }
     else:
         if set(request) != {"number", "start", "seed", "iterations"}:
             raise ValueError("Unexpected diagnostic request fields.")

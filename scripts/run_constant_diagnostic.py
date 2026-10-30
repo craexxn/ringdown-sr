@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 
 import numpy as np
-from run_constant_diagnostic_worker import verify_controls
+from run_constant_diagnostic_worker import verify_blas_snapshots, verify_controls
 
 from ringdown_sr import symbolic
 from ringdown_sr.constant_diagnostic import (
@@ -131,6 +131,7 @@ def run(archive, output):
         result = json.loads((directory / "result.json").read_bytes())
         if result["request"] != request:
             raise ValueError("Changed worker request.")
+        verify_blas_snapshots(result)
         return result
 
     try:
@@ -149,6 +150,7 @@ def run(archive, output):
             report["cells"].append(cell)
             _write_json(output / "report.json", report)
             directory = output / f"call-{request['number']:02d}"
+            cell_started = time.monotonic()
             result = worker(request, directory)
             verify_options_record(
                 result,
@@ -159,7 +161,12 @@ def run(archive, output):
                 ),
             )
             diagnosis = verify_result(result, request, arrays)
-            cell.update(status="completed", result=result, diagnosis=diagnosis)
+            cell.update(
+                status="completed",
+                result=result,
+                diagnosis=diagnosis,
+                worker_wall_seconds=time.monotonic() - cell_started,
+            )
             files[(directory / "result.json").relative_to(output).as_posix()] = _sha256(
                 (directory / "result.json").read_bytes()
             )

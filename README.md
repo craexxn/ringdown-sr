@@ -15,7 +15,7 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
 Übergaberegeln stehen in [AGENTS.md](AGENTS.md); vor Fortsetzung sind lokale
 Änderungen, Branches und PRs erneut zu prüfen.
 
-- **Gültige nächste Methodengrundlage:** Der geprüfte
+- **Abgeschlossene Methodengrundlage:** Der geprüfte
   [Plan für Zeitdarstellung und Komplexitätshäufigkeiten](docs/search_representation_plan.md)
   ist mit PR #37 übernommen. Er ergänzt den unveränderten
   [rauschfreien Kontrollplan](docs/noiseless_control_plan.md).
@@ -41,8 +41,10 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   Ringdown-Struktur, acht Starts, drei RNG-Initialisierungen und Vergleich
   20/2 gegen 100/2; 48 Backendaufrufe mit 60 Minuten Gesamtwandzeit als Grenze.
   Vorgegebene Struktur und wahrheitsnahe Starts sind Diagnoseprivilegien.
-  Der Diagnosepfad wird auf `codex/ringdown-constant-diagnostic` implementiert
-  und technisch geprüft. Die wissenschaftliche Serie ist noch nicht ausgeführt.
+  Der isolierte Diagnosepfad ist auf `codex/ringdown-constant-diagnostic`
+  implementiert; [Bedienung und Artefakte](docs/constant_diagnostic.md).
+  Lokale technische Prüfungen sind bestanden; die vollständige CI gehört zum
+  Implementierungs-PR. Die wissenschaftliche Serie ist noch nicht ausgeführt.
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
   bestand am Head `cfe44bf`: 1.288 Python-Tests, Julia- und technische
   Integrationsprüfungen. Der Mergecommit hat denselben Dateibaum. Die

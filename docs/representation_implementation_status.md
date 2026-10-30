@@ -7,7 +7,7 @@ wurde hier unabhängig nachgerechnet; der neue Entwicklungsbefund steht im
 
 ## Aktueller Fortsetzungsstand nach der Kontrollserie
 
-### Angenommene Diagnose A: Implementierung in Arbeit
+### Angenommene Diagnose A: implementierter Kontrollpfad
 
 Der Nutzer hat den Reviewvorschlag am 30.10.2026 ausdrücklich angenommen und
 seine Umsetzung beauftragt. PR #41 ist inzwischen als `978738c38e36e7bcb82c83acb5ba85db6df078f0`
@@ -18,21 +18,43 @@ Implementierungsbranch oder offener PR beim Einstieg.
 Der [neue eingefrorene Plan](constant_diagnostic_plan.md) übernimmt Option A:
 48 Backendaufrufe, acht Starts, drei Seeds, 20/2 gegen 100/2, 60 Minuten.
 Die wissenschaftliche Serie bleibt für den geprüften Manjaro-Stand vorgesehen.
-Plan und erster Diagnoseentwurf werden in einem Zwischencommit gesichert;
-genauen Head mit `git rev-parse HEAD` bestimmen. Python-/Julia-Umgebung erneut
+Plan und erster Diagnoseentwurf sind in `f568902` remote gesichert;
+den aktuellen Head mit `git rev-parse HEAD` bestimmen. Python-/Julia-Umgebung erneut
 erfolgreich geprüft: Python 3.12.14, Julia 1.13.1, PySR 2.6.0,
 SymbolicRegression 2.5.1 und PythonCall 0.9.36, Interpreter und Erweiterung.
 Beschreibbare Cachepfade und tatsächlich vorhandene Python-Bibliothek bestätigt.
 
-Erster nativer technischer Nachweis `results/constant-technical-002.json`:
-zehn reine Referenz-/Einheiten-/Aliaskontrollen und vier Optimierungen eines
-gesonderten Achtpunkt-Fixtures bestanden. Mit und ohne Beobachtung gleiche
-Parameter, Verluste, Callbackzahlen und RNG-Endzustände unter 20 und 100.
-Dieser Nachweis gilt für den damaligen Entwurf; nachfolgende Export-/Verifier-
-Ergänzungen sind noch erneut zu prüfen. Keine der 48 wissenschaftlichen Zellen
-oder freie Suchen ausgeführt. Python-Gegenfälle und CI-Einbindung sind in Arbeit.
-Nächster abgegrenzter Schritt: Export und Prozessintegration technisch prüfen,
-Abbruch-/Manipulationsgegenfälle vervollständigen, passende vollständige CI.
+Implementiert: isolierter Launcher, absolute Options-/Plugin-/Seed- und
+Xoshiro-Prüfung, zehn vorgeschaltete Kontrollen, 48 feste Aufrufe, binäre
+Eingabeherkunft aus dem fest gehashten Archiv, beobachtender Callback, getrennte
+Fit-/Gesamtzähler und vollständiger Export. Paarunterschiede erhalten beide
+Parameterstatus; nicht beurteilbare Parameter werden nicht differenziert.
+Abschlussabweichungen sperren sämtliche Gruppen-/Paaraussagen; Teilstände bleiben
+erhalten. [Bedienung und Manjaro-Befehl](constant_diagnostic.md).
+
+Lokale Prüfnachweise:
+
+- Vollständiger Pythonlauf: 1.328 Tests bestanden. Danach ausschließlich
+  Paarbericht und Prozesswandzeit ergänzt und fokussierte Tests erneut geprüft.
+- `results/constant-technical-003.json`: zehn reine Kontrollen, vier direkte
+  Optimierungen am eigenen Achtpunkt-Fixture und zwei echte isolierte technische
+  Worker bestanden. Unabhängiger Export-/Residuen-/MSE-Replay und alle 68
+  effektiven Felder pro Worker geprüft. Mit/ohne Beobachtung gleiche Parameter,
+  Verluste, Callbackzahlen und RNG-Zustände für beide Budgets.
+- Nach diesem nativen Lauf nur Paarbericht/Prozesswandzeit und Dokumentation
+  ergänzt; der native Pfad blieb gleich. Der vollständige CI-Lauf am endgültigen
+  PR-Head prüft auch den aktuellen Quellenstand dieses technischen Checks.
+- Ruff, Formatierung, Dokumentations-/Link- und Diffprüfung bestanden.
+  Alter und neuer eingefrorener Kontrollplan unverändert; der neue Diagnoseplan
+  ist ausdrücklich als Laufzeitdokument mit voller CI erfasst.
+- Originalarchiv mit dem neuen Leser identitätsgeprüft und ohne Extraktion
+  gelesen: 128 Trainings- und 889 Diagnosedaten, 48 geplante Anfragen.
+
+Keine der 48 wissenschaftlichen Zellen oder freie Suchen im Rahmen dieser
+Diagnoseimplementierung ausgeführt. Die vollständige technische CI kann die
+bisherigen kleinen freien CI-Kontrollen ausführen; diese sind keine neue
+wissenschaftliche Serie. Nächster Schritt: Implementierungs-PR mit voller CI
+abschließen, danach auf geprüftem Stand die Manjaro-Diagnose ausführen.
 
 ### Gesicherter vorheriger Ergebnisstand
 
@@ -65,7 +87,7 @@ Abbruch-/Manipulationsgegenfälle vervollständigen, passende vollständige CI.
   Review werden ohne Codeänderung nicht erneut ausgeführt.
 
 
-## Nächste Methodenentscheidung nach übermitteltem Review
+## Historischer Entscheidungsstand nach übermitteltem Review
 
 Auf Nutzerauftrag ist die [Entscheidungsgrundlage samt vollständigem
 Review-Prompt](representation_next_step_review.md) im bestehenden Ergebnisbranch
@@ -250,16 +272,12 @@ Abschlussprüfung dem eingefrorenen Plan.
 
 ## Offen und nächster abgegrenzter Schritt
 
-1. Über den [übermittelten KI-basierten Reviewvorschlag](representation_next_step_review.md#aktueller-entscheidungsstand-nach-dem-review)
-   entscheiden: einmalige Diagnose A mit den dort konkret genannten Grenzen.
-   Keine routinemäßige Wiederholung des Methoden-/Implementierungsreviews
-   oder des Originalarchiv-Audits.
-2. Nach Nutzerbeschluss für neue Versuche zuerst einen eigenen vollständigen
-   Methodenplan festhalten und den Diagnosepfad implementieren und prüfen.
-   Die abgeschlossene Serie endet nach genau diesen neun Zellen; ein günstigerer
-   Fehlerbefund ist noch keine Freigabe eines Produktionsprofils.
-3. Neue Suchbudgets, Seeds, Kombinationen, Operatorrestriktionen, Grenzen
-   oder Rauschstudien erst nach gesonderter Methodenentscheidung festlegen.
+1. Implementierungs-PR der angenommenen Diagnose A vollständig technisch prüfen;
+   Head, Basis und CI-Nachweis dort festhalten. Kein eigenständiger Merge.
+2. Nach Prüfung die 48 Aufrufe einmalig auf Manjaro gemäß dem neuen Plan
+   ausführen und das vollständige Ergebnisarchiv zur Nachrechnung sichern.
+3. Erst anhand dieses Befunds über die nächste Forschungsetappe entscheiden.
+   Keine routinemäßige weitere Reviewrunde oder automatische Budgeterweiterung.
 
 Der Plan und beide Laufzeitplanprüfsummen sind unverändert. Keine zusätzlichen
 wissenschaftlichen Suchen in der Cloud und keine automatische Wiederholung.

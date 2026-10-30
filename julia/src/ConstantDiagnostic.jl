@@ -22,6 +22,13 @@ optimizer_settings(options) = [(; name=string(k), value= k == :callback ?
     repr(getfield(options.optimizer_options, k); context=:limit => false))
     for k in fieldnames(typeof(options.optimizer_options))]
 
+function rng_reference(seed)
+    rng = Xoshiro(seed)
+    before = rng_state(rng)
+    draws = [randn(rng, Float64, 4) for _ in 1:2]
+    return (; before, after=rng_state(rng), draws)
+end
+
 
 function options_for(iterations, seed, objective, callback)
     iterations in (20, 100) || throw(ArgumentError("Unsupported diagnostic budget."))

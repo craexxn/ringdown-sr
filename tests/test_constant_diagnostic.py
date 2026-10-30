@@ -155,6 +155,13 @@ def test_pair_difference_identity_and_rng():
     differences = d.pair_differences(cells)
     assert len(differences) == 24
     assert all(x["loss_100_minus_20"] == 0 for x in differences)
+    cells[0]["diagnosis"]["parameter_match"]["status"] = "not_assessed"
+    assert all(
+        v is None
+        for v in d.pair_differences(cells)[0]["parameters"][
+            "errors_100_minus_20"
+        ].values()
+    )
     cells[-1]["result"]["rng_after"][0] = "3"
     with pytest.raises(ValueError, match="Paired RNG"):
         d.pair_differences(cells)
@@ -212,3 +219,157 @@ def test_synthetic_tree_preserves_phase_and_binary_grouping():
         2 * (np.exp(-3 * times) * np.cos(4 * times + 0.5)),
         rtol=1e-15,
     )
+
+
+@pytest.mark.parametrize(
+    "failure",
+    ["none", "worker", "timeout", "late_artifact", "late_input", "late_source"],
+)
+def test_driver_preserves_partial_results_and_blocks_late_failures(
+    tmp_path, monkeypatch, failure
+):
+    import json
+
+    monkeypatch.syspath_prepend(str(d.ROOT / "scripts"))
+    driver = load_script("run_constant_diagnostic")
+    archive = tmp_path / "input.tar.gz"
+    archive.write_bytes(b"original")
+    arrays = frozen_data()
+    monkeypatch.setattr(driver, "_provenance", lambda: {"git": {"dirty": False}})
+    monkeypatch.setattr(driver, "read_archive", lambda p: (b"original", arrays))
+    monkeypatch.setattr(driver, "verify_controls", lambda r, a: None)
+    monkeypatch.setattr(driver, "verify_blas_snapshots", lambda r: None)
+    monkeypatch.setattr(driver, "verify_options_record", lambda r, ref: None)
+    output = tmp_path / "out"
+    sources = driver.source_hashes()
+    monkeypatch.setattr(driver, "source_hashes", lambda: sources)
+
+    def fake_launch(command, log, remaining):
+        directory = Path(command[-1])
+        request = json.loads((directory / "request.json").read_bytes())
+        if request.get("mode") == "controls":
+            result = {"request": request}
+        else:
+            if failure == "worker":
+                raise RuntimeError("injected worker error")
+            if failure == "timeout":
+                raise TimeoutError("injected timeout")
+            result = synthetic_result(request, arrays)
+        _write_json(directory / "result.json", result)
+
+    from pathlib import Path
+
+    monkeypatch.setattr(driver, "launch", fake_launch)
+    original_pairs = driver.pair_differences
+
+    def late_check(cells):
+        differences = original_pairs(cells)
+        if failure == "late_artifact":
+            (output / "call-01/result.json").write_bytes(b"{}")
+        elif failure == "late_input":
+            archive.write_bytes(b"changed")
+        elif failure == "late_source":
+            monkeypatch.setattr(driver, "source_hashes", dict)
+        return differences
+
+    monkeypatch.setattr(driver, "pair_differences", late_check)
+    if failure == "none":
+        driver.run(archive, output)
+    else:
+        with pytest.raises((ValueError, TimeoutError, RuntimeError)):
+            driver.run(archive, output)
+    report = json.loads((output / "report.json").read_bytes())
+    assert (output / "checksums.json").is_file()
+    if failure == "none":
+        assert report["status"] == "completed"
+        assert report["final_verification"] == "passed"
+        assert len(report["pair_differences"]) == 24
+    else:
+        assert report["pair_differences"] is None
+        assert report["summaries"] is None
+        assert report["status"] == "incomplete"
+        if failure.startswith("late"):
+            assert len(report["cells"]) == 48
+            assert all(c["status"] == "completed" for c in report["cells"])
+        else:
+            assert report["cells"][0]["status"] == "failed"
+
+
+def option_pair():
+    request = {"seed": 20261020}
+    row = lambda name, value: {"name": name, "type": "Int64", "value": str(value)}
+    reference = {
+        "plugins": plugins(),
+        "backend_options": [row("seed", 465951028), row("maxsize", 20)],
+        "optimizer_settings": {
+            "iterations": "20",
+            "callback": "nothing",
+            "g_abstol": "1.0e-8",
+        },
+        "rng_references": {
+            "20261020": {"before": ["1"] * 5, "after": ["2"] * 5, "draws": []}
+        },
+    }
+    result = {
+        "request": request,
+        "plugins": plugins(),
+        "backend_options": [row("seed", 465951028), row("maxsize", 20)],
+        "optimizer_settings": {
+            "iterations": "20",
+            "callback": "observing_callback",
+            "g_abstol": "1.0e-8",
+        },
+        "rng_before": ["1"] * 5,
+        "rng_after": ["2"] * 5,
+        "restart_draws": [],
+    }
+    return result, reference
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "seed",
+        "maxsize",
+        "plugins",
+        "optimizer_settings",
+        "rng_before",
+        "rng_after",
+        "restart_draws",
+        "field_coverage",
+    ],
+)
+def test_absolute_options_and_rng_reject_first_call_tampering(field):
+    result, reference = option_pair()
+    d.verify_options_record(result, reference)
+    if field in ("seed", "maxsize"):
+        next(x for x in result["backend_options"] if x["name"] == field)["value"] = "0"
+    elif field == "plugins":
+        result["plugins"][0]["fields"][0]["value"] = "0.0"
+    elif field == "optimizer_settings":
+        result[field]["g_abstol"] = "0.001"
+    elif field == "field_coverage":
+        result["backend_options"].append(result["backend_options"][0])
+    else:
+        result[field] = ["changed"]
+    with pytest.raises(ValueError):
+        d.verify_options_record(result, reference)
+
+
+def test_launcher_terminates_own_worker_on_timeout(monkeypatch, tmp_path):
+    import subprocess
+
+    monkeypatch.syspath_prepend(str(d.ROOT / "scripts"))
+    driver = load_script("run_constant_diagnostic")
+    stopped = []
+
+    class Process:
+        def wait(self, timeout):
+            raise subprocess.TimeoutExpired("fixture", timeout)
+
+    process = Process()
+    monkeypatch.setattr(driver.subprocess, "Popen", lambda *a, **k: process)
+    monkeypatch.setattr(driver.symbolic, "_stop_worker", lambda p: stopped.append(p))
+    with (tmp_path / "log").open("w") as log, pytest.raises(subprocess.TimeoutExpired):
+        driver.launch(["fixture"], log, 0.1)
+    assert stopped == [process]

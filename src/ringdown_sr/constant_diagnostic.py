@@ -174,6 +174,16 @@ def verify_options_record(result, reference):
     """Compare every field, with only the declared observation wrappers exempted."""
     for record in (result, reference):
         validate_plugin_records(record["plugins"], "baseline")
+    rng = reference["rng_references"][str(result["request"]["seed"])]
+    if any(
+        result[key] != rng[expected]
+        for key, expected in (
+            ("rng_before", "before"),
+            ("rng_after", "after"),
+            ("restart_draws", "draws"),
+        )
+    ):
+        raise ValueError("Actual RNG disagrees with absolute preflight reference.")
     actual = {x["name"]: x for x in result["backend_options"]}
     expected = {x["name"]: x for x in reference["backend_options"]}
     if len(actual) != len(result["backend_options"]) or set(actual) != set(expected):
@@ -286,6 +296,14 @@ def verify_result(result, request, arrays):
 def pair_differences(cells):
     if len(cells) != 48 or any(c["status"] != "completed" for c in cells):
         return None
+
+    def delta(high, low):
+        return (
+            high - low
+            if high is not None and low is not None and math.isfinite(high - low)
+            else None
+        )
+
     differences = []
     for i in range(0, 48, 2):
         low, high = sorted(cells[i : i + 2], key=lambda c: c["request"]["iterations"])
@@ -307,11 +325,30 @@ def pair_differences(cells):
                 "loss_100_minus_20": high["result"]["loss"] - low["result"]["loss"],
                 "curve_errors": {
                     grid: {
-                        metric: high["diagnosis"]["curve_errors"][grid][metric]
-                        - low["diagnosis"]["curve_errors"][grid][metric]
+                        metric: delta(
+                            high["diagnosis"]["curve_errors"][grid][metric],
+                            low["diagnosis"]["curve_errors"][grid][metric],
+                        )
                         for metric in ("relative_rms", "relative_max")
                     }
                     for grid in ("training", "diagnostic")
+                },
+                "parameters": {
+                    "status_20": low["diagnosis"]["parameter_match"]["status"],
+                    "status_100": high["diagnosis"]["parameter_match"]["status"],
+                    "errors_100_minus_20": {
+                        name: delta(
+                            high["diagnosis"]["parameter_match"]["errors"][name],
+                            low["diagnosis"]["parameter_match"]["errors"][name],
+                        )
+                        if all(
+                            c["diagnosis"]["parameter_match"]["status"]
+                            in ("matched", "mismatched")
+                            for c in (low, high)
+                        )
+                        else None
+                        for name in low["diagnosis"]["parameter_match"]["errors"]
+                    },
                 },
             }
         )

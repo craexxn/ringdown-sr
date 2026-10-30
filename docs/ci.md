@@ -29,6 +29,12 @@ mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
 Laufzeitdokumente müssen ebenso ausdrücklich als Ausnahme erfasst werden.
 
+Der vollständige Pfad prüft zusätzlich die feste Konstantendiagnose mit
+`scripts/check_constant_diagnostic.py`: zehn reine Referenzkontrollen,
+unverändertes Optimiererverhalten mit/ohne Beobachtung an einem eigenen
+Achtpunkt-Signal und zwei frische Worker samt Export und Verifikation.
+Die beschlossene wissenschaftliche Serie mit 48 Aufrufen ist kein CI-Test.
+
 ## Vollständiger technischer Pfad
 
 Jede andere geänderte Datei aktiviert alle bisherigen Prüfungen, insbesondere

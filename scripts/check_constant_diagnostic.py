@@ -1,15 +1,31 @@
 """Check native diagnostic instrumentation on technical fixtures, without the series."""
 
 import argparse
+import json
+import subprocess
+import sys
+import tempfile
 from pathlib import Path
 
 import numpy as np
-from run_constant_diagnostic_worker import blas_check, native_runtime, verify_controls
+from run_constant_diagnostic_worker import (
+    blas_check,
+    native_runtime,
+    option_record,
+    verify_controls,
+)
 
 from ringdown_sr import symbolic
-from ringdown_sr.constant_diagnostic import source_hashes
+from ringdown_sr.constant_diagnostic import (
+    RUNTIME,
+    backend_seed,
+    source_hashes,
+    verify_manifest,
+    verify_options_record,
+    verify_result,
+)
 from ringdown_sr.noiseless_control import frozen_data
-from ringdown_sr.pilot import _write_json
+from ringdown_sr.pilot import _sha256, _write_json
 
 
 def check():
@@ -94,6 +110,74 @@ def check():
                 "instrumentation_identical": True,
             }
         )
+    # Exercise the real runtime copy, launcher, export and parent verifier too.
+    process_records = []
+    fixture_arrays = {
+        "time_s": time,
+        "observed": observed,
+        "diagnostic_time_s": time[1:] - 0.05,
+        "diagnostic_truth": 2
+        * np.exp(-2 * (time[1:] - 0.05))
+        * np.cos(3 * (time[1:] - 0.05) + 0.2),
+    }
+    with tempfile.TemporaryDirectory(prefix="constant-technical-") as temporary:
+        root = Path(temporary)
+        runtime = root / "runtime"
+        runtime.mkdir()
+        for name, src in RUNTIME.items():
+            (runtime / name).write_bytes((symbolic.ROOT / src).read_bytes())
+        for budget in (20, 100):
+            directory = root / str(budget)
+            directory.mkdir()
+            request = {
+                "number": 1,
+                "start": {"name": "TECH", "parameters": [1.9, -2.1, 2.9, 0.21]},
+                "seed": 1234,
+                "iterations": budget,
+            }
+            _write_json(directory / "request.json", request)
+            np.savez(directory / "inputs.npz", time_s=time, observed=observed)
+            _write_json(
+                directory / "manifest.json",
+                {
+                    "sources": sources,
+                    "runtime": {name: sources[src] for name, src in RUNTIME.items()},
+                    "inputs": {
+                        name: _sha256((directory / name).read_bytes())
+                        for name in ("request.json", "inputs.npz")
+                    },
+                },
+            )
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(symbolic.ROOT / "scripts/run_python.py"),
+                    str(runtime / "worker.py"),
+                    str(directory),
+                ],
+                check=True,
+                timeout=180,
+            )
+            verify_manifest(directory, runtime)
+            result = json.loads((directory / "result.json").read_bytes())
+            verify_result(result, request, fixture_arrays)
+            reference_options = jl.ConstantDiagnostic.controls(
+                array(arrays["time_s"]),
+                array(arrays["observed"]),
+                budget,
+                backend_seed(1234),
+            )[0].options
+            reference = option_record(jl, reference_options)
+            rng = jl.ConstantDiagnostic.rng_reference(backend_seed(1234))
+            reference["rng_references"] = {
+                "1234": {
+                    "before": [str(x) for x in rng.before],
+                    "after": [str(x) for x in rng.after],
+                    "draws": [[float(x).hex() for x in row] for row in rng.draws],
+                }
+            }
+            verify_options_record(result, reference)
+            process_records.append(result)
     after = blas_check()
     if source_hashes() != sources:
         raise ValueError("Sources changed during native technical checks.")
@@ -101,8 +185,9 @@ def check():
         "format": "ringdown-sr-constant-technical-1",
         "status": "passed",
         "source_sha256": sources,
-        "scope": "ten pure controls and four technical fixture optimizations; no scientific series or free search",
+        "scope": "ten pure controls, four direct and two isolated technical fixture optimizations; no scientific series or free search",
         "fixtures": records,
+        "isolated_workers": process_records,
         "blas_before": before,
         "blas_after": after,
     }
