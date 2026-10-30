@@ -30,6 +30,7 @@ def test_only_allowed_prose_can_skip_the_technical_suite(paths):
         "julia/Manifest.toml",
         ".github/workflows/technical-checks.yml",
         "docs/noiseless_control_plan.md",
+        "docs/search_representation_plan.md",
         "docs/reference.npz",
         "other.md",
     ],

@@ -15,8 +15,17 @@ sie ist kein Ergebnisbericht und keine Freigabe für Suchläufe.
 
 ## Arbeitsstand
 
-Initialer Sicherungspunkt: Plan und Merge sind geprüft; die fachliche
-Implementierung beginnt. Noch kein Implementierungs-PR geöffnet.
+Schritt 1 ist implementiert und lokal geprüft:
+
+- `src/ringdown_sr/representation_control.py`: feste neun Zellen,
+  schreibgeschützte Koordinaten, getrennte Such-/physikalische Diagnosen,
+  physikalische Replays, Bedingungenübersichten und Seed-Differenzen.
+- `tests/test_representation_control.py`: 23 Referenz-/Fehlerfälle.
+- Der neue Plan ist zusätzlich als eingefrorenes Dokument in der vollen
+  CI-Ausnahme erfasst; der entsprechende CI-Gegenfall ist ergänzt.
+- Noch kein Implementierungs-PR geöffnet. Worker, Treiber und die
+  tatsächliche Julia-Profilprüfung sind noch nicht implementiert.
+
 Zwischenstände werden auf diesem Branch gesichert, damit Teiländerungen
 nicht bei jedem Sicherungspunkt die vollständige CI starten.
 
@@ -51,13 +60,40 @@ nicht bei jedem Sicherungspunkt die vollständige CI starten.
 
 ## Nächster konkreter Schritt
 
-Die vorhandenen `noiseless_control.py`, `run_noiseless_control.py`,
-`symbolic.py`, `parameters.py` und deren Tests lesen. Danach den reinen
-Diagnosekern mit unabhängigen Referenzen implementieren und testen.
-Die Integration des tatsächlichen Julia-Backends ist noch offen.
+Schritt 2: einen eng begrenzten Worker-Wrapper und eine technische
+Options-/Pluginprüfung ohne Fit implementieren. Bestandspfade der Suche
+sollen ihre unveränderten Vorgaben behalten. Anschließend den separaten
+Treiber analog zu `scripts/run_noiseless_control.py` anbinden.
+
+Bereits im gepinnten Backendquellcode verifiziert:
+
+- `SymbolicRegression 2.5.1`, `src/Options.jl`, erzeugt Defaultplugins aus
+  den beiden Häufigkeitsschaltern.
+- `src/plugins/AdaptiveParsimony.jl`:
+  `default_adaptive_parsimony_plugin` liefert bei `False/False` kein Plugin,
+  bei `True/True` einen `AdaptiveParsimonyPlugin` mit `tournament=true`
+  und `mutation_acceptance=true`. Weitere Defaultplugins müssen gleich bleiben.
+- Es genügt daher nicht, nur die exportierten Boolfelder zu prüfen oder
+  das komplette Pluginfeld ungeprüft aus einer Signatur auszublenden.
+  Tatsächliche Objekte/Felder sind vorab und nach jedem Worker zu verifizieren.
+
+Der bestehende Worker nimmt nur `format` und `budget` in `request.json`
+an. Eine mögliche Integration ist ein eigener kontrollierter Wrapper mit
+strengem Profilmanifest; keine frei übergebenen Optionsüberschreibungen.
+Die vorhandenen Seed-, Verlust-, Manifest- und Haswell-Prüfungen müssen
+auch im neuen Pfad erhalten bleiben.
 
 ## Prüfungen dieses Sicherungspunkts
 
-Planhash und Merge geprüft. Noch keine neuen Implementierungstests und
-keine neuen Suchläufe ausgeführt. Der volle CI-Nachweis aus PR #36 und die
-schlanke Doku-CI aus PR #37 gehören zur jeweiligen Grundlage.
+64 fokussierte Python-Tests bestanden: 23 für den neuen Diagnosekern und
+41 für die CI-Auswahl. Ruff bestanden. Geprüft sind unter anderem beide
+Alias-Gegenfälle einschließlich eines zusätzlichen Zwischenzeitpunkts,
+Vorzeichen/Phase, nicht unterstützte gute Kurven, fehlgeschlagene Replays,
+Über-/Unterlauf, fehlende Seedpaare und gesperrte Zusammenfassungen.
+
+Validierung unter Windows mit vorhandener gesperrter Python-3.12.14-Umgebung,
+lokalem Quellpfad und `uv`; keine Abhängigkeit oder Lockdatei geändert.
+Eine frische Offline-Installation war mangels SciPy-Wheel im Cache nicht
+möglich. Noch kein lokaler Julia-Lauf und keine neuen Entwicklungs-Suchen.
+Die vollständige Integrations-CI steht für den späteren Implementierungs-PR
+aus. Der volle Nachweis aus PR #36 gehört nur zur unveränderten Grundlage.
