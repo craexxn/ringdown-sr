@@ -16,13 +16,18 @@ Ergebnisbericht und keine Freigabe für die Neun-Zellen-Serie.
   (PR #37). [Plan](search_representation_plan.md), unveränderter SHA-256:
   `16cfe818c312fb5bb0a6c594505ad76ba41e41bd7f4a37decc245677c6b8ad86`.
   Auch der alte Plan und seine Prüfsumme bleiben unverändert.
-- Lokale Codecheckpoints vor diesem Nachtrag: `2345cb2` und `27bc91a`.
-  GitHub lehnte ihre Pushes wegen der voreingestellten privaten Commit-E-Mail
-  ab. Die lokalen Originalcommits bleiben unter einer Sicherungsreferenz
-  erhalten; inhaltsgleiche eigene Commits werden mit der bereits im Repository
-  verwendeten GitHub-Noreply-Adresse veröffentlicht. Kein Force-Push und
-  keine Änderung bestehender Remotecommits. Exakten aktuellen Head mit
-  `git rev-parse HEAD` ermitteln. Keine fremden lokalen Änderungen.
+- Veröffentlichter fachlicher Head vor diesem abschließenden
+  Dokumentationscheckpoint: `b4db89d6baa8c8c0e914f82f9b46727cc49b2b4f`.
+  Arbeitsverzeichnis sauber; Code und Zwischenstände sind remote gesichert.
+- Die ursprünglichen lokalen Commits bleiben unter
+  `codex/representation-control-local-checkpoints-20261030` erhalten.
+  GitHub hatte ihre Pushes wegen der voreingestellten privaten Commit-E-Mail
+  abgelehnt. Inhaltsgleiche eigene Commits wurden mit der bereits im Repository
+  verwendeten GitHub-Noreply-Adresse veröffentlicht: `2345cb2` entspricht
+  `cbc95ca`, `27bc91a` entspricht `d9c3c62`, `b4d60fd` entspricht `b4db89d`.
+  Identische Git-Bäume geprüft. Remote-Update von `9c18af2` erfolgte als
+  Fast-forward; kein Force-Push und keine Änderung bestehender Remotecommits.
+
 
 ## Implementiert
 
@@ -95,8 +100,12 @@ Ergebnisbericht und keine Freigabe für die Neun-Zellen-Serie.
 1. Implementierungs-PR mit vollständiger CI öffnen und die erforderlichen
    technischen Checks am endgültigen Head abwarten. Lokale numerische
    Nachweise oben gelten jeweils für ihren ausdrücklich genannten Stand.
-2. CI-Befunde und finalen Branch/Commit hier sichern. Nicht eigenständig
-   mergen. Bisher noch kein Implementierungs-PR und kein CI-Nachweis.
+2. Laufende CI-Befunde im
+   [Implementierungs-PR des Branches](https://github.com/craexxn/ringdown-sr/pulls?q=is%3Apr+head%3Acodex%2Frepresentation-control)
+   ergänzen. Diese Datei hält den lokalen Stand vor Öffnen des PR fest;
+   den aktuellen PR-/CI-Status beim Fortsetzen direkt abfragen. Nicht
+   eigenständig mergen. Ein neuer Dokumentationscommit ersetzt keinen
+   CI-Nachweis am aktuellen Head.
 3. Die neun wissenschaftlichen Kontrollsuchen später ausschließlich auf dem
    Manjaro-Referenzrechner am geprüften Stand durchführen lassen.
 
