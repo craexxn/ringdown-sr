@@ -44,10 +44,13 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   Paaren sind die ersten 20 Schritte exakt gleich. Das belegt Budgetabhängigkeit
   für die vorgegebene Struktur und das deklarierte Startgitter; freie
   Strukturentdeckung und Übertragbarkeit bleiben offen.
-- **Nächste Methodenentscheidung:** Eine begrenzte freie Budgetintervention
-  als nächste Prüfidee planen. Profil, Vergleiche, Seeds, Suchbudget und
-  Entscheidungsregeln sind gesondert festzulegen; ein neuer Lauf oder ein
-  Produktionsprofil sind noch nicht beschlossen. Kein automatischer Folgeversuch.
+- **Nächste Methodenentscheidung:** Der [Planentwurf mit gemeinsamem Reviewauftrag](docs/free_optimizer_budget_plan_draft.md)
+  schlägt sechs frische freie Suchen vor: 20 gegen 100 lokale Optimiereriterationen,
+  beide Häufigkeitsschalter aus, je drei bekannte Entwicklungsseeds und jeweils
+  200 Suchiterationen. Die Alternative mit Häufigkeitsschaltern und ein 2×2-Design
+  werden ausdrücklich zur Prüfung gestellt. Das KI-basierte Methodenreview ist
+  vorbereitet; Entwurf, Ressourcenlimit und Gates sind noch nicht beschlossen.
+  Keine neue Implementierung oder Suchserie ist durch den Dokumentationsstand freigegeben.
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
   bestand am Head `cfe44bf`: 1.288 Python-Tests, Julia- und technische
   Integrationsprüfungen. Der Mergecommit hat denselben Dateibaum. Die

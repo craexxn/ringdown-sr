@@ -5,6 +5,46 @@ Konstantendiagnose sind ausgeführt. Beide vollständigen Originalarchive
 wurden unabhängig nachgerechnet. Der aktuelle Befund steht im
 [Ergebnisprotokoll der Konstantendiagnose](constant_diagnostic_results_manjaro_001.md).
 
+## Vorbereiteter freier Budgetvergleich und gemeinsames Methodenreview
+
+Auf Grundlage des abgeschlossenen Befunds wurde am 30.10.2026 die Ausarbeitung
+eines neuen Planentwurfs und eines gemeinsamen Reviews von Befund und Plan
+beauftragt. Der [Entwurf samt kopierbarem Reviewauftrag](free_optimizer_budget_plan_draft.md)
+ist im bestehenden Ergebnisbranch `codex/constant-diagnostic-results` und
+[PR #44](https://github.com/craexxn/ringdown-sr/pull/44) ergänzt; keine parallele
+Implementierung oder weitere Reviewrunde nur für den Archivaudit begonnen.
+
+- Einstieg erneut geprüft: sauberer Checkout, ein Worktree, lokaler und
+  Remote-Head `ad32d4b5ca8e918511f6ae8cc169a1f34f444965`; PR #44 weiterhin
+  offen, keine weiteren offenen PRs. `main` unverändert auf
+  `0a70f19e16e173aedf2e071a5f5b09d045ecbf69`. Der Ergebnisanker bleibt `ad32d4b`;
+  den aktuellen Entwurfshead mit `git rev-parse HEAD` beziehungsweise im PR bestimmen.
+- Vorzugsentwurf: sechs neue freie Suchen im Baselineprofil, beide Schalter aus,
+  ursprüngliche Sekundenkoordinate; je drei bekannte Entwicklungsseeds,
+  200 Suchiterationen, Vergleich 20/2 gegen 100/2. Ressourcenlimit 60 Minuten,
+  primärer Kurvenendpunkt an der Originalauswahl und konservative Berichtssperre
+  sind Vorschläge zur Prüfung, keine bereits beschlossenen Vorgaben.
+- Alternativen mit gemeinsam aktivierten Häufigkeitsschaltern, vollständigem
+  2×2 oder Suchverlauf sind im Review kritisch gegen diesen Vorzugsentwurf
+  abzuwägen. Ein negatives Baselineergebnis würde deren Nutzen nicht ausschließen.
+- Quelldetails geprüft: vorhandene Auswahl bleibt MSE/Komplexität/Originalindex;
+  die lokale Iterationsgrenze betrifft auch den Newton-Sonderpfad. Freie
+  Suchpfade dürfen trotz gleicher Seeds auseinanderlaufen. Keine Gleichsetzung
+  mit den identischen Präfixen der festen Diagnose oder gleichen Rechenkosten.
+- Keine neue numerische Prüfung, kein Wiederholungsaudit, Fit oder Suchlauf.
+  Das gemeinsame KI-basierte Methodenreview wurde vorbereitet, noch nicht
+  ausgeführt. Alle drei eingefrorenen Laufzeitpläne und konsumierten Quellen
+  bleiben unverändert; der Entwurf wird nicht zur Laufzeit konsumiert.
+- Lokal bestanden: Prüfung von 40 Markdown-Dateien/lokalen Links,
+  `git diff --check`, unveränderte drei Planprüfsummen und explizite Zuordnung
+  zur Dokumentations-CI. Der aktuelle CI-Nachweis gehört zum erweiterten PR #44.
+
+Nächster abgegrenzter Schritt: genau dieses gemeinsame Methodenreview durchführen;
+notwendige Planänderungen einarbeiten, danach ein Design ausdrücklich beschließen
+und einfrieren. Erst anschließend folgt ein eigener Implementierungsauftrag mit
+vollständiger CI und späterer einmaliger Manjaro-Ausführung. Ein Dokumentations-
+Merge allein beschließt oder startet keine Suchserie. Keine automatische Zusatzrunde.
+
 ## Aktueller Stand nach der Konstantendiagnose
 
 - Beim Einstieg sauberer Checkout auf Implementierungshead `9202d20`, ein
@@ -45,10 +85,9 @@ wurden unabhängig nachgerechnet. Der aktuelle Befund steht im
   unveränderter konsumierter Quellen sowie aller 259 Originaldateien.
   Auditpaket zusätzlich unter `results/constant-audit-001.tar.gz` gesichert.
 
-Nächster abgegrenzter Schritt: anhand dieses Befunds einen eigenen begrenzten
-Plan für eine freie Budgetintervention beschließen. Suchprofil, Vergleichsarme,
-Seeds und Suchbudget sind offen. Keine automatische neue Serie oder zusätzliche
-Reviewrunde; kein eigenständiger Merge.
+Der darauf aufbauende, weiterhin nicht beschlossene Planentwurf ist oben
+verlinkt. Die folgenden historischen Implementierungsstände und Prüfnachweise
+bleiben davon getrennt; ein neuer Lauf ist nicht freigegeben.
 
 ## Vorheriger Fortsetzungsstand nach der freien Kontrollserie
 
@@ -329,11 +368,11 @@ Abschlussprüfung dem eingefrorenen Plan.
 
 1. Den unabhängig nachgerechneten [Diagnosebefund](constant_diagnostic_results_manjaro_001.md)
    als abgeschlossenen Entwicklungsbefund sichern und beurteilen.
-2. Die nächste Forschungsetappe gesondert planen: begrenzte freie
-   Budgetintervention als Prüfidee; keine automatische Änderung des Suchprofils.
-3. Umfang, Vergleichsbedingungen und Entscheidungskriterien vor weiteren Läufen
-   beschließen. Kein routinemäßiger Wiederholungsaudit oder weiteres Review ohne
-   konkreten Prüfbedarf; kein eigenständiger Merge.
+2. Den neuen [Entwurf](free_optimizer_budget_plan_draft.md) gemeinsam mit diesem
+   Befund einmalig methodisch prüfen; Reviewhead, Basis und Umfang nennen.
+3. Erst danach genau ein Design und alle Zahlen/Gates beschließen und einfrieren.
+   Keine automatische Implementierung, Budgeterhöhung oder weitere Suchserie;
+   kein eigenständiger Merge.
 
 Der Plan und beide Laufzeitplanprüfsummen sind unverändert. Keine zusätzlichen
 wissenschaftlichen Suchen in der Cloud und keine automatische Wiederholung.
