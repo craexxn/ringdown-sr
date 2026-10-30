@@ -5,8 +5,8 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 30.10.2026; abgeglichene Basis auf `main`: `311f87d`
-(übernommener Methodenplan aus [PR #37](https://github.com/craexxn/ringdown-sr/pull/37)).
+Fortsetzungsstand: 30.10.2026; abgeglichener Stand auf `main`: `4057caa`
+(übernommene Implementierung aus [PR #39](https://github.com/craexxn/ringdown-sr/pull/39)).
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
@@ -18,17 +18,25 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   [Plan für Zeitdarstellung und Komplexitätshäufigkeiten](docs/search_representation_plan.md)
   ist mit PR #37 übernommen. Er ergänzt den unveränderten
   [rauschfreien Kontrollplan](docs/noiseless_control_plan.md).
-- **Laufende Implementierung:** Auf `codex/representation-control` ist der
-  getrennte Kontrolltreiber einschließlich Quellen-/Workerverifikation,
-  physikalischer Diagnosen und Fehler-Injektionstests implementiert.
+- **Implementierung abgeschlossen:** Der getrennte Kontrolltreiber ist mit
+  PR #39 übernommen. Die vollständige technische CI am PR-Head `cfe44bf`
+  bestand. Ein übermitteltes KI-basiertes Review desselben Heads fand keine
+  korrekturbedürftigen Befunde zur beauftragten Methodentreue.
   [Bedienung und Artefakte](docs/representation_control.md) sowie
-  [aktueller Fortsetzungsstand](docs/representation_implementation_status.md)
-  trennen implementierte, lokal ausgeführte und CI-geprüfte Teile.
-  Die wissenschaftliche Neun-Zellen-Serie wurde nicht gestartet.
-- **Nächster abgegrenzter Schritt:** Implementierungs-PR mit vollständiger
-  CI prüfen; die technische Profilintegration ist lokal bestanden. Die spätere
-  Kontrollserie bleibt dem Manjaro-Referenzrechner am geprüften Stand vorbehalten.
-- **Prüfnachweise:** Die [schlanke CI zu PR #37](https://github.com/craexxn/ringdown-sr/actions/runs/41022224068)
+  [Fortsetzungsstand](docs/representation_implementation_status.md) enthalten
+  Bezugscommits, Prüfumfang und Grenzen. Wissenschaftliche Kontrollsuchen
+  sind noch nicht ausgeführt.
+- **Nächster abgegrenzter Schritt:** Auf dem Manjaro-Referenzrechner den
+  festen Ausführungscommit `4057caaffd9c4de5791ded14431c6e289db75b73`
+  sauber auschecken, die gesperrte Umgebung prüfen und die neun vorgesehenen
+  Kontrollsuchen einmalig ausführen. Der Treiber enthält die Options-,
+  Referenz- und Haswell-Vorprüfungen; eine zusätzliche Reviewrunde ist
+  nach dem übermittelten Befund nicht erforderlich. Anschließend die
+  vollständigen Originalartefakte sichern und unabhängig auswerten.
+- **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
+  bestand am Head `cfe44bf`: 1.288 Python-Tests, Julia- und technische
+  Integrationsprüfungen. Der Mergecommit hat denselben Dateibaum. Die
+  [schlanke CI zu PR #37](https://github.com/craexxn/ringdown-sr/actions/runs/41022224068)
   bestand am Head `e92152a`; sie prüft Dokumentation, keine Numerik.
   Der [Haswell-Befund](docs/symbolic_core_results.md) enthält die unabhängige
   Nachrechnung übermittelter Originalarchive. Der
