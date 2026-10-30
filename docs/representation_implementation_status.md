@@ -70,15 +70,18 @@ Worktree und keine parallele Fortsetzung; eigener Implementierungsbranch
   Reviewregel, erste/spätere Zellfehler, Profile/Plugins/Optionen, Originalindex,
   Residuen/MSE, späte konsistent neugehashte Manipulation, Abbruch und Prozess-
   gruppenstopp. Alle vier Laufzeitpläne sind der vollständigen CI zugeordnet.
-- **Noch offen:** komplette Integrations-CI am abschließenden PR-Head und
-  PR-Erstellung. [Bedienung](free_optimizer_budget.md)
-  ergänzt. Dieser Zwischenstand enthält die genannten Implementierungs-, Test-
-  und Dokumentationsdateien; den aktuellen Commit und lokale Änderungen vor
-  Fortsetzung mit `git status --short --branch` und `git rev-parse HEAD` bestimmen.
+- Zusätzliche Quellprüfung gesichert in
+  `9c64051201ab5b1cd80c70cee55be58012a3a590`. [PR #45](https://github.com/craexxn/ringdown-sr/pull/45)
+  ist geöffnet, Vergleichsbasis `722437ea4e3662bed4ef61bd363503777e44d2fe`.
+  Aktuellen vollständigen CI-Nachweis samt Head im PR prüfen; der PR-Text hält
+  das abschließende Prüfergebnis fest. [Bedienung](free_optimizer_budget.md)
+  ergänzt. Nach Push des Dokumentationsabschlusses ist der Checkout sauber;
+  vor Fortsetzung Commit und lokale Änderungen mit `git status --short --branch`
+  und `git rev-parse HEAD` erneut bestimmen.
 
-Nächster abgegrenzter Schritt: vollständige erforderliche Prüfungen, konkreten
-Implementierungs-PR mit finalem Prüfumfang erstellen, grüne CI abwarten. Nicht
-selbstständig mergen. Die sechs wissenschaftlichen Suchen werden im Rahmen
+Nächster abgegrenzter Schritt: vollständige Integrations-CI am finalen PR-Head
+prüfen und den Nachweis im PR ergänzen; anschließend kann PR #45 übernommen
+werden. Nicht selbstständig mergen. Die sechs wissenschaftlichen Suchen werden im Rahmen
 aller technischen Prüfungen nicht in der Cloud gestartet; einmalige Manjaro-
 Ausführung erst am technisch geprüften Stand. Kein Produktionsprofil und keine
 Übertragbarkeits-/Gewichtungsstudie freigegeben.
