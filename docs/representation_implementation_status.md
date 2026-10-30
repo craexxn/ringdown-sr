@@ -1,9 +1,57 @@
 # Fortsetzungsstand: Zeitdarstellungs-Kontrolle
 
-Stand: 30.10.2026. Implementierungsfortschritt, kein wissenschaftlicher
-Ergebnisbericht und keine Freigabe für die Neun-Zellen-Serie.
+Stand: 30.10.2026. Implementierung und gezieltes Review abgeschlossen.
+Nächster Schritt ist die geplante Ausführung auf dem Manjaro-Referenzrechner;
+wissenschaftliche Kontrollsuchen und ihre Auswertung stehen noch aus.
 
-## Einstieg und verbindliche Grundlage
+## Aktueller Fortsetzungsstand nach Merge und Review
+
+- PR #39 ist auf `main` übernommen, Mergecommit und fester Ausführungsstand:
+  `4057caaffd9c4de5791ded14431c6e289db75b73`.
+- Geprüfter PR-Head: `cfe44bfb84baef9238f52609ba1030eaa4416ed7`;
+  Vergleichsbasis: `909942d3f3910ea20df1703dd12421abe4867a4e`.
+  PR-Metadaten und Remote-Branches erneut gelesen. Beim Einstieg keine
+  offenen PRs, sauberer lokaler Checkout und ein Worktree.
+- Dateibaum des Mergecommits und des geprüften Heads identisch:
+  Git-Tree `c85720ff579f75ee6af3849b593ad0dfdf371f7d`.
+  Die [vollständige CI](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
+  ist am PR-Head erfolgreich abgeschlossen; GitHub-Status erneut abgefragt.
+  1.288 Python-Tests, 295 Julia-Prüfungen, Residuen-/Optimierer-Replays,
+  native Profil-/Koordinaten-/Aliasprüfung und bestehende Integrationen
+  bestanden. Keine vollständige Wiederholung zur Statuspflege.
+- Dokumentationsnachtrag auf `codex/representation-manjaro-handoff`, Basis
+  der oben genannte Mergecommit. Exakten Dokumentationshead beim Fortsetzen
+  mit `git rev-parse HEAD` bestimmen. Dieser Nachtrag verändert keinen Code,
+  Laufzeitplan oder konsumierten Suchinput. Die wissenschaftliche Ausführung
+  verwendet weiterhin den festgelegten Mergecommit.
+
+### Übermittelter KI-basierter Reviewbefund
+
+Der Nutzer hat ein gezieltes KI-basiertes Review zu PR #39 am oben genannten
+Head gegen die oben genannte Basis übermittelt. Ergebnis: **keine
+korrekturbedürftigen Befunde zur beauftragten Methodentreue**; keine zusätzliche
+gezielte Gegenprüfung erforderlich. Geprüft wurden alle 19 geänderten Dateien
+und relevante unveränderte Aufrufer/Abhängigkeiten nach Repositoryregeln:
+Zeitumrechnung und vollständige Baumauswertung, Originalauswahl, absolute
+Seed-/Pluginprüfung ab der ersten Zelle sowie die Auswertungssperre.
+
+Als selbst ausgeführte Prüfungen des Reviews wurden übermittelt:
+
+- 210 gezielte Python-Tests und der gepinnte Python-/Julia-Umgebungscheck.
+- Neun echte Optionsobjekte mit je 68 Feldern und neun native Referenzfälle
+  einschließlich Einheiten-, Alias- und falscher-Seed-Gegenprüfung.
+- 18 unabhängige Frequenz-/Vorzeichen-/Phasenfälle sowie zwei zusätzliche
+  Gegenprüfungen zu Originalindex und später Manipulation.
+- Ruff, Format-, Dokumentations- und Diffprüfungen sowie Planprüfsummen.
+
+Diese Reviewprüfungen wurden in diesem Fortsetzungsschritt übernommen und
+nicht erneut ausgeführt. Der Reviewbefund ist kein Ergebnis wissenschaftlicher
+Kontrollsuchen. Insbesondere entspricht die Auswertbarkeit vollständig
+geprüfter anderer Gruppen/Paare nach einem zelllokalen Abbruch bei bestandener
+Abschlussprüfung dem eingefrorenen Plan.
+
+
+## Historischer Implementierungseinstieg und verbindliche Grundlage
 
 - Repository `craexxn/ringdown-sr`, Branch `codex/representation-control`.
 - Einstieg dieses Cloudauftrags auf geprüftem Remote-Head
@@ -97,23 +145,25 @@ Ergebnisbericht und keine Freigabe für die Neun-Zellen-Serie.
 
 ## Offen und nächster abgegrenzter Schritt
 
-1. Implementierungs-PR mit vollständiger CI öffnen und die erforderlichen
-   technischen Checks am endgültigen Head abwarten. Lokale numerische
-   Nachweise oben gelten jeweils für ihren ausdrücklich genannten Stand.
-2. Laufende CI-Befunde im
-   [Implementierungs-PR des Branches](https://github.com/craexxn/ringdown-sr/pulls?q=is%3Apr+head%3Acodex%2Frepresentation-control)
-   ergänzen. Diese Datei hält den lokalen Stand vor Öffnen des PR fest;
-   den aktuellen PR-/CI-Status beim Fortsetzen direkt abfragen. Nicht
-   eigenständig mergen. Ein neuer Dokumentationscommit ersetzt keinen
-   CI-Nachweis am aktuellen Head.
-3. Die neun wissenschaftlichen Kontrollsuchen später ausschließlich auf dem
-   Manjaro-Referenzrechner am geprüften Stand durchführen lassen.
+1. Die [Manjaro-Befehle](representation_control.md#ausführung-auf-manjaro)
+   im sauberen Checkout des festen Ausführungscommits ausführen. Die gesperrte
+   Installation und der technische Umgebungscheck müssen bestehen.
+   Die lokalen Manjaro-Voraussetzungen sind in dieser Cloud nicht bestätigt.
+2. Der Kontrolltreiber prüft vor der ersten Suche selbst echte Optionen,
+   feste Koordinaten-/Aliasreferenzen und Haswell mit Threadlimit 1.
+   Danach genau die neun geplanten Zellen; keine zusätzliche technische
+   freie Suche und keine erneute vollständige Test-/Reviewrunde vorgesehen.
+3. Vollständige Originalartefakte einschließlich Teilständen archivieren,
+   `report.json` und `summary.md` sichten und die Ergebnisse unabhängig
+   nachrechnen. Bei Abbruch keine automatische Wiederholung oder Fortsetzung.
+   Den Abbruchgrund samt erhaltenem Archiv prüfen.
 
+In der Cloud wurden keine wissenschaftlichen Kontrollsuchen gestartet.
 Keine Forschungsfrage, Seeds, wissenschaftlichen Budgets, Toleranzen,
 Auswahlregeln, Versionspins oder Berechtigungen geändert. Kein kombinierter
-Arm, keine Ersatzseeds, keine automatischen wissenschaftlichen Wiederholungen.
-Alias-Blindfleck bei `8*fs` bleibt dokumentiert. Die technische
-Integration ist lokal belegt; vollständige CI für den endgültigen Head steht aus.
+Arm, keine Ersatzseeds. Der Alias-Blindfleck bei `8*fs` bleibt dokumentiert.
+Die nächsten wissenschaftlichen Befunde entstehen erst aus den Originaldaten
+der Manjaro-Serie.
 
 ## Historische Nachweise
 

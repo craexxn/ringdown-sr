@@ -68,16 +68,37 @@ Befehl für diese Integration; die Einzelbefehle dienen gezielter Fehlerdiagnose
 Ein direkter Aufruf von `run_representation_worker.py` aus `scripts/` ist
 kein Suchbefehl: Er benötigt das Manifest und die benachbarten Laufzeitkopien.
 
-## Spätere wissenschaftliche Ausführung auf Manjaro
+## Ausführung auf Manjaro
 
-Erst am geprüften, vom Nutzer übernommenen Commit, aus dem Projektordner:
+Implementierung aus PR #39 und das gezielte KI-basierte Review am Head
+`cfe44bfb84baef9238f52609ba1030eaa4416ed7` sind abgeschlossen. Der Nutzer
+hat keine korrekturbedürftigen Befunde zur beauftragten Methodentreue
+übermittelt. Der übernommene Ausführungscommit
+`4057caaffd9c4de5791ded14431c6e289db75b73` hat denselben Dateibaum wie der
+vollständig CI-geprüfte und reviewte Head. Prüfherkunft und Grenzen stehen
+in der [Fortsetzungsdatei](representation_implementation_status.md).
+
+Auf dem Manjaro-Referenzrechner aus dem Repositoryordner ausführen. Der
+Befehlsblock setzt einen sauberen Checkout voraus und stoppt bei einem Fehler.
+`git switch --detach` erhält die bisherigen Branches und bindet die Ausführung
+an genau diesen Commit. Ein fremdes aktives Virtualenv wird für uv ignoriert.
 
 ```bash
-git status --short --branch
-git rev-parse HEAD
-env -u VIRTUAL_ENV uv sync --locked --dev --python 3.12.14
+git status --short --branch &&
+git fetch origin &&
+test -z "$(git status --porcelain=v1 --untracked-files=all)" &&
+git switch --detach 4057caaffd9c4de5791ded14431c6e289db75b73 &&
+test "$(git rev-parse HEAD)" = 4057caaffd9c4de5791ded14431c6e289db75b73 &&
+env -u VIRTUAL_ENV uv sync --locked --dev --python 3.12.14 &&
+env -u VIRTUAL_ENV uv run --locked python scripts/run_python.py scripts/check_environment.py &&
+test ! -e results/representation-manjaro-001 &&
 env -u VIRTUAL_ENV OPENBLAS_CORETYPE=Haswell OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 uv run --locked python scripts/run_representation_control.py --label manjaro --output results/representation-manjaro-001
 ```
+
+Der Umgebungscheck gilt für diesen Manjaro-Checkout. Options-, Referenz- und
+Haswell-Vorprüfungen sind bereits im Kontrolltreiber enthalten und müssen
+vor allen Suchzellen bestehen. Die gesonderten technischen Suchworker und
+sämtliche Tests müssen vor diesem Lauf nicht zusätzlich wiederholt werden.
 
 Vorhandene Ausgabeordner werden abgelehnt. Ein Infrastrukturfehler oder eine
 Unterbrechung beendet die Serie; übrige Zellen bleiben `planned`.
@@ -85,6 +106,20 @@ Teilstände, Originalexporte und Fehlergründe werden erhalten. Der Treiber
 setzt nicht automatisch fort und wiederholt keine Zelle. Über einen neuen
 wissenschaftlichen Lauf ist nach Prüfung des Abbruchgrundes ausdrücklich
 zu entscheiden; ein neuer Ordner allein ist keine methodische Freigabe.
+
+Nach Prozessende auch einen fehlgeschlagenen Teilstand vollständig sichern:
+
+```bash
+test -d results/representation-manjaro-001 &&
+test ! -e results/representation-manjaro-001.tar.gz &&
+tar -czf results/representation-manjaro-001.tar.gz -C results representation-manjaro-001 &&
+sha256sum results/representation-manjaro-001.tar.gz
+```
+
+Zur Auswertung gehören `report.json`, `summary.md` und das vollständige
+Originalarchiv. Der Serienstatus und die Abschlussprüfung müssen einzeln
+sichtbar bleiben. Ein Abbruch darf vor der Ursachenprüfung nicht durch einen
+erneuten Start ersetzt werden.
 
 ## Artefakte und Interpretation
 
