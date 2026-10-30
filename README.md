@@ -25,8 +25,8 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   [aktueller Fortsetzungsstand](docs/representation_implementation_status.md)
   trennen implementierte, lokal ausgeführte und CI-geprüfte Teile.
   Die wissenschaftliche Neun-Zellen-Serie wurde nicht gestartet.
-- **Nächster abgegrenzter Schritt:** Technische Profilintegration abschließen,
-  anschließend Implementierungs-PR mit vollständiger CI. Die spätere
+- **Nächster abgegrenzter Schritt:** Implementierungs-PR mit vollständiger
+  CI prüfen; die technische Profilintegration ist lokal bestanden. Die spätere
   Kontrollserie bleibt dem Manjaro-Referenzrechner am geprüften Stand vorbehalten.
 - **Prüfnachweise:** Die [schlanke CI zu PR #37](https://github.com/craexxn/ringdown-sr/actions/runs/41022224068)
   bestand am Head `e92152a`; sie prüft Dokumentation, keine Numerik.

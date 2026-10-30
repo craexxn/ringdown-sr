@@ -16,10 +16,13 @@ Ergebnisbericht und keine Freigabe für die Neun-Zellen-Serie.
   (PR #37). [Plan](search_representation_plan.md), unveränderter SHA-256:
   `16cfe818c312fb5bb0a6c594505ad76ba41e41bd7f4a37decc245677c6b8ad86`.
   Auch der alte Plan und seine Prüfsumme bleiben unverändert.
-- Letzter gepushter Codecheckpoint vor diesem Nachtrag: `2345cb2`.
-  Dieser nächste Checkpoint enthält Treiberintegration und technische Tests;
-  seinen exakten Head mit `git rev-parse HEAD` ermitteln. Keine fremden
-  Änderungen vorhanden; alle Änderungen gehören zu diesem Auftrag.
+- Lokale Codecheckpoints vor diesem Nachtrag: `2345cb2` und `27bc91a`.
+  GitHub lehnte ihre Pushes wegen der voreingestellten privaten Commit-E-Mail
+  ab. Die lokalen Originalcommits bleiben unter einer Sicherungsreferenz
+  erhalten; inhaltsgleiche eigene Commits werden mit der bereits im Repository
+  verwendeten GitHub-Noreply-Adresse veröffentlicht. Kein Force-Push und
+  keine Änderung bestehender Remotecommits. Exakten aktuellen Head mit
+  `git rev-parse HEAD` ermitteln. Keine fremden lokalen Änderungen.
 
 ## Implementiert
 
@@ -75,25 +78,33 @@ Ergebnisbericht und keine Freigabe für die Neun-Zellen-Serie.
   Gepinnte Quelle PySR 2.6.0 `sr.py`, Konstruktor und Optionsübergabe, geprüft.
   Nur die Prototypen wurden an die unveränderte PySR-Suche angepasst:
   `devnull`, `true`, `false`. Kein Feld wurde aus der Prüfung entfernt.
-  Dieser Korrektur folgt ein neuer begründeter technischer Integrationslauf.
+  Der begründete Folgelauf
+  `results/representation-integration-002` am sauberen lokalen Commit
+  `27bc91a` ist **vollständig bestanden**: neun Optionsobjekte, neun native
+  Referenzfälle und alle drei frischen technischen Profilworker; sämtliche
+  68 Optionsfelder entsprechen der Vorprüfung (Ausgabepfad separat).
+- Zwei gleichzeitige Starts mit fremder aktiver CondaPkg-Sperre bestanden;
+  die Sperre blieb unverändert, keine Conda-Umgebung entstand.
+- Abschließend Einzelstatus für beide Seiten jeder Fehlerdifferenz ergänzt.
+  Ein endlicher Wert mit unbestimmter Diagnose bleibt unauswertbar;
+  zugehöriger Gegenfall ergänzt. 210 fokussierte Tests bestanden.
+  Ruff, Formatierung, lokale Links und `git diff --check` bestanden.
 
 ## Offen und nächster abgegrenzter Schritt
 
-1. Den korrigierten technischen Integrationslauf vollständig prüfen. Keine
-   wissenschaftliche Neun-Zellen-Serie starten. Alle Backendfelder (abgesehen
-   vom Ausgabepfad) müssen dem verifizierten Optionsobjekt entsprechen.
-2. Passende lokale Prüfungen für die endgültigen Dateien abschließen;
-   bestehende vollständige technische Checks in CI unverändert erhalten.
-3. Konkreten Implementierungs-PR öffnen, vollständige CI abwarten;
-   nicht eigenständig mergen. Bisher noch kein Implementierungs-PR.
-4. Die neun wissenschaftlichen Kontrollsuchen später ausschließlich auf dem
+1. Implementierungs-PR mit vollständiger CI öffnen und die erforderlichen
+   technischen Checks am endgültigen Head abwarten. Lokale numerische
+   Nachweise oben gelten jeweils für ihren ausdrücklich genannten Stand.
+2. CI-Befunde und finalen Branch/Commit hier sichern. Nicht eigenständig
+   mergen. Bisher noch kein Implementierungs-PR und kein CI-Nachweis.
+3. Die neun wissenschaftlichen Kontrollsuchen später ausschließlich auf dem
    Manjaro-Referenzrechner am geprüften Stand durchführen lassen.
 
 Keine Forschungsfrage, Seeds, wissenschaftlichen Budgets, Toleranzen,
 Auswahlregeln, Versionspins oder Berechtigungen geändert. Kein kombinierter
 Arm, keine Ersatzseeds, keine automatischen wissenschaftlichen Wiederholungen.
-Alias-Blindfleck bei `8*fs` bleibt dokumentiert. Noch kein vollständiger
-Integrations- oder CI-Nachweis für diesen Checkpoint.
+Alias-Blindfleck bei `8*fs` bleibt dokumentiert. Die technische
+Integration ist lokal belegt; vollständige CI für den endgültigen Head steht aus.
 
 ## Historische Nachweise
 

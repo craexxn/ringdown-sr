@@ -409,6 +409,43 @@ def summary_text(report):
         "Das Achtelraster behält den Alias-Blindfleck bei 8·fs = 32768 Hz.",
         "",
     ]
+    for condition, summary in report["condition_summaries"].items():
+        lines += [f"## {condition}: {summary['status']}", ""]
+        if summary["statistics"] is not None:
+            lines += [
+                "| Kennzahl | Minimum | Median | Maximum | verfügbar |",
+                "| --- | --- | --- | --- | --- |",
+            ]
+            for name, values in summary["statistics"].items():
+                lines.append(
+                    f"| {name} | {values['minimum']} | {values['median']} | "
+                    f"{values['maximum']} | {values['finite_count']}/3 |"
+                )
+            lines += [
+                "",
+                f"Getrennte Markierungen: `{summary['selected_diagnoses']}`.",
+                "",
+            ]
+    lines += ["## Differenzen je Seed zur frischen Baseline", ""]
+    for pair in report["seed_differences"]:
+        lines += [f"### {pair['seed']} / {pair['condition']}: {pair['status']}", ""]
+        if pair["metrics"] is None:
+            lines += [f"Grund: `{pair['reason']}`.", ""]
+            continue
+        lines += [
+            "| Kennzahl | Baseline | Variante | Differenz | Status |",
+            "| --- | --- | --- | --- | --- |",
+        ]
+        for name, value in pair["metrics"].items():
+            lines.append(
+                f"| {name} | {value['baseline']} | {value['variant']} | "
+                f"{value['difference']} | {value['status']} |"
+            )
+        lines += [
+            "",
+            "Einzelstatus und Gründe sowie Callbackzahlen und Zeiten: `report.json`.",
+            "",
+        ]
     for key in ("error", "final_verification_error"):
         if report.get(key):
             lines += [f"{key}: {report[key]}", ""]

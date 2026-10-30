@@ -299,6 +299,25 @@ def _markers(candidate):
     }
 
 
+def _metric_availability(candidate, name, value):
+    if name == "training_mse":
+        source = {"status": "available", "reason": None}
+    elif name.startswith("parameter/"):
+        source = candidate["parameter_match"]
+    else:
+        source = candidate["curve_errors"][name.split("/", 1)[0]]
+    available = (
+        value is not None
+        and math.isfinite(value)
+        and source["status"] in {"available", "matched", "mismatched"}
+    )
+    return {
+        "status": "available" if available else "not_assessed",
+        "source_status": source["status"],
+        "reason": None if available else source.get("reason") or "unavailable_metric",
+    }
+
+
 def seed_differences(cells, *, final_verified=True):
     """Preserve per-seed inputs and signed differences; missing never means zero."""
     lookup = {}
@@ -337,17 +356,18 @@ def seed_differences(cells, *, final_verified=True):
                 report["metrics"] = {}
                 for name, value in _metrics(first).items():
                     other = _metrics(second)[name]
+                    first_status = _metric_availability(first, name, value)
+                    second_status = _metric_availability(second, name, other)
                     available = (
-                        value is not None
-                        and other is not None
-                        and math.isfinite(value)
-                        and math.isfinite(other)
+                        first_status["status"] == second_status["status"] == "available"
                     )
                     delta = other - value if available else None
                     available = available and math.isfinite(delta)
                     report["metrics"][name] = {
                         "baseline": value,
                         "variant": other,
+                        "baseline_availability": first_status,
+                        "variant_availability": second_status,
                         "difference": delta if available else None,
                         "status": "available" if available else "not_assessed",
                         "reason": None
@@ -395,8 +415,9 @@ def condition_summaries(cells, *, final_verified=True):
             for name in metrics[0]:
                 values = [
                     item[name]
-                    for item in metrics
-                    if item[name] is not None and math.isfinite(item[name])
+                    for candidate, item in zip(chosen, metrics, strict=True)
+                    if _metric_availability(candidate, name, item[name])["status"]
+                    == "available"
                 ]
                 summary["statistics"][name] = {
                     "finite_count": len(values),

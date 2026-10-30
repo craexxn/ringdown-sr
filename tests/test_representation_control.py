@@ -272,3 +272,24 @@ def test_summaries_keep_finite_denominators_and_large_finite_median():
     assert values["finite_count"] == 2 and values["planned_count"] == 3
     assert values["median"] == 1.6e308
     json.dumps(summary, allow_nan=False)
+
+
+def test_finite_but_unresolved_metrics_keep_source_status_and_block_differences():
+    cells = completed_cells()
+    selected = cells[1]["diagnostics"]["candidates"][0]
+    selected["parameter_match"].update(
+        status="not_assessed", reason="raw_replay_not_passed"
+    )
+    selected["curve_errors"]["diagnostic"].update(
+        status="numerical_unresolved", reason="fixture_range"
+    )
+    result = control.seed_differences(cells)[0]
+    for name in ("parameter/frequency", "diagnostic/relative_rms"):
+        metric = result["metrics"][name]
+        assert metric["baseline"] is not None and metric["variant"] is not None
+        assert metric["baseline_availability"]["status"] == "available"
+        assert metric["variant_availability"]["status"] == "not_assessed"
+        assert metric["difference"] is None
+    summary = control.condition_summaries(cells)["time_stretch"]
+    assert summary["statistics"]["parameter/frequency"]["finite_count"] == 2
+    assert summary["statistics"]["diagnostic/relative_rms"]["finite_count"] == 2
