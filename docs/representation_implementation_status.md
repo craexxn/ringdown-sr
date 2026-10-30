@@ -5,45 +5,67 @@ Konstantendiagnose sind ausgeführt. Beide vollständigen Originalarchive
 wurden unabhängig nachgerechnet. Der aktuelle Befund steht im
 [Ergebnisprotokoll der Konstantendiagnose](constant_diagnostic_results_manjaro_001.md).
 
-## Vorbereiteter freier Budgetvergleich und gemeinsames Methodenreview
+## Freier Budgetvergleich nach übermitteltem Methodenreview
 
-Auf Grundlage des abgeschlossenen Befunds wurde am 30.10.2026 die Ausarbeitung
-eines neuen Planentwurfs und eines gemeinsamen Reviews von Befund und Plan
-beauftragt. Der [Entwurf samt kopierbarem Reviewauftrag](free_optimizer_budget_plan_draft.md)
-ist im bestehenden Ergebnisbranch `codex/constant-diagnostic-results` und
-[PR #44](https://github.com/craexxn/ringdown-sr/pull/44) ergänzt; keine parallele
-Implementierung oder weitere Reviewrunde nur für den Archivaudit begonnen.
+Der [überarbeitete Entwurf](free_optimizer_budget_plan_draft.md) liegt weiterhin
+im bestehenden Ergebnisbranch `codex/constant-diagnostic-results` und
+[PR #44](https://github.com/craexxn/ringdown-sr/pull/44). Das gemeinsame KI-basierte
+Methodenreview ist übermittelt, sein Beschlussvorschlag noch nicht angenommen.
 
-- Einstieg erneut geprüft: sauberer Checkout, ein Worktree, lokaler und
-  Remote-Head `ad32d4b5ca8e918511f6ae8cc169a1f34f444965`; PR #44 weiterhin
+- Einstieg erneut geprüft: sauberer Checkout, ein Worktree, lokaler und aktueller
+  Remote-Head `7ee5f38067ba0b2161ab3ddaf9775d6aa4fc1fbd`; PR #44 weiterhin
   offen, keine weiteren offenen PRs. `main` unverändert auf
-  `0a70f19e16e173aedf2e071a5f5b09d045ecbf69`. Der Ergebnisanker bleibt `ad32d4b`;
-  den aktuellen Entwurfshead mit `git rev-parse HEAD` beziehungsweise im PR bestimmen.
-- Vorzugsentwurf: sechs neue freie Suchen im Baselineprofil, beide Schalter aus,
-  ursprüngliche Sekundenkoordinate; je drei bekannte Entwicklungsseeds,
-  200 Suchiterationen, Vergleich 20/2 gegen 100/2. Ressourcenlimit 60 Minuten,
-  primärer Kurvenendpunkt an der Originalauswahl und konservative Berichtssperre
-  sind Vorschläge zur Prüfung, keine bereits beschlossenen Vorgaben.
-- Alternativen mit gemeinsam aktivierten Häufigkeitsschaltern, vollständigem
-  2×2 oder Suchverlauf sind im Review kritisch gegen diesen Vorzugsentwurf
-  abzuwägen. Ein negatives Baselineergebnis würde deren Nutzen nicht ausschließen.
-- Quelldetails geprüft: vorhandene Auswahl bleibt MSE/Komplexität/Originalindex;
-  die lokale Iterationsgrenze betrifft auch den Newton-Sonderpfad. Freie
-  Suchpfade dürfen trotz gleicher Seeds auseinanderlaufen. Keine Gleichsetzung
-  mit den identischen Präfixen der festen Diagnose oder gleichen Rechenkosten.
-- Keine neue numerische Prüfung, kein Wiederholungsaudit, Fit oder Suchlauf.
-  Das gemeinsame KI-basierte Methodenreview wurde vorbereitet, noch nicht
-  ausgeführt. Alle drei eingefrorenen Laufzeitpläne und konsumierten Quellen
-  bleiben unverändert; der Entwurf wird nicht zur Laufzeit konsumiert.
-- Lokal bestanden: Prüfung von 40 Markdown-Dateien/lokalen Links,
+  `0a70f19e16e173aedf2e071a5f5b09d045ecbf69`. Ergebnisanker `ad32d4b`;
+  den nach dieser Korrektur aktuellen Head mit `git rev-parse HEAD` oder im PR
+  bestimmen. Historische Remote-Branches wurden geladen, nicht übernommen.
+- Übermitteltes Review: geprüfter Head `7ee5f38`, vollständige Vergleichsbasis
+  und Ergebnisanker wie oben; beide PR-Commits mit allen fünf Dokumentations-
+  dateien, Grundlagen und relevanten unveränderten Aufrufern/Backendquellen.
+  Quellen-/Dokumentprüfung und `git diff --check` berichtet; keine numerische
+  Ausführung. Archive fehlten dort, daher keine erneute unabhängige Bestätigung
+  der Archivhashes oder Zahlen. Details im Entwurf, Abschnitt 9.
+- Ein Befund P2: Gute 100/2-Kurven allein belegen keinen Vergleichsvorteil.
+  Die Entscheidungstabelle trennt nun vollständig `C100 > C20`, Gleichstand
+  ohne/mit Erfolg und `C100 < C20`; unvollständige oder abschließend nicht
+  verifizierte Serien bleiben davor gesperrt. Struktur-/Parameterbefunde folgen
+  unabhängig und müssen dieselbe erfolgreiche Originalauswahl betreffen.
+- Empfohlenes Profil im Entwurf übernommen: beide Häufigkeitsschalter in beiden
+  Armen an, ursprüngliche Sekundenkoordinate; sechs frische Suchen, drei bekannte
+  Entwicklungsseeds, je 200 Suchiterationen, Vergleich 20/2 gegen 100/2. Dies ist
+  adaptive Methodenentwicklung am bekannten besseren Approximationsprofil,
+  keine neue Validierung. Die feste Diagnose ohne Populationsauswahl privilegiert
+  das ausgeschaltete Profil nicht. Dieses und ein 2×2 bleiben Alternativen.
+- Unverändert vorgeschlagen: Reihenfolge 20–100 / 100–20 / 20–100, 60 Minuten
+  Gesamtlimit einschließlich Vorprüfungen und Abschlussprüfung, Originalauswahl,
+  Grenzen, sechs vollständig verifizierte Zellen vor Gruppen/Paardifferenzen.
+  Eine Übersicht der Erfolgswechsel ergänzt die bestehenden drei Seed-Paare;
+  kein neuer Endpunkt. Keine Behauptung gleicher freier Suchpfade oder Kosten.
+- Gezielt gegen die neue Regel abgeglichen: `C20=3, C100=1` mit guter, aber
+  nicht unterstützter 100/2-Kurve bleibt weniger Erfolg; `3=3` bleibt Gleichstand;
+  `0=0` bleibt ohne erfolgreiche Auswahl, auch bei kleineren Fehlern. Gemischte
+  Seed-Wechsel bei `1→2` erlauben einen Mehrerfolg mit sichtbarem Verlust;
+  gegensinnige Wechsel bei `1→1` bleiben ohne Mehrerfolg. Gute ungewählte Bäume
+  oder Parameter eines anderen Baums erzeugen keinen unterstützten Originalfall.
+  Unvollständigkeit oder späte Verifikationsfehler sperren sämtliche Gruppen
+  und Paardifferenzen unabhängig von guten Einzelresultaten.
+- Keine neue Optimierung, freie Suche, Julia-Ausführung oder Archivaudit. Keine
+  zweite vollständige Reviewrunde: die Gegenfälle betreffen gezielt den P2-Befund.
+  Alle drei eingefrorenen Laufzeitpläne und konsumierten Quellen bleiben erhalten;
+  der neue Entwurf wird noch nicht zur Laufzeit konsumiert.
+- Prüfungen der Korrektur: Dokumentations-/Linkprüfung für 40 Markdown-Dateien,
   `git diff --check`, unveränderte drei Planprüfsummen und explizite Zuordnung
-  zur Dokumentations-CI. Der aktuelle CI-Nachweis gehört zum erweiterten PR #44.
+  zur Dokumentations-CI. Der frühere grüne Lauf
+  [41075733824](https://github.com/craexxn/ringdown-sr/actions/runs/41075733824)
+  gehört ausschließlich zu `7ee5f38`; den Nachweis der Korrektur am aktuellen
+  PR-Head prüfen. Dieser Zwischenstand ändert ausschließlich README, Entwurf
+  und Fortsetzungsdatei; keine weiteren lokalen Arbeiten beim Einstieg vorhanden.
 
-Nächster abgegrenzter Schritt: genau dieses gemeinsame Methodenreview durchführen;
-notwendige Planänderungen einarbeiten, danach ein Design ausdrücklich beschließen
-und einfrieren. Erst anschließend folgt ein eigener Implementierungsauftrag mit
-vollständiger CI und späterer einmaliger Manjaro-Ausführung. Ein Dokumentations-
-Merge allein beschließt oder startet keine Suchserie. Keine automatische Zusatzrunde.
+Nächster abgegrenzter Schritt: den Beschlussentwurf in Abschnitt 9 ausdrücklich
+annehmen oder ändern. Erst nach Annahme diesen Plan einfrieren und den getrennten
+Kontrollpfad mit vollständiger CI implementieren; anschließend einmalige
+Manjaro-Ausführung am geprüften Stand. Ein Dokumentationsmerge allein beschließt
+oder startet keine Suchserie. Weitere Übertragbarkeits-/Gewichtungsstudien und
+ein Produktionsprofil sind damit nicht freigegeben.
 
 ## Aktueller Stand nach der Konstantendiagnose
 

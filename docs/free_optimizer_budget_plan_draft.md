@@ -1,10 +1,10 @@
 # Entwurf: Optimiererbudget in der freien Ringdown-Suche
 
-Stand: 30.10.2026. **Zur KI-basierten Methodenprüfung; nicht beschlossen,
-nicht eingefroren, nicht implementiert und nicht ausgeführt.** Sämtliche neuen
+Stand: 30.10.2026. **Nach übermitteltem KI-basiertem Methodenreview überarbeitet;
+nicht beschlossen, nicht eingefroren, nicht implementiert und nicht ausgeführt.** Sämtliche neuen
 Zahlen und Entscheidungsregeln sind Vorschläge. Die abgeschlossenen Pläne
-und Originalergebnisse bleiben eingefroren. Der Auftrag umfasst diesen Entwurf
-und die Vorbereitung genau eines gemeinsamen Reviews von Plan und Befund.
+und Originalergebnisse bleiben eingefroren. Das gemeinsame Review von Plan und
+Befund ist übermittelt; sein Beschlussvorschlag wurde noch nicht angenommen.
 
 ## 1. Evidenz, Frage und begrenzter Anspruch
 
@@ -34,9 +34,18 @@ unter 57 Frontkandidaten. Die Häufigkeitsschalter verbesserten die Trainings-
 MSE bei allen drei bekannten Seeds um rund 90–97 %. Dieses Ergebnis bestimmt
 noch kein Produktionsprofil und belegt keine Populationsvielfalt.
 
-**Vorgeschlagene Frage:** Verbessert ausschließlich die Erhöhung der maximalen
-lokalen Optimiereriterationen von 20 auf 100 die freien Originalauswahlen im
-bisherigen Baseline-Suchprofil bei festgehaltenem nominalem Suchbudget?
+**Vorgeschlagene Frage:** Verbessert die Erhöhung der maximalen lokalen
+Optimiereriterationen von 20 auf 100 die freien Originalauswahlen innerhalb des
+gemeinsam aktivierten Häufigkeitsprofils bei festgehaltenem nominalem Suchbudget?
+Beide Arme verwenden die ursprüngliche Sekundenkoordinate sowie
+`use_frequency=True` und `use_frequency_in_tournament=True`. Untersucht wird die
+bedingte Budgetwirkung in diesem Profil; Budgetwirkungen im ausgeschalteten
+Profil und Wechselwirkungen zwischen Profil und Budget bleiben offen.
+
+Arbeitshypothese: Innerhalb dieses Profils erhöht 100/2 gegenüber 20/2 die Zahl
+erfolgreicher Originalauswahlen. Gegenmöglichkeiten sind unveränderte Misserfolge,
+lediglich kleinere Fehler unterhalb der Erfolgsschwelle, gemischte Seed-Ergebnisse
+oder gute ausschließlich nicht ausgewählte Kandidaten.
 
 Der Vergleich untersucht eine Intervention im gesamten freien Suchprozess.
 Er trennt nicht nachträglich lokale Anpassung, Strukturentstehung und
@@ -49,24 +58,29 @@ Rausch-/Gewichtungsstudie oder physikalische Identifikation werden beansprucht.
 
 ## 2. Vorzugsentwurf und ernsthafte Alternativen
 
-**Vorzugsentwurf zur kritischen Prüfung:** Zwei Arme auf dem ursprünglichen
-Baselineprofil; beide Häufigkeitsschalter aus und ursprüngliche Zeitkoordinate.
-Damit liegt zwischen den neuen Armen genau ein deklarierter numerischer Faktor.
-Die Konstante-Diagnose verwendete ebenfalls dieses Profil. Sechs neue Suchen
-begrenzen den Aufwand; Wechselwirkungen mit Häufigkeitsschaltern bleiben offen.
+**Vorzugsentwurf nach Reviewempfehlung, noch nicht beschlossen:** Zwei Arme mit
+beiden Häufigkeitsschaltern aktiviert und ursprünglicher Zeitkoordinate. Damit
+liegt zwischen den neuen Armen genau ein deklarierter numerischer Faktor.
+Sechs neue Suchen begrenzen den Aufwand und knüpfen an das bisher bessere
+Approximationsprofil an. Diese Profilwahl nutzt bekannte Entwicklungsergebnisse
+und ist ausdrücklich adaptive Methodenentwicklung, keine unabhängige Validierung.
+Die bessere Approximation beweist weder mehr Populationsvielfalt noch künftigen
+Rekonstruktionserfolg. Die feste Diagnose privilegiert das ausgeschaltete Profil
+nicht: Beim direkt vorgegebenen Baum gab es keine Populationsauswahl, auf die
+die Häufigkeitsmechanismen wirken könnten.
 
 | Alternative | Erkenntnisgewinn und Kosten | Grund für Zurückstellung im Vorzugsentwurf |
 | --- | --- | --- |
-| Beide Budgetarme mit `complexity_frequency` an | Ebenfalls sechs Suchen und ein innerhalb des Profils isolierter Budgetfaktor; knüpft an den bislang besten Approximationsarm an | Die feste Diagnose lief ohne diese Populationsmechanismen. Eine Aussage über Budgetwirkung auf dem ursprünglichen Baselineprofil wäre damit nicht möglich. Das Review darf diese Alternative als sinnvoller priorisieren. |
+| Beide Budgetarme mit Häufigkeitsschaltern aus | Ebenfalls sechs Suchen und ein innerhalb des Profils isolierter Budgetfaktor; Anbindung an das ursprüngliche Baselineprofil | Methodisch gültig, für den nächsten Entwicklungsschritt weniger attraktiv als das bereits bessere Approximationsprofil. Die feste Diagnose liefert keinen Grund, das ausgeschaltete Profil zu bevorzugen. |
 | Vollständiges 2×2 aus Budget 20/100 und beiden Schaltern aus/an | Zwölf Suchen mit drei Seeds; könnte eine Wechselwirkung beschreiben | Doppelter Suchumfang gegenüber dem Vorzugsentwurf; für den nächsten begrenzten Schritt noch nicht gewählt. Kein kombiniertes Profil wird still ergänzt. |
 | Suchverlauf instrumentieren | Näher an Entstehung, Optimierung und Verwerfung von Strukturen | Zusätzlicher Faktor und Prüfaufwand; ein negativer Budgetvergleich allein identifiziert trotzdem keinen Strukturengpass. |
 | Weitere feste Startgitter, Koordinaten oder Solver | Weitere lokale Mechanismen untersuchen | Die aktuelle feste Diagnose war unter 100/2 vollständig erfolgreich. Eine zusätzliche Rastererweiterung beantwortet die Übertragung auf freie Suche nicht. |
 | Grammatik einschränken oder breite freie Rekonstruktion pausieren | Aufwand begrenzen beziehungsweise engeren Forschungsanspruch wählen | Weiterhin legitime spätere Entscheidung; nicht automatisch aus einem begrenzten negativen Suchvergleich ableiten. |
 
-Der Vorzugsentwurf kann das günstigere Häufigkeitsprofil bewusst verfehlen.
-Das ist eine wesentliche Grenze und eine ausdrückliche Reviewfrage. Bei Wahl
-einer Alternative muss genau ein vollständiger Plan neu festgelegt werden;
-die Alternativen sind keine zusätzlichen Ausführungsarme dieses Entwurfs.
+Der Vorzugsentwurf erlaubt keine Aussage über die Budgetwirkung bei
+ausgeschalteten Schaltern oder über eine Wechselwirkung. Bei Wahl einer
+Alternative muss genau ein vollständiger Plan neu festgelegt werden; die
+Alternativen sind keine zusätzlichen Ausführungsarme dieses Entwurfs.
 Zeitstreckung, Einzelschalter, Templates und weitere Solver bleiben zurückgestellt.
 
 ## 3. Datenrollen und alleinige Intervention
@@ -88,8 +102,8 @@ werden als Hinweise, Einschränkungen, Initialpopulation oder Auswahlhilfe benut
 
 | Kennung | Optimiereriterationsgrenze | Zusätzliche Neustarts | `use_frequency` | `use_frequency_in_tournament` | Koordinate |
 | --- | ---: | ---: | --- | --- | --- |
-| `optimizer_20` | 20 | 2 | `False` | `False` | `t`, Sekunden |
-| `optimizer_100` | 100 | 2 | `False` | `False` | `t`, Sekunden |
+| `optimizer_20` | 20 | 2 | `True` | `True` | `t`, Sekunden |
+| `optimizer_100` | 100 | 2 | `True` | `True` | `t`, Sekunden |
 
 Die Bibliotheksoption `optimizer_iterations` wird auf 20 beziehungsweise 100
 abgebildet; im tatsächlichen Julia-Objekt muss das entsprechende
@@ -145,6 +159,7 @@ Python 3.12.14, Julia 1.13.1, PySR 2.6.0 und SymbolicRegression 2.5.1 bleiben
 gepinnt. Haswell sowie `OPENBLAS_NUM_THREADS=1`, `OMP_NUM_THREADS=1`,
 `MKL_NUM_THREADS=1` und `NUMEXPR_NUM_THREADS=1` gelten nur für diesen
 kontrollierten Pfad. Allgemeine Suchdefaults werden nicht geändert.
+Diese Ausführungskontrolle belegt keine allgemeine Überlegenheit von Haswell.
 
 Der tatsächliche Backendseed wird mit der bestehenden PySR-Abbildung
 `RandomState(seed).randint(0, 2**31-1)` absolut geprüft. RNG-Typ und Initialisierung
@@ -186,6 +201,10 @@ Zusätzlich getrennt berichten:
 - Für jeden Seed `Delta = optimizer_100 - optimizer_20`: MSE, RMS/Maximalfehler
   beider Raster und vergleichbare Parameterfehler, mit beiden Ausgangswerten
   und Status. Bei fehlenden/unbestimmten Seiten `null` mit Grund statt null Fehler.
+- Kompakte Übersicht der drei Erfolgswechsel: bestanden/nicht bestanden unter
+  20/2 und 100/2 je Seed sowie die Häufigkeiten beider Wechselrichtungen und
+  unveränderter Zustände. Dies erläutert den primären Endpunkt, ohne einen neuen
+  einzuführen; `C100 - C20` entspricht Gewinnen minus Verlusten.
 - Fit-Callbackzahlen, Gesamtzähler und vorhandener Backend-Evaluationszähler
   getrennt. Die zusätzliche Nullkurvenauswertung nach dem Fit gehört nicht in
   den Fit-Zähler. Zell-/Serienzeiten einschließlich Startup, JIT und Export.
@@ -211,7 +230,8 @@ starten danach frisch und übernehmen keine Referenzbäume oder Vorprüfungszust
 
 1. Sechs tatsächliche Optionsobjekte für beide Budgets und alle drei Seeds
    ohne Fit/Suche prüfen. Alle wirksamen Felder und konkreten Plugins schon für
-   die erste Zelle absolut gegen profilgerechte native Prototypen prüfen.
+   die erste Zelle absolut gegen native Prototypen des gemeinsam aktivierten
+   Häufigkeitsprofils prüfen; beide Schalter müssen in jeder Zelle `True` sein.
    Übergreifend allein die bereits einzeln geprüfte Iterationsgrenze sowie
    Seed und technische Ausgabepfade als geplante Unterschiede behandeln.
    Ein gemeinsamer geprüfter Verlustwrapper muss in beiden Armen gleich sein.
@@ -261,20 +281,35 @@ als die frühere Regel für vollständig geprüfte Teilgruppen der Zeitdarstellu
 
 ## 8. Vorab vorgeschlagene Weiterentscheidungen
 
-Die folgenden Gates sind Entwicklungsentscheidungen zur Prüfung im Review,
+Die folgenden Gates sind nach dem Review korrigierte Entwicklungsentscheidungen,
 keine statistisch hergeleiteten Garantien oder automatische Ausführungsfreigaben.
 `C20` und `C100` bezeichnen jeweils die Anzahl bestandener ausgewählter
 Kurvenmarker von drei. Zusätzliche Struktur-/Parameterbefunde werden daneben
 berichtet; die Zeilen sind Interpretationsregeln und keine automatische Profilwahl.
+Voraussetzung für den vergleichenden Befund sind sechs vollständig verifizierte
+Zellen und eine bestandene Abschlussverifikation.
 
-| Beobachtung im vollständigen Versuch | Konsequenz |
+| Beobachtung | Zulässiger Befund und weitere Entscheidung |
 | --- | --- |
-| `C100 > C20`; mindestens eine Auswahl unter 100/2 zusätzlich erkannt und parameterkompatibel | Begrenzter positiver Rekonstruktionsbefund für diesen Entwicklungsfall; vor Übertragbarkeitsaussagen eigenes Design mit getrennten Signal-/Seedrollen beschließen |
-| Unter 100/2 gute ausgewählte Kurven, aber fehlende Struktur-/Parameterunterstützung | Kurvenverbesserung berichten und die konkreten Erkenner-/Replayfälle lesend untersuchen; keine Ersatzwahl und keine nachträgliche Änderung des Erfolgskriteriums |
-| `C20 = C100 = 0`, auch wenn MSE kleiner wird | Weiterhin unzureichende Originalauswahlen; keine nächste Budgetstufe. Zwischen gezieltem Suchverlauf und bewusster Eingrenzung/Pause neu entscheiden; vorhandene gute Frontkandidaten separat ausweisen, Wechselwirkungen mit Häufigkeitsprofilen bleiben offen |
-| `C20 = C100 > 0` | Kein Mehrerfolg beim primären Zählendpunkt; Einzelzuordnung zu Seeds, Fehler und Aufwand getrennt beschreiben. Historische Baselineabweichungen offenlegen, keine Wiederholung zur Ergebnisangleichung |
-| `C100 < C20`, gegenläufige Seed-Differenzen oder nur nicht ausgewählte gute Frontkandidaten | Alle Fälle erhalten; nur entsprechende Teilbehauptung zulässig, Auswahl-/Suchfragen neu planen, kein bestes Beispiel als Gesamtergebnis |
-| Technisch oder zeitlich unvollständig | Kein abgeschlossener Vergleich und keine wissenschaftliche Rangfolge; zunächst Ursache und vertretbaren nächsten Schritt beschließen |
+| Versuch unvollständig oder Abschlussverifikation nicht bestanden | Kein abgeschlossener Budgetvergleich. Verifizierte Einzelresultate mit Status erhalten; Ursache und weiteres Vorgehen gesondert beschließen. Gruppenstatistiken und Paardifferenzen bleiben gesperrt. |
+| `C100 > C20` | Mehr erfolgreiche Originalauswahlen unter 100/2 in diesen drei Entwicklungsfällen. Erfolgswechsel, Fehler und Aufwand für jeden Seed daneben berichten; keine allgemeine Überlegenheit ableiten. |
+| `C100 = C20 = 0` | Keine erfolgreiche Originalauswahl unter beiden Budgets. Kleinere Fehler nur als kontinuierliche Verbesserung berichten. Keine automatische nächste Budgetstufe; Suchverlaufsdiagnose oder Eingrenzung/Pause gesondert entscheiden. |
+| `C100 = C20 > 0` | Kein Mehrerfolg am primären Zählendpunkt. Seedzuordnung, Fehler und Aufwand getrennt beurteilen. |
+| `C100 < C20` | Weniger erfolgreiche Originalauswahlen unter 100/2. Verbesserungen einzelner Seeds oder einzelner Fehlermaße ändern diesen Gesamtbefund nicht. |
+
+Struktur- und Parameterbefunde werden unabhängig von diesem Zählvergleich
+eingeordnet. Nur eine Originalauswahl, die selbst die Kurvengrenzen erfüllt,
+erkannt wird und die verbindlichen Parameter-/Replaygates besteht, darf als
+entsprechender unterstützter Rekonstruktionsfall bezeichnet werden. Gute Kurven
+mit `not_supported`, `mismatched`, `not_assessed` oder unbestimmten Diagnosen
+behalten diese Einschränkungen. Ihre Existenz allein belegt keine Verbesserung
+gegenüber 20/2. Konkrete Erkenner-/Replayfälle können lesend untersucht werden;
+keine Ersatzwahl oder nachträgliche Änderung des Erfolgskriteriums.
+
+Gegenläufige Seed-Ergebnisse bleiben ausdrücklich sichtbar. Gute nicht ausgewählte
+Frontkandidaten werden separat ausgewiesen und begründen gegebenenfalls eine
+neue Auswahlfrage; sie ersetzen keine Originalauswahl. Historische Abweichungen
+werden offengelegt und nicht durch Wiederholungen angeglichen.
 
 Ein guter fester Fit oder eine einzelne freie Entwicklungsformel genügt nicht
 als Freigabe einer allgemeinen Rausch-/Gewichtungsstudie. Für den Anspruch freier
@@ -282,23 +317,51 @@ Ringdown-Rekonstruktion sind ein eingefrorenes Verfahren und separat geplante,
 begrenzte Übertragbarkeitsnachweise erforderlich. Ein engerer Parameterfitanspruch
 müsste eigenständig beschlossen und mit dem klassischen Referenzfit verglichen werden.
 
-## 9. Reviewfragen und noch nötiger Beschluss
+## 9. Übermitteltes Methodenreview und offener Beschluss
 
-Das gemeinsame KI-basierte Methodenreview soll insbesondere klären:
+Ein KI-basiertes Methodenreview wurde am 30.10.2026 für PR #44 übermittelt:
 
-- Hat der Baselinevergleich mit sechs Suchen den größten Erkenntnisgewinn oder
-  wäre das gemeinsame Häufigkeitsprofil bei gleichem Umfang sinnvoller? Ist
-  ein 2×2-Design seinen doppelten Umfang bereits wert?
-- Sind Übernahme von 200 Suchiterationen, bekannten drei Seeds und 100 lokalen
-  Iterationen als ausdrücklich begrenzte Entwicklungsentscheidungen gerechtfertigt?
-- Ist der primäre Endpunkt an der Originalauswahl passend, und trennen die
-  vorgeschlagenen Gates Kurvengüte, Erkennerabdeckung und Parameterdiagnose sauber?
-- Sind 60 Minuten und die strikte Vollständigkeitsregel angemessen, ohne
-  Ressourcenabbrüche als negative Suchleistung fehlzuinterpretieren?
-- Welche konkreten Befunde würden gegen die Budgetintervention und für Such-
-  verlaufsdiagnose oder eine bewusste Pause/Eingrenzung sprechen?
+- Geprüfter Head: `7ee5f38067ba0b2161ab3ddaf9775d6aa4fc1fbd`.
+- Vergleichsbasis: `0a70f19e16e173aedf2e071a5f5b09d045ecbf69`.
+- Ergebnisanker: `ad32d4b5ca8e918511f6ae8cc169a1f34f444965`.
+- Übermittelter Umfang: beide PR-Commits mit allen fünf Dokumentationsdateien,
+  Grundlagen, relevante unveränderte Aufrufer und gepinnte Backendquellen.
+  Selbst ausgeführte Quellen-/Dokumentabgleiche und `git diff --check` wurden
+  berichtet. Keine Programme, Tests, Fits, Suchen, CI oder zusätzlichen Agenten.
+  Die Originalarchive lagen beim Review nicht vor; numerische Befunde und
+  Archivhashes wurden dort nicht erneut unabhängig bestätigt. Die lokal
+  installierte PySR-Quelle wurde gelesen; ihr GitHub-Dateiabruf scheiterte.
+- **Ein korrigierbarer Befund P2 vor dem Einfrieren:** Die bisherige zweite
+  Entscheidungszeile konnte gute Kurven unter 100/2 ohne Vergleichsvorteil als
+  Verbesserung bezeichnen, etwa bei `C20=3`, `C100=1`. Abschnitt 8 trennt nun
+  den vollständigen Zählvergleich von den Struktur-/Parameterbefunden derselben
+  Originalauswahl. Weitere entscheidungsblockierende Befunde wurden im
+  geprüften Umfang nicht berichtet.
+- **Genau eine Empfehlung:** sechs frische Suchen mit beiden Schaltern an.
+  Dies ist in Frage, Profilen und Vorzugsbegründung übernommen, bleibt aber
+  ein nicht angenommener Beschlussvorschlag. Budgets, Seeds, Reihenfolge,
+  Ressourcenlimit und strenge Vollständigkeitssperre wurden als begrenzte
+  Entwicklungsentscheidungen für angemessen beurteilt. Die optionale Übersicht
+  der Erfolgswechsel ist in Abschnitt 5 ergänzt.
 
-Erst nach Review und ausdrücklichem Methodenbeschluss: genau ein Design,
+Die gezielte Gegenprüfung der überarbeiteten Regeln ist im
+[Fortsetzungsstand](representation_implementation_status.md) festgehalten.
+Eine weitere vollständige Reviewrunde oder ein erneuter Archivaudit folgt
+daraus nicht. Das Review des alten Heads ist kein Reviewnachweis für spätere
+Dokumentationsänderungen und keine Ausführungsfreigabe.
+
+**Beschlussentwurf zur ausdrücklichen Annahme:**
+
+> Als nächster Schritt wird genau ein Entwicklungsvergleich mit sechs frischen
+> Suchen im gemeinsam aktivierten Häufigkeitsprofil vorgesehen: 20/2 gegen
+> 100/2, bei unverändertem Suchbudget, den drei bekannten Seeds, der festgelegten
+> Reihenfolge und 60 Minuten Gesamtlimit. Originalauswahl, Grenzwerte,
+> Verifikationssperre und die korrigierten Entscheidungsregeln werden vor
+> Implementierung eingefroren. Nach technischer Prüfung ist eine einmalige
+> Ausführung vorgesehen. Dieser Beschluss bestimmt kein Produktionsprofil und
+> gibt keine Übertragbarkeits- oder Gewichtungsstudie frei.
+
+Erst nach ausdrücklichem Methodenbeschluss: genau ein Design,
 Zahlen, Reihenfolge, Kriterien und Ressourcenlimit einfrieren; danach implementieren,
 volle technische CI abwarten und einmalig auf Manjaro ausführen. Ein Merge des
 Dokumentationsentwurfs allein beschließt oder startet keinen Versuch.
@@ -328,9 +391,14 @@ Dokumentationsentwurfs allein beschließt oder startet keinen Versuch.
 Für diesen Entwurf wurden Dokumente und Quellen abgeglichen. Es gibt keine
 neuen Fits, freien Suchen, unabhängigen Signale oder zusätzlichen numerischen
 Prüfergebnisse. Ein bereits dokumentierter Audit wird nicht als neue Wiederholung
-behauptet. Das hier vorbereitete Methodenreview ist noch nicht ausgeführt.
+behauptet. Das übermittelte Methodenreview und seine Prüfgrenzen stehen in
+Abschnitt 9; die anschließende Regelgegenprüfung ist davon getrennt.
 
-## Kopierbarer Auftrag für das gemeinsame Methodenreview
+## Kopierbarer Reviewauftrag als fortgeschriebene Vorlage
+
+Der ursprüngliche Auftrag ist am geprüften Head `7ee5f38` erhalten. Das gemeinsame
+Review ist bereits übermittelt. Die folgende Vorlage berücksichtigt die empfohlene
+Profilwahl, beauftragt aber keine neue Reviewrunde.
 
 ```text
 Führe ein KI-basiertes Methodenreview von Planentwurf und aktuellem Entwicklungsbefund für den Ringdown-SR-Piloten durch. Prüfe genau den nächsten begrenzten Schritt; implementiere oder starte nichts.
@@ -343,11 +411,11 @@ Verbindlich lesen: AGENTS.md und README im aktuellen Stand; docs/representation_
 
 Evidenz: Bei festem Vierkonstantenbaum bestanden 0/24 Fits unter 20/2 und 24/24 unter 100/2 die unveränderten Kurvengrenzen. Alle 72 lokalen Paare hatten identische Schritte 0 bis 20. Solver-Abbruchstatus bleiben unavailable. Der Audit prüfte 259 Dateien, 47 Quell-/Pin-/Planhashes, 144 lokale Verläufe und 6506 Zustände. Er ist dokumentiert, kein Auftrag zu einem erneuten Originalarchiv-Audit. Wenn das Originalarchiv fehlt, lege diese Prüfgrenze offen. Die frühere freie Serie lieferte keinen erfolgreichen Kandidaten unter 57; Häufigkeitsschalter senkten die Trainings-MSE bei allen drei Entwicklungsseeds um rund 90–97 %.
 
-Vorzugsentwurf: sechs frische freie Suchen, ursprüngliche Sekundenkoordinate, beide Häufigkeitsschalter aus. Je drei bekannte Entwicklungsseeds 20261020/21/22; einziges numerisches Vergleichsmerkmal 20 gegen 100 lokale Optimiereriterationen, je zwei zusätzliche Neustarts. Beide Arme je 200 Suchiterationen, zwei Populationen zu 32 Individuen, 50 Zyklen. Ein Signal, keine Templates/Wahrheitsstarts, ursprüngliche Auswahl und Grenzen, Haswell/Threads 1. Vorgeschlagenes Ressourcenlimit 60 Minuten; keine automatischen Wiederholungen. Alle neuen Zahlen und Gates sind Entwurfsvorschläge, noch kein Methodenbeschluss.
+Vorzugsentwurf nach übermittelter Reviewempfehlung: sechs frische freie Suchen, ursprüngliche Sekundenkoordinate, use_frequency=True und use_frequency_in_tournament=True in beiden Armen. Je drei bekannte Entwicklungsseeds 20261020/21/22; einziges numerisches Vergleichsmerkmal 20 gegen 100 lokale Optimiereriterationen, je zwei zusätzliche Neustarts. Beide Arme je 200 Suchiterationen, zwei Populationen zu 32 Individuen, 50 Zyklen. Ein Signal, keine Templates/Wahrheitsstarts, ursprüngliche Auswahl und Grenzen, Haswell/Threads 1. Vorgeschlagenes Ressourcenlimit 60 Minuten; keine automatischen Wiederholungen. Adaptive Methodenentwicklung am bekannten Approximationsbefund; weder Produktionsprofil noch unabhängige Validierung. Alle neuen Zahlen und Gates sind Entwurfsvorschläge, noch kein Methodenbeschluss.
 
 Prüfe kritisch:
 1. Trägt die feste Diagnose diese nächste freie Intervention, ohne bereits den historischen Engpass oder einen Optimiererdefekt zu behaupten?
-2. Ist die Baseline mit beiden Schaltern aus die beste Wahl? Vergleiche fair mit zwei Budgetarmen bei gemeinsam aktivierten Häufigkeitsschaltern und mit einem vollständigen 2x2 (zwölf Suchen). Begründe Informationsgewinn und Aufwand; übernimm den Vorzugsentwurf nicht ungeprüft. Falls du ihn verwirfst, empfehle genau ein konsistentes alternatives Design, keine Sammlung zusätzlicher Arme.
+2. Ist das gemeinsame Häufigkeitsprofil die beste Wahl? Vergleiche fair mit zwei Budgetarmen bei ausgeschalteten Schaltern und mit einem vollständigen 2x2 (zwölf Suchen). Begründe Informationsgewinn und Aufwand; übernimm den Vorzugsentwurf nicht ungeprüft. Die feste Diagnose ohne Populationsauswahl privilegiert das ausgeschaltete Profil nicht. Falls du den Vorzugsentwurf verwirfst, empfehle genau ein konsistentes alternatives Design, keine Sammlung zusätzlicher Arme.
 3. Sind Suchbudget, wiederverwendete Entwicklungsseeds, Reihenfolge und Ressourcenlimit begründet? Gleiche Seeds bedeuten keine identischen freien Suchpfade oder gleichen Rechenkosten. Die 72 identischen Präfixe der festen Diagnose sind keine Anforderung an freie Populationen. Der Budgetfaktor betrifft auch den bestehenden Ein-Konstanten-Newtonpfad.
 4. Sind Originalauswahl als primärer Endpunkt, vollständige Frontdiagnosen, getrennte Kurven-/Struktur-/Parametermarker, Statusregeln für Replays und Paardifferenzen sowie strenge Vollständigkeitssperre angemessen und unverfälscht?
 5. Sind die vorgeschlagenen Weiter-/Stoppregeln aussagekräftig, einschließlich schlechter ausgewählter und guter nicht ausgewählter Kandidaten, gemischter Ergebnisse und Ressourcenabbruch? Welches Gate folgt vor einer Übertragbarkeits- oder Gewichtungsstudie?

@@ -44,12 +44,15 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   Paaren sind die ersten 20 Schritte exakt gleich. Das belegt Budgetabhängigkeit
   für die vorgegebene Struktur und das deklarierte Startgitter; freie
   Strukturentdeckung und Übertragbarkeit bleiben offen.
-- **Nächste Methodenentscheidung:** Der [Planentwurf mit gemeinsamem Reviewauftrag](docs/free_optimizer_budget_plan_draft.md)
+- **Nächste Methodenentscheidung:** Der [nach dem Methodenreview überarbeitete Entwurf](docs/free_optimizer_budget_plan_draft.md)
   schlägt sechs frische freie Suchen vor: 20 gegen 100 lokale Optimiereriterationen,
-  beide Häufigkeitsschalter aus, je drei bekannte Entwicklungsseeds und jeweils
-  200 Suchiterationen. Die Alternative mit Häufigkeitsschaltern und ein 2×2-Design
-  werden ausdrücklich zur Prüfung gestellt. Das KI-basierte Methodenreview ist
-  vorbereitet; Entwurf, Ressourcenlimit und Gates sind noch nicht beschlossen.
+  beide Häufigkeitsschalter an, je drei bekannte Entwicklungsseeds und jeweils
+  200 Suchiterationen. Das übermittelte KI-basierte Review am Head `7ee5f38`
+  empfiehlt dieses Profil als adaptive Methodenentwicklung. Der Befund zur
+  Entscheidungsregel ist eingearbeitet: zuerst Zählvergleich, danach getrennte
+  Struktur-/Parameterbefunde derselben Originalauswahl. Gegenfälle sind im
+  [Fortsetzungsstand](docs/representation_implementation_status.md) dokumentiert.
+  Entwurf, 60-Minuten-Limit und Gates sind weiterhin nicht beschlossen.
   Keine neue Implementierung oder Suchserie ist durch den Dokumentationsstand freigegeben.
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
   bestand am Head `cfe44bf`: 1.288 Python-Tests, Julia- und technische
