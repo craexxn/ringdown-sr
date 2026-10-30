@@ -5,8 +5,8 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 30.10.2026; abgeglichener Stand auf `main`: `97672ed`
-(Übergabe aus [PR #40](https://github.com/craexxn/ringdown-sr/pull/40));
+Fortsetzungsstand: 30.10.2026; abgeglichener Stand auf `main`: `978738c`
+([PR #41](https://github.com/craexxn/ringdown-sr/pull/41));
 Ausführungsstand der Kontrollserie: `4057caa`.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
@@ -36,15 +36,13 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   drei Seeds um rund 90–97 % gegenüber der frischen Baseline. Trotzdem
   erfüllt kein Kandidat die Kurvengrenzen; der Erkenner unterstützt keine
   gefundene Struktur, Parameter und Identifikation bleiben `not_assessed`.
-- **Nächster abgegrenzter Schritt:** Über den [übermittelten KI-basierten
-  Reviewvorschlag](docs/representation_next_step_review.md#aktueller-entscheidungsstand-nach-dem-review)
-  entscheiden: einmalige Konstantenoptimiererdiagnose an einer festen
+- **Beschlossener nächster Schritt:** Den [angenommenen Diagnoseplan](docs/constant_diagnostic_plan.md)
+  umsetzen: einmalige Konstantenoptimiererdiagnose an einer festen
   Ringdown-Struktur, acht Starts, drei RNG-Initialisierungen und Vergleich
   20/2 gegen 100/2; 48 Backendaufrufe mit 60 Minuten Gesamtwandzeit als Grenze.
   Vorgegebene Struktur und wahrheitsnahe Starts sind Diagnoseprivilegien.
-  Der neue Umfang ist noch nicht beschlossen, implementiert oder ausgeführt.
-  Die abgeschlossene Kontrollserie bleibt unverändert; ein Merge des
-  Ergebnis-PRs gibt keine neuen Versuche frei.
+  Der Diagnosepfad wird auf `codex/ringdown-constant-diagnostic` implementiert
+  und technisch geprüft. Die wissenschaftliche Serie ist noch nicht ausgeführt.
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
   bestand am Head `cfe44bf`: 1.288 Python-Tests, Julia- und technische
   Integrationsprüfungen. Der Mergecommit hat denselben Dateibaum. Die

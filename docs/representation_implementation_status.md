@@ -7,6 +7,35 @@ wurde hier unabhängig nachgerechnet; der neue Entwicklungsbefund steht im
 
 ## Aktueller Fortsetzungsstand nach der Kontrollserie
 
+### Angenommene Diagnose A: Implementierung in Arbeit
+
+Der Nutzer hat den Reviewvorschlag am 30.10.2026 ausdrücklich angenommen und
+seine Umsetzung beauftragt. PR #41 ist inzwischen als `978738c38e36e7bcb82c83acb5ba85db6df078f0`
+gemergt; Remote-Branches, offene PRs, sauberer Checkout und ein Worktree geprüft.
+Neuer Branch `codex/ringdown-constant-diagnostic` ab diesem Merge, kein weiterer
+Implementierungsbranch oder offener PR beim Einstieg.
+
+Der [neue eingefrorene Plan](constant_diagnostic_plan.md) übernimmt Option A:
+48 Backendaufrufe, acht Starts, drei Seeds, 20/2 gegen 100/2, 60 Minuten.
+Die wissenschaftliche Serie bleibt für den geprüften Manjaro-Stand vorgesehen.
+Plan und erster Diagnoseentwurf werden in einem Zwischencommit gesichert;
+genauen Head mit `git rev-parse HEAD` bestimmen. Python-/Julia-Umgebung erneut
+erfolgreich geprüft: Python 3.12.14, Julia 1.13.1, PySR 2.6.0,
+SymbolicRegression 2.5.1 und PythonCall 0.9.36, Interpreter und Erweiterung.
+Beschreibbare Cachepfade und tatsächlich vorhandene Python-Bibliothek bestätigt.
+
+Erster nativer technischer Nachweis `results/constant-technical-002.json`:
+zehn reine Referenz-/Einheiten-/Aliaskontrollen und vier Optimierungen eines
+gesonderten Achtpunkt-Fixtures bestanden. Mit und ohne Beobachtung gleiche
+Parameter, Verluste, Callbackzahlen und RNG-Endzustände unter 20 und 100.
+Dieser Nachweis gilt für den damaligen Entwurf; nachfolgende Export-/Verifier-
+Ergänzungen sind noch erneut zu prüfen. Keine der 48 wissenschaftlichen Zellen
+oder freie Suchen ausgeführt. Python-Gegenfälle und CI-Einbindung sind in Arbeit.
+Nächster abgegrenzter Schritt: Export und Prozessintegration technisch prüfen,
+Abbruch-/Manipulationsgegenfälle vervollständigen, passende vollständige CI.
+
+### Gesicherter vorheriger Ergebnisstand
+
 - Beim Einstieg `main` auf `97672ed` (übernommener Dokumentationsnachtrag
   aus PR #40), keine offenen PRs und sauberer lokaler Checkout. Neuer
   Ergebnisbranch `codex/representation-control-results`, Basis `97672ed`.

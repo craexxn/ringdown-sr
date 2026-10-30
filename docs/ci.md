@@ -23,8 +23,8 @@ bleiben zulässig. Dies ist eine begrenzte Prüfung, kein vollständiger
 Markdown-Parser. Externe Webadressen und Sprungmarken innerhalb von Dateien
 werden nicht abgerufen beziehungsweise validiert.
 
-**Ausnahmen:** `docs/noiseless_control_plan.md` und
-`docs/search_representation_plan.md` sind als eingefrorene Kontrollpläne
+**Ausnahmen:** `docs/noiseless_control_plan.md`,
+`docs/search_representation_plan.md` und `docs/constant_diagnostic_plan.md` sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
 Laufzeitdokumente müssen ebenso ausdrücklich als Ausnahme erfasst werden.
