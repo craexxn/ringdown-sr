@@ -1,13 +1,72 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 30.10.2026. Freie Zeitdarstellungskontrolle und anschließende feste
+Stand: 31.10.2026. Freie Zeitdarstellungskontrolle und anschließende feste
 Konstantendiagnose sind ausgeführt. Beide vollständigen Originalarchive
 wurden unabhängig nachgerechnet. Der aktuelle Befund steht im
 [Ergebnisprotokoll der Konstantendiagnose](constant_diagnostic_results_manjaro_001.md).
 
 ## Angenommener Budgetvergleich: implementierter technischer Stand
 
-### Korrektur nach übermitteltem Implementierungsreview zu PR #45
+### Widerrufssicherung nach gezieltem Nachreview zu PR #45
+
+Erneuter Einstieg am 31.10.2026: sauberer Checkout und Remote-Head
+`b16ab10a216804500728a18bd913a5c243db2036`, weiterhin
+`codex/free-optimizer-budget`, ein Worktree. PR #45 ist offen und der einzige
+offene PR; aktuelles `main` und PR-Basis unverändert
+`722437ea4e3662bed4ef61bd363503777e44d2fe`. Keine parallelen Änderungen
+übernommen. Gepinnter Python 3.12.14 und die tatsächlich vorhandene
+Python-Bibliothek erneut bestätigt; gespeicherter Cloud-Startweg beibehalten.
+
+- **Übermitteltes KI-basiertes Nachreview:** Head `b16ab10` wie oben,
+  gezielte Basis `592a5fbca6ca0f3e8414183c227c7585ca7ea943`, PR-Basis wie oben.
+  Alle fünf Korrekturdateien, Regeln und relevante unveränderte Aufrufer geprüft;
+  31 gezielte Tests und zwei zusätzliche Fehlergegenprüfungen berichtet.
+  P2 im geprüften Umfang behoben; verbleibender P1: Ein Fehler bereits beim
+  Entfernen von `report.json` verhindert weitere Widerrufe und den gesperrten
+  Ersatzbericht. Dann kann das vollständig positive Paket zurückbleiben.
+  Kein neuer nativer Fachtest, Archivaudit oder wissenschaftlicher Suchlauf.
+- **Vorherigen CI-Nachweis hier selbst verifiziert:** Jobstatus und Logs der
+  vollständigen [CI 41122598284](https://github.com/craexxn/ringdown-sr/actions/runs/41122598284)
+  erfolgreich; 1.451 Python-Tests in 113,41 Sekunden, native Umgebung/Starttests
+  und sämtliche Integrationen einschließlich dreier technischer 20–100–20-Worker.
+  Dieser Nachweis gehört zu `b16ab10`, nicht zur nachfolgenden Korrektur.
+  Zusätzlich bestanden am damaligen Head lokal alle 1.451 Python-Tests in
+  94,98 Sekunden; im PR dokumentiert, hier keine erneute Ausführung dieses Stands.
+- **Selbst reproduziert:** beide Reviewfälle am unveränderten Head mit
+  simulierten Workern: Fehler direkt nach positivem Berichtsrename und danach
+  einmaliger `OSError` beziehungsweise `KeyboardInterrupt` beim Entfernen des
+  Berichts. Beide Gegenfälle lassen dort erwartungswidrig das positive Paket
+  zurück. Die Reproduktionen wurden vor der Korrektur ausgeführt.
+- **Implementiert:** jeden Widerruf getrennt absichern, Fehler mit Operation
+  im Abbruchbericht erhalten und sämtliche übrigen Schritte weiter versuchen.
+  Gesamtmanifest zuerst entfernen; nur fehlgeschlagene Löschungen einmal
+  zusätzlich versuchen. Danach gesperrte Berichtsausgabe und bei deren Fehler
+  separater JSON-Versuch; auch dessen letzter Löschfallback ist abgesichert.
+  Temporäre Handler und eine vorübergehende Signalmaske stellen weitere SIGINT-/SIGTERM-
+  Unterbrechungen während der Sicherung zurück und werden danach wiederhergestellt.
+  Dies wiederholt keine Suche oder Verifikation. Zeitlimit, Abschlussanker und
+  eingefrorener Methodenplan unverändert.
+- **Lokal geprüft:** 175 gezielte Tests bestanden (132 Kontroll- und 43
+  CI-Auswahlfälle), darunter zwölf neue Fälle: sechs einmalige Löschfehler nach
+  Veröffentlichung, vier wiederholte Lösch-/Persistenz-/Fallbackfehler sowie
+  echte Prozesssignale und Python-Signalauslieferung bei wiederholtem Abbruch.
+  Sperren, Erhalt der Zellartefakte und Wiederherstellung des Signalzustands
+  geprüft. Zusätzlich bestanden alle 1.463 Python-Tests in 92,91 Sekunden;
+  dieser vollständige Lauf prüft die Wechselwirkungen mit anderen Tests.
+  Ruff, Formatprüfung für 122 Pythondateien, Dokumentations-/Linkprüfung
+  für 42 Markdown-Dateien und Diffprüfung bestanden; alle vier Planprüfsummen
+  unverändert.
+- **Fortsetzbarer Stand:** neuer zusammenhängender Korrekturcommit im bestehenden
+  Branch mit Treiber, Gegenfällen, Bedienung, README und dieser Datei. Head nach
+  Commit/Push über `git rev-parse HEAD` und PR #45 bestimmen; lokale Änderungen
+  vor Fortsetzung erneut prüfen. Der aktuelle CI-Nachweis gehört zum jeweiligen
+  Head im PR; ein bestandenes Nachreview dieser Korrektur wird nicht behauptet.
+
+Nächster abgegrenzter Schritt: vollständige technische CI des neuen Korrekturheads
+prüfen und gezieltes KI-basiertes Nachreview ausschließlich der Widerrufs- und
+Abbruchsicherung. Nicht eigenständig mergen; keine wissenschaftliche Cloud-Serie.
+
+### Historisch: Korrektur nach erstem Implementierungsreview zu PR #45
 
 Erneuter Einstieg am 30.10.2026: sauberer Checkout auf
 `592a5fbca6ca0f3e8414183c227c7585ca7ea943`, Branch
@@ -66,7 +125,7 @@ und diese Basis, nicht auf den nun geänderten Stand.
   vor Fortsetzung lokale Änderungen erneut prüfen. Der grüne CI-Nachweis
   `41109750849` gehört ausschließlich zum vorherigen Head, nicht zur Korrektur.
 
-Nächster abgegrenzter Schritt: vollständige technische CI am Korrekturhead im
+Damals nächster abgegrenzter Schritt: vollständige technische CI am Korrekturhead im
 bestehenden PR #45 prüfen und ein gezieltes
 Nachreview der Finalisierung/Zeitbegrenzung durchführen lassen. Nicht mergen;
 keine wissenschaftliche Cloud-Serie. Erst nach diesen Prüfungen folgt der

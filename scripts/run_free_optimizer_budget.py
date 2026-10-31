@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from contextlib import ExitStack
 from pathlib import Path
 
 import numpy as np
@@ -573,35 +574,77 @@ def finalize(output, report, anchors, unchanged, clock):
 
 def retain_incomplete(output, report, error, clock):
     """Revoke public success artifacts before attempting best-effort abort output."""
-    clock.cancel()
-    report.update(
-        status="incomplete",
-        final_verification="failed",
-        final_verification_error=f"{type(error).__name__}: {error}",
-        finished_at_utc=_utc_now(),
-        wall_seconds=time.monotonic() - clock.started,
+    previous_mask = signal.pthread_sigmask(
+        signal.SIG_BLOCK, {signal.SIGINT, signal.SIGTERM}
     )
-    report.update(comparison(report["cells"], final_verified=False))
-    for name in (
-        "report.json",
-        "summary.md",
-        "checksums.json",
-        "report.json.tmp",
-        "summary.md.tmp",
-        "checksums.json.tmp",
-    ):
-        (output / name).unlink(missing_ok=True)
-    try:
-        save_report(output, report)
-    except BaseException as persistence_error:  # noqa: BLE001 -- Never retain a positive report when abort persistence fails.
-        report["abort_persistence_error"] = (
-            f"{type(persistence_error).__name__}: {persistence_error}"
+    with ExitStack() as signals:
+        # Restore handlers before unmasking pending cancellations. Deferring
+        # handlers also cover process signals received through another thread.
+        signals.callback(signal.pthread_sigmask, signal.SIG_SETMASK, previous_mask)
+        received = []
+
+        def defer(signum, frame):
+            received.append(signum)
+
+        for signum in (signal.SIGINT, signal.SIGTERM):
+            previous = signal.signal(signum, defer)
+            signals.callback(signal.signal, signum, previous)
+        clock.cancel()
+        report.update(
+            status="incomplete",
+            final_verification="failed",
+            final_verification_error=f"{type(error).__name__}: {error}",
+            finished_at_utc=_utc_now(),
+            wall_seconds=time.monotonic() - clock.started,
+            abort_cleanup_errors=[],
+            abort_signals=received,
         )
-        # A failed summary must not prevent retaining the locked machine report.
+        report.update(comparison(report["cells"], final_verified=False))
+
+        def attempt(operation, action):
+            try:
+                action()
+            except BaseException as cleanup_error:  # noqa: BLE001 -- Each revocation must survive another failure or interruption.
+                report["abort_cleanup_errors"].append(
+                    {
+                        "operation": operation,
+                        "error": f"{type(cleanup_error).__name__}: {cleanup_error}",
+                    }
+                )
+                return False
+            return True
+
+        failed = []
+        for name in (
+            "checksums.json",
+            "report.json",
+            "summary.md",
+            "report.json.tmp",
+            "summary.md.tmp",
+            "checksums.json.tmp",
+        ):
+            path = output / name
+            if not attempt("unlink " + name, lambda p=path: p.unlink(missing_ok=True)):
+                failed.append(path)
+        # Retry only failed removals once; never rerun a worker or verification.
+        for path in failed:
+            attempt(
+                "unlink retry " + path.name, lambda p=path: p.unlink(missing_ok=True)
+            )
         try:
-            _write_json(output / "report.json", report)
-        except BaseException:  # noqa: BLE001 -- Missing report is safer than a stale positive one.
-            (output / "report.json").unlink(missing_ok=True)
+            save_report(output, report)
+        except BaseException as persistence_error:  # noqa: BLE001 -- Never let a failed summary prevent the locked machine report.
+            report["abort_persistence_error"] = (
+                f"{type(persistence_error).__name__}: {persistence_error}"
+            )
+            if not attempt(
+                "write locked report",
+                lambda: _write_json(output / "report.json", report),
+            ):
+                attempt(
+                    "remove unpersisted report",
+                    lambda: (output / "report.json").unlink(missing_ok=True),
+                )
 
 
 def run(archive, output, *, label):

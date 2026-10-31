@@ -2,6 +2,7 @@
 
 import copy
 import json
+import os
 import signal
 import subprocess
 import sys
@@ -512,6 +513,153 @@ def test_publication_failures_revoke_success_even_after_the_final_rename(
         DRIVER.run(runtime.archive, output, label="fixture")
     assert injected and len(runtime.calls) == 6
     assert_locked_package(output)
+
+
+@pytest.mark.parametrize("error_type", [OSError, KeyboardInterrupt])
+@pytest.mark.parametrize("name", ["report.json", "summary.md", "checksums.json"])
+def test_failed_first_revocation_still_locks_the_published_package(
+    runtime, monkeypatch, tmp_path, error_type, name
+):
+    output = tmp_path / "failed-first-revocation"
+    replace, unlink = type(output).replace, type(output).unlink
+    published, interrupted = False, False
+    attempted = []
+
+    def publish(path, target):
+        nonlocal published
+        result = replace(path, target)
+        if (
+            target == output / "report.json"
+            and not published
+            and json.loads(target.read_bytes())["final_verification"] == "passed"
+        ):
+            published = True
+            raise RuntimeError("primary failure after publication")
+        return result
+
+    def revoke(path, *args, **kwargs):
+        nonlocal interrupted
+        if published and path.parent == output:
+            attempted.append(path.name)
+            if path.name == name and not interrupted:
+                interrupted = True
+                raise error_type("first report revocation failed")
+        return unlink(path, *args, **kwargs)
+
+    monkeypatch.setattr(type(output), "replace", publish)
+    monkeypatch.setattr(type(output), "unlink", revoke)
+    with pytest.raises((RuntimeError, error_type)) as caught:
+        DRIVER.run(runtime.archive, output, label="fixture")
+    assert published and interrupted and len(runtime.calls) == 6
+    assert_locked_package(output)
+    assert {"report.json", "summary.md", "checksums.json"} <= set(attempted)
+    assert isinstance(caught.value, RuntimeError)
+    assert str(caught.value) == "primary failure after publication"
+
+
+@pytest.mark.parametrize("error_type", [OSError, KeyboardInterrupt])
+@pytest.mark.parametrize("fault", ["removals", "summary_and_fallback"])
+def test_repeated_revocation_errors_do_not_skip_remaining_abort_actions(
+    runtime, monkeypatch, tmp_path, error_type, fault
+):
+    output = tmp_path / "repeated-revocation-errors"
+    report = DRIVER.run(runtime.archive, output, label="fixture")
+    artifact = output / "cell-01/result.json"
+    original_artifact = artifact.read_bytes()
+    unlink, write_text, write_json = (
+        type(output).unlink,
+        type(output).write_text,
+        DRIVER._write_json,
+    )
+    attempts = []
+
+    def revoke(path, *args, **kwargs):
+        if path.parent == output:
+            attempts.append(path.name)
+            if fault == "removals" or (
+                path.name == "report.json" and attempts.count(path.name) == 2
+            ):
+                raise error_type("revocation remains unavailable")
+        return unlink(path, *args, **kwargs)
+
+    def summary(path, *args, **kwargs):
+        if fault == "summary_and_fallback" and path == output / "summary.md.tmp":
+            raise error_type("abort summary unavailable")
+        return write_text(path, *args, **kwargs)
+
+    def machine_report(path, value):
+        if fault == "summary_and_fallback" and path == output / "report.json":
+            raise error_type("fallback report unavailable")
+        return write_json(path, value)
+
+    monkeypatch.setattr(type(output), "unlink", revoke)
+    monkeypatch.setattr(type(output), "write_text", summary)
+    monkeypatch.setattr(DRIVER, "_write_json", machine_report)
+    clock = SimpleNamespace(started=DRIVER.time.monotonic(), cancel=lambda: None)
+    DRIVER.retain_incomplete(output, report, RuntimeError("primary failure"), clock)
+    assert artifact.read_bytes() == original_artifact
+    assert {"checksums.json", "report.json", "summary.md"} <= set(attempts)
+    assert report["status"] == "incomplete" and report["comparison"] is None
+    if fault == "removals":
+        assert len(attempts) == 12
+        saved = json.loads((output / "report.json").read_bytes())
+        assert saved["status"] == "incomplete" and saved["comparison"] is None
+        assert "C20=" not in (output / "summary.md").read_text()
+        manifest = json.loads((output / "checksums.json").read_bytes())
+        assert manifest["report.json"] != _sha256((output / "report.json").read_bytes())
+    else:
+        assert not (output / "report.json").exists()
+        assert not (output / "summary.md").exists()
+        assert not (output / "checksums.json").exists()
+        assert "abort_persistence_error" in report
+        assert {e["operation"] for e in report["abort_cleanup_errors"]} == {
+            "write locked report",
+            "remove unpersisted report",
+        }
+
+
+@pytest.mark.parametrize("delivery", ["process_signal", "python_callback"])
+def test_repeated_cancellation_is_deferred_until_revocation_and_restores_state(
+    runtime, monkeypatch, tmp_path, delivery
+):
+    output = tmp_path / "repeated-cancellation"
+    report = DRIVER.run(runtime.archive, output, label="fixture")
+    unlink = type(output).unlink
+    cancellations = {signal.SIGINT, signal.SIGTERM}
+    previous_mask = signal.pthread_sigmask(signal.SIG_UNBLOCK, cancellations)
+    previous_handlers = {s: signal.getsignal(s) for s in cancellations}
+    delivered = []
+
+    def observe(signum, frame):
+        saved = json.loads((output / "report.json").read_bytes())
+        assert saved["status"] == "incomplete" and saved["comparison"] is None
+        delivered.append(signum)
+
+    def revoke(path, *args, **kwargs):
+        if path.parent == output:
+            for signum in cancellations:
+                if delivery == "process_signal":
+                    os.kill(os.getpid(), signum)
+                else:
+                    # Model Python delivery through a different unblocked thread.
+                    signal.getsignal(signum)(signum, None)
+        return unlink(path, *args, **kwargs)
+
+    try:
+        for signum in cancellations:
+            signal.signal(signum, observe)
+        monkeypatch.setattr(type(output), "unlink", revoke)
+        clock = SimpleNamespace(started=DRIVER.time.monotonic(), cancel=lambda: None)
+        DRIVER.retain_incomplete(output, report, RuntimeError("primary failure"), clock)
+        assert_locked_package(output)
+        assert not report["abort_cleanup_errors"]
+        assert cancellations <= set(delivered + report["abort_signals"])
+        assert all(signal.getsignal(s) is observe for s in cancellations)
+        assert not signal.pthread_sigmask(signal.SIG_BLOCK, set()) & cancellations
+    finally:
+        for signum, handler in previous_handlers.items():
+            signal.signal(signum, handler)
+        signal.pthread_sigmask(signal.SIG_SETMASK, previous_mask)
 
 
 @pytest.mark.parametrize(

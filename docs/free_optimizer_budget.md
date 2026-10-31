@@ -112,6 +112,15 @@ Haswell/Threadlimit 1 gilt für diesen Kontrollpfad, nicht als allgemeiner Stand
   Abschlussphase hinterlassen einen unvollständigen Bericht mit gesperrten
   Aggregaten. Auch eine bereits erfolgte Veröffentlichung wird im Fehlerfall
   zurückgenommen. Verifizierte Zellartefakte und Logs bleiben erhalten.
+  Die Widerrufsschritte sind einzeln abgesichert: Ein Löschfehler oder eine
+  weitere Unterbrechung verhindert weder die übrigen Schritte noch den Versuch,
+  den gesperrten Bericht zu schreiben. Fehlgeschlagene Löschungen werden genau
+  einmal erneut versucht; dies wiederholt keine Suche oder Verifikation.
+  SIGINT/SIGTERM werden während dieses kritischen Abschnitts zurückgestellt;
+  anschließend werden Signalhandler und vorherige Signalmaske wiederhergestellt.
+  `abort_cleanup_errors` dokumentiert Fehler je Widerruf, `abort_signals` die
+  dabei vom temporären Handler empfangenen Signale. Scheitert die gemeinsame
+  Berichtsausgabe, wird der gesperrte JSON-Bericht nochmals separat versucht.
 - `summary.md`: kurze Übersicht der Zellen und des vergleichenden Kurvenbefunds.
   Gruppenstatistiken mit endlichen Nennern, Seed-Differenzen und Erfolgswechsel
   werden erst nach sechs vollständig geprüften Zellen und bestandener
@@ -120,7 +129,9 @@ Haswell/Threadlimit 1 gilt für diesen Kontrollpfad, nicht als allgemeiner Stand
   keine externe Authentifizierung von Gerät oder Ausführung. Der Verzeichnis-
   durchlauf prüft konsumierte Dateien unmittelbar gegen ihre ursprünglichen
   Anker; konsistent neu berechnete Zellmanifeste ersetzen diese Anker nicht.
-  Bei einem fehlgeschlagenen Abschluss wird das Gesamtmanifest entfernt.
+  Bei einem fehlgeschlagenen Abschluss wird zuerst versucht, das Gesamtmanifest
+  zu entfernen. Scheitert dessen Entfernung dauerhaft, stimmt das alte Manifest
+  nicht mehr mit dem gesperrten Ersatzbericht überein; es ist keine Abschlussfreigabe.
   Scheitert auch die Sicherung des Abbruchberichts, bleibt keine alte positive
   Berichtsdatei als Ersatz stehen. Fehlende Abschlussdateien sind keine Freigabe.
 

@@ -5,7 +5,7 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 30.10.2026; abgeglichener Stand auf `main`: `722437e`
+Fortsetzungsstand: 31.10.2026; abgeglichener Stand auf `main`: `722437e`
 ([PR #44](https://github.com/craexxn/ringdown-sr/pull/44));
 Ausführungsstand der Konstantendiagnose: `0a70f19`, der freien Kontrollserie: `4057caa`.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
@@ -53,10 +53,10 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   `codex/free-optimizer-budget` implementiert. Die lokale technische
   Prozessprüfung ist bestanden. Implementierung und aktueller vollständiger
   CI-Nachweis stehen in [PR #45](https://github.com/craexxn/ringdown-sr/pull/45);
-  das übermittelte KI-basierte Implementierungsreview fand zwei Fehler bei
-  Abschlussfreigabe und Zeitlimit. Die Korrektur mit Fehlergegenfällen ist im
-  selben Branch umgesetzt; vollständige CI und gezieltes Nachreview des
-  korrigierten Abschlusses sind vor der Serie zu prüfen.
+  das übermittelte KI-basierte Nachreview bestätigt die Zeitbegrenzung, fand
+  aber eine verbleibende Lücke beim Widerruf positiver Abschlussdateien.
+  Deren Korrektur und Gegenfälle sind im selben Branch umgesetzt;
+  vollständige CI und gezieltes Nachreview der Widerrufssicherung stehen aus.
   Die einmalige Manjaro-Ausführung steht aus.
   [Bedienung und Artefakte](docs/free_optimizer_budget.md).
   Dies ist adaptive Methodenentwicklung,
