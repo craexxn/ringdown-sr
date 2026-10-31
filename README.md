@@ -5,8 +5,8 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 30.10.2026; abgeglichener Stand auf `main`: `0a70f19`
-([PR #42](https://github.com/craexxn/ringdown-sr/pull/42));
+Fortsetzungsstand: 31.10.2026; abgeglichener Stand auf `main`: `722437e`
+([PR #44](https://github.com/craexxn/ringdown-sr/pull/44));
 Ausführungsstand der Konstantendiagnose: `0a70f19`, der freien Kontrollserie: `4057caa`.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
@@ -44,16 +44,23 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   Paaren sind die ersten 20 Schritte exakt gleich. Das belegt Budgetabhängigkeit
   für die vorgegebene Struktur und das deklarierte Startgitter; freie
   Strukturentdeckung und Übertragbarkeit bleiben offen.
-- **Nächste Methodenentscheidung:** Der [nach dem Methodenreview überarbeitete Entwurf](docs/free_optimizer_budget_plan_draft.md)
-  schlägt sechs frische freie Suchen vor: 20 gegen 100 lokale Optimiereriterationen,
-  beide Häufigkeitsschalter an, je drei bekannte Entwicklungsseeds und jeweils
-  200 Suchiterationen. Das übermittelte KI-basierte Review am Head `7ee5f38`
-  empfiehlt dieses Profil als adaptive Methodenentwicklung. Der Befund zur
-  Entscheidungsregel ist eingearbeitet: zuerst Zählvergleich, danach getrennte
-  Struktur-/Parameterbefunde derselben Originalauswahl. Gegenfälle sind im
-  [Fortsetzungsstand](docs/representation_implementation_status.md) dokumentiert.
-  Entwurf, 60-Minuten-Limit und Gates sind weiterhin nicht beschlossen.
-  Keine neue Implementierung oder Suchserie ist durch den Dokumentationsstand freigegeben.
+- **Freier Budgetvergleich beschlossen:** Der [eingefrorene Methodenplan](docs/free_optimizer_budget_plan.md)
+  sieht sechs frische freie Suchen vor: 20 gegen 100 lokale Optimiereriterationen,
+  beide Häufigkeitsschalter an, drei bekannte Entwicklungsseeds, je 200 Suchiterationen
+  und 60 Minuten Gesamtlimit. Die korrigierten Entscheidungsregeln trennen den
+  Zählvergleich von Struktur-/Parameterbefunden derselben Originalauswahl.
+  PR #44 ist übernommen; der getrennte Kontrollpfad ist auf
+  `codex/free-optimizer-budget` implementiert. Die lokale technische
+  Prozessprüfung ist bestanden. Implementierung und aktueller vollständiger
+  CI-Nachweis stehen in [PR #45](https://github.com/craexxn/ringdown-sr/pull/45);
+  das übermittelte KI-basierte Nachreview bestätigt die Zeitbegrenzung, fand
+  aber eine verbleibende Lücke beim Widerruf positiver Abschlussdateien.
+  Deren Korrektur und Gegenfälle sind im selben Branch umgesetzt;
+  vollständige CI und gezieltes Nachreview der Widerrufssicherung stehen aus.
+  Die einmalige Manjaro-Ausführung steht aus.
+  [Bedienung und Artefakte](docs/free_optimizer_budget.md).
+  Dies ist adaptive Methodenentwicklung,
+  keine Festlegung eines Produktionsprofils oder allgemeine Leistungsvalidierung.
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
   bestand am Head `cfe44bf`: 1.288 Python-Tests, Julia- und technische
   Integrationsprüfungen. Der Mergecommit hat denselben Dateibaum. Die

@@ -1,11 +1,218 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 30.10.2026. Freie Zeitdarstellungskontrolle und anschließende feste
+Stand: 31.10.2026. Freie Zeitdarstellungskontrolle und anschließende feste
 Konstantendiagnose sind ausgeführt. Beide vollständigen Originalarchive
 wurden unabhängig nachgerechnet. Der aktuelle Befund steht im
 [Ergebnisprotokoll der Konstantendiagnose](constant_diagnostic_results_manjaro_001.md).
 
-## Freier Budgetvergleich nach übermitteltem Methodenreview
+## Angenommener Budgetvergleich: implementierter technischer Stand
+
+### Widerrufssicherung nach gezieltem Nachreview zu PR #45
+
+Erneuter Einstieg am 31.10.2026: sauberer Checkout und Remote-Head
+`b16ab10a216804500728a18bd913a5c243db2036`, weiterhin
+`codex/free-optimizer-budget`, ein Worktree. PR #45 ist offen und der einzige
+offene PR; aktuelles `main` und PR-Basis unverändert
+`722437ea4e3662bed4ef61bd363503777e44d2fe`. Keine parallelen Änderungen
+übernommen. Gepinnter Python 3.12.14 und die tatsächlich vorhandene
+Python-Bibliothek erneut bestätigt; gespeicherter Cloud-Startweg beibehalten.
+
+- **Übermitteltes KI-basiertes Nachreview:** Head `b16ab10` wie oben,
+  gezielte Basis `592a5fbca6ca0f3e8414183c227c7585ca7ea943`, PR-Basis wie oben.
+  Alle fünf Korrekturdateien, Regeln und relevante unveränderte Aufrufer geprüft;
+  31 gezielte Tests und zwei zusätzliche Fehlergegenprüfungen berichtet.
+  P2 im geprüften Umfang behoben; verbleibender P1: Ein Fehler bereits beim
+  Entfernen von `report.json` verhindert weitere Widerrufe und den gesperrten
+  Ersatzbericht. Dann kann das vollständig positive Paket zurückbleiben.
+  Kein neuer nativer Fachtest, Archivaudit oder wissenschaftlicher Suchlauf.
+- **Vorherigen CI-Nachweis hier selbst verifiziert:** Jobstatus und Logs der
+  vollständigen [CI 41122598284](https://github.com/craexxn/ringdown-sr/actions/runs/41122598284)
+  erfolgreich; 1.451 Python-Tests in 113,41 Sekunden, native Umgebung/Starttests
+  und sämtliche Integrationen einschließlich dreier technischer 20–100–20-Worker.
+  Dieser Nachweis gehört zu `b16ab10`, nicht zur nachfolgenden Korrektur.
+  Zusätzlich bestanden am damaligen Head lokal alle 1.451 Python-Tests in
+  94,98 Sekunden; im PR dokumentiert, hier keine erneute Ausführung dieses Stands.
+- **Selbst reproduziert:** beide Reviewfälle am unveränderten Head mit
+  simulierten Workern: Fehler direkt nach positivem Berichtsrename und danach
+  einmaliger `OSError` beziehungsweise `KeyboardInterrupt` beim Entfernen des
+  Berichts. Beide Gegenfälle lassen dort erwartungswidrig das positive Paket
+  zurück. Die Reproduktionen wurden vor der Korrektur ausgeführt.
+- **Implementiert:** jeden Widerruf getrennt absichern, Fehler mit Operation
+  im Abbruchbericht erhalten und sämtliche übrigen Schritte weiter versuchen.
+  Gesamtmanifest zuerst entfernen; nur fehlgeschlagene Löschungen einmal
+  zusätzlich versuchen. Danach gesperrte Berichtsausgabe und bei deren Fehler
+  separater JSON-Versuch; auch dessen letzter Löschfallback ist abgesichert.
+  Temporäre Handler und eine vorübergehende Signalmaske stellen weitere SIGINT-/SIGTERM-
+  Unterbrechungen während der Sicherung zurück und werden danach wiederhergestellt.
+  Dies wiederholt keine Suche oder Verifikation. Zeitlimit, Abschlussanker und
+  eingefrorener Methodenplan unverändert.
+- **Lokal geprüft:** 175 gezielte Tests bestanden (132 Kontroll- und 43
+  CI-Auswahlfälle), darunter zwölf neue Fälle: sechs einmalige Löschfehler nach
+  Veröffentlichung, vier wiederholte Lösch-/Persistenz-/Fallbackfehler sowie
+  echte Prozesssignale und Python-Signalauslieferung bei wiederholtem Abbruch.
+  Sperren, Erhalt der Zellartefakte und Wiederherstellung des Signalzustands
+  geprüft. Zusätzlich bestanden alle 1.463 Python-Tests in 92,91 Sekunden;
+  dieser vollständige Lauf prüft die Wechselwirkungen mit anderen Tests.
+  Ruff, Formatprüfung für 122 Pythondateien, Dokumentations-/Linkprüfung
+  für 42 Markdown-Dateien und Diffprüfung bestanden; alle vier Planprüfsummen
+  unverändert.
+- **Fortsetzbarer Stand:** neuer zusammenhängender Korrekturcommit im bestehenden
+  Branch mit Treiber, Gegenfällen, Bedienung, README und dieser Datei. Head nach
+  Commit/Push über `git rev-parse HEAD` und PR #45 bestimmen; lokale Änderungen
+  vor Fortsetzung erneut prüfen. Der aktuelle CI-Nachweis gehört zum jeweiligen
+  Head im PR; ein bestandenes Nachreview dieser Korrektur wird nicht behauptet.
+
+Nächster abgegrenzter Schritt: vollständige technische CI des neuen Korrekturheads
+prüfen und gezieltes KI-basiertes Nachreview ausschließlich der Widerrufs- und
+Abbruchsicherung. Nicht eigenständig mergen; keine wissenschaftliche Cloud-Serie.
+
+### Historisch: Korrektur nach erstem Implementierungsreview zu PR #45
+
+Erneuter Einstieg am 30.10.2026: sauberer Checkout auf
+`592a5fbca6ca0f3e8414183c227c7585ca7ea943`, Branch
+`codex/free-optimizer-budget`, ein Worktree, lokaler/Remote-Head identisch.
+PR #45 ist der einzige offene PR; Basis und aktuelles `main` weiterhin
+`722437ea4e3662bed4ef61bd363503777e44d2fe`. Keine parallele Fortsetzung
+übernommen. Der folgende übermittelte Befund bezieht sich auf diesen Head
+und diese Basis, nicht auf den nun geänderten Stand.
+
+- **Übermitteltes KI-basiertes Review:** alle 18 PR-Dateien und relevante
+  unveränderte Abhängigkeiten geprüft; 135 gezielte Tests und vier separate
+  Fehlergegenprüfungen ausgeführt. CI [41109750849](https://github.com/craexxn/ringdown-sr/actions/runs/41109750849)
+  mit 1.423 Python-Tests und nativen Integrationen über GitHub verifiziert.
+  Temporärer CI-Mergecommit `a3ff9cf29d9a2049f108b96f6d374958ce9ae423`
+  hat denselben Dateibaum wie der geprüfte PR-Head. Keine neuen nativen Tests,
+  wissenschaftlichen Suchen/Fits oder Archivaudits im Review berichtet.
+- **P1:** Positive Berichte konnten nach einer unterbrochenen Zusammenfassung,
+  fehlgeschlagenem Gesamtmanifest oder spät konsistent neugehashten Zellartefakten
+  zurückbleiben. **P2:** Während letzter Prüfoperationen überschrittene
+  Gesamtwandzeit konnte trotzdem zur Freigabe führen. Die übrige Methodentreue
+  wurde im geprüften Umfang bestätigt. Gezieltes Nachreview dieser zwei
+  Korrekturen erforderlich; keine vollständige zusätzliche Reviewrunde.
+- **Hier selbst reproduziert:** vier neue Gegenfälle am tatsächlichen Treiber
+  mit simulierten Workern schlagen am unveränderten Reviewstand erwartungsgemäß
+  fehl: Tastaturabbruch der letzten Zusammenfassung, Schreibfehler des
+  Gesamtmanifests, späte Änderung samt Zellneuhashung und Zeitüberschreitung
+  während des letzten Verzeichnisdurchlaufs. Keine Suche oder Optimierung.
+- **Korrektur implementiert:** gesamte Abschlussphase im Fehlerpfad; Berichte
+  und Manifest zunächst vorbereiten, alle konsumierten Bytes auch bei der
+  Manifestbildung gegen die ursprünglichen Anker prüfen. Weitere Paketdateien
+  beim ersten Abschlusslesen einfrieren; Zellmanifeste im Gesamtmanifest erhalten.
+  Positiver `report.json` als letzter atomarer Veröffentlichungsschritt nach
+  erneuter Integritäts-/Zeitprüfung. Bei Fehler oder Unterbrechung werden
+  positive Abschlussdateien entfernt, Aggregate gesperrt und Einzelartefakte
+  erhalten; fehlgeschlagene Abbruchsicherung erzeugt keinen Ersatz-Erfolg.
+- **Zeitbegrenzung implementiert:** unverändert 3.600 Sekunden; Prüfungen
+  vor/nach Dateioperationen und während blockweiser Hashbildung, zusätzlich
+  POSIX-Wandzeittimer für blockierende Elternprozessarbeit. Abschließende
+  Zeitprüfung auch nach dem Berichtsrename; Zeitüberschreitung widerruft die
+  Freigabe. Fremden aktiven Timer ablehnen, eigenen Timer/Signalzustand
+  anschließend wiederherstellen. Nach einem Abbruch nur Teilstandssicherung.
+- **Lokal geprüft:** 163 gezielte Tests bestanden (120 Kontroll- und 43
+  CI-Auswahlfälle), darunter 28 neue Gegenfälle: die vier Reproduktionen,
+  Fehler vor/nach allen drei Veröffentlichungen, Zeitüberschreitungen in acht
+  Abschlussphasen, echter Timerabbruch blockierender Elternprozessarbeit und
+  Erhalt eines fremden Timers. Zusätzliche Fälle prüfen spätere Zelländerung
+  samt konsistenter Zell-/Gesamtneuhashung und wiederholtes Scheitern der
+  Abbruchzusammenfassung. Ruff, Formatprüfung für 122 Pythondateien,
+  Dokumentations-/Linkprüfung für 42 Markdown-Dateien und Diffprüfung bestanden.
+  Alle vier eingefrorenen
+  Planprüfsummen unverändert; keine Pins, Budgets, Seeds oder Kriterien geändert.
+- **Fortsetzbarer Stand:** Treiber, Gegenfälle, Bedienungsdokumentation, README
+  und dieses Dokument bilden einen zusammenhängenden Korrekturcommit im
+  bestehenden Branch. Den gesicherten Head nach Commit/Push mit
+  `git rev-parse HEAD` und PR #45 bestimmen;
+  vor Fortsetzung lokale Änderungen erneut prüfen. Der grüne CI-Nachweis
+  `41109750849` gehört ausschließlich zum vorherigen Head, nicht zur Korrektur.
+
+Damals nächster abgegrenzter Schritt: vollständige technische CI am Korrekturhead im
+bestehenden PR #45 prüfen und ein gezieltes
+Nachreview der Finalisierung/Zeitbegrenzung durchführen lassen. Nicht mergen;
+keine wissenschaftliche Cloud-Serie. Erst nach diesen Prüfungen folgt der
+gesonderte Manjaro-Start am freigegebenen Stand.
+
+### Historischer Implementierungs- und Prüfnachweis vor dem Review
+
+Der korrigierte Beschluss aus PR #44 ist ausdrücklich angenommen. PR #44 wurde
+nach Prüfung des Heads `8fe947cfad5787609962955b4ce2d2fbbf113c39` und der grünen
+Dokumentations-CI [41105409445](https://github.com/craexxn/ringdown-sr/actions/runs/41105409445)
+als `722437ea4e3662bed4ef61bd363503777e44d2fe` gemergt. Sauberer Einstieg, ein
+Worktree und keine parallele Fortsetzung; eigener Implementierungsbranch
+`codex/free-optimizer-budget` ab diesem Merge.
+
+- **Beschlossen und eingefroren:** [Methodenplan](free_optimizer_budget_plan.md),
+  Commit `bb4862034b49b89dcc37d8341814e42aa02989c5`, SHA-256
+  `b63e66461e3a380f9e8ca5c127e8c5f99cd2a0d574be7be1603f18f56292907b`.
+  Sechs freie Suchen, beide Schalter an, 20/2 gegen 100/2, drei bekannte Seeds,
+  feste Reihenfolge, je 200 Suchiterationen und 60 Minuten einschließlich
+  Vorprüfungen/Abschlussverifikation. Originalauswahl, Grenzen, korrigierte
+  Entscheidungsregeln und vollständige Berichtssperre sind verbindlich.
+- **Implementiert:** `free_optimizer_budget.py`, eigener nativer Guard
+  `FreeOptimizerBudget.jl`, isolierter Worker, Treiber und Options-/Referenzprüfer.
+  Bestehender numerischer Callback und allgemeine Suchdefaults erhalten.
+  Sämtliche Optionen/Plugins/Seeds einschließlich erster Zelle werden absolut
+  geprüft, dann gegen echte Prototypen verglichen. Optimierertoleranzen und
+  Callback bleiben unverändert; Newton- und BFGS-Pfade werden nicht ersetzt.
+- Alle Kandidaten, Reihenfolge und Originalindex bleiben erhalten; Vorhersagen,
+  Residuen und MSE jedes Kandidaten werden geprüft. Getrennte Such-/physikalische
+  Diagnosen und bestehende Replaygates; gleiche erfolgreiche Originalauswahl
+  für unterstützte Rekonstruktion erforderlich. `physical_identification` bleibt
+  `not_assessed`; der Achtelraster-Blindfleck bleibt dokumentiert.
+- Quellen, Pins, Plan, Daten und konsumierte Kopien werden vor Verbrauch und
+  abschließend gegen eingefrorene Bytes geprüft. SIGTERM, Tastaturabbruch,
+  Zeitlimit und Workerfehler erhalten Teilstände und stoppen die Prozessgruppe.
+  Gruppen, Paardifferenzen und Erfolgswechsel bleiben bis zu sechs vollständigen
+  Zellen und bestandener Abschlussprüfung gesperrt.
+- **Hier ausgeführt:** Python-/Julia-Umgebungscheck einschließlich PythonCall-
+  Bindung bestanden: Python 3.12.14, Julia 1.13.1, PySR 2.6.0,
+  SymbolicRegression 2.5.1. Pythonbibliothek aus dem Projektinterpreter ermittelt
+  und vorhanden; Cachepfade beschreibbar. Gespeicherte lokale Startdatei genutzt,
+  Proxy/TLS unverändert, Haswell nur für die Kontrollbefehle.
+- Sechs echte native Optionsobjekte ohne Fit/Suche geprüft; sechs feste
+  250-/4346-/33018-Hz-Referenzbäume, Einheiten- und falsche Seed-/Budgetfälle
+  unter beiden Budgets bestanden. Quellenabgleich der gepinnten Backendaufrufer
+  bestätigt dieselben Optimierereinstellungen auch im Ein-Konstanten-Newtonpfad.
+- **Technische Integration bestanden:** drei frische Worker auf einem separaten
+  Achtpunkt-Signal `y=1+t`, je zwei Suchiterationen, 20–100–20; ursprüngliche
+  20er-Fronten exakt identisch. Tatsächlich geladene BLAS-Pools vor/nach jedem
+  Fit mit Haswell und Limit 1 geprüft. Lokale Artefakte:
+  `results/free-budget-technical-dev-002/`. Dies ist kein wissenschaftlicher
+  Kontrolllauf und keine Leistungsvalidierung.
+- Erster technischer Anlauf unter `results/free-budget-technical-dev-001/`
+  bleibt erhalten: nach erfolgreich exportiertem ersten Worker lehnte der
+  neue Python-Verifier das zusätzliche bestehende RNG-Statusfeld fälschlich ab.
+  Vergleich auf die beiden absolut geprüften Seedfelder korrigiert; vollständige
+  RNG-Aufnahme bleibt erhalten, kein vollständiger RNG-Checkpoint behauptet.
+- Am Implementierungscheckpoint `a92c77d8e1c74d1bafd5232490c712378d7f0acc`
+  bestanden alle 1.419 Python-Tests in 90,61 Sekunden; zuvor 88 neue fokussierte
+  Fälle und zusammen mit CI-Auswahlfällen 131 Tests. Ruff, Format- und
+  Dokumentationsprüfung bestanden.
+- Anschließend den Abgleich der Laufzeitkopien vor dem ersten Vorprüfungsstart
+  ergänzt: bereits beim Kopieren an ursprüngliche Quellhashes binden und vor
+  jedem Verbrauch alle Laufzeitdateien erneut gegen diese Anker prüfen.
+  Vier neue Gegenfälle weisen die Ablehnung veränderter Kopien vor jedem
+  Codeaufruf nach. Danach 135 gezielte Tests bestanden (92 neue Kontrollfälle
+  und 43 CI-Auswahlfälle); die vollständige CI prüft den abschließenden Stand. Gegenfälle umfassen die
+  Reviewregel, erste/spätere Zellfehler, Profile/Plugins/Optionen, Originalindex,
+  Residuen/MSE, späte konsistent neugehashte Manipulation, Abbruch und Prozess-
+  gruppenstopp. Alle vier Laufzeitpläne sind der vollständigen CI zugeordnet.
+- Zusätzliche Quellprüfung gesichert in
+  `9c64051201ab5b1cd80c70cee55be58012a3a590`. [PR #45](https://github.com/craexxn/ringdown-sr/pull/45)
+  ist geöffnet, Vergleichsbasis `722437ea4e3662bed4ef61bd363503777e44d2fe`.
+  Aktuellen vollständigen CI-Nachweis samt Head im PR prüfen; der PR-Text hält
+  das abschließende Prüfergebnis fest. [Bedienung](free_optimizer_budget.md)
+  ergänzt. Nach Push des Dokumentationsabschlusses ist der Checkout sauber;
+  vor Fortsetzung Commit und lokale Änderungen mit `git status --short --branch`
+  und `git rev-parse HEAD` erneut bestimmen.
+
+Damals nächster abgegrenzter Schritt: vollständige Integrations-CI am finalen PR-Head
+prüfen und den Nachweis im PR ergänzen; anschließend kann PR #45 übernommen
+werden. Nicht selbstständig mergen. Die sechs wissenschaftlichen Suchen werden im Rahmen
+aller technischen Prüfungen nicht in der Cloud gestartet; einmalige Manjaro-
+Ausführung erst am technisch geprüften Stand. Kein Produktionsprofil und keine
+Übertragbarkeits-/Gewichtungsstudie freigegeben.
+
+## Historisch: freier Budgetvergleich nach übermitteltem Methodenreview
 
 Der [überarbeitete Entwurf](free_optimizer_budget_plan_draft.md) liegt weiterhin
 im bestehenden Ergebnisbranch `codex/constant-diagnostic-results` und
