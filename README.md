@@ -71,7 +71,11 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   zwischen gespeichertem Verlust und beiden aktuellen Replays mit offener Ursache.
   Die [gebundene Verifikationsergänzung](docs/search_trajectory_replay_policy.md)
   trennt diese Nachweise und schließt ungeklärte Mitglieder von positiven
-  Markern aus. Die Umsetzung wird technisch geprüft; eine neue wissenschaftliche
+  Markern aus. Das übermittelte KI-basierte Review zu PR #48 fand im geprüften
+  Umfang keine Code- oder Methodenbefunde. Der erste vollständige CI-Lauf wurde
+  bei 30 Minuten Joblimit in der letzten Haswell-Prüfung abgebrochen; der
+  technische Job erhält 45 Minuten Gesamtzeit. Der vollständige Erfolg am neuen
+  Head bleibt vor Merge nachzuweisen. Eine neue wissenschaftliche
   Serie ist erst nach geprüftem Stand und gesonderter Freigabe vorgesehen.
   [Bedienung und Artefakte](docs/search_trajectory.md) sowie der
   [Fortsetzungsstand](docs/representation_implementation_status.md) halten

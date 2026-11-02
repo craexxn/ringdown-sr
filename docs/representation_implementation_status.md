@@ -8,6 +8,39 @@ nachzuweisen.
 
 ## Aktuell: Getrennte Beobachtungsreplays
 
+- Nachtrag vom 02.11.2026 im vorhandenen Cloud-Checkout: Arbeitsstand sauber,
+  ein Worktree; bestehenden Remote-Branch `codex/trajectory-replay-verification`
+  auf `2d9b028ac33ea7c9433eacf8140844cacdb206d0` geladen. PR #48 ist der einzige
+  offene PR; Basis unverändert `41ccdd27aaa4ade56b509493089241d6695b9757`.
+  Der zuvor lokale Stand von PR #45 bleibt als eigener Branch erhalten.
+- Übermitteltes KI-basiertes Review dieses Heads gegen diese Basis: keine
+  korrekturbedürftigen Code- oder Methodenbefunde in allen 18 geänderten Dateien
+  und relevanten Aufrufern. Vierzehn zusätzliche Gegenprüfungen berichtet,
+  einschließlich rationaler MSE-Nachrechnung der fünf Fälle. Kein neuer
+  Originalarchivaudit; Fallauszüge ersetzen den Herkunftsnachweis nicht.
+- CI [41425713993](https://github.com/craexxn/ringdown-sr/actions/runs/41425713993)
+  hier anhand Status, Schritten und Logs kontrolliert: sämtliche Schritte vor
+  der letzten Haswell-Prüfung erfolgreich, insgesamt aber `cancelled`.
+  Jobstart 10:04:05 UTC, Abbruch 10:35:15 UTC bei 30 Minuten Joblimit;
+  die erste Haswell-Wiederholung war verifiziert, die zweite bereits gestartet.
+  Ein vollständiger erfolgreicher Pflichtnachweis fehlt damit weiterhin.
+- Begrenzte CI-Korrektur: ausschließlich Joblimit von 30 auf 45 Minuten erhöhen
+  und den Status dokumentieren. Kein Prüfschritt, Suchbudget, wissenschaftliches
+  Zeitlimit, Versionspin oder Laufzeitplan wird geändert. Der neue Head benötigt
+  einen vollständig erfolgreichen CI-Lauf; das Review der Implementierung bleibt
+  ausdrücklich an `2d9b028` gebunden. Kein weiterer Code-Review ohne relevante
+  Änderung oder neuen Fehlerhinweis erforderlich.
+- Nächster Schritt: gebündelten CI-Korrekturcommit im bestehenden PR sichern
+  und den vollständigen Lauf einschließlich zweier letzter Haswell-Suchen
+  kontrollieren. Aktuellen Head und CI-Nachweis im PR bestimmen. Nicht mergen;
+  ein frischer wissenschaftlicher Sechszellenlauf bleibt gesondert zu entscheiden.
+- Lokal für diesen CI-Nachtrag geprüft: 45 CI-Auswahltests, Dokumentations-
+  und Linkprüfung für 47 Markdown-Dateien sowie `git diff --check` bestanden.
+  Die beiden Planprüfsummen stimmen unverändert. Der wissenschaftliche Code,
+  Tests, Julia-Dateien und Pins bleiben gegenüber dem Reviewhead unverändert.
+
+Die folgenden Implementierungsnachweise beschreiben den zuvor geprüften Stand:
+
 - Basis: `41ccdd27aaa4ade56b509493089241d6695b9757`, Dateibaum
   `04ade5ae24d3823d92ffaf7a595d58671203f8d6`; beim Einstieg keine offenen PRs.
   Arbeitsbranch: `codex/trajectory-replay-verification`.
