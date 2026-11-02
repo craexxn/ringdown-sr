@@ -5,9 +5,10 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 31.10.2026; abgeglichener Stand auf `main`: `722437e`
-([PR #44](https://github.com/craexxn/ringdown-sr/pull/44));
-Ausführungsstand der Konstantendiagnose: `0a70f19`, der freien Kontrollserie: `4057caa`.
+Fortsetzungsstand: 02.11.2026; abgeglichener Stand auf `main`: `8bdc8db`
+([PR #45](https://github.com/craexxn/ringdown-sr/pull/45)).
+Vorgegebener Stand des freien Budgetlaufs: `8bdc8db`; frühere Ausführungsstände:
+Konstantendiagnose `0a70f19`, Zeitdarstellungskontrolle `4057caa`.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
@@ -44,23 +45,25 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   Paaren sind die ersten 20 Schritte exakt gleich. Das belegt Budgetabhängigkeit
   für die vorgegebene Struktur und das deklarierte Startgitter; freie
   Strukturentdeckung und Übertragbarkeit bleiben offen.
-- **Freier Budgetvergleich beschlossen:** Der [eingefrorene Methodenplan](docs/free_optimizer_budget_plan.md)
-  sieht sechs frische freie Suchen vor: 20 gegen 100 lokale Optimiereriterationen,
-  beide Häufigkeitsschalter an, drei bekannte Entwicklungsseeds, je 200 Suchiterationen
-  und 60 Minuten Gesamtlimit. Die korrigierten Entscheidungsregeln trennen den
-  Zählvergleich von Struktur-/Parameterbefunden derselben Originalauswahl.
-  PR #44 ist übernommen; der getrennte Kontrollpfad ist auf
-  `codex/free-optimizer-budget` implementiert. Die lokale technische
-  Prozessprüfung ist bestanden. Implementierung und aktueller vollständiger
-  CI-Nachweis stehen in [PR #45](https://github.com/craexxn/ringdown-sr/pull/45);
-  das übermittelte KI-basierte Nachreview bestätigt die Zeitbegrenzung, fand
-  aber eine verbleibende Lücke beim Widerruf positiver Abschlussdateien.
-  Deren Korrektur und Gegenfälle sind im selben Branch umgesetzt;
-  vollständige CI und gezieltes Nachreview der Widerrufssicherung stehen aus.
-  Die einmalige Manjaro-Ausführung steht aus.
+- **Freier Budgetvergleich abgeschlossen übermittelt:** PR #45 ist übernommen;
+  vollständige technische CI und gezieltes Nachreview der Widerrufssicherung
+  sind am baumgleichen Head `4e29ae4` abgeschlossen. Die
+  [Manjaro-Auswertung](docs/free_optimizer_budget_results_manjaro_001.md) meldet
+  sechs vollständige Zellen und bestandene Abschlussverifikation.
+  100/2 senkt die Trainings-MSE bei allen drei bekannten Seeds um rund 64–80 %;
+  trotzdem 0/3 erfolgreiche Originalauswahlen unter beiden Budgets und kein
+  Kurvenerfolg unter insgesamt 50 Frontkandidaten. Beim Seed 20261021 steigt
+  der Maximalfehler. Sechs gepostete Formeln und ihre 30 Fehlerwerte wurden
+  unabhängig nachgerechnet; der vollständige Originalarchiv-Audit bleibt offen.
   [Bedienung und Artefakte](docs/free_optimizer_budget.md).
-  Dies ist adaptive Methodenentwicklung,
-  keine Festlegung eines Produktionsprofils oder allgemeine Leistungsvalidierung.
+- **Nächste Methodenentscheidung:** Der
+  [Entwurf zur begrenzten Suchverlaufsbeobachtung](docs/search_trajectory_plan_draft.md)
+  schlägt drei beobachtete 100/2-Läufe mit drei frischen Kontrollläufen vor.
+  Feste Populationsaufnahmen beantworten keine vollständige Mutationshistorie.
+  Der Entwurf ist noch nicht angenommen oder implementiert; zuerst gezielt
+  methodisch prüfen und über Durchführung oder Eingrenzung/Pause entscheiden.
+  Keine automatische weitere Budgetstufe, kein Produktionsprofil und keine
+  allgemeine Leistungsvalidierung.
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
   bestand am Head `cfe44bf`: 1.288 Python-Tests, Julia- und technische
   Integrationsprüfungen. Der Mergecommit hat denselben Dateibaum. Die
@@ -74,7 +77,7 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   Die [vollständige CI zu PR #42](https://github.com/craexxn/ringdown-sr/actions/runs/41062609710)
   bestand am Head `9202d20`. Der neue Originalarchiv-Audit prüft 48 Fits,
   144 lokale Verläufe und 6.506 Zustände; dabei keine neue Optimierung.
-- **Offen:** Ursache der Suchstagnation; wissenschaftliche Formelauswahl,
+- **Offen:** Ursache der ausbleibenden freien Rekonstruktion; wissenschaftliche Formelauswahl,
   numerisches Forschungsprofil und statistischer Versuchsplan vor einer
   Leistungsstudie. Dazu die [offenen Reproduzierbarkeitsentscheidungen](docs/reproducibility_decisions.md)
   und die Grenzen des neuen Methodenplans verwenden. Hauptversuche und
