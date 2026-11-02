@@ -1,11 +1,60 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 02.11.2026. Die freie Budgetserie ist als vollständig abgeschlossen
-übermittelt. Aktueller [Befund](free_optimizer_budget_results_manjaro_001.md)
-und [Beobachtungsentwurf](search_trajectory_plan_draft.md) führen die nächste
-Methodenentscheidung; die folgenden älteren Abschnitte sind historische Nachweise.
+Stand: 02.11.2026. Der korrigierte Beobachtungsplan ist angenommen;
+der getrennte technische Pfad ist implementiert und wird technisch geprüft.
+Die freie Budgetserie bleibt
+als vollständig abgeschlossen übermittelt; ihr [Befund](free_optimizer_budget_results_manjaro_001.md)
+und die Grenzen der fehlenden Originalarchivprüfung bleiben erhalten.
 
-## Aktuell: Budgetergebnis und begrenzter Beobachtungsentwurf
+## Aktuell: Umsetzung der angenommenen Suchbeobachtung
+
+- PR #46 ist übernommen. Remote-`main` beim Einstieg:
+  `930e3d064d68233368a8c3decfc3115fe62a42c5`, Dateibaum
+  `393acb29553c33b0b2a41588ac78f27bba7a5612`; keine offenen PRs.
+  Lokaler sauberer Snapshot ist vollständig baumgleich. Seine lokale
+  Commitgeschichte ist weiterhin keine Nachbildung der Remote-Geschichte.
+- Arbeitsbranch: `codex/search-trajectory-control`.
+  Vorherige Checkouts und Arbeitsstände bleiben erhalten.
+- Angenommen am 02.11.2026: sechs Zellen, maximal 60 Minuten insgesamt,
+  600 Sekunden je Worker und 256 MiB je beobachteter Zelle.
+  Der [eingefrorene Plan](search_trajectory_plan.md) liegt unter
+  `fbfbc3781f80968f978b388e32bfc8375d6f8725`, SHA-256
+  `fcc52e4099f197df676adc10c3163fc78e87d2a2d4661488b9ce929512da37f3`.
+  Er übernimmt die korrigierte Interpretationsregel aus PR #46.
+- Implementiert: passiver nativer Beobachter, getrennter Worker und Serientreiber,
+  Prüfung und nachgelagerte Auswertung der Aufnahmen sowie gezielte technische
+  Gegenfälle. Die bisherigen Suchpfade und vier eingefrorenen Pläne bleiben
+  unverändert. Die neue Planbindung ist in der vollen CI erfasst.
+  [Bedienung und Artefakte](search_trajectory.md) beschreiben die spätere
+  Manjaro-Ausführung und die getrennten Aufwands-/Beobachtungsnachweise.
+- Gezielt lokal bestanden: 68 Auswertungstests, 29 Treibertests,
+  elf Worker-Grenztests und 44 Tests der CI-Zuordnung. Ruff und
+  Formatprüfung über den gesamten Stand und Dokumentationsprüfung für
+  46 Markdown-Dateien bestanden.
+- Vollständiger erster Windows-Lauf (`a460701`): 1.451 bestanden, 105 fehlgeschlagen,
+  einer übersprungen. Sämtliche Fehler betreffen unveränderte Prüfpfade:
+  100 fehlende Unix-Signal-/Timerfunktionen, fünf fehlende Symlink-Rechte.
+  Alle 105 Fehler im unveränderten Ausgangsbaum separat reproduziert
+  (7 bestanden, dieselben 105 fehlgeschlagen). Den verbindlichen Linux-CI-Nachweis
+  hält [PR #47](https://github.com/craexxn/ringdown-sr/pull/47) mit exaktem Bezugsstand fest. Die Windows-Suite ist damit
+  ausdrücklich nicht als vollständig bestanden ausgewiesen.
+- Lokale Python-Ausführung mit 3.12.14 ist verfügbar. Julia ist lokal derzeit
+  nicht auffindbar; native Options-, Zustands- und aus/an/aus-Prüfungen müssen
+  deshalb über die vollständige technische CI nachgewiesen werden.
+- Die erste CI zu `a460701` bestand 1.557 Python-Tests und die Julia-Umgebungs-/Startprüfungen.
+  Die neue Optionsprüfung wies die vom Backend vorangestellte Beobachterposition
+  zurück. Die korrigierte Übergabe liefert nun die drei unveränderten Basisplugins
+  ausdrücklich vor dem Beobachter; die absolute Reihenfolgeprüfung bleibt bestehen.
+  Außerdem ist der native Modulpfad einer technischen Fixture korrigiert und die
+  getrennte Verlaufsauswertung auch für Baumformen ergänzt. Der abschließende
+  native Nachweis ist im PR zu prüfen.
+- Keine wissenschaftliche Beobachtungsserie ausgeführt. Implementierung,
+  Prüfnachweise und verbleibende Punkte werden im zugehörigen PR mit exaktem
+  Head dokumentiert; erst danach einmalige Manjaro-Ausführung.
+
+Die folgenden Abschnitte halten die vorherigen Beschluss- und Prüfnachweise fest.
+
+## Historisch: Budgetergebnis und begrenzter Beobachtungsentwurf
 
 - Remote-`main` beim Einstieg:
   `8bdc8dbc498be6e8527fa2a857293bf74b42f81f`, PR #45 übernommen;

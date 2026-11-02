@@ -4,6 +4,10 @@ Stand: 02.11.2026. **Vorschlag zur Methodenentscheidung, nicht eingefroren.**
 Dieser Text ist kein Laufzeitinput und erteilt keine Freigabe für neue Suchen.
 Bestehende vier Laufzeitpläne bleiben unverändert.
 
+Historischer Entwurfsstand: Die korrigierte Fassung wurde am 02.11.2026
+angenommen. Verbindlich für die Umsetzung ist der separate
+[eingefrorene Methodenplan](search_trajectory_plan.md).
+
 ## 1. Anlass, Frage und Anspruch
 
 Der [freie Budgetvergleich](free_optimizer_budget_results_manjaro_001.md)

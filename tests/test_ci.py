@@ -33,6 +33,7 @@ def test_only_allowed_prose_can_skip_the_technical_suite(paths):
         "docs/search_representation_plan.md",
         "docs/constant_diagnostic_plan.md",
         "docs/free_optimizer_budget_plan.md",
+        "docs/search_trajectory_plan.md",
         "docs/reference.npz",
         "other.md",
     ],
