@@ -1,13 +1,97 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 31.10.2026. Freie Zeitdarstellungskontrolle und anschließende feste
-Konstantendiagnose sind ausgeführt. Beide vollständigen Originalarchive
-wurden unabhängig nachgerechnet. Der aktuelle Befund steht im
-[Ergebnisprotokoll der Konstantendiagnose](constant_diagnostic_results_manjaro_001.md).
+Stand: 02.11.2026. Die freie Budgetserie ist als vollständig abgeschlossen
+übermittelt. Aktueller [Befund](free_optimizer_budget_results_manjaro_001.md)
+und [Beobachtungsentwurf](search_trajectory_plan_draft.md) führen die nächste
+Methodenentscheidung; die folgenden älteren Abschnitte sind historische Nachweise.
 
-## Angenommener Budgetvergleich: implementierter technischer Stand
+## Aktuell: Budgetergebnis und begrenzter Beobachtungsentwurf
 
-### Widerrufssicherung nach gezieltem Nachreview zu PR #45
+- Remote-`main` beim Einstieg:
+  `8bdc8dbc498be6e8527fa2a857293bf74b42f81f`, PR #45 übernommen;
+  keine offenen PRs vor diesem Dokumentationsauftrag.
+- Geprüfter PR-Head `4e29ae44d8e481eb96af128f06e8db7666fff934` und Merge
+  haben denselben Git-Tree `ab0e06f36d4cdb2ccf5c27ec53e9bc8b5ebbe099`.
+  Die [vollständige CI](https://github.com/craexxn/ringdown-sr/actions/runs/41190324974)
+  ist erfolgreich; Run- und Jobstatus mit sämtlichen technischen Schritten
+  hier lesend bestätigt. Der PR dokumentiert 1463 Python-Tests und den
+  Abschluss des übermittelten gezielten KI-basierten Nachreviews ohne
+  verbleibende Befunde zur Widerrufs-/Abbruchsicherung.
+  Keine neue Wiederholung dieser Tests oder dieses Reviews.
+- Auf Manjaro sind sechs Zellen `completed` und Abschlussverifikation
+  `passed` übermittelt. Archivname `free-budget-manjaro-001.tar.gz`,
+  übermittelte SHA-256
+  `77fb34ff6ee139c1f2e0fbbb6acd81d7c1623cd6e8090056f641961e887ad33f`.
+  Das Originalarchiv lag diesem Auswertungsschritt nicht vor:
+  keine unabhängig bestätigte Archivprüfsumme, Manifestprüfung oder
+  archivierte Git-/Backendherkunft behaupten.
+- Eigene Nachrechnung der sechs geposteten Anzeigeformeln:
+  128 Trainings- und 889 Diagnosepunkte, alle 30 MSE/RMS/Max-Werte bis
+  auf Float64-Rundung reproduziert. Vollständige Zahlen, Formeln,
+  Aufwandsangaben und Prüfgrenzen stehen ausschließlich im Ergebnisdokument.
+- Ergebnis: kleinere MSE/RMS unter 100/2 bei 3/3 Seeds, aber
+  `C20=C100=0`, auch keine kurvenguten ungewählten Kandidaten.
+  Der größere Maximalfehler bei Seed 20261021 bleibt sichtbar.
+  Keine allgemeine Überlegenheit, keine nachträgliche Auswahl und kein
+  Nachweis eines einzelnen Struktur-/Optimiererengpasses.
+- Arbeitsbranch: `codex/free-budget-results-and-trajectory-plan`,
+  Basis der oben genannte Merge. Genau vier Dokumentationsdateien:
+  Ergebnis, neuer Entwurf, README und dieses Fortsetzungsdokument.
+  Den veröffentlichten Head über den zugehörigen PR bestimmen.
+- Lokaler Einstieg: ältere Windows-Checkouts und Worktrees geprüft;
+  ein älterer Arbeitsbranch enthält noch unvollständige Änderungen.
+  Diese bleiben unangetastet. Für diesen Auftrag separater Dateibaum
+  mit allen 144 Repositorydateien aufgebaut und gegen den tatsächlichen
+  Git-Tree des aktuellen `main` vollständig abgeglichen.
+  Die lokale Snapshot-Historie ist keine Nachbildung der Remote-Historie;
+  der veröffentlichte Dokumentationscommit basiert direkt auf `8bdc8db`.
+- Beim ersten Dokumentationsabschluss war die lokale Ausführungsumgebung
+  nicht mehr verfügbar. Die [schlanke CI am Head `aa04a9c`](https://github.com/craexxn/ringdown-sr/actions/runs/41399099106)
+  bestand mit 44 Markdown-Dateien und korrekt ausgelassenen technischen
+  Schritten; der getestete Mergebaum entspricht dem Head.
+  Beim Einstieg zur Reviewkorrektur ist die Windows-Ausführungsumgebung
+  wieder verfügbar. Frühere lokale Arbeitsstände bleiben erhalten.
+- Neuer Methodenentwurf: sechs frische 100/2-Läufe aus/an gepaart,
+  nur feste zurückgegebene Populationen und globale Hall of Fame beobachten.
+  Backend-Hook quellengeprüft; keine vollständige Vorschlags-/Verwerfungshistorie.
+  Das übermittelte Methodenreview bestätigt auch die Plugin-Durchleitung
+  im PySR-2.6.0-Quellcode. Die tatsächliche technische Nichtbeeinflussung
+  muss vor Ausführung nachgewiesen werden; alle vorgeschlagenen Grenzen
+  sind weiterhin ausdrücklich anzunehmen.
+- Übermitteltes KI-basiertes Methodenreview zu PR #46:
+  Head `aa04a9c49de331c878669907b1bc6a246918d704`,
+  Basis `8bdc8dbc498be6e8527fa2a857293bf74b42f81f`.
+  Vier Dokumentationsänderungen, Arbeitsregeln und relevante Backendquellen
+  geprüft; ein P2 zur Interpretation fehlender Frontzugehörigkeit, keine
+  weiteren korrekturbedürftigen Befunde berichtet. Unabhängige Nachrechnung
+  der sechs Anzeigeformeln, 30 Fehlerwerte und des Filtergegenfalls sowie
+  CI-/Quellenprüfungen sind als Reviewnachweise übermittelt.
+  Kein Audit des weiterhin fehlenden neuen Originalarchivs.
+- Korrektur: Frontzugehörigkeit und zeitliches Auftreten werden getrennt.
+  Späteres Fehlen verlangt entsprechende vergleichbare Populations- oder
+  Hall-of-Fame-Aufnahmen. Backend-Filterregel selbst quellengeprüft und
+  synthetischen Gegenfall gezielt nachgerechnet; keine neue Suche, kein
+  Fit oder nativer Beobachtertest. Details stehen in Abschnitt 7 des Entwurfs.
+  Der vollständige Korrekturcommit und seine Prüfnachweise werden im PR
+  festgehalten. Keine erneute vollständige Methodenrunde.
+
+Nächster abgegrenzter Schritt: über den korrigierten Entwurf entscheiden,
+einschließlich sechs Zellen und der Grenzen von 60 Minuten insgesamt,
+600 Sekunden je Worker und 256 MiB Beobachtungsdateien je beobachteter Zelle.
+Annahme und anschließende Umsetzung oder Eingrenzung/Pause bleiben offen.
+Noch keine Beobachterimplementierung oder neue wissenschaftliche Serie;
+kein eigenständiger Merge.
+
+Die vier eingefrorenen Laufzeitpläne, Quellen, Pins und Originalergebnisse
+bleiben unverändert. Der neue Entwurf wird von keinem Laufzeitpfad konsumiert
+und benötigt derzeit nur den schlanken Dokumentations-CI-Pfad.
+Die Prüfungen dieses Dokumentationsheads werden im PR mit exaktem Commit
+festgehalten; kein zusätzlicher Statuscommit nur für den CI-Abschluss.
+
+## Historisch: Budgetvergleich vor abschließendem CI-/Reviewabschluss
+
+
+### Widerrufssicherung nach gezieltem Nachreview zu PR #45 (31.10.2026)
 
 Erneuter Einstieg am 31.10.2026: sauberer Checkout und Remote-Head
 `b16ab10a216804500728a18bd913a5c243db2036`, weiterhin
@@ -62,7 +146,7 @@ Python-Bibliothek erneut bestätigt; gespeicherter Cloud-Startweg beibehalten.
   vor Fortsetzung erneut prüfen. Der aktuelle CI-Nachweis gehört zum jeweiligen
   Head im PR; ein bestandenes Nachreview dieser Korrektur wird nicht behauptet.
 
-Nächster abgegrenzter Schritt: vollständige technische CI des neuen Korrekturheads
+Damals nächster abgegrenzter Schritt: vollständige technische CI des neuen Korrekturheads
 prüfen und gezieltes KI-basiertes Nachreview ausschließlich der Widerrufs- und
 Abbruchsicherung. Nicht eigenständig mergen; keine wissenschaftliche Cloud-Serie.
 
@@ -593,7 +677,7 @@ Abschlussprüfung dem eingefrorenen Plan.
   zugehöriger Gegenfall ergänzt. 210 fokussierte Tests bestanden.
   Ruff, Formatierung, lokale Links und `git diff --check` bestanden.
 
-## Offen und nächster abgegrenzter Schritt
+## Historisch: nächste Schritte vor Annahme des freien Budgetplans
 
 1. Den unabhängig nachgerechneten [Diagnosebefund](constant_diagnostic_results_manjaro_001.md)
    als abgeschlossenen Entwicklungsbefund sichern und beurteilen.
