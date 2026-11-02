@@ -60,8 +60,11 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   [Entwurf zur begrenzten Suchverlaufsbeobachtung](docs/search_trajectory_plan_draft.md)
   schlägt drei beobachtete 100/2-Läufe mit drei frischen Kontrollläufen vor.
   Feste Populationsaufnahmen beantworten keine vollständige Mutationshistorie.
-  Der Entwurf ist noch nicht angenommen oder implementiert; zuerst gezielt
-  methodisch prüfen und über Durchführung oder Eingrenzung/Pause entscheiden.
+  Das übermittelte KI-basierte Methodenreview empfiehlt den Entwurf nach
+  Korrektur einer Interpretationsregel: fehlende Frontzugehörigkeit belegt
+  kein zeitliches Verschwinden. Die Regel ist korrigiert und gezielt
+  gegengeprüft. Annahme der sechs Zellen und Grenzen sowie Umsetzung stehen
+  noch aus; als Nächstes über Durchführung oder Eingrenzung/Pause entscheiden.
   Keine automatische weitere Budgetstufe, kein Produktionsprofil und keine
   allgemeine Leistungsvalidierung.
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)

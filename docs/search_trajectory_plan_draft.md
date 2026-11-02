@@ -46,10 +46,12 @@ daneben berichtet, ersetzen aber keinen aktuellen Kontrolllauf.
 | Grammatik oder Modellfamilie einschränken | Stärkerer Strukturprior, möglicherweise enger und planbarer | Legitime Alternative; Forschungsanspruch und Referenzvergleich gesondert beschließen |
 | Freie Rekonstruktion vorläufig pausieren | Aufwand begrenzen und vorhandene Befunde ausarbeiten | Legitime Alternative vor oder nach dieser Diagnose |
 
-Vor Implementierung einmalig gezielt methodisch prüfen: Ist die eingeschränkte
-Beobachtbarkeit den Aufwand wert? Danach genau diesen Plan annehmen oder eine
-Alternative wählen. Eine Änderung der Fragestellung oder zusätzliche Arme
-werden nicht während der Ausführung ergänzt.
+Das übermittelte KI-basierte Methodenreview empfiehlt diesen begrenzten
+Entwurf nach Korrektur der Interpretationsregel in Abschnitt 7.
+Vor Implementierung bleibt zu entscheiden, ob der deskriptive Erkenntnisgewinn
+den Aufwand rechtfertigt: genau diesen Plan annehmen oder eine Alternative
+wählen. Eine Änderung der Fragestellung oder zusätzliche Arme werden nicht
+während der Ausführung ergänzt.
 
 ## 3. Konkreter Beobachtungspunkt im gepinnten Backend
 
@@ -172,7 +174,9 @@ Vor einer wissenschaftlichen Ausführung erforderlich:
 
 1. Durchleitung des eigenen Plugins durch tatsächlich installiertes PySR
    2.6.0 und native Optionsobjekte ohne Fit prüfen. Die Julia-Schnittstelle
-   ist quellengeprüft; die Python-seitige Durchleitung ist noch offen.
+   ist quellengeprüft; das übermittelte Methodenreview bestätigt auch die
+   vorgesehene Durchleitung im PySR-2.6.0-Quellcode. Der tatsächliche
+   technische Nachweis mit dem eigenen Beobachter bleibt erforderlich.
 2. Technische Beispielpopulationen einschließlich nichtendlicher Werte:
    Baum-Roundtrip, Konstantenbits, Slots und Backendmetadaten prüfen.
    Hookaufrufe dürfen RNG, Originalpopulation, Caches und bestehende
@@ -222,8 +226,9 @@ Für die beobachteten Mitglieder getrennt ausweisen:
   bleiben mit Status sichtbar und zählen niemals als Erfolge.
   Export-/Verifikationsfehler sind von gültigen schlechten Suchmitgliedern zu trennen.
 - Erstes/letztes beobachtetes Auftreten und Anzahl der Aufnahmen je vollständigem
-  Baum beziehungsweise gesondert je Baumform; außerdem Auftreten in globaler
-  Hall of Fame und endgültiger exportierter Originalfront.
+  Baum beziehungsweise gesondert je Baumform, getrennt nach zurückgegebener
+  Population und globaler Hall of Fame. Die Zugehörigkeit zur endgültigen
+  exportierten Originalfront ist ein eigenes Merkmal ohne zeitliche Aussage.
 - Aufwand für Suche, Beobachtung und Offline-Auswertung getrennt. Callbackzahlen
   bleiben keine Zahl eindeutiger Strukturen oder tatsächlicher Optimiererschritte.
 
@@ -244,16 +249,41 @@ bestandener Abschlussverifikation. Sonst nur gekennzeichnete Einzelbefunde.
 | --- | --- |
 | Kein unterstützter Baum an den festen Beobachtungspunkten | In diesen Aufnahmen nicht gesehen; nicht „nie erzeugt“. Keine automatische Ausweitung auf Mutationshistorie. Eingrenzung/Pause oder neuer begründeter Plan entscheiden. |
 | Unterstützte Strukturen vorhanden, aber Kurvengrenzen verfehlt | Passende Baumformen sind an Rückgabepunkten vorhanden, ihre beobachteten Konstanten passen unzureichend. Kein isolierter Nachweis eines Optimiererengpasses. |
-| Kurvenguter beobachteter Baum fehlt in der endgültigen Front | Zeitlich begrenztes Auftreten ist dokumentiert; Ursache seines späteren Fehlens bleibt offen. Keine nachträgliche Ersatzwahl. |
+| Kurvenguter beobachteter Baum nicht in der endgültigen Front enthalten | Beobachtet, aber nicht in der endgültigen Front enthalten. Daraus folgt kein zeitliches Verschwinden aus Population oder Hall of Fame. Keine nachträgliche Ersatzwahl. |
 | Gute Frontkandidaten vorhanden, Originalauswahl unzureichend | Separate Auswahlfrage; Kriterien nicht nachträglich umstellen. |
 | Erfolgreiche Originalauswahl | Entwicklungsbefund dieses frischen Laufs; keine nachträgliche Änderung des alten Budgetvergleichs und keine Freigabe einer allgemeinen Rauschstudie. |
 | Beobachter verändert exportierte Ergebnisse oder Daten fehlen | Nichtbeeinflussung/Vollständigkeit nicht bestätigt; keine vergleichende Suchverlaufsaussage. Technisches Vorgehen gesondert entscheiden. |
 
+Die [Pareto-Filterung des gepinnten Backends](https://github.com/astroautomata/SymbolicRegression.jl/blob/v2.5.1/src/HallOfFame.jl#L163)
+übernimmt einen vorhandenen Hall-of-Fame-Baum nur, wenn sein Trainingsverlust
+strikt kleiner als der jedes vorhandenen einfacheren Baums ist.
+Ein einfacherer Baum mit kleinerem oder gleichem Verlust kann ihn daher aus
+der Front ausschließen, obwohl er weiterhin seinen Hall-of-Fame-Platz belegt.
+Die Filterfunktion verändert diese Belegung nicht.
+
+Gezielter synthetischer, dimensionsloser Gegenfall: Für `y=1+t` besteht
+auch `q=t+exp(0.0001*t)` auf den 128 Trainings- und 889 Diagnoseabzissen
+beide Kurvengrenzen. Eigene Float64-Nachrechnung ergibt relativ etwa
+`1.77e-6` RMS und `3.01e-6` Maximum; die Trainings-MSE beträgt etwa
+`3.22e-12`. Der einfachere exakte Baum `1+t` hat Verlust null und
+schließt `q` aus der Front aus, ohne dessen Hall-of-Fame-Platz zu leeren.
+Das ist eine Gegenprüfung der Interpretationsregel ohne Suche oder Fit,
+kein Nachweis eines tatsächlichen Ringdown-Suchverlaufs.
+
+Ein späteres Fehlen muss anhand der entsprechenden Aufnahmen getrennt
+für Population und Hall of Fame belegt werden. Dabei muss die betrachtete
+Population vergleichbar sein: Fehlen in einer später zurückgegebenen
+anderen oder nicht zuordenbaren Population belegt kein Verschwinden aus
+der zuvor beobachteten Population oder allen Populationen.
+Ohne diese Zuordnung nur das Vorkommen in den jeweiligen Aufnahmen berichten.
+Auch ein belegtes Fehlen zu einem späteren Aufnahmezeitpunkt beweist kein
+dauerhaftes Verschwinden zwischen oder nach den Aufnahmen.
+
 Mehrere Beobachtungen können gleichzeitig zutreffen und werden gemeinsam
-berichtet. Aus „vorhanden“ oder „später nicht mehr vorhanden“ folgt ohne
+berichtet. Frontzugehörigkeit, beobachtetes zeitliches Auftreten und
+Strukturstatus bleiben getrennt. Aus diesen Merkmalen folgt ohne
 entsprechende Ereignisdaten keine konkrete Mutations-, Selektions- oder
-Optimierungsgeschichte. Diese eingeschränkte Beobachtbarkeit ist der
-bewusste Preis des begrenzten ersten Entwurfs.
+Optimierungsgeschichte.
 
 ## 8. Beschluss- und Prüfstatus
 
@@ -262,14 +292,21 @@ Zahlen, Messpunkte und Grenzen dieses Entwurfs sind noch nicht angenommen.
 Noch keine neue Implementierung, kein technischer Beobachtertest und
 kein wissenschaftlicher Diagnoselauf.
 
-Nächster Schritt: ein gezieltes KI-basiertes Methodenreview dieses Entwurfs
-und seiner Evidenzgrenzen. Danach ausdrücklicher Beschluss über Durchführung
-oder Alternative. Erst nach Annahme eingefrorenen Laufzeitplan und getrennten
+Übermitteltes KI-basiertes Methodenreview zu
+[PR #46](https://github.com/craexxn/ringdown-sr/pull/46):
+Head `aa04a9c49de331c878669907b1bc6a246918d704`,
+Basis `8bdc8dbc498be6e8527fa2a857293bf74b42f81f`.
+Geprüft wurden die vier Dokumentationsänderungen, Arbeitsregeln und
+relevanten Backendquellen. Ein P2-Befund zur Gleichsetzung fehlender
+Frontzugehörigkeit mit zeitlichem Verschwinden; keine weiteren
+korrekturbedürftigen Befunde berichtet. Die Regel ist hier korrigiert
+und anhand der Backendquelle sowie des synthetischen Gegenfalls gezielt
+gegengeprüft. Eine erneute vollständige Methodenrunde ist nicht erforderlich.
+Vollständiger Korrekturcommit und seine Dokumentationsprüfungen stehen im PR.
+
+Nächster Schritt ist der ausdrückliche Beschluss über die sechs Zellen,
+die organisatorischen Grenzen und Durchführung oder Alternative.
+Erst nach Annahme eingefrorenen Laufzeitplan und getrennten
 Implementierungspfad erstellen; anschließend technische Prüfungen und einmalige
 Manjaro-Ausführung. Ein bei Umsetzung konsumierter Plan gehört in die volle
 CI-Ausnahme; dieser noch nicht konsumierte Entwurf bleibt reine Dokumentation.
-
-Der Reviewauftrag soll PR, vollständigen Head, Basis und Umfang nennen:
-Beobachtbarkeit der Backend-Hooks, geeignete Kontrollen, Datenrollen,
-Grenzen der Rückschlüsse, Aufwand und Abbruchregeln. Kein routinemäßiger
-Nachreview früherer freigegebener Implementierungen.

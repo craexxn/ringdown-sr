@@ -45,19 +45,40 @@ Methodenentscheidung; die folgenden älteren Abschnitte sind historische Nachwei
   Git-Tree des aktuellen `main` vollständig abgeglichen.
   Die lokale Snapshot-Historie ist keine Nachbildung der Remote-Historie;
   der veröffentlichte Dokumentationscommit basiert direkt auf `8bdc8db`.
-- Beim Abschluss war die lokale Ausführungsumgebung nicht mehr verfügbar.
-  Die vorbereiteten Texte bleiben erhalten; abschließende Prüfungen über
-  die schlanke GitHub-CI am veröffentlichten Head dokumentieren.
+- Beim ersten Dokumentationsabschluss war die lokale Ausführungsumgebung
+  nicht mehr verfügbar. Die [schlanke CI am Head `aa04a9c`](https://github.com/craexxn/ringdown-sr/actions/runs/41399099106)
+  bestand mit 44 Markdown-Dateien und korrekt ausgelassenen technischen
+  Schritten; der getestete Mergebaum entspricht dem Head.
+  Beim Einstieg zur Reviewkorrektur ist die Windows-Ausführungsumgebung
+  wieder verfügbar. Frühere lokale Arbeitsstände bleiben erhalten.
 - Neuer Methodenentwurf: sechs frische 100/2-Läufe aus/an gepaart,
   nur feste zurückgegebene Populationen und globale Hall of Fame beobachten.
   Backend-Hook quellengeprüft; keine vollständige Vorschlags-/Verwerfungshistorie.
-  PySR-Durchleitung, technische Nichtbeeinflussung und alle vorgeschlagenen
-  Grenzen müssen vor Ausführung geprüft beziehungsweise angenommen werden.
+  Das übermittelte Methodenreview bestätigt auch die Plugin-Durchleitung
+  im PySR-2.6.0-Quellcode. Die tatsächliche technische Nichtbeeinflussung
+  muss vor Ausführung nachgewiesen werden; alle vorgeschlagenen Grenzen
+  sind weiterhin ausdrücklich anzunehmen.
+- Übermitteltes KI-basiertes Methodenreview zu PR #46:
+  Head `aa04a9c49de331c878669907b1bc6a246918d704`,
+  Basis `8bdc8dbc498be6e8527fa2a857293bf74b42f81f`.
+  Vier Dokumentationsänderungen, Arbeitsregeln und relevante Backendquellen
+  geprüft; ein P2 zur Interpretation fehlender Frontzugehörigkeit, keine
+  weiteren korrekturbedürftigen Befunde berichtet. Unabhängige Nachrechnung
+  der sechs Anzeigeformeln, 30 Fehlerwerte und des Filtergegenfalls sowie
+  CI-/Quellenprüfungen sind als Reviewnachweise übermittelt.
+  Kein Audit des weiterhin fehlenden neuen Originalarchivs.
+- Korrektur: Frontzugehörigkeit und zeitliches Auftreten werden getrennt.
+  Späteres Fehlen verlangt entsprechende vergleichbare Populations- oder
+  Hall-of-Fame-Aufnahmen. Backend-Filterregel selbst quellengeprüft und
+  synthetischen Gegenfall gezielt nachgerechnet; keine neue Suche, kein
+  Fit oder nativer Beobachtertest. Details stehen in Abschnitt 7 des Entwurfs.
+  Der vollständige Korrekturcommit und seine Prüfnachweise werden im PR
+  festgehalten. Keine erneute vollständige Methodenrunde.
 
-Nächster abgegrenzter Schritt: den Dokumentations-PR einmalig gezielt
-methodisch prüfen, insbesondere eingeschränkte Beobachtbarkeit,
-Kontrollen/Nichtbeeinflussung, Aufwand und Grenzen der Ergebnisbasis.
-Danach über den konkreten Entwurf oder Eingrenzung/Pause entscheiden.
+Nächster abgegrenzter Schritt: über den korrigierten Entwurf entscheiden,
+einschließlich sechs Zellen und der Grenzen von 60 Minuten insgesamt,
+600 Sekunden je Worker und 256 MiB Beobachtungsdateien je beobachteter Zelle.
+Annahme und anschließende Umsetzung oder Eingrenzung/Pause bleiben offen.
 Noch keine Beobachterimplementierung oder neue wissenschaftliche Serie;
 kein eigenständiger Merge.
 
