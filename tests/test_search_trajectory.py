@@ -5,6 +5,8 @@ import json
 import math
 import pickle
 import struct
+import sys
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -144,6 +146,69 @@ def test_observer_descriptor_is_literal_json_and_portable_pickle():
         control.ObserverDescriptor("unapproved plugin")
 
 
+def test_explicit_baseline_descriptors_preserve_order_and_pickle_without_eval(
+    monkeypatch,
+):
+    calls = []
+
+    def baseline(index):
+        calls.append(index)
+        return f"baseline {index}"
+
+    def observer():
+        calls.append("observer")
+        return "observer"
+
+    monkeypatch.setitem(
+        sys.modules,
+        "juliacall",
+        SimpleNamespace(
+            Main=SimpleNamespace(
+                SearchTrajectory=SimpleNamespace(
+                    baseline_plugin=baseline, SearchTrajectoryObserver=observer
+                )
+            )
+        ),
+    )
+    literals = [
+        "Main.SearchTrajectory.baseline_plugin(1)",
+        "Main.SearchTrajectory.baseline_plugin(2)",
+        "Main.SearchTrajectory.baseline_plugin(3)",
+        "Main.SearchTrajectory.SearchTrajectoryObserver()",
+    ]
+    assert list(control.OBSERVED_PLUGINS) == literals
+    descriptors = [control.TrajectoryPluginDescriptor(value) for value in literals]
+    assert json.loads(json.dumps(descriptors)) == literals
+    restored = pickle.loads(pickle.dumps(descriptors))
+    assert all(type(item) is control.TrajectoryPluginDescriptor for item in restored)
+    assert [item.julia_plugin() for item in restored] == [
+        "baseline 1",
+        "baseline 2",
+        "baseline 3",
+        "observer",
+    ]
+    assert calls == [1, 2, 3, "observer"]
+
+
+@pytest.mark.parametrize(
+    "descriptor",
+    [
+        "Main.SearchTrajectory.baseline_plugin(0)",
+        "Main.SearchTrajectory.baseline_plugin(4)",
+        "Main.SearchTrajectory.baseline_plugin(true)",
+        "Main.SearchTrajectory.baseline_plugin(1.0)",
+        "Main.SearchTrajectory.baseline_plugin(1); rand()",
+        "unapproved plugin",
+        1,
+        True,
+        None,
+    ],
+)
+def test_plugin_descriptor_rejects_unapproved_calls_and_indices(descriptor):
+    with pytest.raises(ValueError):
+        control.TrajectoryPluginDescriptor(descriptor)
+
+
 @pytest.mark.parametrize(
     "fault", ["input", "runtime", "source", "missing_hash", "manifest_format"]
 )
@@ -192,7 +257,9 @@ def test_only_common_guard_and_observer_change_approved_100_profile(observed):
     before = control.budget_control.profile_parameters(budget, 100)
     parameters = control.profile_parameters(budget, observed)
     assert {k for k in before if before[k] != parameters[k]} == {"loss_function"}
-    assert parameters["plugins"] == ([control.OBSERVER] if observed else None)
+    assert parameters["plugins"] == (
+        list(control.OBSERVED_PLUGINS) if observed else None
+    )
     assert symbolic.search_parameters(budget)["optimizer_iterations"] == 20
 
 
@@ -286,6 +353,66 @@ def test_hof_member_can_remain_at_last_event_without_final_front_membership(tmp_
     assert not any("disappear" in key for key in q)
     assert result["observation"]["member_count"] == 68
     assert result["unique_tree_count"] == 2
+
+
+def test_forms_keep_source_specific_event_ordinals_and_occurrence_denominators(
+    tmp_path,
+):
+    arrays = frozen_data()
+    trees = [constant(0), constant(1), operator("*", constant(6), time_node())]
+    candidates = [candidate(tree, arrays) for tree in trees]
+    a, b, other = [member(c["tree"], c["loss"]) for c in candidates]
+    path, _ = write_observations(tmp_path, [a, b, other], events=4)
+    populations = [[other] * 32, [a] * 16 + [b] * 16, [other] * 32, [b] * 32]
+    halls = [[other], [a, other], [a, other], [a, other]]
+    events = [
+        {
+            "format": control.EVENT_FORMAT,
+            "event_index": index,
+            "returned_population": population,
+            "hall_of_fame": [
+                {"slot": entry["complexity_cache"], "member": entry} for entry in hall
+            ],
+        }
+        for index, (population, hall) in enumerate(
+            zip(populations, halls, strict=True), 1
+        )
+    ]
+    path.write_bytes(b"".join(json.dumps(event).encode() + b"\n" for event in events))
+    result = control.verify_observations(
+        path, expected_events=4, arrays=arrays, front={"candidates": [candidates[0]]}
+    )
+    first, second = [
+        next(item for item in result["trees"] if item["tree"] == entry["tree"])
+        for entry in (a, b)
+    ]
+    assert first["form_sha256"] == second["form_sha256"]
+    form = result["forms"][first["form_sha256"]]
+    assert form == {
+        "tree_count": 2,
+        "occurrences": 67,
+        "sources": {
+            "returned_population": {
+                "first_event": 2,
+                "last_event": 4,
+                "occurrences": 64,
+                "event_indices": [2, 4],
+            },
+            "hall_of_fame": {
+                "first_event": 2,
+                "last_event": 4,
+                "occurrences": 3,
+                "event_indices": [2, 3, 4],
+            },
+        },
+    }
+    assert first["sources"]["returned_population"]["occurrences"] == 16
+    assert second["sources"]["returned_population"]["occurrences"] == 48
+    assert second["sources"]["returned_population"]["last_event"] == 4
+    assert second["in_final_front"] is False
+    assert result["observation"]["member_count"] == 135
+    assert result["unique_tree_count"] == 3 and result["unique_form_count"] == 2
+    assert sum(item["occurrences"] for item in result["forms"].values()) == 135
 
 
 @pytest.mark.parametrize(

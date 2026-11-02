@@ -36,6 +36,10 @@ MAX_OBSERVATION_BYTES = 256 * 1024 * 1024
 MAX_TOTAL_OBSERVATION_BYTES = 3 * MAX_OBSERVATION_BYTES
 OBJECTIVE = "Main.SearchTrajectory.objective"
 OBSERVER = "Main.SearchTrajectory.SearchTrajectoryObserver()"
+BASELINE_PLUGINS = tuple(
+    f"Main.SearchTrajectory.baseline_plugin({index})" for index in (1, 2, 3)
+)
+OBSERVED_PLUGINS = (*BASELINE_PLUGINS, OBSERVER)
 FIXTURE_CHECKS = (
     "exact_tree_roundtrip",
     "nonfinite_bits_preserved",
@@ -67,18 +71,31 @@ _BITS = re.compile(r"[0-9a-f]{16}\Z")
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 
 
-class ObserverDescriptor(str):
-    """Keep serialized PySR parameters literal and the plugin import path stable."""
+class TrajectoryPluginDescriptor(str):
+    """Keep the four fixed PySR plugin descriptors literal and stably importable."""
 
-    def __new__(cls, value=OBSERVER):
-        if type(value) is not str or value != OBSERVER:
-            raise ValueError("Only the fixed passive observer descriptor is allowed.")
+    def __new__(cls, value):
+        if type(value) is not str or value not in OBSERVED_PLUGINS:
+            raise ValueError("Only fixed trajectory plugin descriptors are allowed.")
         return super().__new__(cls, value)
 
     def julia_plugin(self):
         from juliacall import Main as jl
 
-        return jl.SearchTrajectory.SearchTrajectoryObserver()
+        if self == OBSERVER:
+            return jl.SearchTrajectory.SearchTrajectoryObserver()
+        return jl.SearchTrajectory.baseline_plugin(
+            BASELINE_PLUGINS.index(str(self)) + 1
+        )
+
+
+class ObserverDescriptor(TrajectoryPluginDescriptor):
+    """Retain the observer-only constructor and its stable pickle import path."""
+
+    def __new__(cls, value=OBSERVER):
+        if type(value) is not str or value != OBSERVER:
+            raise ValueError("Only the fixed passive observer descriptor is allowed.")
+        return super().__new__(cls, value)
 
 
 def source_hashes():
@@ -115,7 +132,9 @@ def checked_profile(document):
 def profile_parameters(budget, observed):
     checked_profile({"format": PROFILE_FORMAT, "observed": observed})
     result = budget_control.profile_parameters(budget, 100)
-    result.update(loss_function=OBJECTIVE, plugins=[OBSERVER] if observed else None)
+    result.update(
+        loss_function=OBJECTIVE, plugins=list(OBSERVED_PLUGINS) if observed else None
+    )
     return result
 
 
@@ -520,7 +539,7 @@ def verify_observations(
                 "sources": {},
                 "occurrence_statuses": Counter(),
             }
-            forms.setdefault(form, {"tree_count": 0, "occurrences": 0})[
+            forms.setdefault(form, {"tree_count": 0, "occurrences": 0, "sources": {}})[
                 "tree_count"
             ] += 1
         entry = unique[key]
@@ -563,7 +582,24 @@ def verify_observations(
         entry["occurrence_statuses"][reason or status] += 1
         counts[source] += 1
         counts["verified" if status == "verified" else "not_assessed"] += 1
-        forms[entry["form_sha256"]]["occurrences"] += 1
+        form = forms[entry["form_sha256"]]
+        form["occurrences"] += 1
+        form_source = form["sources"].setdefault(
+            source,
+            {
+                "first_event": event_index,
+                "last_event": event_index,
+                "occurrences": 0,
+                "event_indices": [],
+            },
+        )
+        form_source["last_event"] = event_index
+        form_source["occurrences"] += 1
+        if (
+            not form_source["event_indices"]
+            or form_source["event_indices"][-1] != event_index
+        ):
+            form_source["event_indices"].append(event_index)
         members += 1
 
     with path.open("rb") as stream:

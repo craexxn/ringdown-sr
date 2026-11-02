@@ -8,7 +8,13 @@ from types import ModuleType, SimpleNamespace
 import pytest
 
 from ringdown_sr.pilot import _sha256
-from ringdown_sr.search_trajectory import MAX_OBSERVATION_BYTES, ROOT
+from ringdown_sr.search_trajectory import (
+    MAX_OBSERVATION_BYTES,
+    OBSERVED_PLUGINS,
+    ROOT,
+    TrajectoryPluginDescriptor,
+)
+from ringdown_sr.symbolic import SearchBudget
 
 
 def load(name, path):
@@ -24,6 +30,35 @@ WORKER = load(
 PREFLIGHT = load(
     "trajectory_preflight_tests", ROOT / "scripts/check_search_trajectory_backend.py"
 )
+
+
+def test_live_profile_preserves_original_plugin_order_and_appends_observer():
+    parameters = WORKER.live_parameters(SearchBudget(seed=20261020), True)
+    assert parameters["plugins"] == list(OBSERVED_PLUGINS)
+    assert all(
+        type(value) is TrajectoryPluginDescriptor for value in parameters["plugins"]
+    )
+    assert len(parameters["plugins"]) == 4
+    assert json.loads(json.dumps(parameters))["plugins"] == list(OBSERVED_PLUGINS)
+    assert WORKER.live_parameters(SearchBudget(seed=20261020), False)["plugins"] is None
+
+
+@pytest.mark.parametrize(
+    "plugins",
+    [
+        list(reversed(OBSERVED_PLUGINS)),
+        list(OBSERVED_PLUGINS[1:]),
+        [*OBSERVED_PLUGINS, OBSERVED_PLUGINS[-1]],
+    ],
+)
+def test_live_profile_rejects_reordered_missing_and_duplicate_plugins(
+    monkeypatch, plugins
+):
+    monkeypatch.setattr(
+        WORKER, "profile_parameters", lambda *args: {"plugins": plugins}
+    )
+    with pytest.raises(ValueError, match="Unexpected trajectory plugin request"):
+        WORKER.live_parameters(SearchBudget(seed=20261020), True)
 
 
 @pytest.fixture

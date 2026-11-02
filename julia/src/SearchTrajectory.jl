@@ -176,8 +176,26 @@ function SymbolicRegression.on_generation_end!(
     return nothing
 end
 
+function baseline_plugin(index::Integer)
+    index isa Bool && error("The baseline plugin position must be an integer.")
+    baseline = FreeOptimizerBudget.reference_options(100, 42)
+    length(baseline.plugins) == 3 && 1 <= index <= 3 ||
+        error("Unexpected baseline plugin position or count.")
+    return baseline.plugins[index]
+end
+
 function reference_options(observed::Bool, seed)
     backend = SymbolicRegression.ConstantOptimizationModule
+    baseline = FreeOptimizerBudget.reference_options(100, seed)
+    if observed
+        canonical = FreeOptimizerBudget.reference_options(100, 42)
+        RepresentationProfiles.plugin_records(baseline) ==
+            RepresentationProfiles.plugin_records(canonical) ||
+            error("The baseline plugin configuration unexpectedly depends on the seed.")
+    end
+    # Backend Options puts explicit plugins first and only appends novel defaults.
+    # Supply the original plugins explicitly to keep their order before the observer.
+    plugins = observed ? (baseline.plugins..., SearchTrajectoryObserver()) : ()
     return Options(;
         binary_operators=[+, -, *, /], unary_operators=[exp, sin, cos],
         loss_function=objective, loss_scale=:log,
@@ -191,7 +209,7 @@ function reference_options(observed::Bool, seed)
         should_simplify=true, define_helper_functions=false, input_stream=devnull,
         optimizer_algorithm=backend.Optim.BFGS(; linesearch=backend.LineSearches.BackTracking()),
         optimizer_options=(; iterations=100), optimizer_nrestarts=2,
-        plugins=observed ? (SearchTrajectoryObserver(),) : (),
+        plugins,
     )
 end
 
@@ -344,7 +362,7 @@ function fixture_checks()
     hof.exists[3] = hof.exists[6] = true
     hof.members[3].loss = 0.0
     hof.members[6].loss = 3.2171682124236767e-12
-    plugin_states = SymbolicRegression.PluginModule.init_plugin_states(options, dataset)
+    plugin_states = SymbolicRegression.CoreModule.PluginModule.init_plugin_states(options, dataset)
     original = serialized((population, hof, plugin_states, options.plugins))
     before_rng = copy(Random.default_rng())
     callbacks = RingdownSRSearch.CALLS[]

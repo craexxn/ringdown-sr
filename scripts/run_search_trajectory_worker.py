@@ -14,14 +14,14 @@ from ringdown_sr.pilot import _json_bytes, _sha256, _write_json
 from ringdown_sr.representation_profiles import plugin_field_record, plugin_records
 from ringdown_sr.search_trajectory import (
     FORMAT,
-    ObserverDescriptor,
+    OBSERVED_PLUGINS,
+    TrajectoryPluginDescriptor,
     checked_profile,
     decode_raw_tree,
     profile_parameters,
     verify_manifest,
 )
 
-OBSERVER_DESCRIPTOR = "Main.SearchTrajectory.SearchTrajectoryObserver()"
 UNITS_FORMAT = "ringdown-sr-search-trajectory-units-1"
 NATIVE_FILES = (
     "RepresentationProfiles.jl",
@@ -32,11 +32,13 @@ NATIVE_FILES = (
 
 def live_parameters(budget, observed):
     parameters = profile_parameters(budget, observed)
-    expected = [OBSERVER_DESCRIPTOR] if observed else None
+    expected = list(OBSERVED_PLUGINS) if observed else None
     if parameters.get("plugins") != expected:
         raise ValueError("Unexpected trajectory plugin request.")
     if observed:
-        parameters["plugins"] = [ObserverDescriptor()]
+        parameters["plugins"] = [
+            TrajectoryPluginDescriptor(value) for value in expected
+        ]
     return parameters
 
 

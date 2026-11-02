@@ -27,19 +27,27 @@ und die Grenzen der fehlenden Originalarchivprüfung bleiben erhalten.
   unverändert. Die neue Planbindung ist in der vollen CI erfasst.
   [Bedienung und Artefakte](search_trajectory.md) beschreiben die spätere
   Manjaro-Ausführung und die getrennten Aufwands-/Beobachtungsnachweise.
-- Gezielt lokal bestanden: 57 Auswertungstests, 29 Treibertests,
-  sieben Worker-Grenztests und 44 Tests der CI-Zuordnung. Ruff und
+- Gezielt lokal bestanden: 68 Auswertungstests, 29 Treibertests,
+  elf Worker-Grenztests und 44 Tests der CI-Zuordnung. Ruff und
   Formatprüfung über den gesamten Stand und Dokumentationsprüfung für
   46 Markdown-Dateien bestanden.
-- Vollständiger lokaler Windows-Lauf: 1.451 bestanden, 105 fehlgeschlagen,
+- Vollständiger erster Windows-Lauf (`a460701`): 1.451 bestanden, 105 fehlgeschlagen,
   einer übersprungen. Sämtliche Fehler betreffen unveränderte Prüfpfade:
   100 fehlende Unix-Signal-/Timerfunktionen, fünf fehlende Symlink-Rechte.
-  Den Gegenvergleich mit der Basis und den verbindlichen Linux-CI-Nachweis
-  hält der PR mit exaktem Bezugsstand fest. Die Windows-Suite ist damit
+  Alle 105 Fehler im unveränderten Ausgangsbaum separat reproduziert
+  (7 bestanden, dieselben 105 fehlgeschlagen). Den verbindlichen Linux-CI-Nachweis
+  hält [PR #47](https://github.com/craexxn/ringdown-sr/pull/47) mit exaktem Bezugsstand fest. Die Windows-Suite ist damit
   ausdrücklich nicht als vollständig bestanden ausgewiesen.
 - Lokale Python-Ausführung mit 3.12.14 ist verfügbar. Julia ist lokal derzeit
   nicht auffindbar; native Options-, Zustands- und aus/an/aus-Prüfungen müssen
   deshalb über die vollständige technische CI nachgewiesen werden.
+- Die erste CI zu `a460701` bestand 1.557 Python-Tests und die Julia-Umgebungs-/Startprüfungen.
+  Die neue Optionsprüfung wies die vom Backend vorangestellte Beobachterposition
+  zurück. Die korrigierte Übergabe liefert nun die drei unveränderten Basisplugins
+  ausdrücklich vor dem Beobachter; die absolute Reihenfolgeprüfung bleibt bestehen.
+  Außerdem ist der native Modulpfad einer technischen Fixture korrigiert und die
+  getrennte Verlaufsauswertung auch für Baumformen ergänzt. Der abschließende
+  native Nachweis ist im PR zu prüfen.
 - Keine wissenschaftliche Beobachtungsserie ausgeführt. Implementierung,
   Prüfnachweise und verbleibende Punkte werden im zugehörigen PR mit exaktem
   Head dokumentiert; erst danach einmalige Manjaro-Ausführung.
