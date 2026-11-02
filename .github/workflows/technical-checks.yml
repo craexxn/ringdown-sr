@@ -68,6 +68,19 @@ jobs:
         if: steps.scope.outputs.full == 'true'
         run: uv run --locked python scripts/check_julia_startup.py
 
+      - name: Verify passive search observation and fresh off-on-off workers
+        if: steps.scope.outputs.full == 'true'
+        run: |
+          if ! env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/check_search_trajectory_integration.py \
+            --output results/ci-trajectory-technical; then
+            if [ -d results/ci-trajectory-technical ]; then
+              find results/ci-trajectory-technical -type f -name '*.log' -print -exec tail -n 100 {} \;
+            fi
+            exit 1
+          fi
+
       - name: Check Julia loss, constant optimization and Python replay
         if: steps.scope.outputs.full == 'true'
         run: uv run --locked python scripts/run_python.py scripts/check_julia_loss.py

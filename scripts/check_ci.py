@@ -14,6 +14,7 @@ RUNTIME_DOCUMENTS = {
     "docs/free_optimizer_budget_plan.md",
     "docs/noiseless_control_plan.md",
     "docs/search_representation_plan.md",
+    "docs/search_trajectory_plan.md",
 }
 SHA = re.compile(r"[0-9a-f]{40}\Z")
 LINK = re.compile(

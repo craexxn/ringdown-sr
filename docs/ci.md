@@ -24,8 +24,9 @@ Markdown-Parser. Externe Webadressen und Sprungmarken innerhalb von Dateien
 werden nicht abgerufen beziehungsweise validiert.
 
 **Ausnahmen:** `docs/noiseless_control_plan.md`,
-`docs/search_representation_plan.md`, `docs/constant_diagnostic_plan.md` und
-`docs/free_optimizer_budget_plan.md` sind als eingefrorene Kontrollpläne
+`docs/search_representation_plan.md`, `docs/constant_diagnostic_plan.md`,
+`docs/free_optimizer_budget_plan.md` und `docs/search_trajectory_plan.md`
+sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
 Laufzeitdokumente müssen ebenso ausdrücklich als Ausnahme erfasst werden.
@@ -46,6 +47,16 @@ gilt nur für diesen Kontrollschritt. Keine der sechs wissenschaftlichen
 Suchzellen wird in der CI ausgeführt.
 
 ## Vollständiger technischer Pfad
+
+Die begrenzte Suchbeobachtung ergänzt
+`scripts/check_search_trajectory_integration.py`: echte Optionsobjekte und
+PySR-Plugin-Durchleitung ohne Fit, technische Aufnahmekontrollen einschließlich
+RNG-/Zustandsschutz und drei frische aus/an/aus-Worker mit jeweils zwei
+Suchiterationen auf einem eigenen linearen Achtpunkt-Signal. Die Originalfronten,
+Auswahlen und Fit-Callbackzahlen müssen übereinstimmen; der beobachtete Lauf
+muss alle vier erwarteten Populationsrückgaben exportieren. Die sechs
+wissenschaftlichen 200-Iterations-Zellen bleiben außerhalb der CI.
+Haswell und Threadlimit 1 gelten nur für diesen technischen Kontrollschritt.
 
 Jede andere geänderte Datei aktiviert alle bisherigen Prüfungen, insbesondere
 Code, Tests, Konfigurationen, Lockdateien, Julia-Dateien und CI-Werkzeuge.

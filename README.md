@@ -5,8 +5,8 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 02.11.2026; abgeglichener Stand auf `main`: `8bdc8db`
-([PR #45](https://github.com/craexxn/ringdown-sr/pull/45)).
+Fortsetzungsstand: 02.11.2026; abgeglichener Stand auf `main`: `930e3d0`
+([PR #46](https://github.com/craexxn/ringdown-sr/pull/46)).
 Vorgegebener Stand des freien Budgetlaufs: `8bdc8db`; frühere Ausführungsstände:
 Konstantendiagnose `0a70f19`, Zeitdarstellungskontrolle `4057caa`.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
@@ -56,15 +56,18 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   der Maximalfehler. Sechs gepostete Formeln und ihre 30 Fehlerwerte wurden
   unabhängig nachgerechnet; der vollständige Originalarchiv-Audit bleibt offen.
   [Bedienung und Artefakte](docs/free_optimizer_budget.md).
-- **Nächste Methodenentscheidung:** Der
-  [Entwurf zur begrenzten Suchverlaufsbeobachtung](docs/search_trajectory_plan_draft.md)
-  schlägt drei beobachtete 100/2-Läufe mit drei frischen Kontrollläufen vor.
+- **Angenommene Suchbeobachtung:** Der
+  [eingefrorene Methodenplan](docs/search_trajectory_plan.md)
+  umfasst drei beobachtete 100/2-Läufe mit drei frischen Kontrollläufen.
   Feste Populationsaufnahmen beantworten keine vollständige Mutationshistorie.
   Das übermittelte KI-basierte Methodenreview empfiehlt den Entwurf nach
   Korrektur einer Interpretationsregel: fehlende Frontzugehörigkeit belegt
   kein zeitliches Verschwinden. Die Regel ist korrigiert und gezielt
-  gegengeprüft. Annahme der sechs Zellen und Grenzen sowie Umsetzung stehen
-  noch aus; als Nächstes über Durchführung oder Eingrenzung/Pause entscheiden.
+  gegengeprüft. Sechs Zellen und organisatorische Grenzen sind angenommen;
+  der getrennte Beobachtungspfad ist implementiert. Die
+  [Bedienung und Artefakte](docs/search_trajectory.md) beschreiben den Ablauf;
+  native Integration und vollständige CI sind vor dem Merge nachzuweisen.
+  Die wissenschaftliche Manjaro-Ausführung folgt erst nach diesen Prüfungen.
   Keine automatische weitere Budgetstufe, kein Produktionsprofil und keine
   allgemeine Leistungsvalidierung.
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
