@@ -25,7 +25,8 @@ werden nicht abgerufen beziehungsweise validiert.
 
 **Ausnahmen:** `docs/noiseless_control_plan.md`,
 `docs/search_representation_plan.md`, `docs/constant_diagnostic_plan.md`,
-`docs/free_optimizer_budget_plan.md` und `docs/search_trajectory_plan.md`
+`docs/free_optimizer_budget_plan.md`, `docs/search_trajectory_plan.md` und
+`docs/search_trajectory_replay_policy.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -58,6 +59,13 @@ muss alle vier erwarteten Populationsrückgaben exportieren. Die sechs
 wissenschaftlichen 200-Iterations-Zellen bleiben außerhalb der CI.
 Haswell und Threadlimit 1 gelten nur für diesen technischen Kontrollschritt.
 
+Die Verifikationsergänzung prüft außerdem getrennte native Trainingsreplays
+der beobachteten Bäume und deren Dateibindungen, numerische Konsistenz und
+Vollständigkeit. Die fünf geprüften Manjaro-Gegenfälle sind als feste
+Testdaten enthalten; gespeicherte Vorhersagebits dienen plattformneutralen
+Vergleichen. Sie verlangen keine neue wissenschaftliche Suche und keine
+bitweise Gleichheit großer trigonometrischer Ausdrücke zwischen Rechnern.
+
 Jede andere geänderte Datei aktiviert alle bisherigen Prüfungen, insbesondere
 Code, Tests, Konfigurationen, Lockdateien, Julia-Dateien und CI-Werkzeuge.
 Gemischte Änderungen erhalten ebenfalls die volle CI. Bei manuellen
@@ -65,8 +73,15 @@ Aufrufen, unbekannten oder erzwungenen Ereignissen, leerem Diff sowie
 fehlenden oder nicht vergleichbaren Commits wird vollständig geprüft.
 
 Die bisherigen Prüfbefehle, Versionspins, Rechte, Thread-/Haswell-Vorgaben
-und das Zeitlimit von 30 Minuten bleiben erhalten. Auch das bisherige
-Cacheverhalten bleibt erhalten. Ein Fehler im ausgewählten Prüfpfad führt
+und das Cacheverhalten bleiben erhalten. Der technische CI-Job erhält
+45 Minuten Gesamtzeit. Lauf
+[41425713993](https://github.com/craexxn/ringdown-sr/actions/runs/41425713993)
+am Head `2d9b028` wurde bei bisher 30 Minuten Joblimit nach rund 31 Minuten
+in der zweiten abschließenden Haswell-Wiederholung abgebrochen; alle vorherigen
+Schritte waren erfolgreich. Die erweiterte native Prüffolge erhält damit
+Laufzeitreserve, ohne Prüfungen auszulassen oder deren Budgets zu verändern.
+Die Grenzen der wissenschaftlichen Serien und ihrer Worker bleiben unverändert.
+Ein Fehler im ausgewählten Prüfpfad führt
 weiterhin zu einem fehlgeschlagenen Job.
 
 ## Ermittlung des Diffs

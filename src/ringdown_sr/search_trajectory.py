@@ -19,13 +19,18 @@ from .parameter_export import _read_json
 from .pilot import _sha256
 from .representation_control import diagnose_candidate
 from .representation_profiles import validate_plugin_records
-from .symbolic import BINARY, ROOT, UNARY, evaluate_tree
+from .symbolic import BINARY, ROOT, UNARY, _check_prediction_replay, evaluate_tree
 from .symbolic import FORMAT as ARM_FORMAT
 
-FORMAT = "ringdown-sr-search-trajectory-1"
+FORMAT = "ringdown-sr-search-trajectory-2"
 PROFILE_FORMAT = "ringdown-sr-search-trajectory-profile-1"
 EVENT_FORMAT = "ringdown-sr-search-trajectory-event-1"
 UNITS_FORMAT = "ringdown-sr-search-trajectory-units-1"
+REPLAY_FORMAT = "ringdown-sr-search-trajectory-replays-1"
+REPLAY_POLICY = "docs/search_trajectory_replay_policy.md"
+REPLAY_POLICY_SHA256 = (
+    "e65a52ffd7292599e3d70957414977ede792bad6a64cebbe0e59c080ef241842"
+)
 PLAN = "docs/search_trajectory_plan.md"
 PLAN_COMMIT = "fbfbc3781f80968f978b388e32bfc8375d6f8725"
 PLAN_SHA256 = "fcc52e4099f197df676adc10c3163fc78e87d2a2d4661488b9ce929512da37f3"
@@ -50,6 +55,9 @@ FIXTURE_CHECKS = (
     "byte_cap_rejected_without_truncation",
     "unexpected_event_rejected",
     "pareto_filter_does_not_remove_hof_member",
+    "native_training_replay_bits_and_statuses",
+    "native_training_replay_preserves_rng_context_options",
+    "python_native_constant_roundtrip",
 )
 RUNTIME = {
     "driver.py": "scripts/repeat_symbolic_arm.py",
@@ -105,6 +113,7 @@ def source_hashes():
         *hashes,
         *RUNTIME.values(),
         PLAN,
+        REPLAY_POLICY,
         "scripts/run_search_trajectory.py",
         "scripts/check_search_trajectory_integration.py",
     }
@@ -115,6 +124,8 @@ def source_hashes():
         hashes[name] = _sha256(path.read_bytes())
     if hashes[PLAN] != PLAN_SHA256:
         raise ValueError("The frozen search-trajectory plan changed.")
+    if hashes[REPLAY_POLICY] != REPLAY_POLICY_SHA256:
+        raise ValueError("The frozen native-replay policy changed.")
     return dict(sorted(hashes.items()))
 
 
@@ -376,7 +387,77 @@ def _unit_records(content):
     return result["trees"]
 
 
-def _tree_diagnosis(raw, arrays, units):
+def _loss_comparison(left, right):
+    difference = abs(left - right)
+    scale = max(abs(left), abs(right))
+    return {
+        "left": left,
+        "right": right,
+        "absolute_difference": difference,
+        "relative_difference_symmetric": difference / scale if scale else 0.0,
+        "rtol": 1e-10,
+        "atol": 0.0,
+        "status": "passed"
+        if math.isclose(left, right, rel_tol=1e-10, abs_tol=0)
+        else "failed",
+    }
+
+
+def _replay_records(content, inputs_hash, units_hash):
+    result = _read_json(content)
+    if (
+        type(result) is not dict
+        or set(result)
+        != {"format", "inputs_sha256", "raw_sha256", "units_sha256", "trees"}
+        or result["format"] != REPLAY_FORMAT
+        or type(result["trees"]) is not dict
+        or any(
+            type(result[key]) is not str or not _SHA256.fullmatch(result[key])
+            for key in ("inputs_sha256", "raw_sha256", "units_sha256")
+        )
+        or result["inputs_sha256"] != inputs_hash
+        or result["units_sha256"] != units_hash
+    ):
+        raise ValueError("Invalid native replay schema or source binding.")
+    for key, value in result["trees"].items():
+        if (
+            not _SHA256.fullmatch(key)
+            or type(value) is not dict
+            or set(value) != {"status", "reason", "loss_bits", "prediction_bits"}
+        ):
+            raise ValueError("Invalid native replay tree record.")
+        if value["status"] == "available":
+            if (
+                value["reason"] is not None
+                or type(value["prediction_bits"]) is not list
+            ):
+                raise ValueError("Invalid available native replay.")
+            loss = float_from_bits(value["loss_bits"])
+            prediction = [float_from_bits(bits) for bits in value["prediction_bits"]]
+            if (
+                not math.isfinite(loss)
+                or loss < 0
+                or not all(map(math.isfinite, prediction))
+            ):
+                raise ValueError(
+                    "Available native replay must be finite and nonnegative."
+                )
+        elif (
+            value["status"] != "not_assessed"
+            or value["reason"]
+            not in {
+                "dimensional_violation",
+                "nonfinite_constant",
+                "numerical_unresolved",
+            }
+            or value["loss_bits"] is not None
+            or value["prediction_bits"] is not None
+        ):
+            raise ValueError("Invalid unavailable native replay.")
+    return result
+
+
+def _tree_diagnosis(raw, arrays, units, replay):
     tree, size, has_exp, finite = decode_raw_tree(raw)
     result = {
         "tree": raw,
@@ -387,7 +468,17 @@ def _tree_diagnosis(raw, arrays, units):
         "diagnostics": None,
         "status": "not_assessed",
         "reason": None,
+        "native_replay": replay,
+        "comparisons": {},
     }
+    if units["status"] != "valid":
+        if replay["status"] != "not_assessed" or replay["reason"] != units["reason"]:
+            raise ValueError("Native replay contradicts its units record.")
+    elif (
+        replay["status"] == "not_assessed"
+        and replay["reason"] != "numerical_unresolved"
+    ):
+        raise ValueError("Unavailable replay contradicts valid native units.")
     if not finite:
         if units != {"status": "not_assessed", "reason": "nonfinite_constant"}:
             raise ValueError(
@@ -398,6 +489,26 @@ def _tree_diagnosis(raw, arrays, units):
         raise ValueError("Finite constants contradict their native units record.")
     if units["status"] != "valid":
         return {**result, "reason": units["reason"]}
+    if replay["status"] != "available":
+        return {**result, "reason": "native_replay_numerical_unresolved"}
+    native_prediction = np.array(
+        [float_from_bits(bits) for bits in replay["prediction_bits"]]
+    )
+    if native_prediction.shape != arrays["observed"].shape:
+        raise ValueError("Native replay predictions must cover every training sample.")
+    native_loss = float_from_bits(replay["loss_bits"])
+    try:
+        with np.errstate(over="raise", invalid="raise"):
+            native_mse = mean_squared_error(arrays["observed"] - native_prediction)
+    except (ValueError, OverflowError, FloatingPointError) as error:
+        raise ValueError(
+            "Native replay predictions contradict its finite loss."
+        ) from error
+    same_predictions = _loss_comparison(native_loss, native_mse)
+    if same_predictions["status"] != "passed":
+        raise ValueError("Native replay loss contradicts MSE of native predictions.")
+    result["comparisons"]["native_loss_vs_native_prediction_mse"] = same_predictions
+    result["native_mse"] = native_mse
     try:
         prediction = evaluate_tree(tree, arrays["time_s"])
         with np.errstate(all="raise"):
@@ -405,6 +516,35 @@ def _tree_diagnosis(raw, arrays, units):
         mse = mean_squared_error(residual)
     except (ValueError, OverflowError, FloatingPointError):
         return {**result, "reason": "nonfinite_training_prediction_or_loss"}
+    result["ordinary_mse"] = mse
+    result["comparisons"]["native_vs_python_tree_mse"] = _loss_comparison(
+        native_loss, mse
+    )
+    scale = max(
+        float(np.max(np.abs(prediction))), float(np.max(np.abs(native_prediction)))
+    )
+    normalized_difference = (
+        float(np.max(np.abs(prediction / scale - native_prediction / scale)))
+        if scale
+        else 0.0
+    )
+    prediction_comparison = {
+        "status": "passed",
+        "amplitude_scale": scale,
+        "max_normalized_difference": normalized_difference,
+        "rtol": 1e-12,
+        "normalized_atol": 1e-14,
+    }
+    try:
+        _check_prediction_replay(prediction, native_prediction)
+    except AssertionError:
+        prediction_comparison["status"] = "failed"
+    result["comparisons"]["native_vs_python_prediction"] = prediction_comparison
+    reasons = []
+    if result["comparisons"]["native_vs_python_tree_mse"]["status"] != "passed":
+        reasons.append("native_python_loss_mismatch")
+    if prediction_comparison["status"] != "passed":
+        reasons.append("native_python_prediction_mismatch")
     candidate = {
         "tree": tree,
         "complexity": size,
@@ -412,6 +552,18 @@ def _tree_diagnosis(raw, arrays, units):
         "display_equation": "observed original tree; no replacement selection",
     }
     diagnosis = diagnose_candidate(candidate, 0, -1, arrays, "complexity_frequency")
+    if reasons:
+        diagnosis["curve_marker"] = "not_assessed"
+        diagnosis["parameter_match"].update(
+            status="not_assessed", reason="unresolved_native_python_replay"
+        )
+        return {
+            **result,
+            "diagnostics": diagnosis,
+            "status": "numerical_unresolved",
+            "reason": reasons[0],
+            "reasons": reasons,
+        }
     return {
         **result,
         "status": "available",
@@ -461,6 +613,9 @@ def verify_observations(
     expected_record=None,
     units_path=None,
     expected_units_sha256=None,
+    replay_path=None,
+    expected_replay_sha256=None,
+    expected_inputs_sha256=None,
 ):
     """Stream immutable raw occurrences; assess unique trees only after the search."""
     path = Path(path)
@@ -469,27 +624,53 @@ def verify_observations(
         if units_path is not None
         else path.with_name("observation_units.json")
     )
+    replay_path = (
+        Path(replay_path)
+        if replay_path is not None
+        else path.with_name("observation_replays.json")
+    )
+    if type(expected_inputs_sha256) is not str or not _SHA256.fullmatch(
+        expected_inputs_sha256
+    ):
+        raise ValueError("The verified training-input checksum is required.")
     if type(expected_events) is not int or expected_events <= 0:
         raise ValueError("Expected event count must be a positive integer.")
-    for file in (path, units_path):
+    for file in (path, units_path, replay_path):
         if file.is_symlink() or not file.is_file():
             raise ValueError("Observation artifacts must be regular files.")
     check()
-    sizes = path.stat().st_size, units_path.stat().st_size
+    sizes = path.stat().st_size, units_path.stat().st_size, replay_path.stat().st_size
     if sum(sizes) > MAX_OBSERVATION_BYTES:
         raise ValueError("Observation files exceed the frozen byte limit.")
-    units_bytes = _bounded_bytes(units_path, MAX_OBSERVATION_BYTES - sizes[0], check)
+    units_bytes = _bounded_bytes(
+        units_path, MAX_OBSERVATION_BYTES - sizes[0] - sizes[2], check
+    )
+    replay_bytes = _bounded_bytes(
+        replay_path, MAX_OBSERVATION_BYTES - sizes[0] - len(units_bytes), check
+    )
+    replay_hash = _sha256(replay_bytes)
+    if expected_replay_sha256 is not None and replay_hash != expected_replay_sha256:
+        raise ValueError("Changed native replay artifact.")
     units_hash = _sha256(units_bytes)
     if expected_units_sha256 is not None and units_hash != expected_units_sha256:
         raise ValueError("Changed post-fit unit artifact.")
     units = _unit_records(units_bytes)
+    replays = _replay_records(replay_bytes, expected_inputs_sha256, units_hash)
     final_ids = set()
     for candidate in front["candidates"]:
         raw = _export_to_raw(candidate["tree"])
         decode_raw_tree(raw)
         final_ids.add(raw_tree_id(raw))
     unique, forms = {}, {}
-    total, members, events, counts = 0, 0, 0, Counter()
+    total, members, events = 0, 0, 0
+    counts = Counter(
+        returned_population=0,
+        hall_of_fame=0,
+        verified=0,
+        numerical_unresolved=0,
+        not_assessed=0,
+    )
+    occurrences = []
     digest = hashlib.sha256()
 
     def shape(node):
@@ -526,10 +707,12 @@ def verify_observations(
         if math.isfinite(loss) and loss < 0:
             raise ValueError("A finite ordinary training loss must be nonnegative.")
         key = raw_tree_id(member["tree"])
-        if key not in units:
-            raise ValueError("An observed tree is missing from the units artifact.")
+        if key not in units or key not in replays["trees"]:
+            raise ValueError("An observed tree is missing from a diagnostic artifact.")
         if key not in unique:
-            analysis = _tree_diagnosis(member["tree"], arrays, units[key])
+            analysis = _tree_diagnosis(
+                member["tree"], arrays, units[key], replays["trees"][key]
+            )
             form = raw_tree_id(shape(member["tree"]))
             unique[key] = {
                 **analysis,
@@ -543,22 +726,54 @@ def verify_observations(
                 "tree_count"
             ] += 1
         entry = unique[key]
-        reason = entry["reason"]
+        reasons = list(entry.get("reasons", []))
+        if entry["reason"] and entry["reason"] not in reasons:
+            reasons.append(entry["reason"])
+        comparisons = dict(entry["comparisons"])
         if math.isfinite(loss) and units[key]["status"] == "invalid":
             raise ValueError("Finite saved loss contradicts invalid native units.")
-        if math.isfinite(loss) and entry["status"] == "available":
-            if not math.isclose(
-                loss, entry["ordinary_mse"], rel_tol=1e-10, abs_tol=0.0
-            ):
-                raise ValueError("Saved observation loss contradicts ordinary MSE.")
-            status = "verified"
-        elif not math.isfinite(loss):
-            status, reason = "not_assessed", reason or "nonfinite_backend_loss"
-        else:
+        if math.isfinite(loss) and "native_mse" in entry:
+            comparisons["saved_vs_native_loss"] = _loss_comparison(
+                loss, float_from_bits(entry["native_replay"]["loss_bits"])
+            )
+            if comparisons["saved_vs_native_loss"]["status"] != "passed":
+                reasons.append("saved_native_loss_mismatch")
+        if not math.isfinite(loss):
+            reasons.append("nonfinite_backend_loss")
             status = "not_assessed"
+        elif entry["status"] == "available":
+            status = "numerical_unresolved" if reasons else "verified"
+        else:
+            status = entry["status"]
         # A nonfinite cost is retained and cannot be counted as a positive member.
         if not math.isfinite(cost):
-            status, reason = "not_assessed", reason or "nonfinite_backend_cost"
+            status = "not_assessed"
+            reasons.append("nonfinite_backend_cost")
+        curve_marker = (
+            entry["diagnostics"]["curve_marker"]
+            if status == "verified"
+            else "not_assessed"
+        )
+        parameter_marker = (
+            entry["diagnostics"]["parameter_match"]["status"]
+            if status == "verified"
+            else "not_assessed"
+        )
+        occurrences.append(
+            {
+                "tree_sha256": key,
+                "event_index": event_index,
+                "source": source,
+                "position": position,
+                "loss_bits": member["loss_bits"],
+                "cost_bits": member["cost_bits"],
+                "status": status,
+                "reasons": reasons,
+                "comparisons": comparisons,
+                "curve_marker": curve_marker,
+                "parameter_marker": parameter_marker,
+            }
+        )
         item = entry["sources"].setdefault(
             source,
             {
@@ -568,6 +783,10 @@ def verify_observations(
                 "event_indices": [],
                 "verified_occurrences": 0,
                 "curve_success_occurrences": 0,
+                "parameter_success_occurrences": 0,
+                "status_counts": Counter(
+                    verified=0, numerical_unresolved=0, not_assessed=0
+                ),
             },
         )
         item["last_event"] = event_index
@@ -575,13 +794,15 @@ def verify_observations(
         if not item["event_indices"] or item["event_indices"][-1] != event_index:
             item["event_indices"].append(event_index)
         item["verified_occurrences"] += status == "verified"
+        item["status_counts"][status] += 1
+        item["parameter_success_occurrences"] += parameter_marker == "matched"
         item["curve_success_occurrences"] += (
             status == "verified"
             and entry["diagnostics"]["curve_marker"] == "within_tolerance"
         )
-        entry["occurrence_statuses"][reason or status] += 1
+        entry["occurrence_statuses"][status] += 1
         counts[source] += 1
-        counts["verified" if status == "verified" else "not_assessed"] += 1
+        counts[status] += 1
         form = forms[entry["form_sha256"]]
         form["occurrences"] += 1
         form_source = form["sources"].setdefault(
@@ -591,10 +812,18 @@ def verify_observations(
                 "last_event": event_index,
                 "occurrences": 0,
                 "event_indices": [],
+                "status_counts": Counter(
+                    verified=0, numerical_unresolved=0, not_assessed=0
+                ),
+                "curve_success_occurrences": 0,
+                "parameter_success_occurrences": 0,
             },
         )
         form_source["last_event"] = event_index
         form_source["occurrences"] += 1
+        form_source["status_counts"][status] += 1
+        form_source["curve_success_occurrences"] += curve_marker == "within_tolerance"
+        form_source["parameter_success_occurrences"] += parameter_marker == "matched"
         if (
             not form_source["event_indices"]
             or form_source["event_indices"][-1] != event_index
@@ -609,7 +838,7 @@ def verify_observations(
             if not line:
                 break
             total += len(line)
-            if total + len(units_bytes) > MAX_OBSERVATION_BYTES:
+            if total + len(units_bytes) + len(replay_bytes) > MAX_OBSERVATION_BYTES:
                 raise ValueError("Observation stream exceeds the frozen byte limit.")
             if not line.endswith(b"\n"):
                 raise ValueError("Truncated observation event.")
@@ -645,21 +874,29 @@ def verify_observations(
                 slots.append(item["slot"])
                 occurrence(item["member"], "hall_of_fame", item["slot"], events)
     raw_hash = digest.hexdigest()
-    if events != expected_events or set(unique) != set(units):
+    if (
+        events != expected_events
+        or set(unique) != set(units)
+        or set(unique) != set(replays["trees"])
+    ):
         raise ValueError("Incomplete observations or mismatched unit-tree coverage.")
     if expected_sha256 is not None and raw_hash != expected_sha256:
         raise ValueError("Changed raw observation artifact.")
+    if replays["raw_sha256"] != raw_hash:
+        raise ValueError("Native replays are bound to different raw observations.")
     summary = {
         "status": "completed",
         "event_count": events,
         "member_count": members,
         "bytes_written": total,
         "units_bytes": len(units_bytes),
-        "total_bytes": total + len(units_bytes),
+        "replay_bytes": len(replay_bytes),
+        "total_bytes": total + len(units_bytes) + len(replay_bytes),
         "max_bytes": MAX_OBSERVATION_BYTES,
         "expected_events": expected_events,
         "raw_sha256": raw_hash,
         "units_sha256": units_hash,
+        "replay_sha256": replay_hash,
     }
     if expected_record is not None and expected_record != summary:
         raise ValueError(
@@ -669,17 +906,27 @@ def verify_observations(
     if (
         path.is_symlink()
         or units_path.is_symlink()
+        or replay_path.is_symlink()
         or (
             _bounded_digest(path, total, check) != raw_hash
             or _bounded_bytes(units_path, len(units_bytes), check) != units_bytes
+            or _bounded_bytes(replay_path, len(replay_bytes), check) != replay_bytes
         )
     ):
         raise ValueError("Observation artifacts changed during diagnosis.")
     for entry in unique.values():
-        if not sum(s["verified_occurrences"] for s in entry["sources"].values()):
+        verified = entry["occurrence_statuses"]["verified"]
+        entry["aggregation_scope"] = (
+            "all_occurrences_must_verify_for_tree_markers; valid_occurrences_count_separately"
+        )
+        if verified != sum(entry["occurrence_statuses"].values()):
             entry.update(
-                status="not_assessed",
-                reason=entry["reason"] or "no_verified_occurrence",
+                status="numerical_unresolved"
+                if verified or entry["occurrence_statuses"]["numerical_unresolved"]
+                else "not_assessed",
+                reason="mixed_occurrence_verification"
+                if verified
+                else entry["reason"] or "no_verified_occurrence",
             )
             if entry["diagnostics"] is not None:
                 entry["diagnostics"]["curve_marker"] = "not_assessed"
@@ -690,12 +937,18 @@ def verify_observations(
     return {
         "format": FORMAT,
         "status": "verified",
+        "verification_scope": "complete artifacts and classified occurrences; numerical status remains per occurrence",
         "observation": summary,
-        "source_file_sha256": {path.name: raw_hash, units_path.name: units_hash},
+        "source_file_sha256": {
+            path.name: raw_hash,
+            units_path.name: units_hash,
+            replay_path.name: replay_hash,
+        },
         "counts": dict(counts),
         "unique_tree_count": len(unique),
         "unique_form_count": len(forms),
         "trees": list(unique.values()),
+        "occurrences": occurrences,
         "forms": forms,
         "physical_identification": "not_assessed",
         "interpretation": "occurrences by source only; final-front absence is not disappearance",

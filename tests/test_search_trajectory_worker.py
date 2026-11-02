@@ -2,6 +2,7 @@
 
 import importlib.util
 import json
+import struct
 import sys
 from types import ModuleType, SimpleNamespace
 
@@ -165,6 +166,207 @@ def test_disabled_observer_refuses_observation_files(unit_export):
     state = unit_export
     with pytest.raises(ValueError, match="Disabled observer"):
         WORKER.export_units(state.directory, state.jl, None, {"status": "disabled"})
+
+
+@pytest.fixture
+def replay_export(unit_export):
+    state = unit_export
+    state.observation = WORKER.export_units(
+        state.directory, state.jl, None, state.record
+    )
+    state.inputs = b"immutable original training bytes"
+    (state.directory / "inputs.npz").write_bytes(state.inputs)
+    state.input_hash = _sha256(state.inputs)
+    state.replayed = []
+    state.guards = []
+
+    def replay(root, options):
+        state.replayed.append(root)
+        return SimpleNamespace(
+            status="available",
+            reason=None,
+            loss_bits="0000000000000000",
+            prediction_bits=[struct.pack(">d", root).hex()] * 8,
+        )
+
+    state.jl.SearchTrajectory.training_replay = replay
+    state.jl.SearchTrajectory.raw_tree = lambda root, options: SimpleNamespace(
+        kind="constant", value_bits=struct.pack(">d", root).hex()
+    )
+    state.jl.SearchTrajectory.begin_replay_guard = lambda options: state.calls[()]
+    state.jl.SearchTrajectory.verify_replay_guard = lambda guard, options: (
+        state.guards.append(guard)
+    )
+    return state
+
+
+def export_replay(state):
+    return WORKER.export_replays(
+        state.directory,
+        state.jl,
+        None,
+        state.observation,
+        expected_inputs_sha256=state.input_hash,
+    )
+
+
+def test_native_export_deduplicates_and_binds_all_consumed_files(replay_export):
+    state = replay_export
+    result = export_replay(state)
+    payload = (state.directory / "observation_replays.json").read_bytes()
+    document = json.loads(payload)
+    assert document["format"] == "ringdown-sr-search-trajectory-replays-1"
+    assert document["inputs_sha256"] == state.input_hash
+    assert document["raw_sha256"] == state.observation["raw_sha256"]
+    assert document["units_sha256"] == state.observation["units_sha256"]
+    assert len(document["trees"]) == 1
+    assert state.replayed == [1.0]
+    assert state.guards == [7]
+    assert result["replay_sha256"] == _sha256(payload)
+    assert result["replay_bytes"] == len(payload)
+    assert result["total_bytes"] == state.observation["total_bytes"] + len(payload)
+    assert state.path.read_bytes() == state.raw
+
+
+@pytest.mark.parametrize(
+    "name", ["observations.jsonl", "observation_units.json", "inputs.npz"]
+)
+def test_native_export_rejects_files_changed_during_replay(replay_export, name):
+    state = replay_export
+    original = state.jl.SearchTrajectory.training_replay
+
+    def altered(root, options):
+        path = state.directory / name
+        path.write_bytes(b"X" + path.read_bytes()[1:])
+        return original(root, options)
+
+    state.jl.SearchTrajectory.training_replay = altered
+    with pytest.raises(ValueError, match="changed"):
+        export_replay(state)
+    assert not (state.directory / "observation_replays.json").exists()
+
+
+def test_native_export_rejects_roundtrip_change_before_evaluation(replay_export):
+    state = replay_export
+    state.jl.SearchTrajectory.raw_tree = lambda root, options: SimpleNamespace(
+        kind="constant", value_bits="8000000000000000"
+    )
+    with pytest.raises(ValueError, match="roundtrip"):
+        export_replay(state)
+    assert state.replayed == []
+    assert not (state.directory / "observation_replays.json").exists()
+
+
+def test_native_export_callback_violation_is_fatal(replay_export):
+    state = replay_export
+    original = state.jl.SearchTrajectory.training_replay
+
+    def altered(root, options):
+        state.calls[()] += 1
+        return original(root, options)
+
+    state.jl.SearchTrajectory.training_replay = altered
+    with pytest.raises(ValueError, match="numeric callback"):
+        export_replay(state)
+    assert not (state.directory / "observation_replays.json").exists()
+
+
+def test_native_export_state_guard_failure_is_fatal(replay_export):
+    state = replay_export
+
+    def reject(guard, options):
+        raise RuntimeError("Native replay changed the RNG.")
+
+    state.jl.SearchTrajectory.verify_replay_guard = reject
+    with pytest.raises(RuntimeError, match="RNG"):
+        export_replay(state)
+    assert not (state.directory / "observation_replays.json").exists()
+
+
+def test_native_export_combined_cap_rejects_without_truncating_sources(replay_export):
+    state = replay_export
+    originals = {
+        name: (state.directory / name).read_bytes()
+        for name in ("observations.jsonl", "observation_units.json", "inputs.npz")
+    }
+    state.observation["max_bytes"] = state.observation["total_bytes"] + 1
+    with pytest.raises(ValueError, match="byte limit"):
+        export_replay(state)
+    assert not (state.directory / "observation_replays.json").exists()
+    assert all(
+        (state.directory / name).read_bytes() == payload
+        for name, payload in originals.items()
+    )
+
+
+def test_native_export_never_overwrites_existing_replay(replay_export):
+    state = replay_export
+    path = state.directory / "observation_replays.json"
+    path.write_bytes(b"existing evidence")
+    with pytest.raises(FileExistsError):
+        export_replay(state)
+    assert path.read_bytes() == b"existing evidence"
+
+
+@pytest.mark.parametrize(
+    "reason", ["dimensional_violation", "nonfinite_constant", "numerical_unresolved"]
+)
+def test_native_unavailable_status_preserves_reason_and_null_values(reason):
+    assert WORKER.native_replay_record(
+        SimpleNamespace(
+            status="not_assessed",
+            reason=reason,
+            loss_bits=None,
+            prediction_bits=None,
+        )
+    ) == {
+        "status": "not_assessed",
+        "reason": reason,
+        "loss_bits": None,
+        "prediction_bits": None,
+    }
+
+
+@pytest.mark.parametrize(
+    "loss_bits,prediction_bits",
+    [
+        ("7ff0000000000000", ["0000000000000000"]),
+        ("bff0000000000000", ["0000000000000000"]),
+        ("0000000000000000", ["7ff8000000000000"]),
+        ("0000000000000000", []),
+    ],
+)
+def test_native_available_records_reject_invalid_values(loss_bits, prediction_bits):
+    with pytest.raises(ValueError, match="must be finite"):
+        WORKER.native_replay_record(
+            SimpleNamespace(
+                status="available",
+                reason=None,
+                loss_bits=loss_bits,
+                prediction_bits=prediction_bits,
+            )
+        )
+
+
+def test_disabled_native_export_has_zero_bytes_and_no_artifact(tmp_path):
+    result = WORKER.export_replays(
+        tmp_path,
+        None,
+        None,
+        {"status": "disabled", "total_bytes": 0},
+        expected_inputs_sha256="unused",
+    )
+    assert result == {"status": "disabled", "total_bytes": 0, "replay_bytes": 0}
+    assert list(tmp_path.iterdir()) == []
+    (tmp_path / "observation_replays.json").write_bytes(b"unexpected")
+    with pytest.raises(ValueError, match="Disabled observer"):
+        WORKER.export_replays(
+            tmp_path,
+            None,
+            None,
+            {"status": "disabled"},
+            expected_inputs_sha256="unused",
+        )
 
 
 def test_options_boundary_builds_native_options_but_never_searches(monkeypatch):

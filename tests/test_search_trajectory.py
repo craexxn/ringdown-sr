@@ -17,6 +17,7 @@ from test_structure import constant, operator, time_node
 
 from ringdown_sr import search_trajectory as control
 from ringdown_sr import symbolic
+from ringdown_sr.losses import mean_squared_error
 from ringdown_sr.noiseless_control import frozen_data
 from ringdown_sr.pilot import _sha256
 
@@ -67,7 +68,62 @@ def member(tree, loss, **changes):
     }
 
 
-def write_observations(tmp_path, members, *, events=2, units=None, hof=True):
+def write_replays(path, arrays):
+    """Supply explicit native fixtures; production data are tested separately."""
+    units_path = path.with_name("observation_units.json")
+    units = json.loads(units_path.read_bytes())["trees"]
+    entries = {}
+    for line in path.read_bytes().splitlines():
+        event = json.loads(line)
+        members = event["returned_population"] + [
+            item["member"] for item in event["hall_of_fame"]
+        ]
+        for item in members:
+            key = control.raw_tree_id(item["tree"])
+            if key in entries or key not in units:
+                continue
+            unit = units[key]
+            if unit["status"] != "valid":
+                entries[key] = {
+                    "status": "not_assessed",
+                    "reason": unit["reason"],
+                    "loss_bits": None,
+                    "prediction_bits": None,
+                }
+            else:
+                tree = control.decode_raw_tree(item["tree"])[0]
+                prediction = symbolic.evaluate_tree(tree, arrays["time_s"])
+                loss = mean_squared_error(arrays["observed"] - prediction)
+                entries[key] = {
+                    "status": "available",
+                    "reason": None,
+                    "loss_bits": control._bits(loss),
+                    "prediction_bits": [control._bits(v) for v in prediction],
+                }
+    payload = {
+        "format": control.REPLAY_FORMAT,
+        "inputs_sha256": _sha256(path.with_name("inputs.npz").read_bytes()),
+        "raw_sha256": _sha256(path.read_bytes()),
+        "units_sha256": _sha256(units_path.read_bytes()),
+        "trees": entries,
+    }
+    path.with_name("observation_replays.json").write_text(
+        json.dumps(payload), encoding="utf-8"
+    )
+    return payload
+
+
+def verify_observations(path, **kwargs):
+    kwargs.setdefault(
+        "expected_inputs_sha256", _sha256(path.with_name("inputs.npz").read_bytes())
+    )
+    return control.verify_observations(path, **kwargs)
+
+
+def write_observations(
+    tmp_path, members, *, events=2, units=None, hof=True, arrays=None
+):
+    arrays = frozen_data() if arrays is None else arrays
     path = tmp_path / "observations.jsonl"
     items = []
     for i in range(events):
@@ -98,6 +154,10 @@ def write_observations(tmp_path, members, *, events=2, units=None, hof=True):
     unit_path.write_text(
         json.dumps({"format": control.UNITS_FORMAT, "trees": mapping}), encoding="utf-8"
     )
+    np.savez(
+        tmp_path / "inputs.npz", time_s=arrays["time_s"], observed=arrays["observed"]
+    )
+    write_replays(path, arrays)
     return path, items
 
 
@@ -340,9 +400,11 @@ def test_hof_member_can_remain_at_last_event_without_final_front_membership(tmp_
     )
     a, b = candidate(exact, arrays), candidate(approximate, arrays)
     path, _ = write_observations(
-        tmp_path, [member(exact, a["loss"]), member(approximate, b["loss"])]
+        tmp_path,
+        [member(exact, a["loss"]), member(approximate, b["loss"])],
+        arrays=arrays,
     )
-    result = control.verify_observations(
+    result = verify_observations(
         path, expected_events=2, arrays=arrays, front={"candidates": [a]}
     )
     q = next(t for t in result["trees"] if t["has_exp"])
@@ -379,7 +441,8 @@ def test_forms_keep_source_specific_event_ordinals_and_occurrence_denominators(
         )
     ]
     path.write_bytes(b"".join(json.dumps(event).encode() + b"\n" for event in events))
-    result = control.verify_observations(
+    write_replays(path, arrays)
+    result = verify_observations(
         path, expected_events=4, arrays=arrays, front={"candidates": [candidates[0]]}
     )
     first, second = [
@@ -397,12 +460,26 @@ def test_forms_keep_source_specific_event_ordinals_and_occurrence_denominators(
                 "last_event": 4,
                 "occurrences": 64,
                 "event_indices": [2, 4],
+                "status_counts": {
+                    "verified": 64,
+                    "numerical_unresolved": 0,
+                    "not_assessed": 0,
+                },
+                "curve_success_occurrences": 0,
+                "parameter_success_occurrences": 0,
             },
             "hall_of_fame": {
                 "first_event": 2,
                 "last_event": 4,
                 "occurrences": 3,
                 "event_indices": [2, 3, 4],
+                "status_counts": {
+                    "verified": 3,
+                    "numerical_unresolved": 0,
+                    "not_assessed": 0,
+                },
+                "curve_success_occurrences": 0,
+                "parameter_success_occurrences": 0,
             },
         },
     }
@@ -424,7 +501,6 @@ def test_forms_keep_source_specific_event_ordinals_and_occurrence_denominators(
         "population_size",
         "slot_duplicate",
         "cache",
-        "mse",
         "operator",
         "units_missing",
         "units_extra",
@@ -452,8 +528,6 @@ def test_corrupt_or_incomplete_observations_fail(tmp_path, fault):
         events[0]["hall_of_fame"] *= 2
     elif fault == "cache":
         events[0]["returned_population"][0]["complexity_cache"] = 18
-    elif fault == "mse":
-        events[0]["returned_population"][0]["loss_bits"] = struct.pack(">d", 1.0).hex()
     elif fault == "operator":
         events[0]["returned_population"][0]["tree"]["operator"] = "/"
     elif fault.startswith("units_") or fault == "unit_finite_conflict":
@@ -479,7 +553,7 @@ def test_corrupt_or_incomplete_observations_fail(tmp_path, fault):
     if fault == "truncated":
         path.write_bytes(path.read_bytes()[:-1])
     with pytest.raises(ValueError):
-        control.verify_observations(
+        verify_observations(
             path,
             expected_events=2,
             arrays=arrays,
@@ -512,7 +586,7 @@ def test_legitimate_unusable_members_are_retained_without_positive_markers(
     path, _ = write_observations(
         tmp_path, [item], units={control.raw_tree_id(item["tree"]): unit}
     )
-    result = control.verify_observations(
+    result = verify_observations(
         path, expected_events=2, arrays=arrays, front={"candidates": [record]}
     )
     saved = result["trees"][0]
@@ -535,7 +609,7 @@ def test_byte_limit_and_late_mutation_abort_without_modifying_source(
     with monkeypatch.context() as scoped:
         scoped.setattr(control, "MAX_OBSERVATION_BYTES", len(before))
         with pytest.raises(ValueError, match="byte limit"):
-            control.verify_observations(
+            verify_observations(
                 path, expected_events=2, arrays=arrays, front={"candidates": [record]}
             )
     assert path.read_bytes() == before
@@ -547,13 +621,214 @@ def test_byte_limit_and_late_mutation_abort_without_modifying_source(
         if calls == 5:
             path.write_bytes(before.replace(b'"birth": 2', b'"birth": 3'))
 
-    with pytest.raises(ValueError, match="changed during diagnosis"):
-        control.verify_observations(
+    with pytest.raises(ValueError, match="changed|different"):
+        verify_observations(
             path,
             expected_events=2,
             arrays=arrays,
             front={"candidates": [record]},
             check=changed,
+        )
+
+
+@pytest.mark.parametrize("mixed", [False, True])
+def test_saved_loss_mismatch_is_retained_per_occurrence_without_positive_markers(
+    tmp_path, mixed
+):
+    arrays = frozen_data()
+    record = candidate(reference_tree(), arrays)
+    path, events = write_observations(
+        tmp_path, [member(record["tree"], record["loss"])]
+    )
+    if mixed:
+        events[0]["returned_population"][0]["loss_bits"] = control._bits(1.0)
+    else:
+        for event in events:
+            for entry in event["returned_population"] + [
+                item["member"] for item in event["hall_of_fame"]
+            ]:
+                entry["loss_bits"] = control._bits(1.0)
+    path.write_bytes(b"".join(json.dumps(event).encode() + b"\n" for event in events))
+    write_replays(path, arrays)
+    before = path.read_bytes()
+    result = verify_observations(
+        path, expected_events=2, arrays=arrays, front={"candidates": [record]}
+    )
+    assert (
+        result["status"] == "verified"
+    )  # Complete classification, including unresolved members.
+    assert result["counts"]["numerical_unresolved"] == (1 if mixed else 66)
+    assert result["counts"]["verified"] == (65 if mixed else 0)
+    assert result["counts"]["not_assessed"] == 0
+    assert len(result["occurrences"]) == 66
+    bad = result["occurrences"][0]
+    assert bad["reasons"] == ["saved_native_loss_mismatch"]
+    assert bad["comparisons"]["saved_vs_native_loss"]["status"] == "failed"
+    assert bad["loss_bits"] == control._bits(1.0)
+    assert bad["curve_marker"] == bad["parameter_marker"] == "not_assessed"
+    tree = result["trees"][0]
+    assert tree["status"] == "numerical_unresolved"
+    assert tree["diagnostics"]["curve_marker"] == "not_assessed"
+    assert tree["diagnostics"]["parameter_match"]["status"] == "not_assessed"
+    if mixed:
+        assert tree["reason"] == "mixed_occurrence_verification"
+        assert result["occurrences"][1]["curve_marker"] == "within_tolerance"
+        assert tree["sources"]["returned_population"]["curve_success_occurrences"] == 63
+        assert tree["sources"]["hall_of_fame"]["curve_success_occurrences"] == 2
+    assert path.read_bytes() == before
+
+
+def test_prediction_gate_catches_equal_mse_but_different_native_python_curves(
+    tmp_path, monkeypatch
+):
+    arrays = {**frozen_data()}
+    arrays["observed"] = np.ones(128)
+    record = candidate(constant(0), arrays)
+    path, _ = write_observations(
+        tmp_path, [member(record["tree"], record["loss"])], arrays=arrays
+    )
+    monkeypatch.setattr(
+        control, "evaluate_tree", lambda tree, time: np.full(time.shape, 2.0)
+    )
+    result = verify_observations(
+        path, expected_events=2, arrays=arrays, front={"candidates": [record]}
+    )
+    item = result["occurrences"][0]
+    assert item["status"] == "numerical_unresolved"
+    assert item["reasons"] == ["native_python_prediction_mismatch"]
+    assert item["comparisons"]["saved_vs_native_loss"]["status"] == "passed"
+    assert item["comparisons"]["native_vs_python_tree_mse"]["status"] == "passed"
+    assert item["comparisons"]["native_vs_python_prediction"]["status"] == "failed"
+    assert result["counts"]["verified"] == 0
+
+
+@pytest.mark.parametrize(
+    "fault",
+    [
+        "native_loss",
+        "negative_loss",
+        "nan_loss",
+        "nonfinite_prediction",
+        "prediction_bits",
+        "length",
+        "inputs_hash",
+        "raw_hash",
+        "units_hash",
+        "format",
+        "extra_tree",
+        "missing_tree",
+        "extra_field",
+        "unknown_reason",
+        "unavailable_payload",
+        "expected_hash",
+        "missing_inputs_binding",
+    ],
+)
+def test_native_replay_corruption_is_a_hard_error(tmp_path, fault):
+    arrays = frozen_data()
+    record = candidate(constant(0), arrays)
+    path, _ = write_observations(tmp_path, [member(record["tree"], record["loss"])])
+    replay_path = path.with_name("observation_replays.json")
+    payload = json.loads(replay_path.read_bytes())
+    key = next(iter(payload["trees"]))
+    replay = payload["trees"][key]
+    kwargs = {}
+    if fault == "native_loss":
+        replay["loss_bits"] = control._bits(1.0)
+    elif fault == "negative_loss":
+        replay["loss_bits"] = control._bits(-0.1)
+    elif fault == "nan_loss":
+        replay["loss_bits"] = "7ff8000000000042"
+    elif fault == "nonfinite_prediction":
+        replay["prediction_bits"][0] = control._bits(math.inf)
+    elif fault == "prediction_bits":
+        replay["prediction_bits"][0] = "not_float64_bits"
+    elif fault == "length":
+        replay["prediction_bits"].pop()
+    elif fault in {"inputs_hash", "raw_hash", "units_hash"}:
+        payload[fault.replace("_hash", "_sha256")] = "0" * 64
+    elif fault == "format":
+        payload["format"] = control.FORMAT
+    elif fault == "extra_tree":
+        payload["trees"]["0" * 64] = copy.deepcopy(replay)
+    elif fault == "missing_tree":
+        payload["trees"].clear()
+    elif fault == "extra_field":
+        replay["replacement_loss"] = 0
+    elif fault == "unknown_reason":
+        replay.update(
+            status="not_assessed",
+            reason="unknown",
+            loss_bits=None,
+            prediction_bits=None,
+        )
+    elif fault == "unavailable_payload":
+        replay.update(status="not_assessed", reason="numerical_unresolved")
+    elif fault == "expected_hash":
+        kwargs["expected_replay_sha256"] = "0" * 64
+    else:
+        kwargs["expected_inputs_sha256"] = None
+    replay_path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(ValueError):
+        verify_observations(
+            path,
+            expected_events=2,
+            arrays=arrays,
+            front={"candidates": [record]},
+            **kwargs,
+        )
+
+
+def test_native_numerical_unavailability_remains_unassessed(tmp_path):
+    arrays = frozen_data()
+    record = candidate(constant(0), arrays)
+    path, _ = write_observations(tmp_path, [member(record["tree"], record["loss"])])
+    replay_path = path.with_name("observation_replays.json")
+    payload = json.loads(replay_path.read_bytes())
+    for replay in payload["trees"].values():
+        replay.update(
+            status="not_assessed",
+            reason="numerical_unresolved",
+            loss_bits=None,
+            prediction_bits=None,
+        )
+    replay_path.write_text(json.dumps(payload), encoding="utf-8")
+    result = verify_observations(
+        path, expected_events=2, arrays=arrays, front={"candidates": [record]}
+    )
+    assert result["counts"]["not_assessed"] == 66
+    assert result["counts"]["verified"] == result["counts"]["numerical_unresolved"] == 0
+    assert result["occurrences"][0]["reasons"] == ["native_replay_numerical_unresolved"]
+
+
+def test_replay_bytes_are_counted_and_late_replay_mutation_fails(tmp_path, monkeypatch):
+    arrays = frozen_data()
+    record = candidate(constant(0), arrays)
+    path, _ = write_observations(tmp_path, [member(record["tree"], record["loss"])])
+    replay_path = path.with_name("observation_replays.json")
+    before = replay_path.read_bytes()
+    with monkeypatch.context() as scoped:
+        scoped.setattr(
+            control,
+            "MAX_OBSERVATION_BYTES",
+            path.stat().st_size
+            + path.with_name("observation_units.json").stat().st_size,
+        )
+        with pytest.raises(ValueError, match="byte limit"):
+            verify_observations(
+                path, expected_events=2, arrays=arrays, front={"candidates": [record]}
+            )
+    original = control._tree_diagnosis
+
+    def change_after_consumption(*args):
+        result = original(*args)
+        replay_path.write_bytes(before.replace(b'"available"', b'"unusable_"'))
+        return result
+
+    monkeypatch.setattr(control, "_tree_diagnosis", change_after_consumption)
+    with pytest.raises(ValueError, match="changed during diagnosis"):
+        verify_observations(
+            path, expected_events=2, arrays=arrays, front={"candidates": [record]}
         )
 
 

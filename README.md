@@ -5,8 +5,8 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 02.11.2026; abgeglichener Stand auf `main`: `930e3d0`
-([PR #46](https://github.com/craexxn/ringdown-sr/pull/46)).
+Fortsetzungsstand: 02.11.2026; abgeglichener Stand auf `main`: `41ccdd2`
+([PR #47](https://github.com/craexxn/ringdown-sr/pull/47)).
 Vorgegebener Stand des freien Budgetlaufs: `8bdc8db`; frühere Ausführungsstände:
 Konstantendiagnose `0a70f19`, Zeitdarstellungskontrolle `4057caa`.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
@@ -56,7 +56,7 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   der Maximalfehler. Sechs gepostete Formeln und ihre 30 Fehlerwerte wurden
   unabhängig nachgerechnet; der vollständige Originalarchiv-Audit bleibt offen.
   [Bedienung und Artefakte](docs/free_optimizer_budget.md).
-- **Angenommene Suchbeobachtung:** Der
+- **Suchbeobachtung und Verifikationskorrektur:** Der
   [eingefrorene Methodenplan](docs/search_trajectory_plan.md)
   umfasst drei beobachtete 100/2-Läufe mit drei frischen Kontrollläufen.
   Feste Populationsaufnahmen beantworten keine vollständige Mutationshistorie.
@@ -64,10 +64,22 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   Korrektur einer Interpretationsregel: fehlende Frontzugehörigkeit belegt
   kein zeitliches Verschwinden. Die Regel ist korrigiert und gezielt
   gegengeprüft. Sechs Zellen und organisatorische Grenzen sind angenommen;
-  der getrennte Beobachtungspfad ist implementiert. Die
-  [Bedienung und Artefakte](docs/search_trajectory.md) beschreiben den Ablauf;
-  native Integration und vollständige CI sind vor dem Merge nachzuweisen.
-  Die wissenschaftliche Manjaro-Ausführung folgt erst nach diesen Prüfungen.
+  getrennte Beobachtungspfad ist mit PR #47 und vollständiger CI übernommen.
+  Der erste Manjaro-Lauf blieb bei der Prüfung von Zelle 3 unvollständig.
+  Originalarchiv und fünf gezielte native Replays sind geprüft: zwei Fälle
+  zeigen Unterschiede der Julia-/NumPy-Baumauswertung, drei einen Unterschied
+  zwischen gespeichertem Verlust und beiden aktuellen Replays mit offener Ursache.
+  Die [gebundene Verifikationsergänzung](docs/search_trajectory_replay_policy.md)
+  trennt diese Nachweise und schließt ungeklärte Mitglieder von positiven
+  Markern aus. Das übermittelte KI-basierte Review zu PR #48 fand im geprüften
+  Umfang keine Code- oder Methodenbefunde. Der erste vollständige CI-Lauf wurde
+  bei 30 Minuten Joblimit in der letzten Haswell-Prüfung abgebrochen; der
+  technische Job erhält 45 Minuten Gesamtzeit. Der vollständige Erfolg am neuen
+  Head bleibt vor Merge nachzuweisen. Eine neue wissenschaftliche
+  Serie ist erst nach geprüftem Stand und gesonderter Freigabe vorgesehen.
+  [Bedienung und Artefakte](docs/search_trajectory.md) sowie der
+  [Fortsetzungsstand](docs/representation_implementation_status.md) halten
+  Ausführungsstand und verbleibende Nachweise fest.
   Keine automatische weitere Budgetstufe, kein Produktionsprofil und keine
   allgemeine Leistungsvalidierung.
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)

@@ -6,6 +6,12 @@ Beobachtung. Er erfasst zurückgegebene Populationen und die globale Hall of Fam
 Die ursprüngliche Front und Auswahl bleiben erhalten; aufgezeichnete
 Zwischenbäume werden ausschließlich nach dem Fit diagnostiziert.
 
+Die [gebundene Verifikationsergänzung](search_trajectory_replay_policy.md)
+gilt für neue Format-2-Pakete. Sie unterscheidet gespeicherte Backendwerte,
+aktuelle native Replays und Python-Baumauswertung. Der erste Format-1-Lauf
+`trajectory-manjaro-001` bleibt als `incomplete / failed` erhalten.
+Die Korrektur autorisiert keine automatische Wiederholung.
+
 ## Technische Voraussetzungen
 
 Vor der wissenschaftlichen Ausführung muss der Implementierungsstand die
@@ -26,6 +32,11 @@ Eingaben. Das neuere freie Budgetarchiv wird dafür nicht benötigt; dessen
 weiterhin offener unabhängiger Audit wird durch die Beobachtungsserie nicht ersetzt.
 
 ## Ausführung auf Manjaro nach Übernahme des geprüften Implementierungsstands
+
+Ein neuer wissenschaftlicher Lauf benötigt nach Prüfung und Merge eine
+gesonderte Freigabe und einen neuen Ausgabenamen. Die nachstehenden Befehle
+beschreiben den ursprünglichen Ablauf; vorhandene Teilstände nicht entfernen
+oder unter ihrem Namen erneut starten.
 
 Ein sauberes Checkout ist erforderlich. Wenn `main` bereits an ein anderes
 Worktree gebunden ist, kann dieses Checkout nach Prüfung lokaler Änderungen
@@ -68,11 +79,14 @@ zurücklassen; die vergleichende Interpretation bleibt dann gesperrt.
 
 Die Zellverzeichnisse enthalten die unveränderten Suchausgaben, Originalfronten,
 Auswahlindizes, konkrete Backendoptionen, Seeds, Kontrollnachweise und Laufzeiten.
-Hook-Zeit, nachgelagerte Einheitenprüfung und Offlineauswertung werden
+Hook-Zeit, nachgelagerte Einheitenprüfung, nativer Replay und Offlineauswertung werden
 gesondert ausgewiesen. Die Fit-Zeit enthält JIT und Python-Exporte sowie
 bei eingeschalteter Beobachtung deren Aufwand; sie ist keine reine Suchzeit.
 Beobachtete Zellen enthalten zusätzlich `observations.jsonl` mit den rohen
-Aufnahmen und `observation_units.json` mit der nachgelagerten Einheitenprüfung.
+Aufnahmen, `observation_units.json` mit der nachgelagerten Einheitenprüfung
+und `observation_replays.json` mit nativen Verlust-/Vorhersagebits.
+Der Replayexport bindet Trainingsdatei, Rohaufnahme und Einheitenstatus;
+alle drei Beobachtungsdateien zählen gemeinsam gegen die 256-MiB-Grenze.
 Die konstanten Float64-Bits bleiben in den Rohbäumen erhalten, auch für
 nichtendliche Werte. Technische Auswertungen sind von unverändert aufbewahrten
 Rohaufnahmen zu unterscheiden.
@@ -90,6 +104,19 @@ sind gesondert geprüft; die Originalfronten und Fit-Callbackzahlen müssen exak
 übereinstimmen. Zwischenbäume ersetzen niemals die ursprüngliche Auswahl.
 Nichtendliche oder semantisch ungültige Mitglieder bleiben sichtbar und
 können keinen positiven Rekonstruktionsbefund erzeugen.
+
+Numerische Widersprüche zwischen gespeicherten und nachgerechneten Werten
+werden pro Vorkommen als `numerical_unresolved` mit konkreten Gründen
+erhalten. Kurzfassung und JSON nennen bestätigte, ungeklärte und nicht
+beurteilte Mitgliedspositionen sowie ihre Nenner. Ein vollständiger Abschluss
+bestätigt die Erfassung und Klassifikation; er bestätigt nicht jeden Baum
+numerisch. Ein Baum mit gemischten bestätigten/ungeklärten Vorkommen erhält
+keinen uneingeschränkten positiven Gesamtmarker.
+
+Fehlende oder widersprüchliche Replaynachweise, beschädigte Dateien sowie
+Fehler in Endfront, Originalauswahl oder Paarvergleich bleiben Abbruchgründe.
+Native MSE und Python-MSE aus denselben nativen Vorhersagen müssen weiterhin
+konsistent sein. Die bisherigen Toleranzen werden nicht gelockert.
 
 Ein vollständiges Paket lässt sich anschließend archivieren:
 

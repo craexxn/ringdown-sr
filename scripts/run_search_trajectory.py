@@ -56,6 +56,32 @@ EXTRA_FILES = (
     "FreeOptimizerBudget.jl",
     "SearchTrajectory.jl",
 )
+MEMBER_COUNT_FIELDS = (
+    "returned_population",
+    "hall_of_fame",
+    "verified",
+    "numerical_unresolved",
+    "not_assessed",
+)
+
+
+def observation_member_counts(analysis, observation):
+    """Keep technical completeness separate from successful member assessment."""
+    if analysis is None:
+        if observation["status"] != "disabled":
+            raise ValueError("Observed members require explicit assessment counts.")
+        return dict.fromkeys(MEMBER_COUNT_FIELDS, 0)
+    counts = analysis["counts"]
+    if (
+        set(counts) != set(MEMBER_COUNT_FIELDS)
+        or any(type(value) is not int or value < 0 for value in counts.values())
+        or counts["returned_population"] + counts["hall_of_fame"]
+        != observation["member_count"]
+        or sum(counts[name] for name in MEMBER_COUNT_FIELDS[2:])
+        != observation["member_count"]
+    ):
+        raise ValueError("Incomplete or inconsistent observed-member denominators.")
+    return dict(counts)
 
 
 def locked_interpretation(cells, *, final_verified):
@@ -76,25 +102,39 @@ def save_report(output, report):
     report["comparative_interpretation"] = (
         {
             "status": "available",
-            "scope": "observed return boundaries only; no causal search history",
+            "scope": "verified occurrences at observed return boundaries; unresolved and unassessed members excluded from success counts; no causal search history",
             "paired_export_equality": "passed",
             "physical_identification": "not_assessed",
             "front_membership_implies_temporal_disappearance": False,
+            "observation_member_counts": {
+                field: sum(
+                    cell["diagnostics"]["observation_member_counts"][field]
+                    for cell in cells
+                )
+                for field in MEMBER_COUNT_FIELDS
+            },
         }
         if complete
         else None
     )
+    if complete:
+        interpretation = report["comparative_interpretation"]
+        counts = interpretation["observation_member_counts"]
+        interpretation["member_assessment_complete"] = not (
+            counts["numerical_unresolved"] or counts["not_assessed"]
+        )
     lines = [
         "# Begrenzte Beobachtung der freien Suche",
         "",
         f"Serienstatus: `{report['status']}`, Abschlussverifikation: `{report['final_verification']}`.",
         "",
-        "| Zelle | Seed | Beobachtung | Status | Auswahlindex | Aufnahmen |",
-        "| --- | --- | --- | --- | --- | --- |",
+        "| Zelle | Seed | Beobachtung | Status | Auswahlindex | Aufnahmen | Positionen | Verifiziert | Numerisch offen | Nicht bewertet |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for cell in cells:
         diagnosis = cell.get("diagnostics", {})
         observation = diagnosis.get("observation", {})
+        counts = diagnosis.get("observation_member_counts", {})
         lines.append(
             "| "
             + " | ".join(
@@ -107,6 +147,10 @@ def save_report(output, report):
                         cell["status"],
                         diagnosis.get("selected_index", "nicht verfügbar"),
                         observation.get("event_count", "nicht verfügbar"),
+                        observation.get("member_count", "nicht verfügbar"),
+                        counts.get("verified", "nicht verfügbar"),
+                        counts.get("numerical_unresolved", "nicht verfügbar"),
+                        counts.get("not_assessed", "nicht verfügbar"),
                     ),
                 )
             )
@@ -117,6 +161,8 @@ def save_report(output, report):
         "Vergleichende Interpretation: "
         + ("freigegeben." if complete else "gesperrt."),
         "Freigabe verlangt sechs vollständige Zellen, drei bestandene Paarvergleiche und Abschlussprüfung.",
+        "completed bestätigt den technischen Abschluss; numerisch offene oder nicht bewertete Mitglieder bleiben unbekannt und zählen nicht als Erfolge.",
+        "Die vergleichende Aussage ist auf verifizierte Vorkommen begrenzt; solange Mitglieder offen bleiben, ist keine vollständige Bewertung aller beobachteten Mitglieder möglich.",
         "",
         "Frontzugehörigkeit und zeitliches Auftreten werden getrennt ausgewiesen.",
         "Fehlende Frontzugehörigkeit belegt kein Verschwinden aus Population oder Hall of Fame.",
@@ -410,7 +456,7 @@ def verify_cell(
     observation_timing = record["observation_timing_seconds"]
     if (
         not isinstance(observation_timing, dict)
-        or set(observation_timing) != {"hook", "units_after_fit"}
+        or set(observation_timing) != {"hook", "units_after_fit", "replay_after_fit"}
         or any(
             type(value) not in (int, float)
             or not math.isfinite(value)
@@ -441,9 +487,10 @@ def verify_cell(
     if cell["observed"]:
         digest = read("checksums.json").get("observations.jsonl")
         units_digest = read("checksums.json").get("observation_units.json")
+        replay_digest = read("checksums.json").get("observation_replays.json")
         if any(
             not isinstance(value, str) or len(value) != 64
-            for value in (digest, units_digest)
+            for value in (digest, units_digest, replay_digest)
         ):
             raise ValueError("Missing observation checksum.")
         observation_analysis = policy.verify_observations(
@@ -455,17 +502,23 @@ def verify_cell(
             expected_sha256=digest,
             expected_record=observation,
             expected_units_sha256=units_digest,
+            expected_replay_sha256=replay_digest,
+            expected_inputs_sha256=_sha256(contents["inputs.npz"]),
         )
         observation = observation_analysis["observation"]
         hashes["observations.jsonl"] = digest
         hashes["observation_units.json"] = units_digest
+        hashes["observation_replays.json"] = replay_digest
     else:
         units_path = directory / "observation_units.json"
+        replay_path = directory / "observation_replays.json"
         if (
             observation_path.exists()
             or observation_path.is_symlink()
             or units_path.exists()
             or units_path.is_symlink()
+            or replay_path.exists()
+            or replay_path.is_symlink()
             or observation
             != {
                 "status": "disabled",
@@ -474,11 +527,13 @@ def verify_cell(
                 "bytes_written": 0,
                 "max_bytes": policy.MAX_OBSERVATION_BYTES,
                 "units_bytes": 0,
+                "replay_bytes": 0,
                 "total_bytes": 0,
                 "expected_events": expected_events,
             }
         ):
             raise ValueError("Unexpected observations or counter in the control arm.")
+    member_counts = observation_member_counts(observation_analysis, observation)
     if worker_bytes(directory, support) != contents:
         raise ValueError("Consumed worker artifacts changed during diagnosis.")
     check()
@@ -500,6 +555,7 @@ def verify_cell(
         "native_verification": record,
         "observation": observation,
         "observation_analysis": observation_analysis,
+        "observation_member_counts": member_counts,
         "observation_timing_seconds": observation_timing,
         "offline_analysis_seconds": time.perf_counter() - analysis_started,
     }
@@ -596,6 +652,10 @@ def run_with_deadline(archive, output, *, label, clock):
         "scope": "adaptive development; observed return boundaries; no causal search history",
         "physical_identification": "not_assessed",
         "plan": {"commit": policy.PLAN_COMMIT, "sha256": policy.PLAN_SHA256},
+        "replay_policy": {
+            "path": policy.REPLAY_POLICY,
+            "sha256": policy.REPLAY_POLICY_SHA256,
+        },
         "configuration": {
             "truth": TRUTH,
             "curve_limits": CURVE_LIMITS,
@@ -641,6 +701,9 @@ def run_with_deadline(archive, output, *, label, clock):
         runtime, runtime_hashes = copy_runtime(output, sources)
         files.update(runtime_hashes)
         (output / "plan.md").write_bytes((ROOT / policy.PLAN).read_bytes())
+        (output / "replay_policy.md").write_bytes(
+            (ROOT / policy.REPLAY_POLICY).read_bytes()
+        )
         np.savez(
             output / "training.npz",
             time_s=arrays["time_s"],
@@ -651,7 +714,7 @@ def run_with_deadline(archive, output, *, label, clock):
             diagnostic_time_s=arrays["diagnostic_time_s"],
             diagnostic_truth=arrays["diagnostic_truth"],
         )
-        for name in ("plan.md", "training.npz", "diagnostic.npz"):
+        for name in ("plan.md", "replay_policy.md", "training.npz", "diagnostic.npz"):
             files[name] = _sha256((output / name).read_bytes())
         unchanged()
         preflight, consumed = inspect_backend(
