@@ -205,6 +205,22 @@ def inspect(mode):
         fixture = jl.SearchTrajectory.fixture_checks()
         verify_fixture_wire(str(fixture.event_json))
         names = [str(value) for value in fixture.checks]
+        options = jl.SearchTrajectory.expected_options(True, 42)
+        for bits in (
+            "8000000000000000",
+            "bff0000000000000",
+            "0000000000000001",
+            "8000000000000001",
+            "7ff8000000000042",
+        ):
+            tree = {"kind": "constant", "value_bits": bits}
+            root = worker.restore_raw_tree(tree, jl.RingdownSRSearch)
+            if (
+                worker.native_tree_record(jl.SearchTrajectory.raw_tree(root, options))
+                != tree
+            ):
+                raise ValueError("Python/native constant boundary changed exact bits.")
+        names.append("python_native_constant_roundtrip")
         if len(names) != len(set(names)) or set(names) != set(FIXTURE_CHECKS):
             raise ValueError("Missing or duplicate native observer fixture checks.")
         checks = [{"name": name, "status": "passed"} for name in names]

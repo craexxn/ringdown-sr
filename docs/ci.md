@@ -25,7 +25,8 @@ werden nicht abgerufen beziehungsweise validiert.
 
 **Ausnahmen:** `docs/noiseless_control_plan.md`,
 `docs/search_representation_plan.md`, `docs/constant_diagnostic_plan.md`,
-`docs/free_optimizer_budget_plan.md` und `docs/search_trajectory_plan.md`
+`docs/free_optimizer_budget_plan.md`, `docs/search_trajectory_plan.md` und
+`docs/search_trajectory_replay_policy.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -57,6 +58,13 @@ Auswahlen und Fit-Callbackzahlen müssen übereinstimmen; der beobachtete Lauf
 muss alle vier erwarteten Populationsrückgaben exportieren. Die sechs
 wissenschaftlichen 200-Iterations-Zellen bleiben außerhalb der CI.
 Haswell und Threadlimit 1 gelten nur für diesen technischen Kontrollschritt.
+
+Die Verifikationsergänzung prüft außerdem getrennte native Trainingsreplays
+der beobachteten Bäume und deren Dateibindungen, numerische Konsistenz und
+Vollständigkeit. Die fünf geprüften Manjaro-Gegenfälle sind als feste
+Testdaten enthalten; gespeicherte Vorhersagebits dienen plattformneutralen
+Vergleichen. Sie verlangen keine neue wissenschaftliche Suche und keine
+bitweise Gleichheit großer trigonometrischer Ausdrücke zwischen Rechnern.
 
 Jede andere geänderte Datei aktiviert alle bisherigen Prüfungen, insbesondere
 Code, Tests, Konfigurationen, Lockdateien, Julia-Dateien und CI-Werkzeuge.

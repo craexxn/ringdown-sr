@@ -1,12 +1,72 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 02.11.2026. Der korrigierte Beobachtungsplan ist angenommen;
-der getrennte technische Pfad ist implementiert und wird technisch geprüft.
-Die freie Budgetserie bleibt
-als vollständig abgeschlossen übermittelt; ihr [Befund](free_optimizer_budget_results_manjaro_001.md)
-und die Grenzen der fehlenden Originalarchivprüfung bleiben erhalten.
+Stand: 02.11.2026. PR #47 ist übernommen. Der erste Manjaro-Beobachtungslauf
+blieb bei der Diagnose von Zelle 3 unvollständig; Originalarchiv und gezielte
+native Replays sind geprüft. Die begrenzte Verifikationskorrektur ist auf
+einem eigenen Branch umgesetzt; die vollständige technische CI ist am PR-Head
+nachzuweisen.
 
-## Aktuell: Umsetzung der angenommenen Suchbeobachtung
+## Aktuell: Getrennte Beobachtungsreplays
+
+- Basis: `41ccdd27aaa4ade56b509493089241d6695b9757`, Dateibaum
+  `04ade5ae24d3823d92ffaf7a595d58671203f8d6`; beim Einstieg keine offenen PRs.
+  Arbeitsbranch: `codex/trajectory-replay-verification`.
+  Eigener baumgleicher lokaler Checkout; ältere Arbeitsstände bleiben erhalten.
+  Die lokale Snapshotgeschichte wird nicht auf die Remote-Geschichte gepusht.
+- PR #47 bestand am Head `4798315586b873e6c9e5d561cc8a8b5f532a8e09`
+  die [vollständige CI](https://github.com/craexxn/ringdown-sr/actions/runs/41410153617):
+  1.572 Python-Tests und 295 Julia-Prüfungen einschließlich nativer
+  Beobachterintegration. Der Mergebaum stimmt überein. Das übermittelte
+  KI-basierte Implementierungsreview fand im geprüften Umfang keine Befunde.
+- Originalteilarchiv `trajectory-manjaro-001-incomplete.tar.gz`, SHA-256
+  `08676ddc21c1820110ae425a68de3c5b954c8bef2022b816ca274c307041c873`,
+  unabhängig geprüft: 67 Workerprüfsummen, 57 Quellhashes, 56 eingefrorene
+  Artefakthashes; alle 97 extrahierten Dateien unverändert.
+  Zellen 1/2 und ihr Originalpaarvergleich bestehen; Zelle 3 scheitert
+  bei fünf Zwischenmitgliedern, Zellen 4–6 bleiben nicht ausgeführt
+  (`planned`). Die acht Endfrontkandidaten von Zelle 3 bestehen die
+  bisherigen strengen Replays.
+- Der übermittelte native Bericht `trajectory-loss-replay-001.json`
+  bindet das korrigierte separate Skript
+  `fa6eaa23de632fd4fa0e1fb84159e7996af52ed69cec93d2ee4ca156c3b99a61`.
+  Alle fünf Datensätze, 14 konsumierte Hashes und die MSE aus jeweils
+  128 nativen Vorhersagebits sind unabhängig nachgerechnet.
+  Zwei Fälle zeigen Julia-/NumPy-Abweichungen (auf Manjaro maximal 2,2315 %);
+  drei gespeicherte Verluste passen zu keinem aktuellen Replay.
+  Die Ursache dieser drei Unterschiede bleibt offen; keine konkrete
+  Vereinfachung ist anhand der Aufnahmen belegt. Details in
+  [PR #47](https://github.com/craexxn/ringdown-sr/pull/47).
+- Die [gebundene Ergänzung](search_trajectory_replay_policy.md) konkretisiert
+  harte Fehler, numerisch ungeklärte Mitglieder, positive Gates und
+  Serienvollständigkeit. Der ursprüngliche Plan bleibt unverändert.
+  Die Umsetzung ergänzt getrennte native Replays nach dem Fit, genaue
+  Dateibindungen und sichtbare Nenner; Suche und Originalauswahl bleiben gleich.
+- Die fünf Originalfälle werden als kompakte Testdaten mit Herkunft und
+  Float64-Bits aufgenommen. Analytische Kontrollen und Manipulationsfälle
+  prüfen positive Gates und die weiterhin harten Integritätsfehler.
+  Vollständige technische CI und gezieltes KI-basiertes Review der
+  Status-/Abschlussregeln sind am fertigen PR-Head nachzuweisen.
+- Kein neuer wissenschaftlicher Suchlauf und keine Wiederaufnahme.
+  Der ursprüngliche Teilstand bleibt `incomplete / failed`.
+  Ein frischer Sechszellenlauf ist erst nach bestandenem Prüfstand, Merge
+  und gesonderter Freigabe vorgesehen.
+- Lokal Python 3.12.14 verfügbar; Julia hier nicht vorhanden. Native
+  Nachweise der Korrektur werden über die technische CI geführt.
+- Gebündelte lokale Prüfung: 226 Tests bestanden (89 Kern-, 28 Worker-,
+  43 Treiber-, 21 Originalfall- und 45 CI-Auswahltests), Ruff und Formatprüfung
+  bestanden; alle 47 Markdown-Dateien mit gültigen lokalen Dateizielen.
+  Die gezielte KI-basierte Codeprüfung der Status- und Abschlussregeln fand
+  bisher keine korrekturbedürftigen Befunde; Bindung an den veröffentlichten
+  Head und native CI-Nachweise folgen im PR. Die Gesamtsuite wird in der
+  Linux-CI ausgeführt; keine wiederholte vollständige Windows-Suite.
+
+Die freie Budgetserie bleibt als abgeschlossen übermittelt; ihr
+[Befund](free_optimizer_budget_results_manjaro_001.md) und die Grenzen des
+fehlenden Originalarchivaudits bleiben erhalten. Die folgenden Abschnitte
+sind historische Arbeits- und Prüfnachweise.
+
+## Historisch: Umsetzung der ursprünglichen Suchbeobachtung
+
 
 - PR #46 ist übernommen. Remote-`main` beim Einstieg:
   `930e3d064d68233368a8c3decfc3115fe62a42c5`, Dateibaum

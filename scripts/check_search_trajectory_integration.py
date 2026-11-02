@@ -106,6 +106,7 @@ def run(output):
                     "callback_calls_total": diagnosis["callback_calls_total"],
                     "native_verification": diagnosis["native_verification"],
                     "observation": diagnosis["observation"],
+                    "observation_member_counts": diagnosis["observation_member_counts"],
                     "observation_timing_seconds": diagnosis[
                         "observation_timing_seconds"
                     ],
@@ -133,6 +134,10 @@ def run(output):
             "status": "verified",
             "scope": "three isolated two-search-iteration off/on/off workers on eight-point y=1+t; no scientific control cells",
             "source_sha256": sources,
+            "replay_policy": {
+                "path": policy.REPLAY_POLICY,
+                "sha256": policy.REPLAY_POLICY_SHA256,
+            },
             "workers": results,
             "pair_comparisons": pairs,
             "off_on_off_exports_equal": True,

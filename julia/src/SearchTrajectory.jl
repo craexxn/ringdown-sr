@@ -336,6 +336,94 @@ end
 
 serialized(value) = (io = IOBuffer(); serialize(io, value); take!(io))
 
+"Capture only read-only post-fit replay dependencies, never an optimization state."
+function begin_replay_guard(options)
+    return (; rng=copy(Random.default_rng()), context=serialized(RingdownSRSearch.CONTEXT[]),
+        options=serialized(options), calls=RingdownSRSearch.CALLS[],
+        last_dataset=RingdownSRSearch.LAST_DATASET[], last_options=RingdownSRSearch.LAST_OPTIONS[])
+end
+
+function verify_replay_guard(guard, options)
+    copy(Random.default_rng()) == guard.rng || error("Native replay changed the RNG.")
+    serialized(RingdownSRSearch.CONTEXT[]) == guard.context ||
+        error("Native replay changed the fixed training context.")
+    serialized(options) == guard.options || error("Native replay changed backend options.")
+    RingdownSRSearch.CALLS[] == guard.calls || error("Native replay called the search objective.")
+    RingdownSRSearch.LAST_DATASET[] === guard.last_dataset &&
+        RingdownSRSearch.LAST_OPTIONS[] === guard.last_options ||
+        error("Native replay changed the search callback state.")
+    return nothing
+end
+
+unavailable_replay(reason) =
+    (; status="not_assessed", reason, loss_bits=nothing, prediction_bits=nothing)
+
+"Evaluate an owned reconstructed tree after fit; preserve backend losses separately."
+function training_replay(root, options)
+    units = units_status(root, options)
+    units.status == "valid" || return unavailable_replay(units.reason)
+    context = RingdownSRSearch.CONTEXT[]
+    before_tree = raw_tree(root, options)
+    try
+        loss = RingdownSRLoss.candidate_loss(context, root, options)
+        isfinite(loss) || return unavailable_replay("numerical_unresolved")
+        loss >= 0 || error("Native ordinary replay loss must be nonnegative.")
+        prediction, complete = SymbolicRegression.eval_tree_array(root, context._dataset.X, options)
+        (!complete || prediction === nothing) && return unavailable_replay("numerical_unresolved")
+        prediction isa AbstractVector{Float64} && length(prediction) == context._dataset.n ||
+            error("Unexpected native replay prediction shape or type.")
+        all(isfinite, prediction) || return unavailable_replay("numerical_unresolved")
+        recomputed_loss = RingdownSRLoss._mean_squared(context, context._dataset.y - prediction)
+        isapprox(loss, recomputed_loss; rtol=1e-10, atol=0.0) ||
+            error("Native replay loss contradicts its own predictions.")
+        return (; status="available", reason=nothing, loss_bits=float_bits(loss),
+            prediction_bits=float_bits.(prediction))
+    catch error
+        if error isa DomainError || error isa OverflowError
+            return unavailable_replay("numerical_unresolved")
+        end
+        rethrow()
+    finally
+        raw_tree(root, options) == before_tree || error("Native replay changed its owned tree.")
+    end
+end
+
+function fixture_training_replays(options)
+    previous = RingdownSRSearch.CONTEXT[]
+    previous === nothing || error("Native replay fixtures require a fresh context.")
+    time = collect(0.0:0.125:0.875)
+    RingdownSRSearch.bind_context(time, zeros(length(time)), nothing)
+    try
+        guard = begin_replay_guard(options)
+        for bits in ("8000000000000000", "bff0000000000000",
+            "0000000000000001", "8000000000000001")
+            root = RingdownSRSearch.constant(from_bits(bits))
+            record = training_replay(root, options)
+            record.status == "available" && record.reason === nothing ||
+                error("A finite constant replay was unavailable.")
+            record.prediction_bits == fill(bits, length(time)) ||
+                error("Native prediction bits changed a fixed constant.")
+            expected_loss = bits == "bff0000000000000" ? 1.0 : 0.0
+            from_bits(record.loss_bits) == expected_loss || error("Wrong fixed constant MSE.")
+        end
+        invalid_units = training_replay(RingdownSRSearch.variable(1), options)
+        invalid_units == unavailable_replay("dimensional_violation") ||
+            error("Invalid units were not preserved as unavailable.")
+        nonfinite = training_replay(RingdownSRSearch.constant(Inf), options)
+        nonfinite == unavailable_replay("nonfinite_constant") ||
+            error("Nonfinite constants were not preserved as unavailable.")
+        overflowing = RingdownSRSearch.unary(1, RingdownSRSearch.binary(3,
+            RingdownSRSearch.constant(1000.0), RingdownSRSearch.variable(1)))
+        training_replay(overflowing, options) == unavailable_replay("numerical_unresolved") ||
+            error("Numerically unresolved replay was not preserved.")
+        verify_replay_guard(guard, options)
+    finally
+        RingdownSRSearch.CONTEXT[] = previous
+    end
+    return ["native_training_replay_bits_and_statuses",
+        "native_training_replay_preserves_rng_context_options"]
+end
+
 function fixture_checks()
     options = expected_options(true, 42)
     dataset = SymbolicRegression.Dataset(
@@ -413,6 +501,7 @@ function fixture_checks()
         "callback_count_unchanged", "byte_cap_rejected_without_truncation",
         "unexpected_event_rejected", "pareto_filter_does_not_remove_hof_member",
     ]
+    append!(checks, fixture_training_replays(options))
     return (; checks, event_json=String(take!(writer.io)))
 end
 
