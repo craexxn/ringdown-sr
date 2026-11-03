@@ -5,10 +5,12 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 03.11.2026; abgeglichener Implementierungsstand auf `main`:
-`f3c0cb4` ([PR #48](https://github.com/craexxn/ringdown-sr/pull/48)).
-Ergebnisstand: `2d9ed90`, übernommener
-[PR #50](https://github.com/craexxn/ringdown-sr/pull/50).
+Fortsetzungsstand: 03.11.2026; abgeglichener Implementierungs- und
+Grammatik-Ausführungsstand auf `main`: `23a2113`
+([PR #52](https://github.com/craexxn/ringdown-sr/pull/52)).
+Neuer Ergebnisstand: [Grammatikvergleich 001](docs/trigonometric_grammar_results_manjaro_001.md),
+vollständiges Originalarchiv unabhängig geprüft. Frühere Suchbeobachtung:
+`2d9ed90`, übernommener [PR #50](https://github.com/craexxn/ringdown-sr/pull/50).
 Vorgegebener Stand des freien Budgetlaufs: `8bdc8db`; frühere Ausführungsstände:
 Konstantendiagnose `0a70f19`, Zeitdarstellungskontrolle `4057caa`.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
@@ -98,15 +100,20 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   Referenz. Die [Literatur- und Methodenabwägung](docs/free_form_method_assessment.md)
   ist als Entscheidungsgrundlage ausgearbeitet: neun Primärarbeiten mit
   getrenntem Zugriffsstatus, Vorwissen und Übertragungsgrenzen. Darauf aufbauend
-  ist der [begrenzte Grammatikvergleich](docs/trigonometric_grammar_plan.md)
-  am 03.11.2026 angenommen: sechs frische Zellen, unbeschränkte Grammatik gegen
-  keine trigonometrischen Nachfahren unter `sin/cos`, beide im bisherigen
-  100/2-Häufigkeitsprofil. Der getrennte Pfad und seine
-  [Bedienung](docs/trigonometric_grammar.md) sind ausgearbeitet; technische
-  Prüfnachweise und der genaue Ausführungsstand werden im Implementierungs-PR
-  festgehalten. Die einmalige wissenschaftliche Serie wird nach vollständiger
-  technischer Prüfung auf Manjaro ausgeführt; sie wurde hier nicht gestartet.
-  Kein Produktionsprofil oder Hauptversuch ist damit freigegeben.
+  wurde der [begrenzte Grammatikvergleich](docs/trigonometric_grammar_plan.md)
+  am 03.11.2026 angenommen und mit PR #52 übernommen; #51 ist als ersetzt
+  geschlossen. Die einmalige Manjaro-Serie ist abgeschlossen und ihr
+  [Originalarchiv unabhängig nachgerechnet](docs/trigonometric_grammar_results_manjaro_001.md):
+  sechs Zellen, Abschlussverifikation bestanden, **0/3 erfolgreiche
+  Originalauswahlen in beiden Armen**, kein Kurvenerfolg unter 51 Frontkandidaten.
+  Das Verbot trigonometrischer Nachfahren verbessert einen Seed deutlich,
+  verschlechtert die RMS-Werte der anderen beiden und stützt die Hypothese nicht.
+  Die zusätzliche Regel wird gemäß Plan nicht übernommen; der Versuch ist
+  beendet. Weitere freie Suchversuche bleiben bis zu einer neuen begründeten
+  Methodenentscheidung unterbrochen. Die [Bedienung](docs/trigonometric_grammar.md)
+  dokumentiert den abgeschlossenen Laufweg, keine Wiederholungsfreigabe.
+  Freie Formelfindung bleibt Forschungsziel; kein Produktionsprofil oder
+  Hauptversuch ist freigegeben. Hier nur lesender Audit, keine Suche oder Fits.
   Die Abgrenzung zwischen Pilot und Hauptversuchen steht im
   [Fortsetzungsstand](docs/representation_implementation_status.md).
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
