@@ -41,6 +41,7 @@ def run(output):
     files = {
         p.relative_to(output).as_posix(): _sha256(p.read_bytes())
         for p in runtime.iterdir()
+        if p.is_file()
     }
     files.update({name: _sha256(value) for name, value in consumed.items()})
 

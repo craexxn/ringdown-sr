@@ -1,6 +1,7 @@
 """Frozen outer-search budgets, isolated adapters and descriptive paired endpoints."""
 
 import copy
+import importlib.machinery
 import importlib.util
 import math
 from collections import Counter
@@ -31,9 +32,16 @@ RUNTIME = {
 }
 
 
+class SourceBytesLoader(importlib.machinery.SourceFileLoader):
+    def get_code(self, fullname):
+        return self.source_to_code(self.get_data(self.path), self.path)
+
+
 def load_module(path, name):
-    """Create a fresh module namespace without changing an existing study module."""
-    spec = importlib.util.spec_from_file_location(name, path)
+    """Execute source bytes in a fresh namespace, never cached runtime bytecode."""
+    spec = importlib.util.spec_from_file_location(
+        name, path, loader=SourceBytesLoader(name, str(path))
+    )
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module

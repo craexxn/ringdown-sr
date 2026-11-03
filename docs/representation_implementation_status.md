@@ -29,11 +29,17 @@ Keine zusätzlichen Agenten.
   Vier Gruppen und sämtliche Seedpaare; Freigabe erst nach allen 20 Zellen.
   Ein positiver Strukturbefund muss zu einem neuen 0→1-Erfolg derselben hohen
   Originalauswahl gehören. Bedienung: [Suchbudgetvergleich](search_duration.md).
-- **Prüfstand:** Implementierung und Gegenfalltests einschließlich aller
-  1.024 binären Budget-Erfolgsmuster pro Grammatik sind vorbereitet. Lokale
-  Prüfung und vollständige technische CI vor Ausführung erforderlich.
-  Keine wissenschaftlichen 200-/2.000-Suchen hier. Der PR dokumentiert den
-  genauen geprüften Head und die abgeschlossenen Nachweise.
+- **Prüfstand:** Am ersten Implementierungsstand `2fb0cb8` bestanden lokal
+  1.845 Python-Tests, Ruff, Formatierung und 55 Markdown-Dateien. Die native
+  Vorprüfung bestätigte zehn Optionsprofile, 20 Pythonprofile, sechs Referenzen
+  und 28 Grammatikfälle. Der anschließende technische Integrationstreiber
+  scheiterte vor dem ersten Suchworker an einem als Datei gelesenen
+  Cacheverzeichnis. Korrigiert: neue Adapter laden ausdrücklich Quellbytes;
+  die Dateiliste überspringt Verzeichnisse. Ein Gegenfall prüft unveränderte
+  Cachemetadaten bei geänderten Quellbytes. Die abschließenden lokalen und
+  vollständigen CI-Nachweise stehen mit genauem Head in
+  [PR #54](https://github.com/craexxn/ringdown-sr/pull/54).
+  Keine wissenschaftlichen 200-/2.000-Suchen hier.
 - **Nächster Schritt:** technische Nachweise abschließen, reviewbaren Entwurf
   bereitstellen; danach einmalige Manjaro-Serie am geprüften Stand. Weitere
   Tests erst aus ihren Ergebnissen begründen, keine automatische Budgetleiter.

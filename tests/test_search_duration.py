@@ -4,6 +4,7 @@ import copy
 import itertools
 import subprocess
 from collections import Counter
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -16,6 +17,22 @@ from ringdown_sr.noiseless_control import frozen_data
 from ringdown_sr.pilot import _sha256
 from ringdown_sr.representation_control import diagnose_candidate
 from ringdown_sr.symbolic import SearchBudget
+
+
+def test_fresh_module_uses_source_despite_valid_timestamp_cached_bytecode(tmp_path):
+    import os
+    import py_compile
+
+    path = tmp_path / "module.py"
+    path.write_text("value = 1\n")
+    original = path.stat()
+    cached = py_compile.compile(str(path), doraise=True)
+    path.write_text("value = 2\n")
+    os.utime(path, ns=(original.st_atime_ns, original.st_mtime_ns))
+    before = Path(cached).read_bytes()
+    loaded = control.load_module(path, "duration_source_test")
+    assert loaded.value == 2
+    assert Path(cached).read_bytes() == before
 
 
 def test_bound_plan_factorial_design_and_unchanged_shared_policy():
