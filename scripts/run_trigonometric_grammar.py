@@ -654,6 +654,14 @@ def retain_incomplete(output, report, error, clock):
                 )
 
 
+def common_parameters(parameters):
+    return {
+        k: v
+        for k, v in parameters.items()
+        if k not in {"random_state", "nested_constraints"}
+    }
+
+
 def run(archive, output, *, label):
     with WallTimeLimit(LIMIT_SECONDS) as clock:
         return run_with_deadline(archive, output, label=label, clock=clock)
@@ -776,7 +784,9 @@ def run_with_deadline(archive, output, *, label, clock):
             )
             before = time.monotonic()
             print(
-                f"Starting cell {cell['number']}/6: {cell['arm']} seed={cell['budget']['seed']}",
+                f"Starting cell {cell['number']}/{len(report['cells'])}: "
+                f"{cell['arm']} seed={cell['budget']['seed']} "
+                f"niterations={cell['budget']['niterations']}",
                 flush=True,
             )
             worker = symbolic.run_search_arm(
@@ -803,11 +813,7 @@ def run_with_deadline(archive, output, *, label, clock):
             parameters = support.parameters_without_output(
                 diagnosis["effective_parameters"]
             )
-            common = {
-                k: v
-                for k, v in parameters.items()
-                if k not in {"random_state", "nested_constraints"}
-            }
+            common = common_parameters(parameters)
             if first_policy is not None and first_policy != common:
                 raise ValueError("Unplanned effective PySR cross-cell difference.")
             first_policy = common

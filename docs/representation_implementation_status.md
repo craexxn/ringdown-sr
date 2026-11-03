@@ -4,11 +4,70 @@ Stand: 03.11.2026. PR #52 ist übernommen, der darin enthaltene Literatur-PR #51
 als ersetzt geschlossen. Die einmalige Grammatikserie auf Manjaro ist
 abgeschlossen und ihr Originalarchiv unabhängig geprüft: C_K = C_A = 0/3,
 kein Kurvenerfolg unter 51 Frontkandidaten. Die zusätzliche Regel wird gemäß
-Plan nicht übernommen; weitere freie Suchversuche bleiben bis zu einer neuen
-begründeten Methodenentscheidung unterbrochen. Hier nur lesender Audit,
-keine wissenschaftliche Suche, Fits oder zusätzliche Agenten.
+Plan nicht übernommen. Neu angenommen ist der unten abgegrenzte Vergleich
+größerer äußerer Suchbudgets unter beiden Grammatiken. Hier Vorbereitung und
+technische Prüfung; die wissenschaftliche Ausführung bleibt auf Manjaro.
+Keine zusätzlichen Agenten.
 
-## Aktuell: Abgeschlossener Grammatikvergleich und Ergebnisnachtrag
+## Aktuell: Vorbereitung des Suchbudgetvergleichs
+
+- **Beschluss:** 200/2.000 äußere Suchiterationen, beide Grammatiken, fünf neue
+  Seeds und 20 frische Prozesse. Zwei Stunden Gesamtgrenze ausdrücklich
+  gewählt; 600 Sekunden je Worker. Lokale Konstantenoptimierung bleibt 100/2.
+  Die [Literaturauswertung](search_duration_literature.md) liefert Gründe und
+  Ressourcenbeispiele, keine optimale Ringdown-Laufzeit.
+- **Plan vor Code eingefroren:** [Methodenplan](search_duration_plan.md),
+  Commit `194cfb499e8c53b8243d19c4d11d58a006baff95`, SHA-256
+  `8906a66930848d733e5b2744d40c5fa9c4051db2b876e200908d74ae9ac0b75d`.
+  Alle sieben bisherigen Pläne und Originalbefunde bleiben erhalten.
+- **Arbeitsbasis:** Branch `codex/search-duration-preparation` auf dem
+  Ergebnis-Head `e6472bba72b672642987d3ffd55c3bd59694ac05` von PR #53.
+  Dieser Ergebnisnachtrag ist enthalten; `main` blieb beim Einstieg `23a2113`.
+- **Umsetzung:** isolierter neuer Treiber verwendet die bestehende strenge
+  Prüfung und Abbruchsicherung. Zusätzlich Prüfung des tatsächlichen
+  `equation_search`-Budgets; keine Änderung der numerischen Zielfunktion.
+  Vier Gruppen und sämtliche Seedpaare; Freigabe erst nach allen 20 Zellen.
+  Ein positiver Strukturbefund muss zu einem neuen 0→1-Erfolg derselben hohen
+  Originalauswahl gehören. Bedienung: [Suchbudgetvergleich](search_duration.md).
+- **Vorhandener thttps://github.com/craexxn/ringdown-sr/pull/54/conflict?name=docs%252Frepresentation_implementation_status.md&ancestor_oid=9b3de2da2c94a63635e94143aab010ee078a501b&base_oid=a5fefe598f8a6a040574fa3c18a7c049d4216c87&head_oid=e68df05d5caf2480bf7e988e9f6dfcbfc39878d4echnischer Nachweis:** Am Implementierungs-Head
+  `98f60210f19ec344ba1724a51f399f6581791cf8` bestand die vollständige
+  [CI 41616411175](https://github.com/craexxn/ringdown-sr/actions/runs/41616411175):
+  1.846 Python-Tests und sämtliche nativen Integrationen. Run, Schritte und
+  Logs wurden selbst geprüft; der temporäre Mergebaum war exakt dateigleich.
+  Lokal bestanden 46 gezielte Tests und die neue native Integration mit zehn
+  Optionsprofilen, 20 Pythonprofilen, sechs Referenzen, 28 Grammatikfällen und
+  fünf kleinen Suchworkern. Die wiederholte K2-Front war identisch.
+- **Übermitteltes KI-basiertes Review zu PR #54:** Head
+  `98f60210f19ec344ba1724a51f399f6581791cf8`, Vergleichsbasis
+  `23a21131e6fafcdc748e47098c018a1158f1629b`; alle 18 geänderten Dateien,
+  einschließlich Ergebnisnachtrag #53, und relevante Aufrufer geprüft.
+  Im geprüften Umfang methodentreu, kein gefundener Laufzeitfehler; ein P2
+  im Test der Abschlussveröffentlichung. Dessen Injektion griff schon beim
+  gesperrten Startbericht. Eigene Reproduktion bestätigt: Der alte Test bestand
+  mit null Workern, obwohl jeder Aufruf von `finalize()` zum Testfehler geführt
+  hätte. Die im Review genannten weiteren acht Gegenprüfungen und 30 skalaren
+  Formelmetriken sind übermittelte Nachweise und wurden hier nicht wiederholt.
+- **Gezielte P2-Korrektur:** Nur der Test und Statusdokumentation geändert.
+  Die Injektion greift erst nach dem positiven Rename mit `completed / passed`.
+  Sie verlangt 20 durchlaufene Mock-Worker, 20 abgeschlossene Zellen,
+  freigegebene Aggregate und ein vorhandenes Abschlussmanifest vor dem Fehler.
+  Danach müssen die Aggregate gesperrt und das Manifest entfernt sein.
+  Alle drei Fälle bestehen: `OSError`, `KeyboardInterrupt` und eine simuliert
+  überschrittene Zeitgrenze, die das echte `clock.check()` nach dem Rename
+  abfängt. Zusätzliche reine Testmutationen ohne Widerruf beziehungsweise mit
+  zurückbleibendem Manifest werden jeweils in allen drei Fällen erkannt.
+  Keine Änderung an Laufzeitcode, Daten, Pins oder eingefrorenen Plänen.
+- **Aktueller Prüfstatus:** Die gezielte Gegenprüfung erledigt den P2-Befund;
+  eine weitere Methodenreviewrunde ist laut übermitteltem Review nicht nötig.
+  Der genaue Korrektur-Head und die automatisch für Teständerungen gestartete
+  vollständige CI stehen in [PR #54](https://github.com/craexxn/ringdown-sr/pull/54).
+  Die frühere erfolgreiche CI ist kein Nachweis für den neuen Head.
+  Keine wissenschaftlichen 200-/2.000-Suchen hier.
+- **Nächster Schritt:** vollständige CI des Korrekturstands vor Merge und
+  einmaliger Manjaro-Serie abschließen. Weitere Tests erst aus den
+  wissenschaftlichen Ergebnissen begründen, keine automatische Budgetleiter.
+
+## Historisch: Abgeschlossener Grammatikvergleich und Ergebnisnachtrag
 
 - **Einstieg selbst abgeglichen:** sauberer Branch
   `codex/trigonometric-grammar-preparation` bei
