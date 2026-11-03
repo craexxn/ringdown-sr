@@ -29,7 +29,7 @@ Keine zusätzlichen Agenten.
   Vier Gruppen und sämtliche Seedpaare; Freigabe erst nach allen 20 Zellen.
   Ein positiver Strukturbefund muss zu einem neuen 0→1-Erfolg derselben hohen
   Originalauswahl gehören. Bedienung: [Suchbudgetvergleich](search_duration.md).
-- **Vorhandener technischer Nachweis:** Am Implementierungs-Head
+- **Vorhandener thttps://github.com/craexxn/ringdown-sr/pull/54/conflict?name=docs%252Frepresentation_implementation_status.md&ancestor_oid=9b3de2da2c94a63635e94143aab010ee078a501b&base_oid=a5fefe598f8a6a040574fa3c18a7c049d4216c87&head_oid=e68df05d5caf2480bf7e988e9f6dfcbfc39878d4echnischer Nachweis:** Am Implementierungs-Head
   `98f60210f19ec344ba1724a51f399f6581791cf8` bestand die vollständige
   [CI 41616411175](https://github.com/craexxn/ringdown-sr/actions/runs/41616411175):
   1.846 Python-Tests und sämtliche nativen Integrationen. Run, Schritte und
