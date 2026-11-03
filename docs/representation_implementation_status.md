@@ -1,12 +1,59 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 03.11.2026. PR #48 ist nach vollständiger technischer CI übernommen.
-Der erste Manjaro-Beobachtungslauf bleibt unverändert `incomplete / failed`.
-Als nächster Schritt ist genau eine frische Sechszellenserie mit der getrennten
-Replayverifikation auf Manjaro vereinbart. Hier noch keine neue wissenschaftliche
-Serie ausgeführt; Ergebnisse und anschließende Methodenentscheidungen stehen aus.
+Stand: 03.11.2026. PR #48 und der Dokumentationsnachtrag PR #49 sind übernommen.
+Die frische Manjaro-Serie `trajectory-manjaro-002` ist abgeschlossen; das
+vollständige Originalarchiv wurde unabhängig geprüft. Der erste Lauf bleibt
+unverändert `incomplete / failed`. Nächster Schritt ist die gezielte Literatur-
+und Methodenabwägung zur freien Formelfindung; keine weitere Suche beschlossen.
 
-## Aktuell: Abgeglichener Stand und Manjaro-Übergabe
+## Aktuell: Originalarchiv der zweiten Suchbeobachtung geprüft
+
+- Einstieg: ein sauberer Worktree auf `codex/trajectory-manjaro-handoff` bei
+  `ff25de891b4266bcdf419ad6a7cba3ebe1808dfc`. Remote-Branches, Worktrees und
+  offene PRs geprüft; PR #49 inzwischen als
+  `d97c95ddff7facf9d5fc766834855697478c49b6` übernommen, keine offenen PRs.
+  Neuer Ergebnisbranch `codex/trajectory-results-manjaro-002` auf dieser Basis.
+- Originalarchiv `trajectory-manjaro-002.tar.gz`, SHA-256 selbst bestätigt:
+  `99999285f6d7a8c50c54280cc36b526e704af01b07a1ccf95f2227e5e8597f55`.
+  Ausführung auf Manjaro am festgelegten sauberen Commit
+  `f3c0cb49ff9213b651ad4cb4ce766958f0b1e2d1`, Gesamtzeit 426,986 Sekunden.
+  Sechs Zellen, drei bitgenaue Originalpaarvergleiche und Abschlussprüfung
+  bestanden. Format 2, beide gebundenen Pläne und alle Budgets unverändert.
+- **Selbst geprüft:** 175 Gesamtprüfsummen, 173 eingefrorene Dateianker,
+  alle Zellmanifeste, 58 Quellen gegen Git, Originaleingaben, sechs native
+  Options-/Pluginberichte, zwölf gespeicherte native Vorprüfungsfälle sowie
+  Seeds und Haswell-/Threadnachweise. Alle sechs Zellen mit bestehenden
+  Python-Verifikatoren erneut ausgewertet; sämtliche Diagnosen und
+  Klassifikationen exakt reproduziert. Abschließend alle Dateien erneut geprüft.
+- **Unabhängig nachgerechnet:** 54 exportierte Frontkandidaten auf beiden
+  Rastern, 12.450 gespeicherte native Vorhersage-/MSE-Paare und sämtliche
+  62.384 Rohpositionen. Eine erkannte Produktform zusätzlich analytisch
+  geprüft. Keine neue Julia-Ausführung, Optimierung oder Suche im Audit.
+  Originalartefakte blieben unverändert. Vollständige Implementierungs-CI
+  als vorhandener Nachweis übernommen, nicht wiederholt.
+- **Befund:** Kein erfolgreicher Frontkandidat und kein erfolgreiches
+  verifiziertes beobachtetes Vorkommen. 58.629 Positionen verifiziert,
+  157 numerisch ungeklärt, 3.598 nicht beurteilt. Eine erkannte
+  Exponential-Kosinus-Form bei Seed 20261021 wächst und passt schlecht;
+  Parameterstatus `not_assessed / not_decaying`. Keine Kausalaussage über
+  Strukturentstehung, Verlust oder isolierte Optimiererprobleme.
+- Der [Ergebnisbericht](search_trajectory_results_manjaro_002.md) hält
+  Nenner, Quellen, Ereignisposition, Fehler, Aufwand und Aussagegrenzen fest.
+  Die 15 früher dokumentierten Fehlerwerte der historischen 100/2-Auswahlen
+  stimmen exakt überein; der vollständige freie Budgetarchiv-Audit bleibt offen.
+- **Arbeitsstand:** Ergebnisbericht, README, dieses Arbeitsdokument und
+  Bedienungsstatus werden gemeinsam dokumentiert. Kein wissenschaftlicher
+  Code, Test, Pin, Konfiguration oder Laufzeitplan geändert. Head, sauberer
+  Abschlusszustand und Dokumentations-CI werden im Ergebnis-PR festgehalten.
+  Lokale Auditwerkzeuge und Auswertungen liegen unter
+  `/workspace/audits/trajectory-manjaro-002/`; sie gehören nicht zum
+  wissenschaftlichen Ausführungsstand.
+- **Nächster abgegrenzter Schritt:** Literatur zu freier struktureller Suche,
+  Konstantenanpassung und Komplexitäts-/Auswahlkriterien gegen diesen Befund
+  und das Exposé abwägen. Recherche und neue Methodenentscheidung stehen aus.
+  Keine Wiederholung der Serie oder zusätzliche Instrumentierung beschlossen.
+
+## Historisch: Abgeglichener Stand und Manjaro-Übergabe vor Ausführung
 
 - Beim Einstieg am 03.11.2026 Remote-Branches, offene PRs, lokalen Checkout und
   Worktrees geprüft: keine offenen PRs, ein sauberer Worktree auf

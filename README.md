@@ -78,9 +78,13 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   sämtlichen Integrationen einschließlich beider letzten Haswell-Suchen.
   Head und Merge `f3c0cb4` haben denselben Dateibaum. Der frühere abgebrochene
   CI-Lauf bleibt ein historischer Teilnachweis; das technische Joblimit beträgt
-  inzwischen 45 Minuten. Nach dem chatübergreifenden Standabgleich ist genau
-  eine frische Manjaro-Serie am Mergecommit mit neuem Ausgabeordner
-  `trajectory-manjaro-002` vereinbart; sie wurde hier noch nicht ausgeführt.
+  inzwischen 45 Minuten. Die frische Serie `trajectory-manjaro-002` ist
+  auf Manjaro abgeschlossen und das [Originalarchiv unabhängig geprüft](docs/search_trajectory_results_manjaro_002.md):
+  sechs Zellen, drei exakte Aus/an-Paarvergleiche, Abschlussprüfung bestanden.
+  Weiterhin kein erfolgreicher Frontkandidat und kein Kurvenerfolg unter den
+  verifizierten beobachteten Vorkommen. Unter 62.384 Positionen bleiben 157 numerisch ungeklärt und
+  3.598 nicht beurteilt. Eine erkannte Exponential-Kosinus-Form wächst und
+  passt schlecht; sie ist keine erfolgreiche Ringdown-Rekonstruktion.
   [Bedienung und Artefakte](docs/search_trajectory.md) sowie der
   [Fortsetzungsstand](docs/representation_implementation_status.md) halten
   Ausführungsstand und verbleibende Nachweise fest.
@@ -89,9 +93,10 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
 - **Forschungsanspruch bestätigt:** Das bereitgestellte Exposé verlangt freie
   Formelfindung und untersucht den Einfluss der Hintergrundlänge auf Genauigkeit
   und Strukturstabilität bei Kovarianzgewichtung. Der bekannte Strukturfit bleibt
-  Referenz. Erst nach Auswertung der geplanten Beobachtungsserie folgen gezielte
-  Weiterentwicklungs- und Literaturentscheidungen. Die Abgrenzung zwischen
-  Pilot und Hauptversuchen steht im [Fortsetzungsstand](docs/representation_implementation_status.md).
+  Referenz. Nach der abgeschlossenen Beobachtungsprüfung folgen jetzt gezielte
+  Literatur- und Methodenabwägungen; weitere Suchen sind nicht beschlossen.
+  Die Abgrenzung zwischen Pilot und Hauptversuchen steht im
+  [Fortsetzungsstand](docs/representation_implementation_status.md).
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
   bestand am Head `cfe44bf`: 1.288 Python-Tests, Julia- und technische
   Integrationsprüfungen. Der Mergecommit hat denselben Dateibaum. Die
