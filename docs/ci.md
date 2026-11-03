@@ -25,8 +25,8 @@ werden nicht abgerufen beziehungsweise validiert.
 
 **Ausnahmen:** `docs/noiseless_control_plan.md`,
 `docs/search_representation_plan.md`, `docs/constant_diagnostic_plan.md`,
-`docs/free_optimizer_budget_plan.md`, `docs/search_trajectory_plan.md` und
-`docs/search_trajectory_replay_policy.md`
+`docs/free_optimizer_budget_plan.md`, `docs/search_trajectory_plan.md`,
+`docs/search_trajectory_replay_policy.md` und `docs/trigonometric_grammar_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -48,6 +48,17 @@ gilt nur für diesen Kontrollschritt. Keine der sechs wissenschaftlichen
 Suchzellen wird in der CI ausgeführt.
 
 ## Vollständiger technischer Pfad
+
+Der Grammatikvergleich ergänzt `scripts/check_trigonometric_grammar_integration.py`:
+sechs native Optionsobjekte, feste Ringdown-/Aliasreferenzen und 28 explizite
+Syntaxgegenfälle unter beiden Profilen, anschließend drei frische K–A–K-Worker
+mit zwei Suchiterationen am Achtpunkt-Signal `y=1+t`. Alle vier direkten und
+entfernten trigonometrischen Paare werden geprüft; die ursprünglichen
+Kontrollfronten müssen übereinstimmen. Jeder exportierte A-Kandidat muss die
+Regel erfüllen. Haswell/Threadlimit 1 gilt nur für diesen Kontrollpfad.
+Die sechs wissenschaftlichen Zellen werden ausschließlich später auf Manjaro
+ausgeführt. Fehler-, Manipulations- und Veröffentlichungstests gehören zum
+Python-Testlauf; die bisherigen technischen CI-Schritte bleiben erhalten.
 
 Die begrenzte Suchbeobachtung ergänzt
 `scripts/check_search_trajectory_integration.py`: echte Optionsobjekte und

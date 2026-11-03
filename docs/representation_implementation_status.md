@@ -1,12 +1,113 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 03.11.2026. PR #48 und der Dokumentationsnachtrag PR #49 sind übernommen.
-Die frische Manjaro-Serie `trajectory-manjaro-002` ist abgeschlossen; das
-vollständige Originalarchiv wurde unabhängig geprüft. Der erste Lauf bleibt
-unverändert `incomplete / failed`. Nächster Schritt ist die gezielte Literatur-
-und Methodenabwägung zur freien Formelfindung; keine weitere Suche beschlossen.
+Stand: 03.11.2026. PR #48, PR #49 und der Ergebnis-PR #50 sind übernommen.
+Die Literaturabwägung ist in PR #51 gesichert. Der begrenzte Grammatikvergleich
+ist angenommen; Plan, isolierter Implementierungspfad und Manjaro-Bedienung
+sind ausgearbeitet. Die technische Prüfung ist von der späteren einmaligen
+wissenschaftlichen Serie getrennt; genaue Heads und CI-Nachweise stehen im
+zugehörigen Implementierungs-PR. Hier keine wissenschaftliche Suche ausgeführt.
 
-## Aktuell: Originalarchiv der zweiten Suchbeobachtung geprüft
+## Aktuell: Angenommener Grammatikvergleich für Manjaro
+
+- Erneuter Einstieg: sauberer Checkout `codex/free-form-methods-literature`
+  bei `114bb24dd983c0316c89379bc9477bed5835655a`, ein Worktree; weitere lokale
+  Branches erhalten. Remote-Branches vollständig abgefragt, einzig PR #51
+  offen und als Entwurf konfliktfrei. `main` unverändert bei
+  `2d9ed90043628f0c3b2f948634b1bdcd769bc886`. Kein Merge ausgeführt.
+- Veröffentlichungsbranch `codex/trigonometric-grammar-preparation` auf dem Literatur-Head.
+  Die neue Arbeit baut auf PR #51 auf; solange dieser offen bleibt, enthält ein
+  Vergleich gegen `main` auch die Literaturdokumentation. Keine Umschreibung
+  vorhandener Commits oder fremder Arbeit.
+  Der erste Push wurde wegen der Commit-E-Mail-Privatsphäre abgewiesen.
+  Der lokale Vorbereitungsbranch `codex/trigonometric-grammar-control` bleibt
+  erhalten; die Veröffentlichung verwendet eine öffentliche GitHub-Noreply-
+  Identität und einen neuen Plancommit bei identischen Planbytes.
+- **Angenommen:** Der zuvor bedingte Vergleich ist ausdrücklich beauftragt;
+  die wissenschaftliche Ausführung bleibt auf Manjaro. Hier vollständig
+  vorbereiten. [Verbindlicher Plan](trigonometric_grammar_plan.md), Commit
+  `5de1a4a0bbb8282ac77f06e21f0314acaa99eade`, SHA-256
+  `e8fe21344cedc93196d77e83918eb989907fe75e7cfa7219ee17d22661be70b5`.
+  Genau sechs Zellen, bekannte Seeds mit wechselnder Paarreihenfolge, 100/2,
+  beide Häufigkeitsschalter und ein zusätzlicher Syntaxprior im A-Arm.
+- **Implementiert:** Eigener Profil-/Worker-/Treiberpfad mit nativer absoluter
+  Optionsprüfung, vier vollständigen Verschachtelungspaaren, Kontrolle aller
+  exportierten A-Bäume und bisherigen Verlust-/Auswahl-/Replaygates.
+  Quellen und Datenrollen sind manifestiert; Abbruch- und Berichtssperren
+  einschließlich Widerruf unvollständiger Abschlüsse bleiben erhalten.
+  Allgemeine Suchdefaults, Pins und die sechs bisherigen Laufzeitpläne
+  bleiben unverändert. Der neue Plan ist zusätzlich der vollen CI zugeordnet.
+- **Prüfumfang:** Python-Gegenfälle für Profile, manipulierte Artefakte,
+  Auswahl-/Strukturgates, Zeitgrenzen und Abbrüche; native Options-/Syntax-/
+  Aliasreferenzen und eine technische K–A–K-Folge auf `y=1+t`. Die sechs
+  wissenschaftlichen Zellen sind keine Tests. Konkrete Ergebnisse und
+  Abschlusszustand werden am vollständigen Head im Implementierungs-PR gesichert.
+  Keine zusätzlichen Agenten oder routinemäßige Reviewrunde.
+- **Umgebung selbst abgeglichen:** Cloud läuft, Richtlinien aktuell und
+  durchgesetzt, keine konfigurierten Geheimnisse/VPN-Verbindungen. Vorhandene
+  Python-/Julia-Umgebung und beschreibbare Cachepfade verwendet. Git-Fetch mit
+  Netzwerkfreigabe funktioniert über den bestehenden Proxy; keine Änderung
+  von Pins, Proxy oder TLS. Haswell/Threadlimit 1 nur für den Kontrollpfad.
+- **Nächster Schritt:** Nach vollständiger technischer Prüfung genau eine
+  Manjaro-Serie am dokumentierten sauberen Commit gemäß
+  [Bedienung](trigonometric_grammar.md), anschließend Originalarchiv sichern
+  und Ergebnisse gegen die eingefrorenen Regeln auswerten. Keine automatische
+  Wiederholung, Ersatzwahl, Budgeterhöhung oder Hauptversuchsfreigabe.
+  Der frühere Budgetarchiv-Audit bleibt offen; frühere numerische Nachweise
+  wurden hier nicht wiederholt. `trajectory-manjaro-001` bleibt `incomplete / failed`.
+
+## Historisch: Literaturabwägung nach abgeschlossenen Pilotkontrollen
+
+- Einstieg in dieser Cloudinstanz: sauberer Branch `work` bei
+  `f3c0cb49ff9213b651ad4cb4ce766958f0b1e2d1`, ein Worktree. Der weitere
+  lokale Branch `codex/cloud-environment-setup` blieb erhalten. Remote-Branches
+  vollständig über die GitHub-Schnittstelle abgefragt; keine offenen PRs.
+- PR #50 ist laut selbst gelesenen GitHub-Metadaten am 03.11.2026 um
+  08:21 Uhr Europe/Vienna als `2d9ed90043628f0c3b2f948634b1bdcd769bc886`
+  übernommen. Der Remotevergleich dieses Commits gegen `main` ist identisch.
+  Geprüfter Ergebnis-Head bleibt `1c3f65f0d625c24d2cefe7c9c105c3e85ca7c56a`,
+  damalige Basis `d97c95ddff7facf9d5fc766834855697478c49b6`.
+  Kein Merge durch diesen Arbeitsschritt.
+- Neuer Dokumentationsbranch `codex/free-form-methods-literature` ab `2d9ed90`.
+  Der Shell-Aufruf `git fetch origin` scheiterte an der Verbindung zum
+  konfigurierten Proxy; der Remoteabgleich erfolgte über den verfügbaren
+  GitHub-Konnektor. Keine Umgehung von Proxy oder TLS.
+- **Selbst gelesen/geprüft:** Arbeitsregeln, README, aktuelle Befund- und
+  Methodenpläne; Original-Exposé, insbesondere PDF-Seiten 2–3; die in der
+  [Literaturabwägung](free_form_method_assessment.md) benannten Primärtextabschnitte
+  und versionsgebundenen Backendquellen. Persönliche PDF-Angaben werden nicht
+  ins Repository übernommen. Kein vollständiger Zugriff auf andere Chats
+  und keine Reproduktion der Literaturimplementierungen behauptet.
+- **Übernommen geprüft:** Die dokumentierten früheren Archivnachrechnungen
+  und CI-Ergebnisse bleiben Nachweise ihrer jeweiligen Arbeitsschritte.
+  Hier keine erneute unabhängige numerische Nachrechnung. Das frühere lokale
+  Auditverzeichnis `/workspace/audits/trajectory-manjaro-002/` ist in dieser
+  Instanz nicht vorhanden; sein Fortbestand wird nicht vorausgesetzt.
+- **Ausgearbeitet, nicht angenommen:** Vorwissensbilanz, neun Literaturquellen
+  mit Zugriffsgrenzen, vier Optionen und ein bedingter Vorschlag für genau eine
+  Grammatikablation. Das Verbot trigonometrischer Nachfahren erzwingt keine
+  Ringdown-Form, ist aber ein zusätzlicher Prior; auch Verschlechterung ist
+  durch verwandte GP-Befunde plausibel. Pause bleibt die begründete Alternative.
+- **Arbeitsumfang:** Neues fachliches Abwägungsdokument; README und dieses
+  bestehende Fortsetzungsdokument nachgeführt. Keine neue Projektchronik,
+  keine zusätzlichen Agenten oder routinemäßige Reviewrunde. Kein Code,
+  Test, Pin, Konfiguration oder eingefrorener Laufzeitplan verändert.
+  Die vorhandene `.venv` und beschreibbare UV-Cacheumgebung sind für die
+  schlanke Dokumentationsprüfung geprüft; Julia wurde nicht gestartet.
+- **Selbst ausgeführte Prüfungen:** `uv run --locked python scripts/check_ci.py
+  docs` erfolgreich für 49 Markdown-Dateien einschließlich des neuen
+  Abwägungsdokuments; geprüft werden Format und lokale Dateiziele, keine
+  externen HTTP-Ziele. `git diff --cached --check` ohne Befund. Der Diff
+  umfasst ausschließlich die drei genannten Dokumente; die sechs zur Laufzeit
+  gebundenen Pläne bleiben unverändert. Keine technische Testsuite wiederholt.
+  Der gesicherte Head und der entfernte CI-Status werden im zugehörigen
+  Literatur-PR festgehalten.
+- **Nächster abgegrenzter Schritt:** Über den Vorschlag entscheiden; erst bei
+  Annahme einen eigenen verbindlichen Methodenplan und danach einen technisch
+  geprüften Pfad erarbeiten. Keine automatische Implementierung, zusätzliche
+  Budgetstufe, Instrumentierung, Ersatzwahl oder Suchserie. Hauptversuche,
+  wissenschaftliche Formelauswahl und früherer Budgetarchiv-Audit bleiben offen.
+
+## Historisch: Originalarchiv der zweiten Suchbeobachtung geprüft
 
 - Einstieg: ein sauberer Worktree auf `codex/trajectory-manjaro-handoff` bei
   `ff25de891b4266bcdf419ad6a7cba3ebe1808dfc`. Remote-Branches, Worktrees und

@@ -7,6 +7,8 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 Fortsetzungsstand: 03.11.2026; abgeglichener Implementierungsstand auf `main`:
 `f3c0cb4` ([PR #48](https://github.com/craexxn/ringdown-sr/pull/48)).
+Ergebnisstand: `2d9ed90`, übernommener
+[PR #50](https://github.com/craexxn/ringdown-sr/pull/50).
 Vorgegebener Stand des freien Budgetlaufs: `8bdc8db`; frühere Ausführungsstände:
 Konstantendiagnose `0a70f19`, Zeitdarstellungskontrolle `4057caa`.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
@@ -93,8 +95,18 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
 - **Forschungsanspruch bestätigt:** Das bereitgestellte Exposé verlangt freie
   Formelfindung und untersucht den Einfluss der Hintergrundlänge auf Genauigkeit
   und Strukturstabilität bei Kovarianzgewichtung. Der bekannte Strukturfit bleibt
-  Referenz. Nach der abgeschlossenen Beobachtungsprüfung folgen jetzt gezielte
-  Literatur- und Methodenabwägungen; weitere Suchen sind nicht beschlossen.
+  Referenz. Die [Literatur- und Methodenabwägung](docs/free_form_method_assessment.md)
+  ist als Entscheidungsgrundlage ausgearbeitet: neun Primärarbeiten mit
+  getrenntem Zugriffsstatus, Vorwissen und Übertragungsgrenzen. Darauf aufbauend
+  ist der [begrenzte Grammatikvergleich](docs/trigonometric_grammar_plan.md)
+  am 03.11.2026 angenommen: sechs frische Zellen, unbeschränkte Grammatik gegen
+  keine trigonometrischen Nachfahren unter `sin/cos`, beide im bisherigen
+  100/2-Häufigkeitsprofil. Der getrennte Pfad und seine
+  [Bedienung](docs/trigonometric_grammar.md) sind ausgearbeitet; technische
+  Prüfnachweise und der genaue Ausführungsstand werden im Implementierungs-PR
+  festgehalten. Die einmalige wissenschaftliche Serie wird nach vollständiger
+  technischer Prüfung auf Manjaro ausgeführt; sie wurde hier nicht gestartet.
+  Kein Produktionsprofil oder Hauptversuch ist damit freigegeben.
   Die Abgrenzung zwischen Pilot und Hauptversuchen steht im
   [Fortsetzungsstand](docs/representation_implementation_status.md).
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
