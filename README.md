@@ -16,6 +16,12 @@ Konstantendiagnose `0a70f19`, Zeitdarstellungskontrolle `4057caa`.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
+Neu beschlossen: [Suchbudgetvergleich](docs/search_duration_plan.md) mit
+200/2.000 Iterationen, beiden Grammatiken und fünf neuen Seeds; maximal zwei
+Stunden auf Manjaro. [Literaturgrundlage](docs/search_duration_literature.md)
+und [Bedienung](docs/search_duration.md) sind vorbereitet. Die technische
+Umsetzung wird geprüft; die neue wissenschaftliche Serie wurde nicht gestartet.
+
 Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
 Übergaberegeln stehen in [AGENTS.md](AGENTS.md); vor Fortsetzung sind lokale
 Änderungen, Branches und PRs erneut zu prüfen.
@@ -109,11 +115,12 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   Das Verbot trigonometrischer Nachfahren verbessert einen Seed deutlich,
   verschlechtert die RMS-Werte der anderen beiden und stützt die Hypothese nicht.
   Die zusätzliche Regel wird gemäß Plan nicht übernommen; der Versuch ist
-  beendet. Weitere freie Suchversuche bleiben bis zu einer neuen begründeten
-  Methodenentscheidung unterbrochen. Die [Bedienung](docs/trigonometric_grammar.md)
+  beendet. Als neuer abgegrenzter Schritt ist der oben verlinkte
+  Suchbudgetvergleich unter beiden Grammatiken angenommen. Die [Bedienung](docs/trigonometric_grammar.md)
   dokumentiert den abgeschlossenen Laufweg, keine Wiederholungsfreigabe.
   Freie Formelfindung bleibt Forschungsziel; kein Produktionsprofil oder
-  Hauptversuch ist freigegeben. Hier nur lesender Audit, keine Suche oder Fits.
+  Hauptversuch ist freigegeben. Die neue wissenschaftliche Serie bleibt auf
+  Manjaro; hier ausschließlich Vorbereitung und technische Kontrollen.
   Die Abgrenzung zwischen Pilot und Hauptversuchen steht im
   [Fortsetzungsstand](docs/representation_implementation_status.md).
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)

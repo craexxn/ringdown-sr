@@ -4,11 +4,41 @@ Stand: 03.11.2026. PR #52 ist übernommen, der darin enthaltene Literatur-PR #51
 als ersetzt geschlossen. Die einmalige Grammatikserie auf Manjaro ist
 abgeschlossen und ihr Originalarchiv unabhängig geprüft: C_K = C_A = 0/3,
 kein Kurvenerfolg unter 51 Frontkandidaten. Die zusätzliche Regel wird gemäß
-Plan nicht übernommen; weitere freie Suchversuche bleiben bis zu einer neuen
-begründeten Methodenentscheidung unterbrochen. Hier nur lesender Audit,
-keine wissenschaftliche Suche, Fits oder zusätzliche Agenten.
+Plan nicht übernommen. Neu angenommen ist der unten abgegrenzte Vergleich
+größerer äußerer Suchbudgets unter beiden Grammatiken. Hier Vorbereitung und
+technische Prüfung; die wissenschaftliche Ausführung bleibt auf Manjaro.
+Keine zusätzlichen Agenten.
 
-## Aktuell: Abgeschlossener Grammatikvergleich und Ergebnisnachtrag
+## Aktuell: Vorbereitung des Suchbudgetvergleichs
+
+- **Beschluss:** 200/2.000 äußere Suchiterationen, beide Grammatiken, fünf neue
+  Seeds und 20 frische Prozesse. Zwei Stunden Gesamtgrenze ausdrücklich
+  gewählt; 600 Sekunden je Worker. Lokale Konstantenoptimierung bleibt 100/2.
+  Die [Literaturauswertung](search_duration_literature.md) liefert Gründe und
+  Ressourcenbeispiele, keine optimale Ringdown-Laufzeit.
+- **Plan vor Code eingefroren:** [Methodenplan](search_duration_plan.md),
+  Commit `194cfb499e8c53b8243d19c4d11d58a006baff95`, SHA-256
+  `8906a66930848d733e5b2744d40c5fa9c4051db2b876e200908d74ae9ac0b75d`.
+  Alle sieben bisherigen Pläne und Originalbefunde bleiben erhalten.
+- **Arbeitsbasis:** Branch `codex/search-duration-preparation` auf dem
+  Ergebnis-Head `e6472bba72b672642987d3ffd55c3bd59694ac05` von PR #53.
+  Dieser Ergebnisnachtrag ist enthalten; `main` blieb beim Einstieg `23a2113`.
+- **Umsetzung:** isolierter neuer Treiber verwendet die bestehende strenge
+  Prüfung und Abbruchsicherung. Zusätzlich Prüfung des tatsächlichen
+  `equation_search`-Budgets; keine Änderung der numerischen Zielfunktion.
+  Vier Gruppen und sämtliche Seedpaare; Freigabe erst nach allen 20 Zellen.
+  Ein positiver Strukturbefund muss zu einem neuen 0→1-Erfolg derselben hohen
+  Originalauswahl gehören. Bedienung: [Suchbudgetvergleich](search_duration.md).
+- **Prüfstand:** Implementierung und Gegenfalltests einschließlich aller
+  1.024 binären Budget-Erfolgsmuster pro Grammatik sind vorbereitet. Lokale
+  Prüfung und vollständige technische CI vor Ausführung erforderlich.
+  Keine wissenschaftlichen 200-/2.000-Suchen hier. Der PR dokumentiert den
+  genauen geprüften Head und die abgeschlossenen Nachweise.
+- **Nächster Schritt:** technische Nachweise abschließen, reviewbaren Entwurf
+  bereitstellen; danach einmalige Manjaro-Serie am geprüften Stand. Weitere
+  Tests erst aus ihren Ergebnissen begründen, keine automatische Budgetleiter.
+
+## Historisch: Abgeschlossener Grammatikvergleich und Ergebnisnachtrag
 
 - **Einstieg selbst abgeglichen:** sauberer Branch
   `codex/trigonometric-grammar-preparation` bei

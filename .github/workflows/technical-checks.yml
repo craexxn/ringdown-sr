@@ -130,6 +130,19 @@ jobs:
             exit 1
           fi
 
+      - name: Verify search budgets with five isolated tiny workers
+        if: steps.scope.outputs.full == 'true'
+        run: |
+          if ! env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/check_search_duration_integration.py \
+            --output results/ci-search-duration-technical; then
+            if [ -d results/ci-search-duration-technical ]; then
+              find results/ci-search-duration-technical -type f -name '*.log' -print -exec tail -n 100 {} \;
+            fi
+            exit 1
+          fi
+
       - name: Probe fixed trees and actual optimizer paths in fresh workers
         if: steps.scope.outputs.full == 'true'
         run: >-

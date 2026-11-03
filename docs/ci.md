@@ -26,7 +26,8 @@ werden nicht abgerufen beziehungsweise validiert.
 **Ausnahmen:** `docs/noiseless_control_plan.md`,
 `docs/search_representation_plan.md`, `docs/constant_diagnostic_plan.md`,
 `docs/free_optimizer_budget_plan.md`, `docs/search_trajectory_plan.md`,
-`docs/search_trajectory_replay_policy.md` und `docs/trigonometric_grammar_plan.md`
+`docs/search_trajectory_replay_policy.md`, `docs/trigonometric_grammar_plan.md`
+und `docs/search_duration_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -48,6 +49,14 @@ gilt nur für diesen Kontrollschritt. Keine der sechs wissenschaftlichen
 Suchzellen wird in der CI ausgeführt.
 
 ## Vollständiger technischer Pfad
+
+Der Suchbudgetvergleich ergänzt `scripts/check_search_duration_integration.py`:
+zehn native Optionsobjekte, 20 Pythonprofile und unveränderte feste Referenzen,
+danach fünf frische K2–A2–K3–A3–K2-Worker am separaten Achtpunkt-Signal `y=1+t`.
+Die tatsächlich durchgereichten Suchbudgets werden geprüft und beide K2-Fronten
+müssen übereinstimmen. Die 20 wissenschaftlichen 200-/2.000-Zellen laufen
+ausschließlich später auf Manjaro. Python-Gegenfälle prüfen insbesondere
+Budgetbindung, vollständige Paare und gesperrte Teilserienauswertung.
 
 Der Grammatikvergleich ergänzt `scripts/check_trigonometric_grammar_integration.py`:
 sechs native Optionsobjekte, feste Ringdown-/Aliasreferenzen und 28 explizite
