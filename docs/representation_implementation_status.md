@@ -1,13 +1,61 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
 Stand: 03.11.2026. PR #48, PR #49 und der Ergebnis-PR #50 sind übernommen.
-Die frische Manjaro-Serie `trajectory-manjaro-002` ist abgeschlossen; das
-vollständige Originalarchiv wurde unabhängig geprüft. Der erste Lauf bleibt
-unverändert `incomplete / failed`. Die Literatur- und Methodenabwägung ist
-ausgearbeitet. Nächster Schritt ist eine Entscheidung über den vorgeschlagenen
-begrenzten Grammatikvergleich oder eine Pause; keine weitere Suche beschlossen.
+Die Literaturabwägung ist in PR #51 gesichert. Der begrenzte Grammatikvergleich
+ist angenommen; Plan, isolierter Implementierungspfad und Manjaro-Bedienung
+sind ausgearbeitet. Die technische Prüfung ist von der späteren einmaligen
+wissenschaftlichen Serie getrennt; genaue Heads und CI-Nachweise stehen im
+zugehörigen Implementierungs-PR. Hier keine wissenschaftliche Suche ausgeführt.
 
-## Aktuell: Literaturabwägung nach abgeschlossenen Pilotkontrollen
+## Aktuell: Angenommener Grammatikvergleich für Manjaro
+
+- Erneuter Einstieg: sauberer Checkout `codex/free-form-methods-literature`
+  bei `114bb24dd983c0316c89379bc9477bed5835655a`, ein Worktree; weitere lokale
+  Branches erhalten. Remote-Branches vollständig abgefragt, einzig PR #51
+  offen und als Entwurf konfliktfrei. `main` unverändert bei
+  `2d9ed90043628f0c3b2f948634b1bdcd769bc886`. Kein Merge ausgeführt.
+- Veröffentlichungsbranch `codex/trigonometric-grammar-preparation` auf dem Literatur-Head.
+  Die neue Arbeit baut auf PR #51 auf; solange dieser offen bleibt, enthält ein
+  Vergleich gegen `main` auch die Literaturdokumentation. Keine Umschreibung
+  vorhandener Commits oder fremder Arbeit.
+  Der erste Push wurde wegen der Commit-E-Mail-Privatsphäre abgewiesen.
+  Der lokale Vorbereitungsbranch `codex/trigonometric-grammar-control` bleibt
+  erhalten; die Veröffentlichung verwendet eine öffentliche GitHub-Noreply-
+  Identität und einen neuen Plancommit bei identischen Planbytes.
+- **Angenommen:** Der zuvor bedingte Vergleich ist ausdrücklich beauftragt;
+  die wissenschaftliche Ausführung bleibt auf Manjaro. Hier vollständig
+  vorbereiten. [Verbindlicher Plan](trigonometric_grammar_plan.md), Commit
+  `5de1a4a0bbb8282ac77f06e21f0314acaa99eade`, SHA-256
+  `e8fe21344cedc93196d77e83918eb989907fe75e7cfa7219ee17d22661be70b5`.
+  Genau sechs Zellen, bekannte Seeds mit wechselnder Paarreihenfolge, 100/2,
+  beide Häufigkeitsschalter und ein zusätzlicher Syntaxprior im A-Arm.
+- **Implementiert:** Eigener Profil-/Worker-/Treiberpfad mit nativer absoluter
+  Optionsprüfung, vier vollständigen Verschachtelungspaaren, Kontrolle aller
+  exportierten A-Bäume und bisherigen Verlust-/Auswahl-/Replaygates.
+  Quellen und Datenrollen sind manifestiert; Abbruch- und Berichtssperren
+  einschließlich Widerruf unvollständiger Abschlüsse bleiben erhalten.
+  Allgemeine Suchdefaults, Pins und die sechs bisherigen Laufzeitpläne
+  bleiben unverändert. Der neue Plan ist zusätzlich der vollen CI zugeordnet.
+- **Prüfumfang:** Python-Gegenfälle für Profile, manipulierte Artefakte,
+  Auswahl-/Strukturgates, Zeitgrenzen und Abbrüche; native Options-/Syntax-/
+  Aliasreferenzen und eine technische K–A–K-Folge auf `y=1+t`. Die sechs
+  wissenschaftlichen Zellen sind keine Tests. Konkrete Ergebnisse und
+  Abschlusszustand werden am vollständigen Head im Implementierungs-PR gesichert.
+  Keine zusätzlichen Agenten oder routinemäßige Reviewrunde.
+- **Umgebung selbst abgeglichen:** Cloud läuft, Richtlinien aktuell und
+  durchgesetzt, keine konfigurierten Geheimnisse/VPN-Verbindungen. Vorhandene
+  Python-/Julia-Umgebung und beschreibbare Cachepfade verwendet. Git-Fetch mit
+  Netzwerkfreigabe funktioniert über den bestehenden Proxy; keine Änderung
+  von Pins, Proxy oder TLS. Haswell/Threadlimit 1 nur für den Kontrollpfad.
+- **Nächster Schritt:** Nach vollständiger technischer Prüfung genau eine
+  Manjaro-Serie am dokumentierten sauberen Commit gemäß
+  [Bedienung](trigonometric_grammar.md), anschließend Originalarchiv sichern
+  und Ergebnisse gegen die eingefrorenen Regeln auswerten. Keine automatische
+  Wiederholung, Ersatzwahl, Budgeterhöhung oder Hauptversuchsfreigabe.
+  Der frühere Budgetarchiv-Audit bleibt offen; frühere numerische Nachweise
+  wurden hier nicht wiederholt. `trajectory-manjaro-001` bleibt `incomplete / failed`.
+
+## Historisch: Literaturabwägung nach abgeschlossenen Pilotkontrollen
 
 - Einstieg in dieser Cloudinstanz: sauberer Branch `work` bei
   `f3c0cb49ff9213b651ad4cb4ce766958f0b1e2d1`, ein Worktree. Der weitere

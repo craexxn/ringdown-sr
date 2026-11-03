@@ -97,10 +97,16 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   und Strukturstabilität bei Kovarianzgewichtung. Der bekannte Strukturfit bleibt
   Referenz. Die [Literatur- und Methodenabwägung](docs/free_form_method_assessment.md)
   ist als Entscheidungsgrundlage ausgearbeitet: neun Primärarbeiten mit
-  getrenntem Zugriffsstatus, Vorwissen und Übertragungsgrenzen. Empfohlen wird
-  bedingt ein Entwurf für eine einzelne allgemeine Grammatikablation;
-  Solverwechsel, Backendwechsel und Pause sind abgewogen. Keine Methode,
-  Implementierung oder neue Suchserie ist dadurch angenommen.
+  getrenntem Zugriffsstatus, Vorwissen und Übertragungsgrenzen. Darauf aufbauend
+  ist der [begrenzte Grammatikvergleich](docs/trigonometric_grammar_plan.md)
+  am 03.11.2026 angenommen: sechs frische Zellen, unbeschränkte Grammatik gegen
+  keine trigonometrischen Nachfahren unter `sin/cos`, beide im bisherigen
+  100/2-Häufigkeitsprofil. Der getrennte Pfad und seine
+  [Bedienung](docs/trigonometric_grammar.md) sind ausgearbeitet; technische
+  Prüfnachweise und der genaue Ausführungsstand werden im Implementierungs-PR
+  festgehalten. Die einmalige wissenschaftliche Serie wird nach vollständiger
+  technischer Prüfung auf Manjaro ausgeführt; sie wurde hier nicht gestartet.
+  Kein Produktionsprofil oder Hauptversuch ist damit freigegeben.
   Die Abgrenzung zwischen Pilot und Hauptversuchen steht im
   [Fortsetzungsstand](docs/representation_implementation_status.md).
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)

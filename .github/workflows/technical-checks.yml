@@ -117,6 +117,19 @@ jobs:
           uv run --locked python scripts/run_python.py scripts/check_constant_diagnostic.py
           --output results/ci-constant-technical.json
 
+      - name: Verify trig grammar, native counterexamples and tiny K-A-K workers
+        if: steps.scope.outputs.full == 'true'
+        run: |
+          if ! env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/check_trigonometric_grammar_integration.py \
+            --output results/ci-trigonometric-grammar-technical; then
+            if [ -d results/ci-trigonometric-grammar-technical ]; then
+              find results/ci-trigonometric-grammar-technical -type f -name '*.log' -print -exec tail -n 100 {} \;
+            fi
+            exit 1
+          fi
+
       - name: Probe fixed trees and actual optimizer paths in fresh workers
         if: steps.scope.outputs.full == 'true'
         run: >-
