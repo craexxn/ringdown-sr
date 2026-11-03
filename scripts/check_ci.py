@@ -18,6 +18,8 @@ RUNTIME_DOCUMENTS = {
     "docs/search_trajectory_replay_policy.md",
     "docs/trigonometric_grammar_plan.md",
     "docs/search_duration_plan.md",
+    "docs/search_duration_verification_plan.md",
+    "docs/search_duration_table_loss_note.md",
 }
 SHA = re.compile(r"[0-9a-f]{40}\Z")
 LINK = re.compile(

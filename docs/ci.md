@@ -27,7 +27,8 @@ werden nicht abgerufen beziehungsweise validiert.
 `docs/search_representation_plan.md`, `docs/constant_diagnostic_plan.md`,
 `docs/free_optimizer_budget_plan.md`, `docs/search_trajectory_plan.md`,
 `docs/search_trajectory_replay_policy.md`, `docs/trigonometric_grammar_plan.md`
-und `docs/search_duration_plan.md`
+`docs/search_duration_plan.md`, `docs/search_duration_verification_plan.md`
+und `docs/search_duration_table_loss_note.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -57,6 +58,11 @@ Die tatsächlich durchgereichten Suchbudgets werden geprüft und beide K2-Fronte
 müssen übereinstimmen. Die 20 wissenschaftlichen 200-/2.000-Zellen laufen
 ausschließlich später auf Manjaro. Python-Gegenfälle prüfen insbesondere
 Budgetbindung, vollständige Paare und gesperrte Teilserienauswertung.
+Format 2 ergänzt `scripts/check_duration_replay.py`: zwei fest vorliegende
+CSV-Bäume nativ auswerten, Verluste/Vorhersagen vergleichen, neue Verlust- und
+Strukturdiagnose prüfen; keine Suche oder Optimierung. Python-Gegenfälle
+prüfen die rationale Reduktionsschranke, Unter-/Überlauf, verlorene oder
+veränderte Nachweise, Sinus-/Quotientenformen und exakte gemischte Phasen.
 
 Der Grammatikvergleich ergänzt `scripts/check_trigonometric_grammar_integration.py`:
 sechs native Optionsobjekte, feste Ringdown-/Aliasreferenzen und 28 explizite

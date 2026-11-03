@@ -73,6 +73,15 @@ def test_bound_plan_factorial_design_and_unchanged_shared_policy():
         == contents
     )
     assert len(grammar.planned_cells()) == 6
+    note = (control.ROOT / control.TABLE_NOTE).read_bytes()
+    assert _sha256(note) == control.TABLE_NOTE_SHA256
+    assert (
+        subprocess.check_output(
+            ["git", "show", f"{control.TABLE_NOTE_COMMIT}:{control.TABLE_NOTE}"],
+            cwd=control.ROOT,
+        )
+        == note
+    )
 
 
 def invocation_kwargs(iterations=2000):

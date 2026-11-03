@@ -130,6 +130,14 @@ jobs:
             exit 1
           fi
 
+      - name: Verify fixed near-zero losses and equivalent ringdown forms
+        if: steps.scope.outputs.full == 'true'
+        run: >-
+          env OPENBLAS_CORETYPE=Haswell
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+          uv run --locked python scripts/run_python.py scripts/check_duration_replay.py
+          --output results/ci-duration-replay.json
+
       - name: Verify search budgets with five isolated tiny workers
         if: steps.scope.outputs.full == 'true'
         run: |

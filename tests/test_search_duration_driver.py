@@ -14,6 +14,8 @@ from test_trigonometric_grammar import option_fixture
 
 from ringdown_sr import search_duration as control
 from ringdown_sr import symbolic
+from ringdown_sr.duration_replay import candidate_evidence
+from ringdown_sr.losses import mean_squared_error
 from ringdown_sr.noiseless_control import frozen_data
 from ringdown_sr.pilot import _json_bytes, _sha256, _write_json
 
@@ -125,6 +127,16 @@ def runtime(request, monkeypatch, tmp_path):
         docs["search_invocation.json"] = control.invocation_record(
             cell["budget"]["niterations"]
         )
+        for candidate in docs["result.json"]["candidates"]:
+            candidate["julia_reimport_loss"] = candidate["loss"]
+            candidate["python_loss"] = mean_squared_error(
+                arrays["observed"]
+                - symbolic.evaluate_tree(candidate["tree"], arrays["time_s"])
+            )
+            candidate["loss_replay"] = {"table_loss": candidate["loss"]}
+            candidate["loss_replay"] = candidate_evidence(
+                candidate, arrays["time_s"], arrays["observed"]
+            )
         if state.alter:
             state.alter(number, directory, docs)
 
@@ -140,6 +152,35 @@ def assert_locked(output):
         report[k] is None for k in ("summaries", "pair_differences", "comparison")
     )
     return report
+
+
+@pytest.mark.parametrize(
+    "change", ["missing", "bound", "table", "python_loss", "native_replay", "format"]
+)
+def test_rehashed_candidate_evidence_is_independently_checked(
+    runtime, tmp_path, change
+):
+    def alter(number, directory, documents):
+        candidate = documents["result.json"]["candidates"][0]
+        if change == "missing":
+            del candidate["loss_replay"]
+        elif change == "bound":
+            candidate["loss_replay"]["loss_difference_bound"] = 1.0
+        elif change == "table":
+            candidate["loss_replay"]["table_loss"] *= 1 + 1e-6
+        elif change == "python_loss":
+            candidate["python_loss"] *= 1 + 1e-11
+        elif change == "native_replay":
+            candidate["julia_reimport_loss"] *= 1 + 1e-11
+        else:
+            candidate["loss_replay"]["format"] = "wrong"
+
+    runtime.alter = alter
+    output = tmp_path / "changed-evidence"
+    with pytest.raises((ValueError, AssertionError)):
+        DRIVER.run(runtime.archive, output, label="fixture")
+    assert len(runtime.calls) == 1
+    assert_locked(output)
 
 
 def test_all_twenty_cells_preserve_inputs_fronts_and_selection(runtime, tmp_path):

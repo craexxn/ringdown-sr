@@ -1,8 +1,12 @@
-"""Run the frozen twenty-cell search-budget comparison using the audited lifecycle."""
+"""Run the versioned twenty-cell search-budget comparison using the audited lifecycle."""
+
+from functools import partial
 
 from ringdown_sr import search_duration as control
 from ringdown_sr import symbolic
-from ringdown_sr.pilot import _sha256, _write_json
+from ringdown_sr.duration_replay import candidate_evidence
+from ringdown_sr.pilot import _json_bytes, _sha256, _write_json
+from ringdown_sr.representation_control import diagnose_candidate
 
 
 def load_driver():
@@ -27,6 +31,7 @@ def load_driver():
     ):
         setattr(driver, name, getattr(control, name))
     driver.EXTRA_FILES += ("search_invocation.json",)
+    driver.diagnose_candidate = partial(diagnose_candidate, extended_structure=True)
 
     def verify_preflight(record, initial, sources, support, probe):
         if (
@@ -57,6 +62,19 @@ def load_driver():
 
     def verify_cell(directory, cell, *args):
         diagnosis = original_verify(directory, cell, *args)
+        front_bytes = (directory / "result.json").read_bytes()
+        if _sha256(front_bytes) != diagnosis["source_file_sha256"]["result.json"]:
+            raise ValueError("Candidate artifacts changed before loss verification.")
+        front = driver.BASE.load_support().read_json(front_bytes)
+        arrays = args[0]
+        for candidate in front["candidates"]:
+            expected = candidate_evidence(
+                candidate, arrays["time_s"], arrays["observed"]
+            )
+            if _json_bytes(candidate["loss_replay"]) != _json_bytes(expected):
+                raise ValueError("Changed duration candidate loss evidence.")
+        if (directory / "result.json").read_bytes() != front_bytes:
+            raise ValueError("Candidate artifacts changed during loss verification.")
         contents = (directory / "search_invocation.json").read_bytes()
         if _sha256(contents) != diagnosis["source_file_sha256"][
             "search_invocation.json"

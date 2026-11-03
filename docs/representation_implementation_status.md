@@ -4,12 +4,125 @@ Stand: 03.11.2026. PR #52 ist übernommen, der darin enthaltene Literatur-PR #51
 als ersetzt geschlossen. Die einmalige Grammatikserie auf Manjaro ist
 abgeschlossen und ihr Originalarchiv unabhängig geprüft: C_K = C_A = 0/3,
 kein Kurvenerfolg unter 51 Frontkandidaten. Die zusätzliche Regel wird gemäß
-Plan nicht übernommen. Neu angenommen ist der unten abgegrenzte Vergleich
-größerer äußerer Suchbudgets unter beiden Grammatiken. Hier Vorbereitung und
-technische Prüfung; die wissenschaftliche Ausführung bleibt auf Manjaro.
+Plan nicht übernommen. PR #54 ist übernommen; der neue Suchbudgetvergleich
+auf Manjaro blieb beim Replay von Zelle 3 unvollständig. Der Originalarchiv-Audit
+bestätigt sehr genaue Sinus-/Exponentialquotienten im Teilstand und grenzt
+zwei Verifikationsprobleme ein. Die gebundene Ergänzung für Format 2 ist
+implementiert; aktueller Prüfstand in PR #55. Hier Vorbereitung und technische Prüfung;
+die wissenschaftliche Ausführung bleibt auf Manjaro.
 Keine zusätzlichen Agenten.
 
-## Aktuell: Vorbereitung des Suchbudgetvergleichs
+## Aktuell: Versionierte Verlust- und Strukturverifikation
+
+- **Abgeglichener Einstieg:** eigener sauberer Branch `codex/duration-abort-audit`
+  bei `6dccd469fdb9f1688f54755b3c6c48e4f105e14d`, ein Worktree, andere Branches
+  erhalten. `main` weiterhin `d4899ba`; nur PR #55 offen und als Entwurf.
+  Die Fortsetzung erweitert diesen PR um die begründete Korrektur; kein Merge.
+- **Plan vor Implementierung:** [Verifikationsergänzung](search_duration_verification_plan.md),
+  Commit `2a0b50926cd2983d0cd6cc1307ccc28d0a2822fa`, SHA-256
+  `b6f7cef2227eeacccf8156d02e8899e6fc83b7bd1f29735c1a402922a9d83062`.
+  Der ursprüngliche Suchbudgetplan wird zusätzlich weiter auf seine alten
+  Bytes geprüft; frühere Pläne und Archive unverändert.
+- **Implementierung:** Suchbudget-/Profilformat 2 aktiviert allein den neuen
+  gewöhnlichen MSE-Nachweis. Exakte rationale Quadratsummen und hergeleitete
+  Reduktionsschranken prüfen jeden Verlust gegen eigene Residuen; nativer
+  Verlustvergleich und Vorhersageprüfung bleiben bestehen. Der Elternprozess
+  berechnet alle Kandidatennachweise neu. Auswahl bleibt nach nativer MSE.
+- **Strukturdiagnose:** optionaler Erkenner für genau einen Sinus/Kosinus im
+  Zähler und einen Exponentialfaktor im Zähler oder Nenner. Exakte rationale
+  Radiant-/Pi-Anteile, begrenzte Pi-Konversion, rohe und Alias-Replays bleiben
+  getrennte Gates. Ältere Aufrufer behalten den bisherigen Standard.
+- **Prüfungen am ersten Implementierungsstand ab32fcf:** alle 1.907 Python-Tests,
+  Ruff und Formatprüfung bestanden lokal; darunter 53 neue numerische/strukturelle Gegenprüfungen und alle 31
+  Suchbudget-Treibertests. Die beiden CSV-Formeln
+  erfüllen Kurven- und Parameterdiagnose ohne Nachfit oder Baumänderung.
+  Vollständige Python-/Julia-CI und neue feste native Regressionstests sind
+  erforderlich; aktueller Head und abgeschlossene Prüfnachweise stehen in
+  [PR #55](https://github.com/craexxn/ringdown-sr/pull/55). Ein erster lokaler
+  nativer Prüflauf bestand die fachlichen Assertions, brach aber wegen während
+  des Laufs geänderter Quellen an der abschließenden Quellenbindung ab;
+  er ist kein vollständiger Prüfnachweis. Die vollständige Wiederholung mit
+  unveränderten Quellen bestand: `results/duration-replay-technical-002.json`,
+  beide nativen Verluste und Vorhersagen bitgenau bestätigt, beide neue
+  Verlust- und Parameterdiagnosen bestanden, null Such-/Fitaufrufe.
+- **Technische Tabellenpräzisierung:** Die anschließende vollständige lokale
+  Integration bestand K2/A2, scheiterte aber in K3 an einem zusätzlichen
+  CSV-Rundungseffekt. Gepinntes Pandas liest `0.008261169598036541` als
+  `0.0082611695980365`. [Befund und Präzisierung](search_duration_table_loss_note.md)
+  wurden vor der Korrektur als `fee62058992c84a9930aa765233ebdc095c54cb1`
+  eingefroren; der Hash ist zusätzlich im Laufzeitpfad gebunden. Die Tabellen-
+  kontrolle bleibt beim alten relativen Vertrag; echte native und Python-
+  Verluste müssen unverändert die strengere Residuenprüfung bestehen.
+  Der konkrete CSV-Fall und ein falscher Tabellenwert sind eigene Tests.
+  Der fehlgeschlagene technische Lauf bleibt erhalten. Vollständige Integration
+  und CI müssen am korrigierten Head erneut bestehen; aktuelle Nachweise in #55.
+- **Regressionsdaten korrigiert:** CI 41682098788 am Head `78f3e94` fand sechs
+  fehlgeschlagene Skalierungsfälle unter sonst 1.902 bestandenen Python-Tests.
+  Die neuen Tests kombinierten gespeicherte native Vorhersagen/Verluste mit
+  erneut generierten Beobachtungen. Die CI-Referenz-MSE dieser Kombination
+  unterscheidet sich nachweislich von jener der Original-Eingabebits.
+  Die Fixture bindet deshalb nun Trainingszeiten, Beobachtungen und beide
+  Replays als zusammengehörige Float64-Vektoren. Der feste native Test nutzt
+  dieselben ursprünglichen Eingaben; Laufzeitprüfung und Toleranzen unverändert.
+  Die parallel laufende lokale Integration 002 wurde für diese Testkorrektur
+  unterbrochen und liefert keinen vollständigen Abschlussnachweis.
+- **Gezieltes KI-basiertes Review und P3-Korrektur:** Übermittelter Befund zu
+  `70791db19755a31e4f6d689c5bc8882930138705` gegen
+  `d4899ba3a858576758b055c3b36bffb010d5c305`: Verlustprüfung und Phasen-/Alias-
+  umrechnung grundsätzlich methodentreu; ein Randfall der Normalbereichssperre.
+  Der Gegenfall wurde selbst reproduziert: 128 Residuen `2**-511`, normale
+  Referenz-MSE `2**-1022`, aber ein akzeptierter subnormaler nativer Verlust
+  `nextafter(2**-1022, 0)`. `_reduction` prüft nun auch jeden zu bestätigenden
+  Verlust selbst auf null oder Normalbereich. Die getrennte CSV-Regel und
+  die eingefrorenen Pläne bleiben unverändert. Acht zusätzliche Grenzfälle
+  decken gemeldete und neu berechnete Verluste sowie die erlaubte Grenze
+  und CSV-Ausnahme ab; sechs davon scheiterten am alten Code. Nach Korrektur
+  bestanden alle 116 gezielten Verlust-, Struktur-, Plan- und Treibertests
+  sowie Ruff/Format. Der bisherige vollständige CI-Nachweis mit 1.908 Tests
+  gehört zu `70791db`; neuer Head und seine vollständige CI stehen in
+  [PR #55](https://github.com/craexxn/ringdown-sr/pull/55). Eine erneute
+  Methodenreviewrunde ist für diesen begrenzten Befund nicht erforderlich.
+- **Nächster wissenschaftlicher Schritt vorbereitet:** nach vollständiger
+  technischer Prüfung und Merge `duration-manjaro-002`, alle 20 Prozesse neu,
+  gleiche vorab festgelegte Seeds, Reihenfolge, Budgets und Abbruchgrenzen.
+  Keine Übernahme der ersten zwei Zellen; bereits gesehene Seeds ausdrücklich
+  als adaptive Entwicklungsprüfung einordnen. Befehle in der
+  [Bedienung](search_duration.md). Hier keine wissenschaftliche Ausführung.
+
+## Historisch: Audit des abgebrochenen Suchbudgetvergleichs
+
+- **Arbeitsstand:** sauberer Einstieg auf `codex/search-duration-preparation`
+  bei `4a9286bfe1aa49db3eda174a3aa14c69f1160e74`, ein Worktree, andere Branches
+  erhalten. Remote geprüft, keine offenen PRs beim Einstieg. Neuer
+  Dokumentationsbranch `codex/duration-abort-audit` auf `main`
+  `d4899ba3a858576758b055c3b36bffb010d5c305`; keine Laufzeitänderungen.
+- **Befund:** [Originalarchiv-Audit und numerische Nachrechnung](search_duration_results_manjaro_001.md).
+  Archivhash `d73e990cf0c8092f841bc402aa247eca0311c963421249b5e60ae2e73c55074a`;
+  im übermittelten Text fehlte das erste Zeichen. Zwei Zellen vollständig,
+  dritte bei `no_nested_trig`, Seed 20261103, 2000 Iterationen nach beendetem
+  Fit gescheitert. 17 Zellen nicht gestartet; alle Aggregate gesperrt.
+- **Eigener Nachweis:** 93 Dateien, 58 ursprüngliche Dateianker und 65 Quellen
+  geprüft; beide abgeschlossenen Zellverifikationen exakt reproduziert.
+  Alle acht CSV-Bäume von Zelle 3 nativ ohne Suche/Fit nachgerechnet, sämtliche
+  gespeicherten Verluste bitgenau reproduziert. Python-/Julia-Vorhersagen der
+  zwei guten Formeln unterscheiden sich höchstens um `1,11e-16`; der rein
+  relative Vergleich ihrer nahezu verschwindenden MSE löst den Abbruch aus.
+  Beide Formeln liegen auf beiden Rastern klar innerhalb der Kurvengrenzen.
+- **Zweite Grenze:** Der Erkenner unterstützt bisher `exp * cos`, nicht
+  `sin / exp`; damit weiterhin `not_supported / not_assessed`. Algebraische
+  Parameter und Kurvenbefund sind dokumentiert, keine rückwirkende Änderung
+  der Originalmarker oder nachträglich veröffentlichte Auswahl.
+- **Nächster Schritt:** mathematisch begründete, separat gebundene
+  Verifikationsergänzung und eng begrenzte Strukturdiagnose vor weiteren
+  wissenschaftlichen Suchen. Umgang mit bereits gesehenen Seeds vor Ausführung
+  festlegen. Keine automatische Wiederaufnahme, keine Ersatzwahl und kein
+  abgeschlossener Budget-/Grammatikvergleich. Originale und Pläne unverändert.
+- **Dokumentationskorrektur:** versehentlich beim Konfliktlösen in #54
+  eingefügten URL-Text im historischen Nachweis entfernt. Passende Prüfung:
+  schlanke Dokumentations-CI; keine neue Suche, Optimierung oder Voll-CI
+  für diesen reinen Dokumentationsnachtrag.
+
+## Historisch: Vorbereitung des Suchbudgetvergleichs
 
 - **Beschluss:** 200/2.000 äußere Suchiterationen, beide Grammatiken, fünf neue
   Seeds und 20 frische Prozesse. Zwei Stunden Gesamtgrenze ausdrücklich
@@ -29,7 +142,7 @@ Keine zusätzlichen Agenten.
   Vier Gruppen und sämtliche Seedpaare; Freigabe erst nach allen 20 Zellen.
   Ein positiver Strukturbefund muss zu einem neuen 0→1-Erfolg derselben hohen
   Originalauswahl gehören. Bedienung: [Suchbudgetvergleich](search_duration.md).
-- **Vorhandener thttps://github.com/craexxn/ringdown-sr/pull/54/conflict?name=docs%252Frepresentation_implementation_status.md&ancestor_oid=9b3de2da2c94a63635e94143aab010ee078a501b&base_oid=a5fefe598f8a6a040574fa3c18a7c049d4216c87&head_oid=e68df05d5caf2480bf7e988e9f6dfcbfc39878d4echnischer Nachweis:** Am Implementierungs-Head
+- **Vorhandener technischer Nachweis:** Am Implementierungs-Head
   `98f60210f19ec344ba1724a51f399f6581791cf8` bestand die vollständige
   [CI 41616411175](https://github.com/craexxn/ringdown-sr/actions/runs/41616411175):
   1.846 Python-Tests und sämtliche nativen Integrationen. Run, Schritte und
