@@ -1,13 +1,65 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 03.11.2026. PR #48, PR #49 und der Ergebnis-PR #50 sind übernommen.
-Die Literaturabwägung ist in PR #51 gesichert. Der begrenzte Grammatikvergleich
-ist angenommen; Plan, isolierter Implementierungspfad und Manjaro-Bedienung
-sind ausgearbeitet. Die technische Prüfung ist von der späteren einmaligen
-wissenschaftlichen Serie getrennt; genaue Heads und CI-Nachweise stehen im
-zugehörigen Implementierungs-PR. Hier keine wissenschaftliche Suche ausgeführt.
+Stand: 03.11.2026. PR #52 ist übernommen, der darin enthaltene Literatur-PR #51
+als ersetzt geschlossen. Die einmalige Grammatikserie auf Manjaro ist
+abgeschlossen und ihr Originalarchiv unabhängig geprüft: C_K = C_A = 0/3,
+kein Kurvenerfolg unter 51 Frontkandidaten. Die zusätzliche Regel wird gemäß
+Plan nicht übernommen; weitere freie Suchversuche bleiben bis zu einer neuen
+begründeten Methodenentscheidung unterbrochen. Hier nur lesender Audit,
+keine wissenschaftliche Suche, Fits oder zusätzliche Agenten.
 
-## Aktuell: Angenommener Grammatikvergleich für Manjaro
+## Aktuell: Abgeschlossener Grammatikvergleich und Ergebnisnachtrag
+
+- **Einstieg selbst abgeglichen:** sauberer Branch
+  `codex/trigonometric-grammar-preparation` bei
+  `b4c363ada9d3c35f46ec0eec36687dda82c5fe0e`, ein Worktree, weitere lokale
+  Branches erhalten. Remote-Fetch erfolgreich, keine offenen PRs beim Einstieg.
+  `main` steht bei `23a21131e6fafcdc748e47098c018a1158f1629b`; gleicher
+  Dateibaum wie der geprüfte Implementierungs-Head. Kein eigenständiger Merge.
+  Neuer Ergebnisbranch `codex/grammar-results-manjaro-001` auf dieser Basis.
+- **Ausführung:** `grammar-manjaro-001` am sauberen Commit `23a2113`,
+  sechs frische Zellen in festgelegter Reihenfolge. Aufgezeichnet am 03.11.2026
+  von 09:10:15 bis 09:16:26 UTC; insgesamt 371,287 Sekunden.
+  Originalarchiv-SHA-256 selbst bestätigt:
+  `8d7fc8b09ed9c5091acef5237f5512ddb9fb014598e72ee3d9d4e435f33e3915`.
+- **Eigener lesender Audit:** 165 Dateien, 164 Gesamtmanifesthashes,
+  sämtliche Zellprüfsummen, 162 eingefrorene Dateianker und 59 Quellen gegen
+  den Ausführungscommit geprüft. Planbytes, Eingabebits und Trainingsrollen
+  stimmen. Alle sechs vorhandenen Zellverifikatoren, gespeicherten nativen
+  Options-/Syntax-/BLAS-Nachweise, Referenzdiagnosen und Aggregate bestehen.
+  Unabhängiger skalarer Replay aller 51 Bäume bestätigt beide Raster,
+  Vorhersagen, Residuen, MSE, Originalauswahl und Grammatikregel. Keine neue
+  Julia-Ausführung; serialisierte Zustände/Pickles nicht geladen.
+- **Ergebnis:** beide Arme 0/3 erfolgreiche Originalauswahlen, kein
+  kurvenguter ungewählter Kandidat. Alle 51 Strukturdiagnosen `not_supported`,
+  Parameter und physikalische Identifikation `not_assessed`. A verbessert
+  den ersten Seed, erhöht aber MSE/RMS beim zweiten und dritten. Die
+  [Detailauswertung](trigonometric_grammar_results_manjaro_001.md) enthält
+  Originalformeln, vollständige Fehler, Nenner, Unterschiede und Aufwand.
+  Kein Wechsel zur eingeschränkten Grammatik, keine weitere Restriktionsstufe.
+- **Prüfgrenzen:** das frühere Eingangsarchiv wurde hier nicht erneut gehasht;
+  die im neuen Archiv gespeicherten Arrays wurden direkt gegen die
+  eingefrorenen Bits geprüft. 15 veröffentlichte historische 100/2-Metriken
+  stimmen exakt mit den frischen K-Auswahlen überein; der vollständige frühere
+  Budgetarchiv-Audit bleibt offen. Der Alias-Blindfleck bei `8*fs` bleibt
+  bestehen, `trajectory-manjaro-001` bleibt `incomplete / failed`.
+- **Arbeitsstand:** ausschließlich neuer Ergebnisbericht, README und dieses
+  bestehende Arbeitsdokument. Code, Pins, Auswahl und alle sieben
+  eingefrorenen Laufzeitpläne unverändert. Die erfolgreiche vollständige
+  [Implementierungs-CI](https://github.com/craexxn/ringdown-sr/actions/runs/41600969196)
+  und das übermittelte KI-basierte Review aus #52 bleiben vorhandene
+  Nachweise; keine routinemäßige Wiederholung. Der Ergebnis-PR hält den
+  vollständigen Dokumentations-Head und dessen schlanke Prüfungen fest.
+  Lokale Audithilfen und Nachrechnungen:
+  `/workspace/audits/grammar-manjaro-001/`; Originale unverändert erhalten.
+- **Nächster abgegrenzter Schritt:** das weitere methodische Vorgehen anhand
+  der abgeschlossenen Befunde ausdrücklich neu abwägen. Keine Wiederholung,
+  zusätzlichen Seeds, Budgets, Nachfits oder automatische Methodenänderung.
+  Freie Formelfindung bleibt Forschungsziel; Auswahlverfahren,
+  Übertragbarkeit und Hauptversuche zur Hintergrundlänge/Kovarianzgewichtung
+  bleiben eigenständige offene Entscheidungen.
+
+## Historisch: Angenommener Grammatikvergleich vor Manjaro-Ausführung
 
 - Erneuter Einstieg: sauberer Checkout `codex/free-form-methods-literature`
   bei `114bb24dd983c0316c89379bc9477bed5835655a`, ein Worktree; weitere lokale
