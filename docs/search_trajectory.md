@@ -12,6 +12,12 @@ aktuelle native Replays und Python-Baumauswertung. Der erste Format-1-Lauf
 `trajectory-manjaro-001` bleibt als `incomplete / failed` erhalten.
 Die Korrektur autorisiert keine automatische Wiederholung.
 
+Die anschließend vereinbarte Serie `trajectory-manjaro-002` ist am 03.11.2026
+abgeschlossen. Ihr [Originalarchiv ist geprüft](search_trajectory_results_manjaro_002.md):
+sechs Zellen und drei Paarvergleiche bestanden; ungeklärte Mitglieder bleiben
+entsprechend eingeschränkt. Die nachstehenden Befehle dokumentieren diesen
+abgeschlossenen Lauf und sind kein Auftrag für einen erneuten Start.
+
 ## Technische Voraussetzungen
 
 Vor der wissenschaftlichen Ausführung muss der Implementierungsstand die
@@ -31,16 +37,17 @@ Der Treiber prüft dieses Originalarchiv einschließlich der eingefrorenen
 Eingaben. Das neuere freie Budgetarchiv wird dafür nicht benötigt; dessen
 weiterhin offener unabhängiger Audit wird durch die Beobachtungsserie nicht ersetzt.
 
-## Vereinbarte Ausführung auf Manjaro: trajectory-manjaro-002
+## Abgeschlossene Ausführung auf Manjaro: trajectory-manjaro-002
 
 Stand 03.11.2026: PR #48 ist übernommen. Die
 [vollständige CI](https://github.com/craexxn/ringdown-sr/actions/runs/41437880627)
 bestand am PR-Head `27d10fe`; dessen Dateibaum stimmt mit dem Mergecommit
 `f3c0cb49ff9213b651ad4cb4ce766958f0b1e2d1` überein. Nach Merge und
-Standabgleich ist genau eine frische Serie an diesem Commit vereinbart.
-Der neue Name lautet `trajectory-manjaro-002`. Hier ist noch keine Ausführung
-dieser Serie nachgewiesen. Das alte Verzeichnis und Teilarchiv bleiben erhalten.
-Der reine Dokumentationsnachtrag muss vor diesem Lauf nicht übernommen werden.
+Standabgleich wurde genau eine frische Serie an diesem Commit vereinbart.
+Der verwendete Name lautet `trajectory-manjaro-002`; Ausführung und Audit
+sind im Ergebnisbericht nachgewiesen. Das alte Verzeichnis und Teilarchiv
+bleiben erhalten. Der reine Dokumentationsnachtrag war keine Voraussetzung
+für den Lauf am festgelegten Commit.
 
 Die folgenden Befehle im Repository-Stamm ausführen. Ein sauberes Checkout
 ist erforderlich; bei lokalen Änderungen stoppt die Vorbereitung. Der
