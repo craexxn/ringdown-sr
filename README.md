@@ -22,10 +22,15 @@ Der [Originalarchiv-Audit](docs/search_duration_results_manjaro_001.md)
 reproduziert die Ursache: Rundungsunterschiede bei nahezu verschwindender MSE.
 Im gesicherten 2000er-Suchstand stehen zwei sehr genaue gedämpfte Sinusformeln;
 der bisherige Strukturerkenner deckt ihre Quotientenschreibweise nicht ab.
-Der 20-Zellen-Vergleich bleibt unvollständig. Nächster Schritt ist eine
-begründete Verifikationsergänzung vor weiteren Suchen; keine automatische
-Wiederaufnahme. [Literatur](docs/search_duration_literature.md),
-[Bedienung](docs/search_duration.md) und Detailbefund bleiben getrennt.
+Der 20-Zellen-Vergleich bleibt unvollständig. Die vor Code gebundene
+[Verifikationsergänzung](docs/search_duration_verification_plan.md) ist für
+Format 2 implementiert: Verluste gegen eigene Residuen prüfen und die
+begrenzten äquivalenten Formeln diagnostisch erkennen. Implementierungs- und
+Prüfstand stehen in [PR #55](https://github.com/craexxn/ringdown-sr/pull/55).
+Nach technischer Prüfung und Merge ist eine vollständige frische Serie
+`duration-manjaro-002` mit denselben Seeds vorbereitet; keine Wiederaufnahme
+des Teilstands. [Bedienung](docs/search_duration.md) und
+[Literatur](docs/search_duration_literature.md) bleiben verlinkt.
 
 Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
 Übergaberegeln stehen in [AGENTS.md](AGENTS.md); vor Fortsetzung sind lokale

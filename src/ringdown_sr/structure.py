@@ -38,10 +38,11 @@ class RawCoefficients:
     exponential_rate_per_s: Fraction
     angular_frequency_per_s: Fraction
     phase_rad: Fraction
+    phase_pi_multiple: Fraction = Fraction(0)
 
     def to_dict(self) -> dict:
         """Encode rational values without Float64 conversion or JSON number loss."""
-        return {
+        result = {
             name: {
                 "numerator": str(value.numerator),
                 "denominator": str(value.denominator),
@@ -57,6 +58,12 @@ class RawCoefficients:
                 strict=True,
             )
         }
+        if self.phase_pi_multiple:
+            result["d_pi"] = {
+                "numerator": str(self.phase_pi_multiple.numerator),
+                "denominator": str(self.phase_pi_multiple.denominator),
+            }
+        return result
 
 
 @dataclass(frozen=True)
@@ -65,6 +72,7 @@ class StructureRecognition:
 
     coefficients: RawCoefficients | None
     reason: str | None = None
+    version: int = 1
 
     @property
     def structure_status(self) -> str:
@@ -74,7 +82,7 @@ class StructureRecognition:
         coefficients = self.coefficients
         rate = None if coefficients is None else coefficients.exponential_rate_per_s
         return {
-            "format": "ringdown-sr-structure-recognition-1",
+            "format": f"ringdown-sr-structure-recognition-{self.version}",
             "structure_status": self.structure_status,
             "reason": self.reason,
             "raw_coefficients": None
@@ -92,7 +100,11 @@ class StructureRecognition:
             else "zero"
             if coefficients.amplitude == 0
             else "nonzero",
-            "phase_kind": None if coefficients is None else "radian_rational",
+            "phase_kind": None
+            if coefficients is None
+            else "radian_plus_pi"
+            if coefficients.phase_pi_multiple
+            else "radian_rational",
             "replay_status": "not_attempted",
             "parameter_interpretation": "not_attempted",
             "alias_status": "not_attempted",
@@ -242,3 +254,54 @@ def recognize_ringdown(tree: dict) -> StructureRecognition:
     except _Unsupported as error:
         return StructureRecognition(coefficients=None, reason=str(error))
     return StructureRecognition(RawCoefficients(amplitude, rate, frequency, phase))
+
+
+def recognize_ringdown_extended(tree: dict) -> StructureRecognition:
+    """Recognize one numerator sin/cos and one exp in products/quotients.
+
+    Denominator singularities are never cancelled. Pi remains an exact
+    symbolic phase component; the original evaluation tree is untouched.
+    This opt-in contract does not change the legacy recognizer.
+    """
+    root = _validated_tree(tree)
+    exponentials, oscillations, scalars = [], [], []
+
+    def collect(node, orientation=1, inside_denominator=False):
+        if node.operator == "*":
+            for child in node.children:
+                collect(child, orientation, inside_denominator)
+        elif node.operator == "/":
+            collect(node.children[0], orientation, inside_denominator)
+            collect(node.children[1], -orientation, True)
+        elif node.operator == "exp":
+            exponentials.append((node, orientation))
+        elif node.operator in ("sin", "cos"):
+            if inside_denominator:
+                raise _Unsupported("trigonometric_denominator")
+            oscillations.append(node)
+        else:
+            value = _scalar(node)
+            if inside_denominator and value == 0:
+                raise _Unsupported("zero_denominator")
+            scalars.append(value if orientation == 1 else 1 / value)
+
+    try:
+        collect(root)
+        if len(exponentials) != 1:
+            raise _Unsupported("exponential_factor_count")
+        if len(oscillations) != 1:
+            raise _Unsupported("trigonometric_factor_count")
+        amplitude = math.prod(scalars, start=Fraction(1))
+        exponential, orientation = exponentials[0]
+        rate, intercept = _affine(exponential.children[0])
+        if intercept != 0:
+            raise _Unsupported("nonzero_exponential_intercept")
+        oscillation = oscillations[0]
+        frequency, phase = _affine(oscillation.children[0])
+        pi_part = Fraction(-1, 2) if oscillation.operator == "sin" else Fraction(0)
+    except _Unsupported as error:
+        return StructureRecognition(None, str(error), version=2)
+    return StructureRecognition(
+        RawCoefficients(amplitude, orientation * rate, frequency, phase, pi_part),
+        version=2,
+    )

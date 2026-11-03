@@ -13,11 +13,15 @@ from .pilot import _sha256
 from .representation_control import _markers, _metric_availability, _metrics
 from .symbolic import ROOT, SearchBudget
 
-FORMAT = "ringdown-sr-search-duration-1"
-PROFILE_FORMAT = "ringdown-sr-search-duration-profile-1"
-PLAN = "docs/search_duration_plan.md"
-PLAN_COMMIT = "194cfb499e8c53b8243d19c4d11d58a006baff95"
-PLAN_SHA256 = "8906a66930848d733e5b2744d40c5fa9c4051db2b876e200908d74ae9ac0b75d"
+FORMAT = "ringdown-sr-search-duration-2"
+PROFILE_FORMAT = "ringdown-sr-search-duration-profile-2"
+PLAN = "docs/search_duration_verification_plan.md"
+PLAN_COMMIT = "2a0b50926cd2983d0cd6cc1307ccc28d0a2822fa"
+PLAN_SHA256 = "b6f7cef2227eeacccf8156d02e8899e6fc83b7bd1f29735c1a402922a9d83062"
+ORIGINAL_PLAN = "docs/search_duration_plan.md"
+ORIGINAL_PLAN_SHA256 = (
+    "8906a66930848d733e5b2744d40c5fa9c4051db2b876e200908d74ae9ac0b75d"
+)
 SEEDS = (20261103, 20261104, 20261105, 20261106, 20261107)
 ITERATIONS = (200, 2000)
 CONDITIONS = grammar.CONDITIONS
@@ -51,6 +55,7 @@ def source_hashes():
     hashes = grammar.source_hashes()
     for name in (
         PLAN,
+        ORIGINAL_PLAN,
         *RUNTIME.values(),
         "scripts/run_search_duration.py",
         "scripts/check_search_duration_integration.py",
@@ -58,6 +63,8 @@ def source_hashes():
         hashes[name] = _sha256((ROOT / name).read_bytes())
     if hashes[PLAN] != PLAN_SHA256:
         raise ValueError("The frozen search duration plan changed.")
+    if hashes[ORIGINAL_PLAN] != ORIGINAL_PLAN_SHA256:
+        raise ValueError("The original search duration plan changed.")
     return dict(sorted(hashes.items()))
 
 

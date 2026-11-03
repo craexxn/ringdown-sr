@@ -6,8 +6,16 @@ Der [Methodenplan](search_duration_plan.md) wurde vor Implementierung am Commit
 Die [Literaturgrundlage](search_duration_literature.md) begründet die
 Budgetprüfung, keinen optimalen Iterationswert oder garantierten Erfolg.
 
-20 frische Suchen kreuzen K/A mit 200/2.000 Suchiterationen bei fünf neuen,
-vorab festgelegten Seeds. Konstantenoptimierung 100/2, Populationen, Daten,
+Der erste Lauf blieb [beim Replay unvollständig](search_duration_results_manjaro_001.md).
+Für Format 2 gilt zusätzlich die vor Code eingefrorene
+[Verifikationsergänzung](search_duration_verification_plan.md), Commit
+`2a0b50926cd2983d0cd6cc1307ccc28d0a2822fa`, SHA-256
+`b6f7cef2227eeacccf8156d02e8899e6fc83b7bd1f29735c1a402922a9d83062`.
+Diese Bedienung beschreibt die neue vollständige Serie `duration-manjaro-002`.
+
+20 frische Suchen kreuzen K/A mit 200/2.000 Suchiterationen bei denselben fünf
+vorab festgelegten Seeds. Sie sind nach dem Teilstand nicht mehr vollständig
+ungesehen. Konstantenoptimierung 100/2, Populationen, Daten,
 Originalauswahl und Diagnosegrenzen bleiben gleich. Keine Wiederaufnahme
 kurzer Läufe und keine Übernahme früherer Zellen als neue Kontrollen.
 
@@ -28,6 +36,37 @@ Achtpunkt-Signal `y=1+t`: K2, A2, K3, A3, K2. Der tatsächliche Aufruf an
 `equation_search` wird auf das jeweilige Budget geprüft; beide K2-Fronten
 müssen identisch sein. Dieser Test führt keine wissenschaftliche Zelle aus.
 
+Zusätzlich prüft die volle CI mit `scripts/check_duration_replay.py` die zwei
+vorhandenen CSV-Bäume nativ ohne Suche/Fit. Die Fixture ist ein ausdrücklich
+nachträglicher Regressionstest, kein wiederhergestellter Originalbaumexport.
+
+## Versionierte Verifikation
+
+Nur der neue Suchbudgetworker aktiviert `duration_replay.verify_loss_replay`;
+der Standardadapter und ältere Kontrollpfade behalten ihre bisherige skalare
+Prüfung. Jeder Kandidat erhält einen `loss_replay`-Nachweis. Der Elternprozess
+prüft dessen Inhalt erneut einschließlich Tabellenverlust, unabhängiger
+Python-MSE und Fehlergrenze. Fehlende oder veränderte Nachweise sperren die
+Serie. Die Originalauswahl verwendet weiterhin den gespeicherten nativen
+Trainingsverlust, keine korrigierte oder diagnostische MSE.
+
+Die rationale Schranke im gebundenen Plan ist ein Genauigkeitsvertrag einer
+direkten Quadratsummenreduktion. Die vorhandene Python-Funktion verwendet
+tatsächlich eine skalierte BLAS-Norm, Division durch sqrt(n) und Quadrieren;
+sie wird nicht ersetzt. Ihr konkretes Ergebnis wird unabhängig gegen die
+exakte rationale Quadratsumme geprüft. Es wird **keine allgemeine
+Fehlergarantie für jede BLAS-Implementierung** vorausgesetzt. Überschreitet
+ein Ergebnis die Schranke, bleibt es abgelehnt. Der normale Zahlenbereich
+gilt auch für Quadrate und unnormalisierte Quadratsumme; Unter-/Überlauf wird
+nicht durch einen absoluten Größenboden verdeckt.
+
+Der optionale Strukturerkenner und die Parameterdiagnose tragen Version 2.
+Sinusphasen behalten getrennte rationale Radiant- und Pi-Anteile; die
+Umrechnung wird durch rationale Pi-Intervalle geprüft. Nur der neue
+Suchbudget-Diagnosepfad aktiviert Produkte/Quotienten mit Sinus oder Kosinus.
+Ältere Aufrufer nutzen weiterhin den bisherigen Erkenner. Beide numerischen
+Parameterreplays, Kurvengrenzen und ursprüngliche Diagnosegates bleiben nötig.
+
 ## Einmalige Serie auf Manjaro
 
 Im sauberen Checkout des geprüften Commits mit der bestehenden gepinnten
@@ -46,7 +85,7 @@ Der Treiber prüft Archivhash und Float64-Bits selbst. Diagnosepunkte und
 Wahrheit gelangen nicht an die Suchworker.
 
 ```bash
-env -u VIRTUAL_ENV OPENBLAS_CORETYPE=Haswell OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 uv run --locked python scripts/run_search_duration.py --archive results/representation-manjaro-001.tar.gz --output results/duration-manjaro-001 --label manjaro
+env -u VIRTUAL_ENV OPENBLAS_CORETYPE=Haswell OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 uv run --locked python scripts/run_search_duration.py --archive results/representation-manjaro-001.tar.gz --output results/duration-manjaro-002 --label manjaro
 ```
 
 Das Ausgabeverzeichnis muss neu sein. **600 Sekunden je Worker, insgesamt
@@ -59,8 +98,8 @@ fremder Timer wird nicht überschrieben. Dieser Pfad ist für Linux vorgesehen.
 Nach Abschluss oder Abbruch unverändert sichern:
 
 ```bash
-tar -czf results/duration-manjaro-001.tar.gz -C results duration-manjaro-001
-sha256sum results/duration-manjaro-001.tar.gz
+tar -czf results/duration-manjaro-002.tar.gz -C results duration-manjaro-002
+sha256sum results/duration-manjaro-002.tar.gz
 ```
 
 Bestehende Archive erhalten; gegebenenfalls einen neuen Sicherungsnamen
@@ -95,7 +134,8 @@ positives Entwicklungssignal. Eine bessere Approximation allein bestätigt
 keine freie Strukturentdeckung. Die Grammatikunterschiede und ihre
 Wechselwirkung mit dem Budget bleiben getrennt sichtbar.
 
-Fünf neue Seeds am bekannten Signal sind keine allgemeine Leistungsvalidierung.
+Fünf vorab festgelegte, teilweise bereits gesehene Seeds am bekannten Signal
+sind keine allgemeine Leistungsvalidierung.
 Physikalische Identifikation bleibt `not_assessed`; der Alias-Blindfleck bei
 `8*fs` bleibt bestehen. Weitere Tests werden erst anhand der neuen Ergebnisse
 begründet und vor Ausführung festgelegt.

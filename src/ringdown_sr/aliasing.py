@@ -26,14 +26,21 @@ class Phase:
 
     kind: str
     value: Fraction
+    pi_multiple: Fraction = Fraction(0)
 
     def __post_init__(self):
-        if self.kind not in ("radian_rational", "pi_multiple"):
+        if self.kind not in ("radian_rational", "pi_multiple", "radian_plus_pi"):
             raise ValueError("Unknown phase kind.")
         object.__setattr__(self, "value", _rational(self.value, "phase value"))
+        object.__setattr__(self, "pi_multiple", _rational(self.pi_multiple))
+        if self.kind != "radian_plus_pi" and self.pi_multiple:
+            raise ValueError("Mixed phase components require radian_plus_pi.")
 
     def to_dict(self) -> dict:
-        return {"kind": self.kind, "value": _ratio(self.value)}
+        result = {"kind": self.kind, "value": _ratio(self.value)}
+        if self.kind == "radian_plus_pi":
+            result["pi_multiple"] = _ratio(self.pi_multiple)
+        return result
 
 
 @dataclass(frozen=True)
@@ -148,6 +155,21 @@ def _unique_floor(interval):
     return lower if lower == upper else None
 
 
+def phase_field(phase: Phase) -> dict:
+    """Convert exact mixed radians/pi with the existing bounded enclosures."""
+    if phase.kind == "radian_rational":
+        return rational_field(phase.value)
+    radians = phase.value if phase.kind == "radian_plus_pi" else Fraction(0)
+    pi_part = phase.pi_multiple if phase.kind == "radian_plus_pi" else phase.value
+    for terms in PI_TERM_BUDGETS:
+        result = _float_field(
+            _Interval.point(radians).add(_pi_interval(terms).scale(pi_part))
+        )
+        if result["status"] == "available":
+            return result
+    return result
+
+
 def reduce_alias(
     *, sample_rate_hz, phase: Phase, frequency_hz=None, angular_frequency_per_s=None
 ) -> dict:
@@ -235,15 +257,20 @@ def reduce_alias(
             phase_turns = math.floor(signed_phase / 2 + Fraction(1, 2))
             radian_part, pi_part = Fraction(0), signed_phase - 2 * phase_turns
         else:
+            signed_pi = (
+                orientation * phase.pi_multiple
+                if phase.kind == "radian_plus_pi"
+                else Fraction(0)
+            )
             phase_turns = _unique_floor(
                 _Interval.point(signed_phase)
                 .divide(pi.scale(2))
-                .add(_Interval.point(Fraction(1, 2)))
+                .add(_Interval.point((signed_pi + 1) / 2))
             )
             if phase_turns is None:
                 result["reason"] = "phase_reduction_unresolved"
                 continue
-            radian_part, pi_part = signed_phase, Fraction(-2 * phase_turns)
+            radian_part, pi_part = signed_phase, signed_pi - 2 * phase_turns
         result["phase_turns"] = str(phase_turns)
         result["phase_alias_exact"] = {
             "radian_part": _ratio(radian_part),

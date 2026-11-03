@@ -7,6 +7,7 @@ from pathlib import Path
 
 from ringdown_sr import search_duration as control
 from ringdown_sr import symbolic
+from ringdown_sr.duration_replay import verify_loss_replay
 from ringdown_sr.pilot import _write_json
 
 
@@ -22,6 +23,7 @@ def run(directory):
     for name in ("FORMAT", "checked_profile", "verify_manifest", "profile_parameters"):
         setattr(worker, name, getattr(control, name))
     original_snapshot = symbolic._environment_snapshot
+    original_replay = symbolic._verify_loss_replay
     module = original_backend = guard = None
 
     def snapshot(phase, *, julia_used):
@@ -41,10 +43,12 @@ def run(directory):
         return original_snapshot(phase, julia_used=julia_used)
 
     symbolic._environment_snapshot = snapshot
+    symbolic._verify_loss_replay = verify_loss_replay
     try:
         worker.run(directory)
     finally:
         symbolic._environment_snapshot = original_snapshot
+        symbolic._verify_loss_replay = original_replay
         if module is not None:
             module.SymbolicRegression = original_backend
 

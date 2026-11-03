@@ -1,11 +1,13 @@
 """Check ten native grammar profiles and twenty Python search budgets without fit."""
 
 import argparse
+from functools import partial
 from pathlib import Path
 
 from ringdown_sr import search_duration as control
 from ringdown_sr import symbolic
 from ringdown_sr.pilot import _write_json
+from ringdown_sr.representation_control import diagnose_candidate
 
 
 def inspect(mode):
@@ -15,6 +17,7 @@ def inspect(mode):
     )
     for name in ("FORMAT", "SEEDS", "source_hashes"):
         setattr(backend, name, getattr(control, name))
+    backend.diagnose_candidate = partial(diagnose_candidate, extended_structure=True)
     result = backend.inspect(mode)
     result["search_profiles"] = control.search_profiles() if mode == "options" else []
     return result

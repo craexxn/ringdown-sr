@@ -7,11 +7,52 @@ kein Kurvenerfolg unter 51 Frontkandidaten. Die zusätzliche Regel wird gemäß
 Plan nicht übernommen. PR #54 ist übernommen; der neue Suchbudgetvergleich
 auf Manjaro blieb beim Replay von Zelle 3 unvollständig. Der Originalarchiv-Audit
 bestätigt sehr genaue Sinus-/Exponentialquotienten im Teilstand und grenzt
-zwei Verifikationsprobleme ein. Hier lesender Audit und technische Prüfung;
+zwei Verifikationsprobleme ein. Die gebundene Ergänzung für Format 2 ist
+implementiert; aktueller Prüfstand in PR #55. Hier Vorbereitung und technische Prüfung;
 die wissenschaftliche Ausführung bleibt auf Manjaro.
 Keine zusätzlichen Agenten.
 
-## Aktuell: Audit des abgebrochenen Suchbudgetvergleichs
+## Aktuell: Versionierte Verlust- und Strukturverifikation
+
+- **Abgeglichener Einstieg:** eigener sauberer Branch `codex/duration-abort-audit`
+  bei `6dccd469fdb9f1688f54755b3c6c48e4f105e14d`, ein Worktree, andere Branches
+  erhalten. `main` weiterhin `d4899ba`; nur PR #55 offen und als Entwurf.
+  Die Fortsetzung erweitert diesen PR um die begründete Korrektur; kein Merge.
+- **Plan vor Implementierung:** [Verifikationsergänzung](search_duration_verification_plan.md),
+  Commit `2a0b50926cd2983d0cd6cc1307ccc28d0a2822fa`, SHA-256
+  `b6f7cef2227eeacccf8156d02e8899e6fc83b7bd1f29735c1a402922a9d83062`.
+  Der ursprüngliche Suchbudgetplan wird zusätzlich weiter auf seine alten
+  Bytes geprüft; frühere Pläne und Archive unverändert.
+- **Implementierung:** Suchbudget-/Profilformat 2 aktiviert allein den neuen
+  gewöhnlichen MSE-Nachweis. Exakte rationale Quadratsummen und hergeleitete
+  Reduktionsschranken prüfen jeden Verlust gegen eigene Residuen; nativer
+  Verlustvergleich und Vorhersageprüfung bleiben bestehen. Der Elternprozess
+  berechnet alle Kandidatennachweise neu. Auswahl bleibt nach nativer MSE.
+- **Strukturdiagnose:** optionaler Erkenner für genau einen Sinus/Kosinus im
+  Zähler und einen Exponentialfaktor im Zähler oder Nenner. Exakte rationale
+  Radiant-/Pi-Anteile, begrenzte Pi-Konversion, rohe und Alias-Replays bleiben
+  getrennte Gates. Ältere Aufrufer behalten den bisherigen Standard.
+- **Prüfungen:** alle 1.907 Python-Tests, Ruff und Formatprüfung bestanden
+  lokal; darunter 53 neue numerische/strukturelle Gegenprüfungen und alle 31
+  Suchbudget-Treibertests. Die beiden CSV-Formeln
+  erfüllen Kurven- und Parameterdiagnose ohne Nachfit oder Baumänderung.
+  Vollständige Python-/Julia-CI und neue feste native Regressionstests sind
+  erforderlich; aktueller Head und abgeschlossene Prüfnachweise stehen in
+  [PR #55](https://github.com/craexxn/ringdown-sr/pull/55). Ein erster lokaler
+  nativer Prüflauf bestand die fachlichen Assertions, brach aber wegen während
+  des Laufs geänderter Quellen an der abschließenden Quellenbindung ab;
+  er ist kein vollständiger Prüfnachweis. Die vollständige Wiederholung mit
+  unveränderten Quellen bestand: `results/duration-replay-technical-002.json`,
+  beide nativen Verluste und Vorhersagen bitgenau bestätigt, beide neue
+  Verlust- und Parameterdiagnosen bestanden, null Such-/Fitaufrufe.
+- **Nächster wissenschaftlicher Schritt vorbereitet:** nach vollständiger
+  technischer Prüfung und Merge `duration-manjaro-002`, alle 20 Prozesse neu,
+  gleiche vorab festgelegte Seeds, Reihenfolge, Budgets und Abbruchgrenzen.
+  Keine Übernahme der ersten zwei Zellen; bereits gesehene Seeds ausdrücklich
+  als adaptive Entwicklungsprüfung einordnen. Befehle in der
+  [Bedienung](search_duration.md). Hier keine wissenschaftliche Ausführung.
+
+## Historisch: Audit des abgebrochenen Suchbudgetvergleichs
 
 - **Arbeitsstand:** sauberer Einstieg auf `codex/search-duration-preparation`
   bei `4a9286bfe1aa49db3eda174a3aa14c69f1160e74`, ein Worktree, andere Branches

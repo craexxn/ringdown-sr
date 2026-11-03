@@ -202,12 +202,17 @@ def physical_analysis(search_analysis, tree, physical_times, scale):
     return result
 
 
-def diagnose_candidate(candidate, index, selected_index, arrays, condition):
+def diagnose_candidate(
+    candidate, index, selected_index, arrays, condition, *, extended_structure=False
+):
     settings = condition_settings(condition)
     scale = settings["time_scale"]
     coordinates = search_coordinates(arrays, condition)
     source = analyze_tree(
-        candidate["tree"], coordinates["time_s"], sample_rate_hz=FS / scale
+        candidate["tree"],
+        coordinates["time_s"],
+        sample_rate_hz=FS / scale,
+        extended_structure=extended_structure,
     )
     physical = physical_analysis(source, candidate["tree"], arrays["time_s"], scale)
     curves = {}

@@ -7,6 +7,17 @@ Die separate [Parameter-/Aliasdiagnose](parameter_diagnostics.md) ergänzt
 inzwischen numerische Nachrechnung, Parameterumrechnung und Aliasreduktion.
 Der vollständige [lesende Diagnoseexport](parameter_export.md) ist separat umgesetzt.
 
+Ergänzung vom 03.11.2026: `recognize_ringdown_extended(tree)` bietet einen
+getrennten Erkenner im Format 2 für den
+[versionierten Suchbudgetpfad](search_duration_verification_plan.md).
+Er unterstützt einen Sinus-/Kosinusfaktor im Zähler und einen Exponentialfaktor
+im Zähler oder Nenner mit rationalen Skalaren. `sin(u)=cos(u-pi/2)` bleibt als
+exakter zusätzlicher Pi-Anteil `d_pi` gespeichert; `phase_kind` ist dann
+`radian_plus_pi`. Die begrenzte Pi-Intervallrechnung und numerische Replays
+folgen erst in der Parameterdiagnose. Der unten dokumentierte Standardaufruf
+und seine Ausgabe bleiben unverändert. Keine automatische Neubewertung
+historischer Archive.
+
 ## Schnittstelle und Ergebnis
 
 `recognize_ringdown(tree)` liest einen vollständigen exportierten Baum

@@ -63,6 +63,22 @@ def _check_prediction_replay(python_prediction, julia_prediction) -> dict:
     }
 
 
+def _verify_loss_replay(
+    observed,
+    native_prediction,
+    python_prediction,
+    raw_loss,
+    replay_loss,
+    table_loss,
+    python_loss,
+    loss_object,
+):
+    """Keep the legacy scalar contract unless a versioned worker opts in."""
+    np.testing.assert_allclose(
+        [replay_loss, table_loss, python_loss], raw_loss, rtol=1e-10, atol=0
+    )
+
+
 def _environment_snapshot(phase: str, *, julia_used: bool) -> dict:
     environment = _environment()
     environment["numerical_libraries"]["snapshot"] = phase
@@ -512,8 +528,15 @@ def _worker_search(directory: Path, metadata: dict, started: float) -> None:
             else loss_object.mean_squared(python_residual)
         )
         raw_loss = float(member.loss)
-        np.testing.assert_allclose(
-            [replay_loss, row["loss"], python_loss], raw_loss, rtol=1e-10, atol=0
+        loss_replay = _verify_loss_replay(
+            target,
+            prediction,
+            python_prediction,
+            raw_loss,
+            float(replay_loss),
+            float(row["loss"]),
+            python_loss,
+            loss_object,
         )
         complexity = int(jl.SymbolicRegression.compute_complexity(member.tree, options))
         if complexity != int(row["complexity"]):
@@ -530,6 +553,7 @@ def _worker_search(directory: Path, metadata: dict, started: float) -> None:
                 "julia_reimport_loss": float(replay_loss),
                 "python_loss": python_loss,
                 "prediction_replay": prediction_replay,
+                **({"loss_replay": loss_replay} if loss_replay is not None else {}),
                 "units_status": "accepted_by_backend_wildcard_checker",
             }
         )

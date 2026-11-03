@@ -6,10 +6,16 @@ from numbers import Real
 
 import numpy as np
 
-from .aliasing import Phase, angular_frequency_fields, rational_field, reduce_alias
+from .aliasing import (
+    Phase,
+    angular_frequency_fields,
+    phase_field,
+    rational_field,
+    reduce_alias,
+)
 from .losses import _real_array
 from .signals import sample_times
-from .structure import recognize_ringdown
+from .structure import recognize_ringdown, recognize_ringdown_extended
 from .symbolic import _check_prediction_replay, evaluate_tree
 
 
@@ -41,14 +47,18 @@ def _prediction_replay(original, prediction):
     return {"status": "passed", "reason": None, **diagnostics}
 
 
-def analyze_tree(tree: dict, time_s, *, sample_rate_hz: float) -> dict:
+def analyze_tree(
+    tree: dict, time_s, *, sample_rate_hz: float, extended_structure=False
+) -> dict:
     """Analyze one tree and replay its raw and, when available, aliased forms.
 
     Inputs are read-only. No truth, losses, fits, other candidates or random
     states are accepted. Per-field availability certifies numerical conversion;
     the separate replays determine agreement with the original Float64 tree.
     """
-    structure = recognize_ringdown(tree)
+    structure = (
+        recognize_ringdown_extended if extended_structure else recognize_ringdown
+    )(tree)
     times = _real_array(time_s, "time_s").copy()
     if times.ndim != 1 or times.size == 0:
         raise ValueError("time_s must be a nonempty vector.")
@@ -63,7 +73,9 @@ def analyze_tree(tree: dict, time_s, *, sample_rate_hz: float) -> dict:
     if not math.isfinite(fs) or fs <= 0:
         raise ValueError("sample_rate_hz must be a finite positive scalar.")
     report = {
-        "format": "ringdown-sr-parameter-analysis-1",
+        "format": "ringdown-sr-parameter-analysis-2"
+        if extended_structure
+        else "ringdown-sr-parameter-analysis-1",
         "structure": structure.to_dict(),
         "parameter_interpretation": "diagnostics_only",
         "raw_parameters": None,
@@ -79,11 +91,16 @@ def analyze_tree(tree: dict, time_s, *, sample_rate_hz: float) -> dict:
     raw = structure.coefficients
     if raw is None:
         return report
+    phase = (
+        Phase("radian_plus_pi", raw.phase_rad, raw.phase_pi_multiple)
+        if raw.phase_pi_multiple
+        else Phase("radian_rational", raw.phase_rad)
+    )
     parameters = {
         "amplitude": rational_field(raw.amplitude),
         "exponential_rate_per_s": rational_field(raw.exponential_rate_per_s),
         "angular_frequency_per_s": rational_field(raw.angular_frequency_per_s),
-        "phase_rad": rational_field(raw.phase_rad),
+        "phase_rad": phase_field(phase),
     }
     parameters["decay_time_s"] = (
         rational_field(-1 / raw.exponential_rate_per_s)
@@ -108,7 +125,7 @@ def analyze_tree(tree: dict, time_s, *, sample_rate_hz: float) -> dict:
         alias = reduce_alias(
             sample_rate_hz=Fraction.from_float(fs),
             angular_frequency_per_s=raw.angular_frequency_per_s,
-            phase=Phase("radian_rational", raw.phase_rad),
+            phase=phase,
         )
         report["alias"] = alias
         report["identifiability"]["amplitude_phase_degeneracy"] = alias["degeneracy"]
