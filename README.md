@@ -5,10 +5,9 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 03.11.2026; abgeglichener Implementierungs- und
-Grammatik-Ausführungsstand auf `main`: `23a2113`
-([PR #52](https://github.com/craexxn/ringdown-sr/pull/52)).
-Neuer Ergebnisstand: [Grammatikvergleich 001](docs/trigonometric_grammar_results_manjaro_001.md),
+Fortsetzungsstand: 03.11.2026; abgeglichener Implementierungsstand auf `main`:
+`d4899ba` ([PR #54](https://github.com/craexxn/ringdown-sr/pull/54)).
+Vorheriger Ergebnisstand: [Grammatikvergleich 001](docs/trigonometric_grammar_results_manjaro_001.md),
 vollständiges Originalarchiv unabhängig geprüft. Frühere Suchbeobachtung:
 `2d9ed90`, übernommener [PR #50](https://github.com/craexxn/ringdown-sr/pull/50).
 Vorgegebener Stand des freien Budgetlaufs: `8bdc8db`; frühere Ausführungsstände:
@@ -16,15 +15,17 @@ Konstantendiagnose `0a70f19`, Zeitdarstellungskontrolle `4057caa`.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
-Neu beschlossen: [Suchbudgetvergleich](docs/search_duration_plan.md) mit
-200/2.000 Iterationen, beiden Grammatiken und fünf neuen Seeds; maximal zwei
-Stunden auf Manjaro. [Literaturgrundlage](docs/search_duration_literature.md)
-und [Bedienung](docs/search_duration.md) sind vorbereitet. Die vollständige CI
-am Implementierungsstand `98f6021` bestand. Das übermittelte KI-basierte Review
-bestätigt die geprüfte Methodentreue und fand eine Testlücke bei Abschlussfehlern;
-sie ist gezielt korrigiert und gegengeprüft. Aktueller Head und CI-Nachweis stehen
-in [PR #54](https://github.com/craexxn/ringdown-sr/pull/54).
-Die neue wissenschaftliche Serie wurde nicht gestartet.
+Der mit [PR #54](https://github.com/craexxn/ringdown-sr/pull/54) übernommene
+[Suchbudgetvergleich](docs/search_duration_plan.md) wurde auf Manjaro gestartet
+und brach nach zwei vollständigen Zellen beim Replay der dritten ab.
+Der [Originalarchiv-Audit](docs/search_duration_results_manjaro_001.md)
+reproduziert die Ursache: Rundungsunterschiede bei nahezu verschwindender MSE.
+Im gesicherten 2000er-Suchstand stehen zwei sehr genaue gedämpfte Sinusformeln;
+der bisherige Strukturerkenner deckt ihre Quotientenschreibweise nicht ab.
+Der 20-Zellen-Vergleich bleibt unvollständig. Nächster Schritt ist eine
+begründete Verifikationsergänzung vor weiteren Suchen; keine automatische
+Wiederaufnahme. [Literatur](docs/search_duration_literature.md),
+[Bedienung](docs/search_duration.md) und Detailbefund bleiben getrennt.
 
 Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
 Übergaberegeln stehen in [AGENTS.md](AGENTS.md); vor Fortsetzung sind lokale
@@ -123,8 +124,8 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   Suchbudgetvergleich unter beiden Grammatiken angenommen. Die [Bedienung](docs/trigonometric_grammar.md)
   dokumentiert den abgeschlossenen Laufweg, keine Wiederholungsfreigabe.
   Freie Formelfindung bleibt Forschungsziel; kein Produktionsprofil oder
-  Hauptversuch ist freigegeben. Die neue wissenschaftliche Serie bleibt auf
-  Manjaro; hier ausschließlich Vorbereitung und technische Kontrollen.
+  Hauptversuch ist freigegeben. Wissenschaftliche Suchen bleiben auf Manjaro;
+  hier Vorbereitung, technische Kontrollen und lesende Audits.
   Die Abgrenzung zwischen Pilot und Hauptversuchen steht im
   [Fortsetzungsstand](docs/representation_implementation_status.md).
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
@@ -140,7 +141,8 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   Die [vollständige CI zu PR #42](https://github.com/craexxn/ringdown-sr/actions/runs/41062609710)
   bestand am Head `9202d20`. Der neue Originalarchiv-Audit prüft 48 Fits,
   144 lokale Verläufe und 6.506 Zustände; dabei keine neue Optimierung.
-- **Offen:** Ursache der ausbleibenden freien Rekonstruktion; wissenschaftliche Formelauswahl,
+- **Offen:** Verifikation des neuen freien Rekonstruktionshinweises und Übertragbarkeit;
+  wissenschaftliche Formelauswahl,
   numerisches Forschungsprofil und statistischer Versuchsplan vor einer
   Leistungsstudie. Dazu die [offenen Reproduzierbarkeitsentscheidungen](docs/reproducibility_decisions.md)
   und die Grenzen des neuen Methodenplans verwenden. Hauptversuche und
