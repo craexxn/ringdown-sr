@@ -56,6 +56,16 @@ Keine zusätzlichen Agenten.
   Der konkrete CSV-Fall und ein falscher Tabellenwert sind eigene Tests.
   Der fehlgeschlagene technische Lauf bleibt erhalten. Vollständige Integration
   und CI müssen am korrigierten Head erneut bestehen; aktuelle Nachweise in #55.
+- **Regressionsdaten korrigiert:** CI 41682098788 am Head `78f3e94` fand sechs
+  fehlgeschlagene Skalierungsfälle unter sonst 1.902 bestandenen Python-Tests.
+  Die neuen Tests kombinierten gespeicherte native Vorhersagen/Verluste mit
+  erneut generierten Beobachtungen. Die CI-Referenz-MSE dieser Kombination
+  unterscheidet sich nachweislich von jener der Original-Eingabebits.
+  Die Fixture bindet deshalb nun Trainingszeiten, Beobachtungen und beide
+  Replays als zusammengehörige Float64-Vektoren. Der feste native Test nutzt
+  dieselben ursprünglichen Eingaben; Laufzeitprüfung und Toleranzen unverändert.
+  Die parallel laufende lokale Integration 002 wurde für diese Testkorrektur
+  unterbrochen und liefert keinen vollständigen Abschlussnachweis.
 - **Nächster wissenschaftlicher Schritt vorbereitet:** nach vollständiger
   technischer Prüfung und Merge `duration-manjaro-002`, alle 20 Prozesse neu,
   gleiche vorab festgelegte Seeds, Reihenfolge, Budgets und Abbruchgrenzen.

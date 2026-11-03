@@ -42,6 +42,14 @@ def check():
     backend = jl.RingdownSRSearch
     grammar = jl.TrigonometricGrammar
     arrays = frozen_data()
+    # Historical losses belong to these actual input bits, not a new evaluation
+    # of the analytical signal using this host's vector math implementation.
+    arrays.update(
+        {
+            key: np.asarray(values, dtype=np.float64)
+            for key, values in fixture["training_inputs"].items()
+        }
+    )
     array = lambda values: convert(jl.Array[jl.Float64], values)
     backend.bind_context(array(arrays["time_s"]), array(arrays["observed"]), None)
     seed = backend_seed(20261103)

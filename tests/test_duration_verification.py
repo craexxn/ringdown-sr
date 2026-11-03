@@ -28,7 +28,8 @@ from ringdown_sr.structure import (
 )
 
 FIXTURE = Path(__file__).parent / "fixtures/duration_replay_cases.json"
-CASES = json.loads(FIXTURE.read_bytes())["cases"]
+FIXTURE_DATA = json.loads(FIXTURE.read_bytes())
+CASES = FIXTURE_DATA["cases"]
 PI = Decimal(
     "3.141592653589793238462643383279502884197169399375105820974944592307816406286"
 )
@@ -56,11 +57,14 @@ def replay(y, native, python, **changes):
 def test_observed_roundoff_passes_without_changing_raw_losses_or_vectors(
     case, exponent
 ):
-    arrays = frozen_data()
+    arrays = {
+        key: np.asarray(values, dtype=float)
+        for key, values in FIXTURE_DATA["training_inputs"].items()
+    }
     scale = 2.0**exponent
     y = arrays["observed"] * scale
     native = np.array(case["native_prediction"]) * scale
-    python = symbolic.evaluate_tree(case["tree"], arrays["time_s"]) * scale
+    python = np.array(case["python_prediction"]) * scale
     raw = case["native_loss"] * scale**2
     before = (y.copy(), native.copy(), python.copy())
     with pytest.raises(AssertionError):
