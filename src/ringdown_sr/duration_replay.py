@@ -56,7 +56,9 @@ def _reference(residual):
 
 
 def _reduction(loss, reference, gamma):
-    difference = abs(_loss(loss) - reference)
+    value = _loss(loss)
+    _normal_or_zero(value)
+    difference = abs(value - reference)
     if difference > gamma * reference:
         raise ValueError("Loss disagrees with its own residual reduction bound.")
 

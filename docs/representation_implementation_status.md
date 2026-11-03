@@ -66,6 +66,22 @@ Keine zusätzlichen Agenten.
   dieselben ursprünglichen Eingaben; Laufzeitprüfung und Toleranzen unverändert.
   Die parallel laufende lokale Integration 002 wurde für diese Testkorrektur
   unterbrochen und liefert keinen vollständigen Abschlussnachweis.
+- **Gezieltes KI-basiertes Review und P3-Korrektur:** Übermittelter Befund zu
+  `70791db19755a31e4f6d689c5bc8882930138705` gegen
+  `d4899ba3a858576758b055c3b36bffb010d5c305`: Verlustprüfung und Phasen-/Alias-
+  umrechnung grundsätzlich methodentreu; ein Randfall der Normalbereichssperre.
+  Der Gegenfall wurde selbst reproduziert: 128 Residuen `2**-511`, normale
+  Referenz-MSE `2**-1022`, aber ein akzeptierter subnormaler nativer Verlust
+  `nextafter(2**-1022, 0)`. `_reduction` prüft nun auch jeden zu bestätigenden
+  Verlust selbst auf null oder Normalbereich. Die getrennte CSV-Regel und
+  die eingefrorenen Pläne bleiben unverändert. Acht zusätzliche Grenzfälle
+  decken gemeldete und neu berechnete Verluste sowie die erlaubte Grenze
+  und CSV-Ausnahme ab; sechs davon scheiterten am alten Code. Nach Korrektur
+  bestanden alle 116 gezielten Verlust-, Struktur-, Plan- und Treibertests
+  sowie Ruff/Format. Der bisherige vollständige CI-Nachweis mit 1.908 Tests
+  gehört zu `70791db`; neuer Head und seine vollständige CI stehen in
+  [PR #55](https://github.com/craexxn/ringdown-sr/pull/55). Eine erneute
+  Methodenreviewrunde ist für diesen begrenzten Befund nicht erforderlich.
 - **Nächster wissenschaftlicher Schritt vorbereitet:** nach vollständiger
   technischer Prüfung und Merge `duration-manjaro-002`, alle 20 Prozesse neu,
   gleiche vorab festgelegte Seeds, Reihenfolge, Budgets und Abbruchgrenzen.

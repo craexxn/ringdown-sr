@@ -14,7 +14,7 @@ from test_structure import constant as c
 from test_structure import operator as op
 from test_structure import time_node as t
 
-from ringdown_sr import symbolic
+from ringdown_sr import duration_replay, symbolic
 from ringdown_sr.aliasing import Phase, phase_field, reduce_alias
 from ringdown_sr.duration_replay import candidate_evidence, verify_loss_replay
 from ringdown_sr.losses import mean_squared_error
@@ -142,6 +142,54 @@ def test_non_normal_squares_fail_closed_even_if_the_reported_loss_is_zero(value)
         verify_loss_replay(
             np.array([value]), np.zeros(1), np.zeros(1), 0.0, 0.0, 0.0, 0.0, None
         )
+
+
+@pytest.mark.parametrize("subnormal_table", [False, True])
+def test_smallest_normal_reduction_preserves_separate_csv_contract(subnormal_table):
+    normal = 2.0**-1022
+    table = float(np.nextafter(normal, 0.0)) if subnormal_table else normal
+    record = replay(
+        np.full(128, 2.0**-511), np.zeros(128), np.zeros(128), table_loss=table
+    )
+    assert record["status"] == "passed"
+    assert record["domain"] == "normal_float64_or_exact_zero"
+    assert record["native_residual_mse"] == normal
+    assert record["independent_residual_mse"] == normal
+    assert record["table_loss"] == table
+
+
+@pytest.mark.parametrize(
+    "fields",
+    [
+        ("raw_loss", "replay_loss", "table_loss"),
+        ("raw_loss",),
+        ("replay_loss",),
+        ("python_loss",),
+    ],
+)
+def test_subnormal_reported_reduction_is_rejected_at_normal_boundary(fields):
+    below = float(np.nextafter(2.0**-1022, 0.0))
+    with pytest.raises(ValueError, match="normal Float64"):
+        replay(
+            np.full(128, 2.0**-511),
+            np.zeros(128),
+            np.zeros(128),
+            **{field: below for field in fields},
+        )
+
+
+@pytest.mark.parametrize("which", ["native", "independent"])
+def test_subnormal_recomputed_reduction_is_rejected_at_normal_boundary(
+    monkeypatch, which
+):
+    normal = 2.0**-1022
+    below = float(np.nextafter(normal, 0.0))
+    # A different reduction may round across the boundary by one ulp while
+    # remaining inside the relative error bound. Its domain must still hold.
+    values = iter([below, normal] if which == "native" else [normal, below])
+    monkeypatch.setattr(duration_replay, "mean_squared_error", lambda _: next(values))
+    with pytest.raises(ValueError, match="normal Float64"):
+        replay(np.full(128, 2.0**-511), np.zeros(128), np.zeros(128))
 
 
 def test_prediction_and_metric_gates_are_required_separately():
