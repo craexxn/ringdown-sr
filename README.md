@@ -6,7 +6,7 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 ## Projektstatus
 
 Fortsetzungsstand: 03.11.2026; abgeglichener Implementierungsstand auf `main`:
-`d4899ba` ([PR #54](https://github.com/craexxn/ringdown-sr/pull/54)).
+`76a7400` ([PR #55](https://github.com/craexxn/ringdown-sr/pull/55)).
 Vorheriger Ergebnisstand: [Grammatikvergleich 001](docs/trigonometric_grammar_results_manjaro_001.md),
 vollständiges Originalarchiv unabhängig geprüft. Frühere Suchbeobachtung:
 `2d9ed90`, übernommener [PR #50](https://github.com/craexxn/ringdown-sr/pull/50).
@@ -15,22 +15,24 @@ Konstantendiagnose `0a70f19`, Zeitdarstellungskontrolle `4057caa`.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
-Der mit [PR #54](https://github.com/craexxn/ringdown-sr/pull/54) übernommene
-[Suchbudgetvergleich](docs/search_duration_plan.md) wurde auf Manjaro gestartet
-und brach nach zwei vollständigen Zellen beim Replay der dritten ab.
-Der [Originalarchiv-Audit](docs/search_duration_results_manjaro_001.md)
-reproduziert die Ursache: Rundungsunterschiede bei nahezu verschwindender MSE.
-Im gesicherten 2000er-Suchstand stehen zwei sehr genaue gedämpfte Sinusformeln;
-der bisherige Strukturerkenner deckt ihre Quotientenschreibweise nicht ab.
-Der 20-Zellen-Vergleich bleibt unvollständig. Die vor Code gebundene
-[Verifikationsergänzung](docs/search_duration_verification_plan.md) ist für
-Format 2 implementiert: Verluste gegen eigene Residuen prüfen und die
-begrenzten äquivalenten Formeln diagnostisch erkennen. Implementierungs- und
-Prüfstand stehen in [PR #55](https://github.com/craexxn/ringdown-sr/pull/55).
-Nach technischer Prüfung und Merge ist eine vollständige frische Serie
-`duration-manjaro-002` mit denselben Seeds vorbereitet; keine Wiederaufnahme
-des Teilstands. [Bedienung](docs/search_duration.md) und
-[Literatur](docs/search_duration_literature.md) bleiben verlinkt.
+Der [Suchbudgetvergleich](docs/search_duration_plan.md) blieb auch im
+[zweiten Manjaro-Lauf](docs/search_duration_results_manjaro_002.md) unvollständig:
+vier Zellen verifiziert, Zelle 5 nach beendetem Fit wegen eines inkonsistenten
+nativen Verlusts abgebrochen. Beide 2.000er-Originalauswahlen des ersten Seeds
+bestehen Kurven-, Struktur- und Parameterdiagnosen; die Gesamtentscheidung
+bleibt bis zu einer vollständig geprüften Serie gesperrt.
+
+Ein unabhängiger Gegenfall zeigt, dass das gepinnte Backend nach algebraischer
+Vereinfachung einen veralteten Float64-Verlust behalten kann. Die
+[gebundene Abhilfe](docs/search_duration_simplification_plan.md) verwendet
+im neuen Suchbudgetformat 3 für alle Zellen `should_simplify=false`.
+Die Formelsprache und die strenge Verlustprüfung bleiben erhalten;
+Suchtrajektorien können sich ändern. Vorbereitet ist `duration-manjaro-003`
+mit 20 frischen Prozessen nach vollständiger CI, gezieltem Review und manuellem
+Merge. [Bedienung](docs/search_duration.md),
+[Literatur](docs/search_duration_literature.md) und
+[Prüf-/Fortsetzungsstand](docs/representation_implementation_status.md) enthalten
+die Details. WSL2-Portabilität und Parallelisierung sind zurückgestellt.
 
 Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
 Übergaberegeln stehen in [AGENTS.md](AGENTS.md); vor Fortsetzung sind lokale

@@ -37,6 +37,7 @@ def test_only_allowed_prose_can_skip_the_technical_suite(paths):
         "docs/search_trajectory_replay_policy.md",
         "docs/trigonometric_grammar_plan.md",
         "docs/search_duration_plan.md",
+        "docs/search_duration_simplification_plan.md",
         "docs/reference.npz",
         "other.md",
     ],

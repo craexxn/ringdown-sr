@@ -25,6 +25,7 @@ def load_driver():
         "source_hashes",
         "planned_cells",
         "profile_parameters",
+        "verify_options",
         "verify_manifest",
         "comparison",
         "common_parameters",

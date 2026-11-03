@@ -15,8 +15,9 @@ def inspect(mode):
         Path(__file__).resolve().parent / "grammar_backend.py",
         "duration_grammar_backend",
     )
-    for name in ("FORMAT", "SEEDS", "source_hashes"):
+    for name in ("FORMAT", "SEEDS", "source_hashes", "verify_options"):
         setattr(backend, name, getattr(control, name))
+    backend.SHOULD_SIMPLIFY = False
     backend.diagnose_candidate = partial(diagnose_candidate, extended_structure=True)
     result = backend.inspect(mode)
     result["search_profiles"] = control.search_profiles() if mode == "options" else []

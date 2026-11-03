@@ -28,7 +28,8 @@ werden nicht abgerufen beziehungsweise validiert.
 `docs/free_optimizer_budget_plan.md`, `docs/search_trajectory_plan.md`,
 `docs/search_trajectory_replay_policy.md`, `docs/trigonometric_grammar_plan.md`
 `docs/search_duration_plan.md`, `docs/search_duration_verification_plan.md`
-und `docs/search_duration_table_loss_note.md`
+`docs/search_duration_table_loss_note.md`
+und `docs/search_duration_simplification_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -58,11 +59,18 @@ Die tatsächlich durchgereichten Suchbudgets werden geprüft und beide K2-Fronte
 müssen übereinstimmen. Die 20 wissenschaftlichen 200-/2.000-Zellen laufen
 ausschließlich später auf Manjaro. Python-Gegenfälle prüfen insbesondere
 Budgetbindung, vollständige Paare und gesperrte Teilserienauswertung.
-Format 2 ergänzt `scripts/check_duration_replay.py`: zwei fest vorliegende
+Seit Format 2 prüft `scripts/check_duration_replay.py` zwei fest vorliegende
 CSV-Bäume nativ auswerten, Verluste/Vorhersagen vergleichen, neue Verlust- und
 Strukturdiagnose prüfen; keine Suche oder Optimierung. Python-Gegenfälle
 prüfen die rationale Reduktionsschranke, Unter-/Überlauf, verlorene oder
 veränderte Nachweise, Sinus-/Quotientenformen und exakte gemischte Phasen.
+
+Format 3 ergänzt denselben Prüfschritt um den weiterhin abgelehnten
+inkonsistenten Verlust aus `duration-manjaro-002` und unabhängige feste native
+Gegenfälle für beide Vereinfachungspfade. Die neue gemeinsame Option
+`should_simplify=false` unterdrückt diese Umformungen und die Simplify-Mutation;
+alle übrigen nativen Optionsfelder und die bisherigen Defaults werden geprüft.
+Die fünf technischen Suchbudgetworker laufen mit dem neuen gemeinsamen Profil.
 
 Der Grammatikvergleich ergänzt `scripts/check_trigonometric_grammar_integration.py`:
 sechs native Optionsobjekte, feste Ringdown-/Aliasreferenzen und 28 explizite

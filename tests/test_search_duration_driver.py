@@ -10,7 +10,7 @@ from test_noiseless_control import (
     pools_environment,
 )
 from test_noiseless_control import DRIVER as OLD
-from test_trigonometric_grammar import option_fixture
+from test_search_duration import option_fixture
 
 from ringdown_sr import search_duration as control
 from ringdown_sr import symbolic
@@ -207,7 +207,17 @@ def test_all_twenty_cells_preserve_inputs_fronts_and_selection(runtime, tmp_path
 
 @pytest.mark.parametrize("number", [1, 3])
 @pytest.mark.parametrize(
-    "fault", ["invocation", "python_budget", "seed", "profile", "selection", "residual"]
+    "fault",
+    [
+        "invocation",
+        "python_budget",
+        "seed",
+        "profile",
+        "selection",
+        "residual",
+        "native_simplify",
+        "python_simplify",
+    ],
 )
 def test_consistently_rehashed_wrong_actual_budget_or_worker_fails(
     runtime, tmp_path, number, fault
@@ -215,6 +225,16 @@ def test_consistently_rehashed_wrong_actual_budget_or_worker_fails(
     def alter(index, directory, docs):
         if index != number:
             return
+        if fault == "native_simplify":
+            for record in (
+                docs["backend_options.json"],
+                docs["verification.json"]["backend_options"],
+            ):
+                for field in record:
+                    if field["name"] == "should_simplify":
+                        field["value"] = "true"
+        if fault == "python_simplify":
+            docs["pysr_parameters.json"]["should_simplify"] = True
         if fault == "invocation":
             docs["search_invocation.json"]["niterations"] = 999
         if fault == "python_budget":
@@ -262,12 +282,30 @@ def test_real_timer_interrupts_parent_verification_and_restores_handler(
 
 
 @pytest.mark.parametrize(
-    "fault", ["missing_native", "duplicate_native", "python_budget", "profile_count"]
+    "fault",
+    [
+        "missing_native",
+        "duplicate_native",
+        "python_budget",
+        "profile_count",
+        "simplify_true",
+        "simplify_missing",
+        "simplify_type",
+    ],
 )
 def test_preflight_rejects_incomplete_or_wrong_profiles_before_search(
     runtime, tmp_path, fault
 ):
     def alter(record):
+        if fault.startswith("simplify_"):
+            fields = record["profiles"][0]["backend_options"]
+            field = next(f for f in fields if f["name"] == "should_simplify")
+            if fault == "simplify_missing":
+                fields.remove(field)
+            elif fault == "simplify_type":
+                field["type"] = "Int64"
+            else:
+                field["value"] = "true"
         if fault == "missing_native":
             record["profiles"].pop()
         if fault == "duplicate_native":
