@@ -107,7 +107,9 @@ def verify_loss_replay(
         python_residual = observed - python
     rn, qn = _reference(native_residual)
     rp, qp = _reference(python_residual)
-    for loss in (raw_loss, replay_loss, table_loss):
+    # The table value has passed through PySR's Pandas CSV parser, not another
+    # residual reduction. Its original relative comparison remains above.
+    for loss in (raw_loss, replay_loss):
         _reduction(loss, qn, gamma)
     _reduction(python_loss, qp, gamma)
     native_mse = mean_squared_error(native_residual)
@@ -136,6 +138,7 @@ def verify_loss_replay(
         "metric": "ordinary_mse",
         "samples": int(observed.size),
         "table_loss": float(table_loss),
+        "table_loss_role": "pysr_pandas_csv_value; relative_comparison_only",
         "native_residual_mse": native_mse,
         "independent_residual_mse": independent_mse,
         "prediction_replay": prediction_check,

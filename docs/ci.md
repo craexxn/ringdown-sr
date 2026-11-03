@@ -27,7 +27,8 @@ werden nicht abgerufen beziehungsweise validiert.
 `docs/search_representation_plan.md`, `docs/constant_diagnostic_plan.md`,
 `docs/free_optimizer_budget_plan.md`, `docs/search_trajectory_plan.md`,
 `docs/search_trajectory_replay_policy.md`, `docs/trigonometric_grammar_plan.md`
-`docs/search_duration_plan.md` und `docs/search_duration_verification_plan.md`
+`docs/search_duration_plan.md`, `docs/search_duration_verification_plan.md`
+und `docs/search_duration_table_loss_note.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere

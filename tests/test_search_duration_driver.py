@@ -167,7 +167,7 @@ def test_rehashed_candidate_evidence_is_independently_checked(
         elif change == "bound":
             candidate["loss_replay"]["loss_difference_bound"] = 1.0
         elif change == "table":
-            candidate["loss_replay"]["table_loss"] *= 1 + 1e-11
+            candidate["loss_replay"]["table_loss"] *= 1 + 1e-6
         elif change == "python_loss":
             candidate["python_loss"] *= 1 + 1e-11
         elif change == "native_replay":
@@ -177,7 +177,7 @@ def test_rehashed_candidate_evidence_is_independently_checked(
 
     runtime.alter = alter
     output = tmp_path / "changed-evidence"
-    with pytest.raises(ValueError):
+    with pytest.raises((ValueError, AssertionError)):
         DRIVER.run(runtime.archive, output, label="fixture")
     assert len(runtime.calls) == 1
     assert_locked(output)

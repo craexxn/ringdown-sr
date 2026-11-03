@@ -32,8 +32,8 @@ Keine zusätzlichen Agenten.
   Zähler und einen Exponentialfaktor im Zähler oder Nenner. Exakte rationale
   Radiant-/Pi-Anteile, begrenzte Pi-Konversion, rohe und Alias-Replays bleiben
   getrennte Gates. Ältere Aufrufer behalten den bisherigen Standard.
-- **Prüfungen:** alle 1.907 Python-Tests, Ruff und Formatprüfung bestanden
-  lokal; darunter 53 neue numerische/strukturelle Gegenprüfungen und alle 31
+- **Prüfungen am ersten Implementierungsstand ab32fcf:** alle 1.907 Python-Tests,
+  Ruff und Formatprüfung bestanden lokal; darunter 53 neue numerische/strukturelle Gegenprüfungen und alle 31
   Suchbudget-Treibertests. Die beiden CSV-Formeln
   erfüllen Kurven- und Parameterdiagnose ohne Nachfit oder Baumänderung.
   Vollständige Python-/Julia-CI und neue feste native Regressionstests sind
@@ -45,6 +45,17 @@ Keine zusätzlichen Agenten.
   unveränderten Quellen bestand: `results/duration-replay-technical-002.json`,
   beide nativen Verluste und Vorhersagen bitgenau bestätigt, beide neue
   Verlust- und Parameterdiagnosen bestanden, null Such-/Fitaufrufe.
+- **Technische Tabellenpräzisierung:** Die anschließende vollständige lokale
+  Integration bestand K2/A2, scheiterte aber in K3 an einem zusätzlichen
+  CSV-Rundungseffekt. Gepinntes Pandas liest `0.008261169598036541` als
+  `0.0082611695980365`. [Befund und Präzisierung](search_duration_table_loss_note.md)
+  wurden vor der Korrektur als `fee62058992c84a9930aa765233ebdc095c54cb1`
+  eingefroren; der Hash ist zusätzlich im Laufzeitpfad gebunden. Die Tabellen-
+  kontrolle bleibt beim alten relativen Vertrag; echte native und Python-
+  Verluste müssen unverändert die strengere Residuenprüfung bestehen.
+  Der konkrete CSV-Fall und ein falscher Tabellenwert sind eigene Tests.
+  Der fehlgeschlagene technische Lauf bleibt erhalten. Vollständige Integration
+  und CI müssen am korrigierten Head erneut bestehen; aktuelle Nachweise in #55.
 - **Nächster wissenschaftlicher Schritt vorbereitet:** nach vollständiger
   technischer Prüfung und Merge `duration-manjaro-002`, alle 20 Prozesse neu,
   gleiche vorab festgelegte Seeds, Reihenfolge, Budgets und Abbruchgrenzen.

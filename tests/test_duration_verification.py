@@ -4,9 +4,11 @@ import copy
 import json
 from decimal import Decimal, localcontext
 from fractions import Fraction
+from io import StringIO
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 import pytest
 from test_structure import constant as c
 from test_structure import operator as op
@@ -84,7 +86,7 @@ def test_exact_zero_and_simple_hand_computed_reduction():
         replay([1], [1], [1], raw_loss=1e-30, replay_loss=1e-30, table_loss=1e-30)
 
 
-@pytest.mark.parametrize("which", ["native", "python", "table", "replay"])
+@pytest.mark.parametrize("which", ["native", "python", "replay"])
 def test_internally_consistent_but_wrong_loss_is_not_hidden_by_prediction_agreement(
     which,
 ):
@@ -95,11 +97,39 @@ def test_internally_consistent_but_wrong_loss_is_not_hidden_by_prediction_agreem
             "table_loss": 0.25 * (1 + 1e-11),
         },
         "python": {"python_loss": 0.25 * (1 + 1e-11)},
-        "table": {"table_loss": 0.25 * (1 + 1e-11)},
         "replay": {"replay_loss": 0.25 * (1 + 1e-11)},
     }[which]
     with pytest.raises(ValueError, match="own residual"):
         replay([1, 2, 3], [0.5, 1.5, 2.5], [0.5, 1.5, 2.5], **changes)
+
+
+def test_pinned_pandas_csv_conversion_is_distinct_from_native_reduction():
+    # Observed in the K3 eight-point technical control, not a new scientific fit.
+    encoded = "0.008261169598036541"
+    parsed = float(pd.read_csv(StringIO("Loss\n" + encoded + "\n"))["Loss"][0])
+    raw = float(encoded)
+    assert parsed == 0.0082611695980365 and parsed != raw
+    times = np.arange(8, dtype=float) / 8
+    prediction = np.exp(times * 0.8401887737401458)
+    record = replay(
+        1 + times,
+        prediction,
+        prediction,
+        raw_loss=raw,
+        replay_loss=raw,
+        table_loss=parsed,
+    )
+    assert record["table_loss"] == parsed
+    assert (
+        record["table_loss_role"] == "pysr_pandas_csv_value; relative_comparison_only"
+    )
+
+
+def test_wrong_table_value_still_fails_its_unchanged_relative_contract():
+    with pytest.raises(AssertionError):
+        replay(
+            [1, 2, 3], [0.5, 1.5, 2.5], [0.5, 1.5, 2.5], table_loss=0.25 * (1 + 1e-6)
+        )
 
 
 @pytest.mark.parametrize("value", [1e-160, 1e-200, 1e155])

@@ -22,6 +22,9 @@ ORIGINAL_PLAN = "docs/search_duration_plan.md"
 ORIGINAL_PLAN_SHA256 = (
     "8906a66930848d733e5b2744d40c5fa9c4051db2b876e200908d74ae9ac0b75d"
 )
+TABLE_NOTE = "docs/search_duration_table_loss_note.md"
+TABLE_NOTE_COMMIT = "fee62058992c84a9930aa765233ebdc095c54cb1"
+TABLE_NOTE_SHA256 = "56c0807127ff208148df9057607c698218bf87b0cdcf73471b58add14485372c"
 SEEDS = (20261103, 20261104, 20261105, 20261106, 20261107)
 ITERATIONS = (200, 2000)
 CONDITIONS = grammar.CONDITIONS
@@ -56,6 +59,7 @@ def source_hashes():
     for name in (
         PLAN,
         ORIGINAL_PLAN,
+        TABLE_NOTE,
         *RUNTIME.values(),
         "scripts/run_search_duration.py",
         "scripts/check_search_duration_integration.py",
@@ -65,6 +69,8 @@ def source_hashes():
         raise ValueError("The frozen search duration plan changed.")
     if hashes[ORIGINAL_PLAN] != ORIGINAL_PLAN_SHA256:
         raise ValueError("The original search duration plan changed.")
+    if hashes[TABLE_NOTE] != TABLE_NOTE_SHA256:
+        raise ValueError("The bound CSV loss clarification changed.")
     return dict(sorted(hashes.items()))
 
 

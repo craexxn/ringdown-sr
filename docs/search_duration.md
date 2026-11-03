@@ -11,6 +11,10 @@ Für Format 2 gilt zusätzlich die vor Code eingefrorene
 [Verifikationsergänzung](search_duration_verification_plan.md), Commit
 `2a0b50926cd2983d0cd6cc1307ccc28d0a2822fa`, SHA-256
 `b6f7cef2227eeacccf8156d02e8899e6fc83b7bd1f29735c1a402922a9d83062`.
+Die zusätzlich gebundene [Tabellenpräzisierung](search_duration_table_loss_note.md)
+trennt Pandas-CSV-Einlesen von nativer Reduktion: Commit
+`fee62058992c84a9930aa765233ebdc095c54cb1`, SHA-256
+`56c0807127ff208148df9057607c698218bf87b0cdcf73471b58add14485372c`.
 Diese Bedienung beschreibt die neue vollständige Serie `duration-manjaro-002`.
 
 20 frische Suchen kreuzen K/A mit 200/2.000 Suchiterationen bei denselben fünf
@@ -49,6 +53,10 @@ prüft dessen Inhalt erneut einschließlich Tabellenverlust, unabhängiger
 Python-MSE und Fehlergrenze. Fehlende oder veränderte Nachweise sperren die
 Serie. Die Originalauswahl verwendet weiterhin den gespeicherten nativen
 Trainingsverlust, keine korrigierte oder diagnostische MSE.
+Der Tabellenwert bleibt als tatsächlich von PySR/Pandas gelesener Wert
+erhalten; für ihn gilt der unveränderte Vergleich `rtol=1e-10, atol=0` zum
+nativen Verlust. Die Gamma-Schranke prüft echte Reduktionswerte gegen ihre
+Residuen, nicht zusätzlich die Rundung des CSV-Parsers.
 
 Die rationale Schranke im gebundenen Plan ist ein Genauigkeitsvertrag einer
 direkten Quadratsummenreduktion. Die vorhandene Python-Funktion verwendet
