@@ -1,12 +1,103 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 02.11.2026. PR #47 ist übernommen. Der erste Manjaro-Beobachtungslauf
-blieb bei der Diagnose von Zelle 3 unvollständig; Originalarchiv und gezielte
-native Replays sind geprüft. Die begrenzte Verifikationskorrektur ist auf
-einem eigenen Branch umgesetzt; die vollständige technische CI ist am PR-Head
-nachzuweisen.
+Stand: 03.11.2026. PR #48 ist nach vollständiger technischer CI übernommen.
+Der erste Manjaro-Beobachtungslauf bleibt unverändert `incomplete / failed`.
+Als nächster Schritt ist genau eine frische Sechszellenserie mit der getrennten
+Replayverifikation auf Manjaro vereinbart. Hier noch keine neue wissenschaftliche
+Serie ausgeführt; Ergebnisse und anschließende Methodenentscheidungen stehen aus.
 
-## Aktuell: Getrennte Beobachtungsreplays
+## Aktuell: Abgeglichener Stand und Manjaro-Übergabe
+
+- Beim Einstieg am 03.11.2026 Remote-Branches, offene PRs, lokalen Checkout und
+  Worktrees geprüft: keine offenen PRs, ein sauberer Worktree auf
+  `codex/trajectory-replay-verification` bei
+  `27d10fe0148b18e76483ede9d5979c3afac40d89`. `origin/main` steht auf
+  `f3c0cb49ff9213b651ad4cb4ce766958f0b1e2d1`, dem Merge von PR #48 am
+  02.11.2026 um 21:22 Uhr Europe/Vienna. Beide besitzen denselben Git-Tree
+  `2fb41c6a24731cc65ca1a231db6e26204314d87b`; der Dateivergleich ist ohne
+  Unterschiede. Kein zweiter Implementierungsstand wurde begonnen.
+- Die Übergabe zwischen den Unterhaltungen ist nachvollzogen:
+  „2_Implementierungspipeline“ enthält die fünf zuletzt auslesbaren Austausche
+  zum Originalteilarchiv, nativen Manjaro-Replay und zur Erstellung von PR #48.
+  „3_Implementierungspipeline“ enthält die anschließende CI-Korrektur,
+  den erfolgreichen Abschluss und den Exposé-Abgleich und wird fortgeführt.
+  Die ältere ChatGPT-Gesamthistorie ließ sich aus der Cloud nicht vollständig
+  durchblättern. Der aktuelle Übergang wurde zusätzlich gegen PR #47, PR #48
+  und das Repository geprüft; kein vollständiger Audit aller früheren Chats.
+- **Vollständige CI bestanden:**
+  [Lauf 41437880627](https://github.com/craexxn/ringdown-sr/actions/runs/41437880627)
+  am PR-Head `27d10fe`; 1.646 Python-Tests, 295 Julia-Prüfungen und sämtliche
+  nativen und technischen Integrationen einschließlich Aus/an/aus sowie beider
+  abschließenden Haswell-Suchen. Status, Schritte und Logs wurden am 02.11.
+  selbst kontrolliert, Workflow- und Jobstatus am 03.11. erneut lesend bestätigt.
+  Keine Testwiederholung beim Standabgleich. Der CI-Mergecommit
+  `0e08b5c0b1fd2fcba056753f094ebbebc172f72c`, PR-Head und tatsächlicher Merge
+  besitzen denselben Dateibaum. Das technische Joblimit von 45 Minuten ändert
+  weder Suchbudgets noch wissenschaftliche Zeitgrenzen.
+- **KI-basiertes Review übernommen:** Keine korrekturbedürftigen Befunde im
+  beauftragten Umfang am Implementierungshead
+  `2d9b028ac33ea7c9433eacf8140844cacdb206d0` gegen
+  `41ccdd27aaa4ade56b509493089241d6695b9757`; 14 zusätzliche Prüfungen im
+  übermittelten Review. Diese wurden hier nicht wiederholt. Der Nachtrag
+  `27d10fe` änderte ausschließlich CI-Zeitlimit und Dokumentation.
+  Kein weiteres Code-Nachreview ohne relevante Änderungen oder Fehlerhinweise.
+- **Festgelegter Ausführungsstand:**
+  `f3c0cb49ff9213b651ad4cb4ce766958f0b1e2d1`, neuer Ausgabeordner
+  `results/trajectory-manjaro-002`. Die Fortsetzungsvereinbarung nach Merge und
+  Standabgleich umfasst genau den bisherigen Sechszellenplan mit Format 2,
+  keine Zusatzarme, Ersatzseeds oder automatische Wiederholung. Das alte
+  `trajectory-manjaro-001` und sein Teilarchiv bleiben unverändert. Der
+  [Startweg](search_trajectory.md) bindet den Commit und schützt bestehende
+  Ergebnisse. Der Dokumentationsnachtrag muss für diesen Lauf nicht erst
+  übernommen werden; er ändert den Ausführungsstand nicht.
+- **Planbindung unverändert:**
+  `search_trajectory_plan.md` hat SHA-256
+  `fcc52e4099f197df676adc10c3163fc78e87d2a2d4661488b9ce929512da37f3`,
+  `search_trajectory_replay_policy.md` hat SHA-256
+  `e65a52ffd7292599e3d70957414977ede792bad6a64cebbe0e59c080ef241842`.
+- **Aktuelle Dokumentationsarbeit:** Branch `codex/trajectory-manjaro-handoff`
+  auf Basis `f3c0cb4`. README, dieses bestehende Arbeitsdokument und
+  Bedienungsanleitung sind gemeinsam nachgeführt. Wissenschaftlicher Code,
+  Tests, Konfigurationen, Pins und Laufzeitpläne bleiben unverändert.
+  Lokal bestanden: Dokumentations-/Linkprüfung für 47 Markdown-Dateien,
+  `git diff --check` und Syntaxprüfung aller drei Befehlsblöcke mit Bash und zsh.
+  Ausschließlich die drei vorgesehenen Dokumente geändert; alle sechs
+  Laufzeitpläne bytegleich zum Ausführungscommit. Keine wissenschaftlichen
+  Befehle ausgeführt. Veröffentlichten Dokumentationshead, abschließenden
+  Checkoutzustand und schlanken CI-Nachweis im zugehörigen PR bestimmen.
+  Ältere Nachweise unten
+  bleiben historisch erhalten; dortige Aussagen zu fehlender Julia-Umgebung,
+  offenem Review oder ausstehender CI beschreiben ihren damaligen Stand.
+
+### Exposé und nächste abgegrenzte Schritte
+
+Das bereitgestellte Exposé vom 29.09.2026 wurde gelesen, insbesondere Seiten
+2–3. Verbindlicher Forschungsanspruch bleibt eine freie Formelsuche und der
+Einfluss der Länge separater Hintergrunddaten zur Kovarianzschätzung auf
+Genauigkeit und Strukturstabilität. Die eigene Verlustfunktion hält die Matrix
+während Suche und Konstantenanpassung fest; der klassische Fit mit bekannter
+Ringdown-Form bleibt eine Referenz mit stärkerem Vorwissen. Ein zuvor diskutierter
+Wechsel zu bekannten Formeln als Hauptpfad wurde nicht beschlossen oder umgesetzt.
+
+Die Pilotkontrollen ersetzen die Hauptversuchsplanung nicht. Noch abzugleichen
+sind die Exposé-Signalfälle 200 Hz/4 ms und 250 Hz/6 ms bei 25 ms Fensterdauer
+gegenüber dem bisherigen Entwicklungsfall 250 Hz/8 ms bei 31,25 ms sowie
+Hintergrundlängen und Datenabhängigkeiten, der Übergang vom allgemeinen
+Matrixschätzer aus unabhängigen Fenstern zur vorgesehenen Hintergrundauswertung,
+gleiche Rechenzeitbudgets und die endgültige Formelauswahl. Der relative L2-Fehler
+ist im Exposé Hauptkriterium; Strukturstabilität wird zusätzlich ausgewertet.
+Die strengeren Kurvengrenzen der eingefrorenen Entwicklungsdiagnosen bleiben
+für diese Diagnosen unverändert. Hauptversuche und LIGO-Hanford-Auswertung
+sind damit nicht freigegeben.
+
+Reihenfolge: den vereinbarten Manjaro-Lauf am geprüften Stand einmal ausführen,
+danach Originalartefakte einschließlich eines eventuellen Abbruchs archivieren,
+Prüfsumme sichern und Ergebnisse prüfen. Erst anschließend gezielte
+Weiterentwicklung und verwandte Literatur gegen Exposé und Befund abwägen;
+kein automatischer Wechsel zu einem anderen SR-Verfahren. Der vollständige
+Originalarchiv-Audit des früheren freien Budgetvergleichs bleibt gesondert offen.
+
+## Historisch: Getrennte Beobachtungsreplays vor CI-Abschluss
 
 - Nachtrag vom 02.11.2026 im vorhandenen Cloud-Checkout: Arbeitsstand sauber,
   ein Worktree; bestehenden Remote-Branch `codex/trajectory-replay-verification`

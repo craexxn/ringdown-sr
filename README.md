@@ -5,8 +5,8 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 02.11.2026; abgeglichener Stand auf `main`: `41ccdd2`
-([PR #47](https://github.com/craexxn/ringdown-sr/pull/47)).
+Fortsetzungsstand: 03.11.2026; abgeglichener Implementierungsstand auf `main`:
+`f3c0cb4` ([PR #48](https://github.com/craexxn/ringdown-sr/pull/48)).
 Vorgegebener Stand des freien Budgetlaufs: `8bdc8db`; frühere Ausführungsstände:
 Konstantendiagnose `0a70f19`, Zeitdarstellungskontrolle `4057caa`.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
@@ -64,24 +64,34 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   Korrektur einer Interpretationsregel: fehlende Frontzugehörigkeit belegt
   kein zeitliches Verschwinden. Die Regel ist korrigiert und gezielt
   gegengeprüft. Sechs Zellen und organisatorische Grenzen sind angenommen;
-  getrennte Beobachtungspfad ist mit PR #47 und vollständiger CI übernommen.
+  der getrennte Beobachtungspfad ist mit PR #47 und vollständiger CI übernommen.
   Der erste Manjaro-Lauf blieb bei der Prüfung von Zelle 3 unvollständig.
   Originalarchiv und fünf gezielte native Replays sind geprüft: zwei Fälle
   zeigen Unterschiede der Julia-/NumPy-Baumauswertung, drei einen Unterschied
   zwischen gespeichertem Verlust und beiden aktuellen Replays mit offener Ursache.
   Die [gebundene Verifikationsergänzung](docs/search_trajectory_replay_policy.md)
   trennt diese Nachweise und schließt ungeklärte Mitglieder von positiven
-  Markern aus. Das übermittelte KI-basierte Review zu PR #48 fand im geprüften
-  Umfang keine Code- oder Methodenbefunde. Der erste vollständige CI-Lauf wurde
-  bei 30 Minuten Joblimit in der letzten Haswell-Prüfung abgebrochen; der
-  technische Job erhält 45 Minuten Gesamtzeit. Der vollständige Erfolg am neuen
-  Head bleibt vor Merge nachzuweisen. Eine neue wissenschaftliche
-  Serie ist erst nach geprüftem Stand und gesonderter Freigabe vorgesehen.
+  Markern aus. PR #48 ist übernommen; das übermittelte KI-basierte Review fand
+  im geprüften Umfang keine Code- oder Methodenbefunde. Die
+  [vollständige CI](https://github.com/craexxn/ringdown-sr/actions/runs/41437880627)
+  am Head `27d10fe` bestand mit 1.646 Python-Tests, 295 Julia-Prüfungen und
+  sämtlichen Integrationen einschließlich beider letzten Haswell-Suchen.
+  Head und Merge `f3c0cb4` haben denselben Dateibaum. Der frühere abgebrochene
+  CI-Lauf bleibt ein historischer Teilnachweis; das technische Joblimit beträgt
+  inzwischen 45 Minuten. Nach dem chatübergreifenden Standabgleich ist genau
+  eine frische Manjaro-Serie am Mergecommit mit neuem Ausgabeordner
+  `trajectory-manjaro-002` vereinbart; sie wurde hier noch nicht ausgeführt.
   [Bedienung und Artefakte](docs/search_trajectory.md) sowie der
   [Fortsetzungsstand](docs/representation_implementation_status.md) halten
   Ausführungsstand und verbleibende Nachweise fest.
   Keine automatische weitere Budgetstufe, kein Produktionsprofil und keine
   allgemeine Leistungsvalidierung.
+- **Forschungsanspruch bestätigt:** Das bereitgestellte Exposé verlangt freie
+  Formelfindung und untersucht den Einfluss der Hintergrundlänge auf Genauigkeit
+  und Strukturstabilität bei Kovarianzgewichtung. Der bekannte Strukturfit bleibt
+  Referenz. Erst nach Auswertung der geplanten Beobachtungsserie folgen gezielte
+  Weiterentwicklungs- und Literaturentscheidungen. Die Abgrenzung zwischen
+  Pilot und Hauptversuchen steht im [Fortsetzungsstand](docs/representation_implementation_status.md).
 - **Prüfnachweise:** Die [vollständige CI zu PR #39](https://github.com/craexxn/ringdown-sr/actions/runs/41038219843)
   bestand am Head `cfe44bf`: 1.288 Python-Tests, Julia- und technische
   Integrationsprüfungen. Der Mergecommit hat denselben Dateibaum. Die
