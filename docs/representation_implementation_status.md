@@ -1,12 +1,65 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 03.11.2026. PR #48 und der Dokumentationsnachtrag PR #49 sind übernommen.
+Stand: 03.11.2026. PR #48, PR #49 und der Ergebnis-PR #50 sind übernommen.
 Die frische Manjaro-Serie `trajectory-manjaro-002` ist abgeschlossen; das
 vollständige Originalarchiv wurde unabhängig geprüft. Der erste Lauf bleibt
-unverändert `incomplete / failed`. Nächster Schritt ist die gezielte Literatur-
-und Methodenabwägung zur freien Formelfindung; keine weitere Suche beschlossen.
+unverändert `incomplete / failed`. Die Literatur- und Methodenabwägung ist
+ausgearbeitet. Nächster Schritt ist eine Entscheidung über den vorgeschlagenen
+begrenzten Grammatikvergleich oder eine Pause; keine weitere Suche beschlossen.
 
-## Aktuell: Originalarchiv der zweiten Suchbeobachtung geprüft
+## Aktuell: Literaturabwägung nach abgeschlossenen Pilotkontrollen
+
+- Einstieg in dieser Cloudinstanz: sauberer Branch `work` bei
+  `f3c0cb49ff9213b651ad4cb4ce766958f0b1e2d1`, ein Worktree. Der weitere
+  lokale Branch `codex/cloud-environment-setup` blieb erhalten. Remote-Branches
+  vollständig über die GitHub-Schnittstelle abgefragt; keine offenen PRs.
+- PR #50 ist laut selbst gelesenen GitHub-Metadaten am 03.11.2026 um
+  08:21 Uhr Europe/Vienna als `2d9ed90043628f0c3b2f948634b1bdcd769bc886`
+  übernommen. Der Remotevergleich dieses Commits gegen `main` ist identisch.
+  Geprüfter Ergebnis-Head bleibt `1c3f65f0d625c24d2cefe7c9c105c3e85ca7c56a`,
+  damalige Basis `d97c95ddff7facf9d5fc766834855697478c49b6`.
+  Kein Merge durch diesen Arbeitsschritt.
+- Neuer Dokumentationsbranch `codex/free-form-methods-literature` ab `2d9ed90`.
+  Der Shell-Aufruf `git fetch origin` scheiterte an der Verbindung zum
+  konfigurierten Proxy; der Remoteabgleich erfolgte über den verfügbaren
+  GitHub-Konnektor. Keine Umgehung von Proxy oder TLS.
+- **Selbst gelesen/geprüft:** Arbeitsregeln, README, aktuelle Befund- und
+  Methodenpläne; Original-Exposé, insbesondere PDF-Seiten 2–3; die in der
+  [Literaturabwägung](free_form_method_assessment.md) benannten Primärtextabschnitte
+  und versionsgebundenen Backendquellen. Persönliche PDF-Angaben werden nicht
+  ins Repository übernommen. Kein vollständiger Zugriff auf andere Chats
+  und keine Reproduktion der Literaturimplementierungen behauptet.
+- **Übernommen geprüft:** Die dokumentierten früheren Archivnachrechnungen
+  und CI-Ergebnisse bleiben Nachweise ihrer jeweiligen Arbeitsschritte.
+  Hier keine erneute unabhängige numerische Nachrechnung. Das frühere lokale
+  Auditverzeichnis `/workspace/audits/trajectory-manjaro-002/` ist in dieser
+  Instanz nicht vorhanden; sein Fortbestand wird nicht vorausgesetzt.
+- **Ausgearbeitet, nicht angenommen:** Vorwissensbilanz, neun Literaturquellen
+  mit Zugriffsgrenzen, vier Optionen und ein bedingter Vorschlag für genau eine
+  Grammatikablation. Das Verbot trigonometrischer Nachfahren erzwingt keine
+  Ringdown-Form, ist aber ein zusätzlicher Prior; auch Verschlechterung ist
+  durch verwandte GP-Befunde plausibel. Pause bleibt die begründete Alternative.
+- **Arbeitsumfang:** Neues fachliches Abwägungsdokument; README und dieses
+  bestehende Fortsetzungsdokument nachgeführt. Keine neue Projektchronik,
+  keine zusätzlichen Agenten oder routinemäßige Reviewrunde. Kein Code,
+  Test, Pin, Konfiguration oder eingefrorener Laufzeitplan verändert.
+  Die vorhandene `.venv` und beschreibbare UV-Cacheumgebung sind für die
+  schlanke Dokumentationsprüfung geprüft; Julia wurde nicht gestartet.
+- **Selbst ausgeführte Prüfungen:** `uv run --locked python scripts/check_ci.py
+  docs` erfolgreich für 49 Markdown-Dateien einschließlich des neuen
+  Abwägungsdokuments; geprüft werden Format und lokale Dateiziele, keine
+  externen HTTP-Ziele. `git diff --cached --check` ohne Befund. Der Diff
+  umfasst ausschließlich die drei genannten Dokumente; die sechs zur Laufzeit
+  gebundenen Pläne bleiben unverändert. Keine technische Testsuite wiederholt.
+  Der gesicherte Head und der entfernte CI-Status werden im zugehörigen
+  Literatur-PR festgehalten.
+- **Nächster abgegrenzter Schritt:** Über den Vorschlag entscheiden; erst bei
+  Annahme einen eigenen verbindlichen Methodenplan und danach einen technisch
+  geprüften Pfad erarbeiten. Keine automatische Implementierung, zusätzliche
+  Budgetstufe, Instrumentierung, Ersatzwahl oder Suchserie. Hauptversuche,
+  wissenschaftliche Formelauswahl und früherer Budgetarchiv-Audit bleiben offen.
+
+## Historisch: Originalarchiv der zweiten Suchbeobachtung geprüft
 
 - Einstieg: ein sauberer Worktree auf `codex/trajectory-manjaro-handoff` bei
   `ff25de891b4266bcdf419ad6a7cba3ebe1808dfc`. Remote-Branches, Worktrees und
