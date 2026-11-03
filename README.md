@@ -19,8 +19,12 @@ Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 Neu beschlossen: [Suchbudgetvergleich](docs/search_duration_plan.md) mit
 200/2.000 Iterationen, beiden Grammatiken und fünf neuen Seeds; maximal zwei
 Stunden auf Manjaro. [Literaturgrundlage](docs/search_duration_literature.md)
-und [Bedienung](docs/search_duration.md) sind vorbereitet. Die technische
-Umsetzung wird geprüft; die neue wissenschaftliche Serie wurde nicht gestartet.
+und [Bedienung](docs/search_duration.md) sind vorbereitet. Die vollständige CI
+am Implementierungsstand `98f6021` bestand. Das übermittelte KI-basierte Review
+bestätigt die geprüfte Methodentreue und fand eine Testlücke bei Abschlussfehlern;
+sie ist gezielt korrigiert und gegengeprüft. Aktueller Head und CI-Nachweis stehen
+in [PR #54](https://github.com/craexxn/ringdown-sr/pull/54).
+Die neue wissenschaftliche Serie wurde nicht gestartet.
 
 Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
 Übergaberegeln stehen in [AGENTS.md](AGENTS.md); vor Fortsetzung sind lokale

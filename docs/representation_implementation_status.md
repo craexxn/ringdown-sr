@@ -29,20 +29,43 @@ Keine zusätzlichen Agenten.
   Vier Gruppen und sämtliche Seedpaare; Freigabe erst nach allen 20 Zellen.
   Ein positiver Strukturbefund muss zu einem neuen 0→1-Erfolg derselben hohen
   Originalauswahl gehören. Bedienung: [Suchbudgetvergleich](search_duration.md).
-- **Prüfstand:** Am ersten Implementierungsstand `2fb0cb8` bestanden lokal
-  1.845 Python-Tests, Ruff, Formatierung und 55 Markdown-Dateien. Die native
-  Vorprüfung bestätigte zehn Optionsprofile, 20 Pythonprofile, sechs Referenzen
-  und 28 Grammatikfälle. Der anschließende technische Integrationstreiber
-  scheiterte vor dem ersten Suchworker an einem als Datei gelesenen
-  Cacheverzeichnis. Korrigiert: neue Adapter laden ausdrücklich Quellbytes;
-  die Dateiliste überspringt Verzeichnisse. Ein Gegenfall prüft unveränderte
-  Cachemetadaten bei geänderten Quellbytes. Die abschließenden lokalen und
-  vollständigen CI-Nachweise stehen mit genauem Head in
-  [PR #54](https://github.com/craexxn/ringdown-sr/pull/54).
+- **Vorhandener technischer Nachweis:** Am Implementierungs-Head
+  `98f60210f19ec344ba1724a51f399f6581791cf8` bestand die vollständige
+  [CI 41616411175](https://github.com/craexxn/ringdown-sr/actions/runs/41616411175):
+  1.846 Python-Tests und sämtliche nativen Integrationen. Run, Schritte und
+  Logs wurden selbst geprüft; der temporäre Mergebaum war exakt dateigleich.
+  Lokal bestanden 46 gezielte Tests und die neue native Integration mit zehn
+  Optionsprofilen, 20 Pythonprofilen, sechs Referenzen, 28 Grammatikfällen und
+  fünf kleinen Suchworkern. Die wiederholte K2-Front war identisch.
+- **Übermitteltes KI-basiertes Review zu PR #54:** Head
+  `98f60210f19ec344ba1724a51f399f6581791cf8`, Vergleichsbasis
+  `23a21131e6fafcdc748e47098c018a1158f1629b`; alle 18 geänderten Dateien,
+  einschließlich Ergebnisnachtrag #53, und relevante Aufrufer geprüft.
+  Im geprüften Umfang methodentreu, kein gefundener Laufzeitfehler; ein P2
+  im Test der Abschlussveröffentlichung. Dessen Injektion griff schon beim
+  gesperrten Startbericht. Eigene Reproduktion bestätigt: Der alte Test bestand
+  mit null Workern, obwohl jeder Aufruf von `finalize()` zum Testfehler geführt
+  hätte. Die im Review genannten weiteren acht Gegenprüfungen und 30 skalaren
+  Formelmetriken sind übermittelte Nachweise und wurden hier nicht wiederholt.
+- **Gezielte P2-Korrektur:** Nur der Test und Statusdokumentation geändert.
+  Die Injektion greift erst nach dem positiven Rename mit `completed / passed`.
+  Sie verlangt 20 durchlaufene Mock-Worker, 20 abgeschlossene Zellen,
+  freigegebene Aggregate und ein vorhandenes Abschlussmanifest vor dem Fehler.
+  Danach müssen die Aggregate gesperrt und das Manifest entfernt sein.
+  Alle drei Fälle bestehen: `OSError`, `KeyboardInterrupt` und eine simuliert
+  überschrittene Zeitgrenze, die das echte `clock.check()` nach dem Rename
+  abfängt. Zusätzliche reine Testmutationen ohne Widerruf beziehungsweise mit
+  zurückbleibendem Manifest werden jeweils in allen drei Fällen erkannt.
+  Keine Änderung an Laufzeitcode, Daten, Pins oder eingefrorenen Plänen.
+- **Aktueller Prüfstatus:** Die gezielte Gegenprüfung erledigt den P2-Befund;
+  eine weitere Methodenreviewrunde ist laut übermitteltem Review nicht nötig.
+  Der genaue Korrektur-Head und die automatisch für Teständerungen gestartete
+  vollständige CI stehen in [PR #54](https://github.com/craexxn/ringdown-sr/pull/54).
+  Die frühere erfolgreiche CI ist kein Nachweis für den neuen Head.
   Keine wissenschaftlichen 200-/2.000-Suchen hier.
-- **Nächster Schritt:** technische Nachweise abschließen, reviewbaren Entwurf
-  bereitstellen; danach einmalige Manjaro-Serie am geprüften Stand. Weitere
-  Tests erst aus ihren Ergebnissen begründen, keine automatische Budgetleiter.
+- **Nächster Schritt:** vollständige CI des Korrekturstands vor Merge und
+  einmaliger Manjaro-Serie abschließen. Weitere Tests erst aus den
+  wissenschaftlichen Ergebnissen begründen, keine automatische Budgetleiter.
 
 ## Historisch: Abgeschlossener Grammatikvergleich und Ergebnisnachtrag
 

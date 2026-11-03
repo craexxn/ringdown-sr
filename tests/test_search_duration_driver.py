@@ -291,30 +291,56 @@ def test_late_consumed_cell_mutation_revokes_entire_comparison(
     assert_locked(output)
 
 
+@pytest.mark.parametrize("fault", ["write_error", "interrupt", "deadline"])
 def test_final_publication_failure_revokes_even_after_rename(
-    runtime, tmp_path, monkeypatch
+    runtime, tmp_path, monkeypatch, fault
 ):
     from pathlib import Path
 
     original = Path.replace
-    done = False
+    published = None
     # Inject after the positive report reaches its final destination.
     output = tmp_path / "publication"
+    error_type = {
+        "write_error": OSError,
+        "interrupt": KeyboardInterrupt,
+        "deadline": TimeoutError,
+    }[fault]
 
     def exact_publish(path, target):
-        nonlocal done
+        nonlocal published
         result = original(path, target)
         if (
-            not done
+            published is None
             and path.name == "report.json.tmp"
             and Path(target) == output / "report.json"
         ):
-            done = True
-            raise OSError("publication failed after rename")
+            report = json.loads(Path(target).read_bytes())
+            if (
+                report["status"] == "completed"
+                and report["final_verification"] == "passed"
+            ):
+                assert len(runtime.calls) == len(report["cells"]) == 20
+                assert all(cell["status"] == "completed" for cell in report["cells"])
+                assert all(
+                    report[key] is not None
+                    for key in ("summaries", "pair_differences", "comparison")
+                )
+                assert (output / "checksums.json").is_file()
+                published = report
+                if fault == "deadline":
+                    # Let the real post-publication clock.check() raise the timeout.
+                    monkeypatch.setattr(DRIVER.WallTimeLimit, "remaining", lambda _: -1)
+                else:
+                    raise error_type("publication failed after positive rename")
         return result
 
     monkeypatch.setattr(Path, "replace", exact_publish)
-    with pytest.raises(OSError):
+    with pytest.raises(error_type):
         DRIVER.run(runtime.archive, output, label="fixture")
-    assert done
-    assert_locked(output)
+    assert published is not None
+    assert len(runtime.calls) == 20
+    report = assert_locked(output)
+    assert len(report["cells"]) == 20
+    assert all(cell["status"] == "completed" for cell in report["cells"])
+    assert not (output / "checksums.json").exists()
