@@ -31,33 +31,45 @@ Der Treiber prüft dieses Originalarchiv einschließlich der eingefrorenen
 Eingaben. Das neuere freie Budgetarchiv wird dafür nicht benötigt; dessen
 weiterhin offener unabhängiger Audit wird durch die Beobachtungsserie nicht ersetzt.
 
-## Ausführung auf Manjaro nach Übernahme des geprüften Implementierungsstands
+## Vereinbarte Ausführung auf Manjaro: trajectory-manjaro-002
 
-Ein neuer wissenschaftlicher Lauf benötigt nach Prüfung und Merge eine
-gesonderte Freigabe und einen neuen Ausgabenamen. Die nachstehenden Befehle
-beschreiben den ursprünglichen Ablauf; vorhandene Teilstände nicht entfernen
-oder unter ihrem Namen erneut starten.
+Stand 03.11.2026: PR #48 ist übernommen. Die
+[vollständige CI](https://github.com/craexxn/ringdown-sr/actions/runs/41437880627)
+bestand am PR-Head `27d10fe`; dessen Dateibaum stimmt mit dem Mergecommit
+`f3c0cb49ff9213b651ad4cb4ce766958f0b1e2d1` überein. Nach Merge und
+Standabgleich ist genau eine frische Serie an diesem Commit vereinbart.
+Der neue Name lautet `trajectory-manjaro-002`. Hier ist noch keine Ausführung
+dieser Serie nachgewiesen. Das alte Verzeichnis und Teilarchiv bleiben erhalten.
+Der reine Dokumentationsnachtrag muss vor diesem Lauf nicht übernommen werden.
 
-Ein sauberes Checkout ist erforderlich. Wenn `main` bereits an ein anderes
-Worktree gebunden ist, kann dieses Checkout nach Prüfung lokaler Änderungen
-auf den neuen Stand von `origin/main` losgelöst wechseln:
+Die folgenden Befehle im Repository-Stamm ausführen. Ein sauberes Checkout
+ist erforderlich; bei lokalen Änderungen stoppt die Vorbereitung. Der
+losgelöste Checkout bindet den geprüften Commit auch dann, wenn `main` später
+weiterläuft oder bereits an ein anderes Worktree gebunden ist:
 
 ```bash
-git status --short
-git fetch origin
-git switch --detach origin/main
-env -u VIRTUAL_ENV uv sync --locked --dev --python 3.12.14
-git rev-parse HEAD
-git status --short
-sha256sum results/representation-manjaro-001.tar.gz
+git status --short &&
+git fetch origin &&
+test -z "$(git status --porcelain=v1 --untracked-files=all)" &&
+git switch --detach f3c0cb49ff9213b651ad4cb4ce766958f0b1e2d1 &&
+test "$(git rev-parse HEAD)" = f3c0cb49ff9213b651ad4cb4ce766958f0b1e2d1 &&
+env -u VIRTUAL_ENV uv sync --locked --dev --python 3.12.14 &&
+env -u VIRTUAL_ENV uv run --locked --python 3.12.14 python scripts/run_python.py scripts/check_environment.py &&
+printf '%s\n' 'a5b0cdae4262a7f759c72fbe1e7e9c142d817fbffa088107953250da861050db  results/representation-manjaro-001.tar.gz' | sha256sum --check --strict
 ```
 
-Vor dem Start muss der angezeigte Commit den freigegebenen Implementierungsstand
-enthalten. Vorhandene Ergebnisverzeichnisse werden abgelehnt.
-Die folgenden Befehle enthalten keine zsh-Kommentarzeilen:
+Nur nach erfolgreicher Vorbereitung starten. Der Start prüft Commit und
+Checkout nochmals sowie das Fehlen des neuen Ausgabeordners und Archivs.
+Vorhandene Ausgaben nicht entfernen, um diese Prüfungen zu umgehen:
 
 ```bash
-env -u VIRTUAL_ENV OPENBLAS_CORETYPE=Haswell OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 uv run --locked --python 3.12.14 python scripts/run_search_trajectory.py --archive results/representation-manjaro-001.tar.gz --label manjaro --output results/trajectory-manjaro-001
+test "$(git rev-parse HEAD)" = f3c0cb49ff9213b651ad4cb4ce766958f0b1e2d1 &&
+test -z "$(git status --porcelain=v1 --untracked-files=all)" &&
+test ! -e results/trajectory-manjaro-002 &&
+test ! -L results/trajectory-manjaro-002 &&
+test ! -e results/trajectory-manjaro-002.tar.gz &&
+test ! -L results/trajectory-manjaro-002.tar.gz &&
+env -u VIRTUAL_ENV OPENBLAS_CORETYPE=Haswell OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 uv run --locked --python 3.12.14 python scripts/run_search_trajectory.py --archive results/representation-manjaro-001.tar.gz --label manjaro --output results/trajectory-manjaro-002
 ```
 
 Keine Wiederaufnahme, Ersatzseeds oder automatische Wiederholung bei Fehlern.
@@ -118,11 +130,16 @@ Fehler in Endfront, Originalauswahl oder Paarvergleich bleiben Abbruchgründe.
 Native MSE und Python-MSE aus denselben nativen Vorhersagen müssen weiterhin
 konsistent sein. Die bisherigen Toleranzen werden nicht gelockert.
 
-Ein vollständiges Paket lässt sich anschließend archivieren:
+Nach Beendigung des Prozesses auch einen etwaigen Teilstand archivieren.
+Das Archiv darf nicht bereits existieren; bei einer fehlgeschlagenen
+Archivierung den Fehler klären, bevor eine vorhandene Datei ersetzt wird:
 
 ```bash
-tar -czf results/trajectory-manjaro-001.tar.gz -C results trajectory-manjaro-001
-sha256sum results/trajectory-manjaro-001.tar.gz
+test -d results/trajectory-manjaro-002 &&
+test ! -e results/trajectory-manjaro-002.tar.gz &&
+test ! -L results/trajectory-manjaro-002.tar.gz &&
+tar -czf results/trajectory-manjaro-002.tar.gz -C results trajectory-manjaro-002 &&
+sha256sum results/trajectory-manjaro-002.tar.gz
 ```
 
 Die Prüfsumme dokumentiert die Konsistenz des Archivs, keine externe Authentizität.
