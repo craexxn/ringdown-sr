@@ -35,6 +35,10 @@ NATIVE_FILES = (
 )
 
 
+def wrong_condition(condition):
+    return CONDITIONS[1 - CONDITIONS.index(condition)]
+
+
 def load_base():
     spec = importlib.util.spec_from_file_location(
         "grammar_base", symbolic.ROOT / "scripts/run_noiseless_control.py"
@@ -292,7 +296,7 @@ def inspect(mode):
             for bad in (
                 module.reference_options(condition, backend_seed(SEEDS[0]) + 1),
                 module.reference_options(
-                    CONDITIONS[1 - CONDITIONS.index(condition)], backend_seed(SEEDS[0])
+                    wrong_condition(condition), backend_seed(SEEDS[0])
                 ),
             ):
                 try:
@@ -300,7 +304,7 @@ def inspect(mode):
                 except JuliaError:
                     pass
                 else:
-                    raise ValueError("Native guard accepted a wrong seed or grammar.")
+                    raise ValueError("Native guard accepted a wrong seed or profile.")
                 if int(backend.CALLS[()]) != before:
                     raise ValueError(
                         "Native guard failed after numeric callback entry."

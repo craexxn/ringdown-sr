@@ -30,7 +30,8 @@ werden nicht abgerufen beziehungsweise validiert.
 `docs/search_duration_plan.md`, `docs/search_duration_verification_plan.md`
 `docs/search_duration_table_loss_note.md`
 `docs/search_duration_simplification_plan.md`
-`docs/search_duration_prediction_plan.md` und `docs/local_optimizer_plan.md`
+`docs/search_duration_prediction_plan.md`, `docs/local_optimizer_plan.md`
+und `docs/outer_search_ladder_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -109,8 +110,8 @@ fehlenden oder nicht vergleichbaren Commits wird vollständig geprüft.
 
 Die bisherigen Prüfbefehle, Versionspins, Rechte, Thread-/Haswell-Vorgaben
 und das Cacheverhalten bleiben erhalten. Der technische CI-Job erhält
-60 Minuten Gesamtzeit einschließlich der neuen nativen Profilprüfung und fünf
-lokalen Optimierer-Integrationsworker. Die bisherigen Schritte bleiben erhalten;
+60 Minuten Gesamtzeit einschließlich der nativen Profilprüfungen sowie der
+lokalen Optimierer- und äußeren Budgetintegrationen. Die bisherigen Schritte bleiben erhalten;
 die zusätzliche Reserve erweitert keine wissenschaftliche Laufgrenze. Lauf
 [41425713993](https://github.com/craexxn/ringdown-sr/actions/runs/41425713993)
 am Head `2d9b028` wurde bei bisher 30 Minuten Joblimit nach rund 31 Minuten
@@ -129,6 +130,17 @@ Baselinewiederholung mit jeweils zwei äußeren Iterationen an acht Punkten y=1+
 Falsche lokale Iterationen, Neustarts und gemeinsame Optionen müssen vor der
 numerischen Zielfunktion scheitern. Die identische wiederholte Front prüft
 Prozessisolation. Keine der 20 wissenschaftlichen Zellen wird ausgeführt.
+
+Die äußere Staffel ergänzt `check_outer_search_ladder_integration.py`:
+fünf echte native Seedoptionen bei fest 300/5, 20 Python-Suchprofile, drei
+feste Ringdown-/Aliasreferenzen und 14 Syntaxfälle. Falscher Seed und falsches
+100/2-Profil scheitern vor dem numerischen Callback. Danach fünf frische
+300/5-Worker mit äußeren Budgets 2, 3, 4, 5 und erneut 2 am separaten
+Achtpunkt-Signal y=1+t. Der echte Suchaufruf muss das jeweilige Budget
+unverändert übernehmen; die wiederholten Kontrollfronten müssen identisch sein.
+Python-Gegenfälle prüfen getrennte Kurven-/Strukturzahlen, alle Kontraste,
+Kosten, vollständige Verifikation und Widerruf positiver Berichte.
+Keine wissenschaftliche 200-/500-/2.000-/5.000-Zelle in der CI.
 
 ## Ermittlung des Diffs
 

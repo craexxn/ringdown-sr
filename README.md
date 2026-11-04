@@ -40,14 +40,23 @@ Rekonstruktionen bleiben in allen Gruppen 1/5. 300/5 benötigt rund 32 % mehr
 summierte Zellzeit als 100/2 und verliert einen Baselineerfolg.
 Es ist ein Kandidat für das nächste Arbeitsprofil, kein belegtes Optimum.
 
-Die vorgemerkte äußere Staffel 200, 500, 2.000 und 5.000 bleibt separat vor
-Ausführung zu planen; 10.000 erst später bei positivem Trend. Danach folgen
-Transfercheck, Rauschpipeline, kompaktes Pilotdesign und Pilotauswertung mit
-Hauptversuchsplan gemäß der in #61 festgehaltenen Route. Wissenschaftliche
-Ausführung bleibt auf Manjaro; kein neuer Lauf ist durch diesen Ergebnisnachtrag
-freigegeben. Die [Bedienung](docs/local_optimizer.md) dokumentiert die
-abgeschlossene Serie. Allgemeine Grammatik, `should_simplify=false` und alle
-Prüfungen bleiben erhalten; Übertragbarkeit und Hauptstudie bleiben offen.
+Als nächster begrenzter Entwicklungsvergleich ist die
+[äußere Staffel 200, 500, 2.000 und 5.000](docs/outer_search_ladder_plan.md)
+bei fest **300/5** angenommen und vorbereitet: 20 frische Manjaro-Zellen,
+fünf neue gepaarte Seeds, Grenzen 30 Minuten je Worker und vier Stunden gesamt.
+Die [Bedienung](docs/outer_search_ladder.md) beschreibt Vorbereitung und
+Archivsicherung; Ausführung erst nach technischer Prüfung und Merge.
+Kurvenerfolge und vollständig unterstützte Originalauswahlen werden getrennt
+gezählt und mit dem Aufwand verglichen. Allgemeine Grammatik,
+`should_simplify=false`, Originalauswahl und numerische Prüfungen bleiben erhalten.
+
+Optional danach dieselbe Staffel mit **300/2**, um den Nutzen zusätzlicher
+Neustarts bei gleicher lokaler Iterationsgrenze zu prüfen; diese Vormerkung
+ersetzt 100/2 und ist noch keine Anschlussfreigabe. 10.000 bleibt eine spätere
+Option bei positivem Trend. Danach folgen Transfercheck, Rauschpipeline,
+kompaktes Pilotdesign und Pilotauswertung mit Hauptversuchsplan gemäß der in
+#61 festgehaltenen Route. Wissenschaftliche Ausführung bleibt auf Manjaro;
+Übertragbarkeit und Hauptstudie bleiben offen.
 Die vorgemerkte kurze Bereinigungsbestandsaufnahme bleibt offen; funktionierenden
 Code und Originalergebnisse erhalten, anschließend nur konkrete kleine Änderungen.
 WSL2, Parallelisierung und größere Umstrukturierung bleiben zurückgestellt.
