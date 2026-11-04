@@ -15,7 +15,7 @@ from ringdown_sr.prediction_reference import (
 )
 
 
-def run(directory):
+def run(directory, control=control):
     directory = Path(directory).resolve()
     runtime = Path(__file__).resolve().parent
     control.verify_manifest(directory, runtime)
@@ -27,6 +27,9 @@ def run(directory):
     for name in ("FORMAT", "checked_profile", "verify_manifest", "profile_parameters"):
         setattr(worker, name, getattr(control, name))
     worker.SHOULD_SIMPLIFY = False
+    if hasattr(control, "NATIVE_MODULE"):
+        worker.NATIVE_MODULE = control.NATIVE_MODULE
+        worker.NATIVE_FILES += (control.NATIVE_MODULE + ".jl",)
     original_snapshot = symbolic._environment_snapshot
     original_replay = symbolic._verify_loss_replay
     original_prediction = symbolic._verify_prediction_replay

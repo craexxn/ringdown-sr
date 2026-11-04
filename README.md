@@ -6,9 +6,10 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 ## Projektstatus
 
 Fortsetzungsstand: 04.11.2026; abgeglichener Hauptbranch:
-`79ff670` ([PR #59](https://github.com/craexxn/ringdown-sr/pull/59)).
+`f9f4bae` ([Ergebnis-PR #60](https://github.com/craexxn/ringdown-sr/pull/60)).
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
-KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde übernommen.
+KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit
+[PR #59](https://github.com/craexxn/ringdown-sr/pull/59) übernommen.
 Die tatsächliche Suche bleibt unter dem Profil aus #56 mit
 `should_simplify=false`; geändert wurde die Kontrolle nach dem Fit.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
@@ -29,12 +30,17 @@ Einschränkung. Ein Gegenfall zeigt trotz kleinerer Trainings-MSE erheblich
 schlechtere Zwischenpunktfehler. Fünf adaptive Seeds am bekannten Signal
 begründen keine allgemeine Leistungsvalidierung oder physikalische Identifikation.
 
-Nächster wissenschaftlicher Schritt: einen getrennten Übertragbarkeitsvergleich
-vor Ausführung festlegen. Zusätzlich ist die vorgemerkte kurze Bestandsaufnahme
-zur gezielten Bereinigung jetzt fällig; Code und Originalergebnisse zuerst
-sichern, danach nur konkrete Wartungsprobleme mit kleinen getrennten Änderungen.
-Keine neuen Suchen, keine große Umstrukturierung oder Strukturerweiterung
-in diesem Ergebnisschritt. WSL2 und Parallelisierung bleiben zurückgestellt.
+Als nächster Entwicklungsschritt ist der
+[lokale Optimiererbudgetvergleich](docs/local_optimizer_plan.md) angenommen:
+20 frische unrestricted-Suchen bei fest 200 äußeren Iterationen, lokale
+Profile 100/2, 300/2, 100/5 und 300/5 mit fünf neuen gepaarten Seeds.
+`should_simplify=false` und sämtliche numerischen Prüfungen bleiben erhalten.
+Die [Bedienung](docs/local_optimizer.md) bereitet die einmalige Manjaro-Serie
+nach vollständiger technischer Prüfung und Merge vor. Äußere Iterationsstaffel
+und Übertragbarkeit bleiben nachgelagerte eigene Entscheidungen.
+Die vorgemerkte kurze Bereinigungsbestandsaufnahme bleibt offen; funktionierenden
+Code und Originalergebnisse erhalten, anschließend nur konkrete kleine Änderungen.
+WSL2, Parallelisierung und größere Umstrukturierung bleiben zurückgestellt.
 
 [Ergebnis und Grenzen](docs/search_duration_results_manjaro_004.md),
 [Bedienung](docs/search_duration.md),

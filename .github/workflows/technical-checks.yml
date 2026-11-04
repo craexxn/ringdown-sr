@@ -2,7 +2,6 @@ name: Technical checks
 
 on:
   pull_request:
-    branches: [main]
   push:
     branches: [main]
   workflow_dispatch:
@@ -17,7 +16,7 @@ concurrency:
 jobs:
   technical-checks:
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 60
     env:
       UV_PYTHON: "3.12.14"
       PYTHONUNBUFFERED: "1"
@@ -155,6 +154,22 @@ jobs:
             --output results/ci-search-duration-technical; then
             if [ -d results/ci-search-duration-technical ]; then
               find results/ci-search-duration-technical -type f -name '*.log' -print -exec tail -n 100 {} \;
+            fi
+            exit 1
+          fi
+
+      - name: Verify local optimizer native guards and five tiny workers
+        if: steps.scope.outputs.full == 'true'
+        run: |
+          env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/run_python.py scripts/check_local_optimizer_native.py
+          if ! env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/check_local_optimizer_integration.py \
+            --output results/ci-local-optimizer-technical; then
+            if [ -d results/ci-local-optimizer-technical ]; then
+              find results/ci-local-optimizer-technical -type f -name '*.log' -print -exec tail -n 100 {} \;
             fi
             exit 1
           fi

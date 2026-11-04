@@ -7,7 +7,46 @@ dem geprüften Head `401ca5d79eff5a96b98bc99b89ecabd982c429e7`.
 abgeschlossen und unabhängig nachgerechnet. Wissenschaftliche Ausführung
 bleibt auf Manjaro. Keine zusätzlichen Agenten.
 
-## Aktuell: vollständiger Suchbudgetvergleich 004
+Der Ergebnisnachtrag #60 ist inzwischen als
+`f9f4bae06b8102992dc86fbfce9564ed3eed3db2` in main übernommen. Sein Dateibaum
+entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
+Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
+
+## Aktuell: lokales Optimiererbudget vorbereiten
+
+- **Auftrag:** 20 frische unrestricted-Zellen, 200 äußere Iterationen, lokale
+  Profile 100/2, 300/2, 100/5 und 300/5, fünf neue gepaarte Seeds. Die äußere
+  Iterationsstaffel und Übertragbarkeit folgen gegebenenfalls separat.
+- **Einstieg:** sauberer Branch `codex/duration-manjaro-004-audit` bei fa5758d,
+  ein Worktree, #60 als einziger offener PR. Neuer eigener Branch
+  `codex/local-optimizer-comparison` darauf; #60 bleibt separat erhalten.
+- **Planbindung vor Code:** [Methodenplan](local_optimizer_plan.md), Commit
+  `e7b457bf8927cdd1b52c51bb3457b54d0c88f066`, SHA-256
+  `793006863a739a973dd3ffcf82c6e665f1a77da7eefee4132555843230df7f47`.
+  Seeds 20261120–20261124, ausgeglichene Reihenfolge der ersten vier Blöcke,
+  vier einfache Faktorkontraste plus kombinierter Baselinevergleich. Alle
+  drei Baselinekontraste sichtbar; kein automatisches Gewinnerprofil.
+- **Umsetzung:** eigener versionierter Adapter und nativer Wrapper; bestehende
+  Dauervergleich-Lebenszyklus-, Verlust- und Intervallprüfungen wiederverwendet.
+  Alle nativen Felder einschließlich Neustarts, Iterationen, Seed, Plugins,
+  unrestricted und `should_simplify=false` vorab, im Callback und im Elternprozess
+  geprüft. Datenrollen und Originalauswahl erhalten; Grenzen 600/7200 Sekunden.
+- **Prüfstand:** 272 native Assertions ohne Suche/Optimierung und 239 gezielte
+  Python-Prüfungen bestanden. Am Implementierungsstand bd674f8 bestanden lokal
+  sämtliche 2.185 Python-Tests und alle fünf neuen winzigen Integrationsworker
+  mit identischen wiederholten Baselinefronten. 20 echte Optionsobjekte,
+  zwölf Referenzfälle und 56 Syntaxfälle bestätigt. Der anschließende
+  Kostenexport ergänzt jeden der 25 Paarvergleiche um beide ursprünglichen
+  Kostenaufnahmen mit explizitem Umfang der Wandzeit. Gezielte Gegenprüfung
+  und vollständige technische CI am endgültigen Head stehen in
+  [PR #61](https://github.com/craexxn/ringdown-sr/pull/61).
+- **Fortsetzung:** Implementierungs-PR #61 nach vollständiger Prüfung
+  manuell übernehmen; konkreter Vorbereitungsblock im PR und
+  [Manjaro-Bedienung](local_optimizer.md). Hier keine wissenschaftlichen Suchen,
+  keine zusätzlichen Agenten, keine WSL2-/Parallelisierungsarbeit. Vorgemerkte
+  kleine Bereinigungsbestandsaufnahme weiterhin offen, keine Bereinigung umgesetzt.
+
+## Grundlage: vollständiger Suchbudgetvergleich 004
 
 - **Einstieg:** sauberer eigener Branch `codex/duration-manjaro-004-audit`
   ab `79ff670`, ein Worktree, kein offener PR beim Einstieg. Andere Branches,

@@ -236,7 +236,7 @@ def inspect_backend(output, runtime, initial, sources, support, probe, remaining
         or references["status"] != "verified"
         or references["mode"] != "references"
         or references["source_sha256"] != sources
-        or len(references["cases"]) != 6
+        or len(references["cases"]) != 3 * len(CONDITIONS)
         or references.get("grammar_cases") != expected_grammar_cases()
     ):
         raise ValueError("Incomplete native fixed-reference preflight.")

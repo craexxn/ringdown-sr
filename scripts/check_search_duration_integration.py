@@ -12,6 +12,8 @@ from ringdown_sr.pilot import _sha256, _write_json
 from ringdown_sr.search_duration import RUNTIME, planned_cells, source_hashes
 
 driver = load_driver()
+TECHNICAL_ITERATIONS = (2, 2, 3, 3, 2)
+TECHNICAL_SCOPE = "five isolated two/three-search-iteration workers on eight-point y=1+t; no scientific control cells"
 
 
 def run(output):
@@ -69,7 +71,7 @@ def run(output):
     try:
         for number, cell in enumerate(sequence, 1):
             cell.update(number=number, directory=f"technical-{number:02d}")
-            cell["budget"]["niterations"] = 3 if number in (3, 4) else 2
+            cell["budget"]["niterations"] = TECHNICAL_ITERATIONS[number - 1]
             symbolic._run_worker = driver.dispatch(
                 runtime, cell, sources, files, output, lambda: 600, unchanged
             )
@@ -134,7 +136,7 @@ def run(output):
         output / "technical_report.json",
         {
             "status": "verified",
-            "scope": "five isolated two/three-search-iteration workers on eight-point y=1+t; no scientific control cells",
+            "scope": TECHNICAL_SCOPE,
             "source_sha256": sources,
             "workers": results,
             "repeated_control_signature_equal": True,

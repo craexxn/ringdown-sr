@@ -17,6 +17,12 @@ from ringdown_sr.trigonometric_grammar import (
 )
 
 SHOULD_SIMPLIFY = True
+NATIVE_MODULE = "TrigonometricGrammar"
+NATIVE_FILES = (
+    "RepresentationProfiles.jl",
+    "FreeOptimizerBudget.jl",
+    "TrigonometricGrammar.jl",
+)
 
 
 def run(directory):
@@ -43,11 +49,7 @@ def run(directory):
         if phase == "before_fit":
             from juliacall import Main as jl
 
-            for name in (
-                "RepresentationProfiles.jl",
-                "FreeOptimizerBudget.jl",
-                "TrigonometricGrammar.jl",
-            ):
+            for name in NATIVE_FILES:
                 contents = (runtime / name).read_bytes()
                 if _sha256(contents) != manifest["sources"]["julia/src/" + name]:
                     raise ValueError(
@@ -55,14 +57,14 @@ def run(directory):
                     )
                 (directory / name).write_bytes(contents)
                 jl.include(str(directory / name))
-            jl.TrigonometricGrammar.configure(
+            getattr(jl, NATIVE_MODULE).configure(
                 condition, seed, should_simplify=SHOULD_SIMPLIFY
             )
         elif phase == "after_search":
             from juliacall import Main as jl
 
             options = jl.RingdownSRSearch.LAST_OPTIONS[()]
-            record = jl.TrigonometricGrammar.verification_record(options)
+            record = getattr(jl, NATIVE_MODULE).verification_record(options)
             verify_manifest(directory, runtime)
             if (directory / "manifest.json").read_bytes() != manifest_bytes or (
                 directory / "profile.json"
