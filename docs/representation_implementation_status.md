@@ -1,6 +1,9 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 04.11.2026. PR #61 ist als
+Stand: 04.11.2026. Ergebnis-PR #62 ist als
+`6d1501443f6385517c7acc19b4def869d59bd3a8` übernommen; sein Dateibaum entspricht
+dem geprüften Ergebnis-Head `1037b01b4bff428fd99d08190d500258281348f8`.
+PR #61 ist als
 `cf04476057b95c1517e1a303f4b48fbd30545a47` übernommen; sein Dateibaum entspricht
 dem abschließend geprüften Head `3fe7e7a181ba5b8d00ecbc81fe00bf62e49c2ce7`.
 Der lokale Optimiererbudgetlauf ist vollständig abgeschlossen und unabhängig
@@ -16,7 +19,50 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: lokaler Optimiererbudgetlauf abgeschlossen
+## Aktuell: äußere Suchbudgets bei festem 300/5 vorbereiten
+
+- **Auftrag:** 20 frische Manjaro-Zellen mit 200, 500, 2.000 und 5.000 äußeren
+  Iterationen, durchgehend lokale Optimierung 300/5, unrestricted und
+  `should_simplify=false`. Grenzen: 1.800 Sekunden je Worker und 14.400 Sekunden
+  insgesamt; Abbruchgrenzen, keine Laufzeitprognose.
+- **Einstieg:** eigener Branch `codex/outer-search-ladder-preparation` ab
+  Ergebnis-Head `1037b01b4bff428fd99d08190d500258281348f8`, ein Worktree;
+  main beim Einstieg bei cf04476, Ergebnis-PR #62 damals noch offen.
+  Inzwischen ist #62 dateigleich als 6d15014 übernommen. Diese Basis wurde
+  nach ausdrücklichem Dateibaumvergleich ohne Implementierungsänderung
+  aufgenommen; Implementierungs-PR #63 zielt auf main.
+- **Vor Code eingefroren:** [Plan](outer_search_ladder_plan.md), Commit
+  `e1ea601286042aadcc5b5291ae72d114c7846dbf`, SHA-256
+  `95aca0069d6b8a6ad0305d5722c558e4bbea1c23e7f3b70630d2eb33e816fa35`.
+  Fünf neue gepaarte Seeds 20261201–20261205; fünf eindeutige Kontraste,
+  insgesamt 25 Seedpaare. Keine Wiederverwendung früherer Zellen.
+- **Umsetzung:** eigener Adapter über den bestehenden Lebenszyklus und den
+  unveränderten nativen 300/5-Wrapper. Alle Optionen und tatsächlichen
+  Suchaufrufe werden absolut geprüft. Getrennte Kurvenzahl C und Zahl S
+  vollständig unterstützter Originalauswahlen, beide Erfolgswechsel und
+  Kostenunterschiede/-verhältnisse. Ein neuer unterstützter Seed bei Verlust
+  eines anderen erhöht S nicht. Frühere Auswertungsregeln bleiben unverändert.
+- **Prüfstand:** 190 gezielte Python-Tests bestanden, einschließlich aller
+  162 geprüften vierstufigen Kurven-/Strukturmuster und Seedanordnungen,
+  ungültiger Optionen, ungewählter Kandidaten, Zeitgrenzen und tatsächlicher
+  Fehler nach positivem Berichtsrename. Fünf echte native Seedoptionen,
+  20 Pythonprofile, drei Referenzen und 14 Syntaxfälle bestanden. Alle fünf
+  kleinen Integrationsworker mit 2/3/4/5/2 äußeren Iterationen erfolgreich;
+  wiederholte Originalfront identisch. Vollständiger CI-Abschluss wird am
+  Implementierungs-PR dokumentiert. Keine wissenschaftliche Suche oder
+  Optimierung in der Cloud.
+- **Fortsetzung:** technische Prüfung und manueller Merge vor der einmaligen
+  Manjaro-Serie. [Bedienung](outer_search_ladder.md) enthält Ausführung und
+  Archivsicherung. Optional danach dieselbe Staffel mit **300/2**, denselben
+  Seeds und frischen Läufen, um gezielt die zusätzlichen Neustarts zu prüfen;
+  diese Vormerkung ersetzt 100/2. Noch kein Auftrag für diese Anschlussserie:
+  Reihenfolge und eigenes Zeitbudget separat vorab festlegen. Kein automatischer
+  10.000er-Lauf, keine Hauptstudie, WSL2-/Parallelisierungsarbeit oder große
+  Umstrukturierung. Die Pilotroute und Planungsziele 8./9. sowie etwa
+  15. November bleiben erhalten. Keine zusätzlichen Agenten.
+
+
+## Grundlage: lokaler Optimiererbudgetlauf abgeschlossen
 
 - **Einstieg:** sauberer Branch `codex/local-optimizer-comparison` bei 3fe7e7a,
   ein Worktree; #61 gemergt, main bei cf04476, keine offenen PRs. Neuer eigener
@@ -41,10 +87,11 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 - **Änderungsumfang:** ausschließlich Ergebnisdokument und Status/Bedienung;
   keine Implementierungsänderung, neue Fixtures, Pläne oder Archivänderungen.
   Dokumentationsprüfung und Ergebnis-PR bilden den Abschluss dieses Nachtrags.
-- **Fortsetzung:** 300/5 ist ein begründeter Arbeitsprofil-Kandidat, 100/5 eine
-  günstigere Alternative. Kein automatisches Gewinnerprofil oder neuer Versuch.
-  Vorgemerkte äußere Staffel 200/500/2.000/5.000 separat vor Ausführung planen;
-  10.000 nur als spätere Option bei positivem Trend. Danach die in #61
+- **Folgerung des Ergebnisnachtrags:** 300/5 ist ein begründeter
+  Arbeitsprofil-Kandidat, 100/5 eine günstigere Alternative; kein automatisches
+  Gewinnerprofil. Die anschließend angenommene äußere Staffel ist oben
+  separat gebunden. 10.000 bleibt eine spätere Option bei positivem Trend.
+  Danach die in #61
   festgehaltene Pilotroute mit neuen Signalparametern, Rauschpipeline, gebundenem
   Pilotdesign und Auswertung/Hauptversuchsplan. Zwischenbewertung 8./9. November,
   Pilotabschluss etwa 15. November bleiben Planungsziele. Keine Hauptstudie,
