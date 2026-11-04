@@ -6,7 +6,7 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 ## Projektstatus
 
 Fortsetzungsstand: 04.11.2026; abgeglichener Hauptbranch:
-`6d15014` ([Ergebnis-PR #62](https://github.com/craexxn/ringdown-sr/pull/62)).
+`5215c5e` ([Implementierungs-PR #63](https://github.com/craexxn/ringdown-sr/pull/63)).
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit
 [PR #59](https://github.com/craexxn/ringdown-sr/pull/59) übernommen.
@@ -40,21 +40,30 @@ Rekonstruktionen bleiben in allen Gruppen 1/5. 300/5 benötigt rund 32 % mehr
 summierte Zellzeit als 100/2 und verliert einen Baselineerfolg.
 Es ist ein Kandidat für das nächste Arbeitsprofil, kein belegtes Optimum.
 
-Als nächster begrenzter Entwicklungsvergleich ist die
-[äußere Staffel 200, 500, 2.000 und 5.000](docs/outer_search_ladder_plan.md)
-bei fest **300/5** angenommen und vorbereitet: 20 frische Manjaro-Zellen,
-fünf neue gepaarte Seeds, Grenzen 30 Minuten je Worker und vier Stunden gesamt.
-Die [Bedienung](docs/outer_search_ladder.md) beschreibt Vorbereitung und
-Archivsicherung; Ausführung erst nach technischer Prüfung und Merge.
-Kurvenerfolge und vollständig unterstützte Originalauswahlen werden getrennt
-gezählt und mit dem Aufwand verglichen. Allgemeine Grammatik,
-`should_simplify=false`, Originalauswahl und numerische Prüfungen bleiben erhalten.
+Die [äußere Staffel bei fest 300/5](docs/outer_search_ladder_results_manjaro_001.md)
+ist abgeschlossen und unabhängig nachgerechnet: **20 Zellen, 164 Kandidaten**,
+alle nativen Vorhersagen und Verluste bitgleich; Gesamtdauer rund 2 h 4 min.
+200/500/2.000/5.000 Iterationen erreichen **1/5, 5/5, 5/5 und 5/5 Kurvenerfolge**;
+die planmäßige Strukturwertung liegt bei **1/5, 4/5, 3/5 und 2/5**.
+Eine getrennte nachträgliche Diagnose führt alle sechs formal nicht erkannten
+Kurvenerfolge reell auf Ringdown-Formen zurück. Der Rückgang dieser Wertung
+belegt daher keine schlechtere physikalische Struktur; die Originalzählungen
+und der Erkenner wurden nicht verändert.
+
+**500 äußere Iterationen bei lokal 300/5** sind eine begründete Arbeitsgrundlage
+für eine separat zu bindende Folgeprüfung. 2.000 und 5.000 benötigen rund
+3,05- beziehungsweise 6,24-mal die summierte Zellzeit der 500er-Gruppe.
+Ein allgemeines Optimum oder Übertragbarkeit ist nicht belegt. Die
+[Bedienung](docs/outer_search_ladder.md) dokumentiert die abgeschlossene Serie,
+keine Wiederholungsfreigabe. Allgemeine Grammatik, `should_simplify=false`,
+Originalauswahl und numerische Prüfungen bleiben erhalten.
 
 Optional danach dieselbe Staffel mit **300/2**, um den Nutzen zusätzlicher
 Neustarts bei gleicher lokaler Iterationsgrenze zu prüfen; diese Vormerkung
-ersetzt 100/2 und ist noch keine Anschlussfreigabe. 10.000 bleibt eine spätere
-Option bei positivem Trend. Danach folgen Transfercheck, Rauschpipeline,
-kompaktes Pilotdesign und Pilotauswertung mit Hauptversuchsplan gemäß der in
+ersetzt 100/2 und ist noch keine Anschlussfreigabe. Eine weitere Erhöhung auf
+10.000 wird durch den jetzigen Befund nicht begründet. Danach folgen
+Transfercheck, Rauschpipeline, kompaktes Pilotdesign und Pilotauswertung mit
+Hauptversuchsplan gemäß der in
 #61 festgehaltenen Route. Wissenschaftliche Ausführung bleibt auf Manjaro;
 Übertragbarkeit und Hauptstudie bleiben offen.
 Die vorgemerkte kurze Bereinigungsbestandsaufnahme bleibt offen; funktionierenden
