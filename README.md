@@ -5,8 +5,10 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 04.11.2026; abgeglichener Implementierungsstand auf `main`:
-`e501e9d` ([PR #56](https://github.com/craexxn/ringdown-sr/pull/56)).
+Fortsetzungsstand: 04.11.2026; abgeglichener Hauptbranch:
+`4c49723` ([PR #57](https://github.com/craexxn/ringdown-sr/pull/57)).
+Die Suchimplementierung entspricht weiterhin `e501e9d`
+([PR #56](https://github.com/craexxn/ringdown-sr/pull/56)).
 Vorheriger Ergebnisstand: [Grammatikvergleich 001](docs/trigonometric_grammar_results_manjaro_001.md),
 vollständiges Originalarchiv unabhängig geprüft. Frühere Suchbeobachtung:
 `2d9ed90`, übernommener [PR #50](https://github.com/craexxn/ringdown-sr/pull/50).
@@ -28,8 +30,12 @@ Die [gebundene Abhilfe](docs/search_duration_simplification_plan.md) mit
 CSV-Verluste der fünften Zelle werden nativ bitgenau reproduziert. Der neue
 Abbruch entsteht durch einen kleinen `exp`-Rundungsunterschied, den eine große
 Konstante im Ausdruck verstärkt. Vier CSV-Bäume überschreiten die bestehende
-Vorhersagegrenze. Der Audit begründet einen Vorschlag zur baumabhängigen
-numerischen Verifikation; keine Toleranz, Auswahl oder Diagnose wurde geändert.
+Vorhersagegrenze. Der [Methodenplan zur baumabhängigen Vorhersageverifikation](docs/search_duration_prediction_plan.md)
+ist vor Implementierung ausgearbeitet: unabhängige Rundungsintervalle mit
+fester Breitenbegrenzung und erneuter Elternprüfung. Er betrifft die Kontrolle
+nach dem Fit; der tatsächliche Suchlauf bleibt unter dem Profil aus #56.
+Noch keine neue Prüfregel aktiviert, keine Auswahl oder Diagnose geändert
+und kein weiterer wissenschaftlicher Lauf vorbereitet.
 [Bedienung](docs/search_duration.md),
 [Literatur](docs/search_duration_literature.md) und
 [Prüf-/Fortsetzungsstand](docs/representation_implementation_status.md) enthalten

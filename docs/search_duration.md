@@ -29,6 +29,10 @@ bitgenau reproduziert; kleine Rundungsunterschiede überschreiten bei vier
 CSV-Bäumen die Vorhersagegrenze. Die folgenden Startbefehle dokumentieren
 den bereits ausgeführten Laufweg, keine Wiederholungsfreigabe. Vor einer
 weiteren Serie ist die numerische Verifikation gesondert zu begründen.
+Der dazu ausgearbeitete [Methodenplan](search_duration_prediction_plan.md)
+beschreibt Rundungsintervalle, eine unabhängige Breitenbegrenzung und
+die vorgesehene Elternnachrechnung. Dies ist bisher ausschließlich Schritt 1;
+der neue Verifikationspfad ist nicht implementiert oder aktiviert.
 
 20 frische Suchen kreuzen K/A mit 200/2.000 Suchiterationen bei denselben fünf
 vorab festgelegten Seeds. Sie sind nach dem Teilstand nicht mehr vollständig
