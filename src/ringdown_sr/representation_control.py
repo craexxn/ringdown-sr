@@ -203,7 +203,14 @@ def physical_analysis(search_analysis, tree, physical_times, scale):
 
 
 def diagnose_candidate(
-    candidate, index, selected_index, arrays, condition, *, extended_structure=False
+    candidate,
+    index,
+    selected_index,
+    arrays,
+    condition,
+    *,
+    extended_structure=False,
+    truth=None,
 ):
     settings = condition_settings(condition)
     scale = settings["time_scale"]
@@ -216,7 +223,7 @@ def diagnose_candidate(
     )
     physical = physical_analysis(source, candidate["tree"], arrays["time_s"], scale)
     curves = {}
-    for grid, times, truth in (
+    for grid, times, truth_key in (
         ("training", "time_s", "observed"),
         ("diagnostic", "diagnostic_time_s", "diagnostic_truth"),
     ):
@@ -230,7 +237,7 @@ def diagnose_candidate(
                 "relative_max": None,
             }
         else:
-            curves[grid] = curve_errors(prediction, arrays[truth])
+            curves[grid] = curve_errors(prediction, arrays[truth_key])
     marker = "not_assessed"
     if all(value["status"] == "available" for value in curves.values()):
         marker = (
@@ -242,7 +249,7 @@ def diagnose_candidate(
             )
             else "outside_tolerance"
         )
-    match = parameter_match(physical)
+    match = parameter_match(physical, truth=truth)
     if (
         match["status"] != "not_assessed"
         and physical["raw_parameters"] is not None

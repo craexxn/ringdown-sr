@@ -50,22 +50,27 @@ Kurvenerfolge reell auf Ringdown-Formen zurück. Der Rückgang dieser Wertung
 belegt daher keine schlechtere physikalische Struktur; die Originalzählungen
 und der Erkenner wurden nicht verändert.
 
-**500 äußere Iterationen bei lokal 300/5** sind eine begründete Arbeitsgrundlage
-für eine separat zu bindende Folgeprüfung. 2.000 und 5.000 benötigen rund
-3,05- beziehungsweise 6,24-mal die summierte Zellzeit der 500er-Gruppe.
-Ein allgemeines Optimum oder Übertragbarkeit ist nicht belegt. Die
-[Bedienung](docs/outer_search_ladder.md) dokumentiert die abgeschlossene Serie,
-keine Wiederholungsfreigabe. Allgemeine Grammatik, `should_simplify=false`,
-Originalauswahl und numerische Prüfungen bleiben erhalten.
+**500 äußere Iterationen bei lokal 300/5** bleiben das Arbeitsprofil für den
+angenommenen [Transfercheck](docs/transfer_check_plan.md): sechs feste
+Signalbedingungen mit drei neuen gepaarten Seeds, **18 frische Manjaro-Zellen**.
+Referenzfall, einzelne Änderungen von Frequenz, Abklingzeit, Phase und Amplitude
+sowie ein gemeinsamer Fall. Grenzen: 15 Minuten je Worker und zwei Stunden
+insgesamt. Plan und Daten sind vor Implementierung eingefroren; Vorbereitung
+und technische Prüfungen laufen, die wissenschaftliche Serie ist noch nicht
+ausgeführt. [Bedienung](docs/transfer_check.md).
 
-Optional danach dieselbe Staffel mit **300/2**, um den Nutzen zusätzlicher
-Neustarts bei gleicher lokaler Iterationsgrenze zu prüfen; diese Vormerkung
-ersetzt 100/2 und ist noch keine Anschlussfreigabe. Eine weitere Erhöhung auf
-10.000 wird durch den jetzigen Befund nicht begründet. Danach folgen
-Transfercheck, Rauschpipeline, kompaktes Pilotdesign und Pilotauswertung mit
-Hauptversuchsplan gemäß der in
-#61 festgehaltenen Route. Wissenschaftliche Ausführung bleibt auf Manjaro;
-Übertragbarkeit und Hauptstudie bleiben offen.
+2.000 und 5.000 benötigten am bisherigen Signal rund 3,05-/6,24-mal die summierte
+Zellzeit der 500er-Gruppe. Ein allgemeines Optimum oder Übertragbarkeit ist
+nicht belegt. Allgemeine Grammatik, `should_simplify=false`, Originalauswahl,
+Strukturerkenner und numerische Prüfungen bleiben erhalten. Referenzparameter
+werden für jedes Signal passend verglichen; keine Auswahl anhand der Wahrheit.
+
+Weitere 500/1.000-Tests und die optionale Staffel mit **300/2** sind zurückgestellt,
+keine automatische Anschlussfreigabe. Auch 10.000 ist derzeit nicht begründet.
+Nach dem Transfercheck folgen Rauschpipeline, kompaktes Pilotdesign und
+Pilotauswertung mit Hauptversuchsplan gemäß der in #61 festgehaltenen Route.
+Wissenschaftliche Ausführung bleibt auf Manjaro; Hauptstudie und
+wissenschaftliche Übertragbarkeit bleiben offen.
 Die vorgemerkte kurze Bereinigungsbestandsaufnahme bleibt offen; funktionierenden
 Code und Originalergebnisse erhalten, anschließend nur konkrete kleine Änderungen.
 WSL2, Parallelisierung und größere Umstrukturierung bleiben zurückgestellt.

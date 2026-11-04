@@ -31,7 +31,7 @@ werden nicht abgerufen beziehungsweise validiert.
 `docs/search_duration_table_loss_note.md`
 `docs/search_duration_simplification_plan.md`
 `docs/search_duration_prediction_plan.md`, `docs/local_optimizer_plan.md`
-und `docs/outer_search_ladder_plan.md`
+`docs/outer_search_ladder_plan.md` und `docs/transfer_check_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -141,6 +141,16 @@ unverändert übernehmen; die wiederholten Kontrollfronten müssen identisch sei
 Python-Gegenfälle prüfen getrennte Kurven-/Strukturzahlen, alle Kontraste,
 Kosten, vollständige Verifikation und Widerruf positiver Berichte.
 Keine wissenschaftliche 200-/500-/2.000-/5.000-Zelle in der CI.
+
+Der Transfercheck ergänzt `check_transfer_check_integration.py`: drei native
+Seedoptionen, 18 feste Python-Suchprofile und unveränderte Alias-/Syntaxreferenzen.
+Drei frische 300/5-Worker laufen mit je zwei äußeren Iterationen auf eigenen
+acht Punkten y=1+t, y=0.4+2t und erneut y=1+t. Die wiederholte Front muss
+identisch bleiben. Python-Gegenfälle prüfen die Signaldatenzuordnung,
+relative Amplituden-/Phasenparameter, Datenrollen, alle 18 abgeschlossenen
+Zellen, 15 Paare und die Widerrufssicherung nach positiver Veröffentlichung.
+Alle 6.102 eingefrorenen Eingabewerte werden zusätzlich gegen eine unabhängige
+Hochpräzisionsformel geprüft. Kein wissenschaftlicher Transferlauf in der CI.
 
 ## Ermittlung des Diffs
 

@@ -23,7 +23,40 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: äußere Suchbudgets bei festem 300/5 ausgewertet
+## Aktuell: begrenzten Signaltransfer bei 500/300/5 vorbereiten
+
+- **Auftrag:** Nach der ausgewerteten Iterationsstaffel 500/300/5 beibehalten
+  und den kleinen Transfercheck vorbereiten. Weitere Budgetfeinabstimmung
+  500/1.000 und optional 300/2 zurückgestellt; kein neues Staffelprogramm.
+- **Einstieg:** sauberer Ergebnisbranch bei
+  `5ae2a2cdd48193dee6303fb109d6a7698c980845`, ein Worktree; #64 offen,
+  main bei 5215c5e. Eigener Branch `codex/transfer-check-preparation` auf
+  Ergebnis-PR #64. Kein eigenständiger Merge von #64.
+- **Vor Code gebunden:** [Plan](transfer_check_plan.md), Commit
+  `446afbfea8958f409693c2253f8d9d4950f24e45`, SHA-256
+  `f29561b8151a2a4e17cd881a8c4576f406f0efd340309ac54fcbbde2faabb6f3`.
+  Sechs feste Signale und drei neue gepaarte Seeds 20261210–20261212;
+  18 Zellen, überall 500/300/5. 900 Sekunden je Worker, 7.200 insgesamt.
+  Neue gebundene Eingangsdaten im Repository; kein früheres Archiv nötig.
+- **Datenprüfung selbst ausgeführt:** 6.102 Werte aus dem vorhandenen Generator
+  gegen eine unabhängige analytische Hochpräzisionsrechnung bei 100 Dezimalstellen
+  geprüft; größte absolute Abweichung/A etwa 1,14e-15. Keine Suche oder Optimierung.
+- **Notwendige Anpassungen:** gemeinsamer Treiber erhält kleine Hooks für
+  Signaldaten und Diagnose je Zelle; bisherige Standardpfade bleiben erhalten.
+  Parametervergleich berücksichtigt die jeweilige Referenzamplitude und -phase.
+  Neuer gebundener Adapter, Datenleser und Bericht mit sechs Gruppen und 15
+  Paaren. Unveränderte Originalauswahl und sämtliche numerischen Prüfgates;
+  kein erweiterter Strukturerkenner, keine neue Abhängigkeit.
+- **Prüfstand:** gezielte Python-Gegenprüfungen, native Miniintegration und volle
+  CI sind in Bearbeitung. Vor wissenschaftlicher Ausführung technische Prüfung
+  und manueller Merge; [Bedienung](transfer_check.md). Aktuellen Head und lokale
+  Änderungen bei Fortsetzung erneut prüfen; wissenschaftliche Serie nicht gestartet.
+- **Danach:** Transfer auswerten, begrenzten nächsten Schritt zur Rauschpipeline
+  begründen. Pilotroute und Planungsziele 8./9. und etwa 15. November erhalten.
+  Keine Hauptstudie, WSL2-/Parallelisierungsarbeit, größere Bereinigung,
+  zusätzlichen Agenten oder automatische Reviewrunde.
+
+## Grundlage: äußere Suchbudgets bei festem 300/5 ausgewertet
 
 - **Einstieg:** sauberer Branch `codex/outer-search-ladder-preparation` bei
   a47a273, ein Worktree; #63 gemergt, main bei 5215c5e, keine offenen PRs.
