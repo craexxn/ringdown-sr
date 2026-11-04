@@ -22,8 +22,8 @@ wird nicht automatisch fortgesetzt oder mit Ersatzseeds ergänzt.
 
 ## Vorbereitung nach Prüfung und Merge
 
-Der Ergebnisnachtrag #60 ist die Grundlage des Implementierungsbranches.
-Zuerst #60, anschließend den neuen Implementierungs-PR nach vollständiger
+Der Ergebnisnachtrag #60 ist als f9f4bae übernommen und die Grundlage des
+Implementierungsbranches. Den Implementierungs-PR #61 nach vollständiger
 technischer CI übernehmen. Der PR enthält den konkreten, an seinen geprüften
 Head gebundenen Vorbereitungsblock mit Baumvergleich zum Merge.
 `git switch --detach` vermeidet einen Wechsel auf ein bereits von einem

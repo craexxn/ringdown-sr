@@ -7,6 +7,11 @@ dem geprüften Head `401ca5d79eff5a96b98bc99b89ecabd982c429e7`.
 abgeschlossen und unabhängig nachgerechnet. Wissenschaftliche Ausführung
 bleibt auf Manjaro. Keine zusätzlichen Agenten.
 
+Der Ergebnisnachtrag #60 ist inzwischen als
+`f9f4bae06b8102992dc86fbfce9564ed3eed3db2` in main übernommen. Sein Dateibaum
+entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
+Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
+
 ## Aktuell: lokales Optimiererbudget vorbereiten
 
 - **Auftrag:** 20 frische unrestricted-Zellen, 200 äußere Iterationen, lokale
@@ -35,7 +40,7 @@ bleibt auf Manjaro. Keine zusätzlichen Agenten.
   Kostenaufnahmen mit explizitem Umfang der Wandzeit. Gezielte Gegenprüfung
   und vollständige technische CI am endgültigen Head stehen in
   [PR #61](https://github.com/craexxn/ringdown-sr/pull/61).
-- **Fortsetzung:** #60, danach Implementierungs-PR nach vollständiger Prüfung
+- **Fortsetzung:** Implementierungs-PR #61 nach vollständiger Prüfung
   manuell übernehmen; konkreter Vorbereitungsblock im PR und
   [Manjaro-Bedienung](local_optimizer.md). Hier keine wissenschaftlichen Suchen,
   keine zusätzlichen Agenten, keine WSL2-/Parallelisierungsarbeit. Vorgemerkte
