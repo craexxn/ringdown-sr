@@ -22,7 +22,13 @@ Commit `f13d7687ddd06d5c68fbbf7ae5baa67639d74ca3`, SHA-256
 `46fb2510957a4ee37d3f61e59291b8a5081db9ff64e7bd36a62aad0073901a0d`.
 `should_simplify=false` gilt für alle Zellen. Die Formelsprache bleibt gleich,
 die Suchtrajektorien können sich ändern; frühere Zellen werden nicht vermischt.
-Diese Bedienung beschreibt die neue vollständige Serie `duration-manjaro-003`.
+Auch [Lauf 003](search_duration_results_manjaro_003.md) ist nach vier
+verifizierten Zellen unvollständig: Zelle 5 scheiterte diesmal beim
+Python-/Julia-Vorhersagevergleich. Alle zehn CSV-Verluste werden nativ
+bitgenau reproduziert; kleine Rundungsunterschiede überschreiten bei vier
+CSV-Bäumen die Vorhersagegrenze. Die folgenden Startbefehle dokumentieren
+den bereits ausgeführten Laufweg, keine Wiederholungsfreigabe. Vor einer
+weiteren Serie ist die numerische Verifikation gesondert zu begründen.
 
 20 frische Suchen kreuzen K/A mit 200/2.000 Suchiterationen bei denselben fünf
 vorab festgelegten Seeds. Sie sind nach dem Teilstand nicht mehr vollständig
@@ -100,7 +106,7 @@ Suchbudget-Diagnosepfad aktiviert Produkte/Quotienten mit Sinus oder Kosinus.
 Ältere Aufrufer nutzen weiterhin den bisherigen Erkenner. Beide numerischen
 Parameterreplays, Kurvengrenzen und ursprüngliche Diagnosegates bleiben nötig.
 
-## Einmalige Serie auf Manjaro
+## Historischer Laufweg: Serie 003 auf Manjaro
 
 Im sauberen Checkout des geprüften Commits mit der bestehenden gepinnten
 [Python-/Julia-Umgebung](julia_startup.md) prüfen:

@@ -1,12 +1,50 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 03.11.2026. PR #55 ist auf `main` als `76a7400` übernommen.
-Der [zweite Suchbudgetlauf](search_duration_results_manjaro_002.md) ist nach
-vier verifizierten Zellen unvollständig. Aktuell wird ausschließlich die
-Manjaro-Abhilfe vorbereitet. Wissenschaftliche Ausführung bleibt auf Manjaro.
+Stand: 04.11.2026. PR #56 ist auf `main` als `e501e9d` übernommen.
+Der [dritte Suchbudgetlauf](search_duration_results_manjaro_003.md) ist nach
+vier verifizierten Zellen unvollständig. Sein numerischer Abbruch ist fest
+nachgerechnet; die nächste Verifikationsänderung ist erst ein Vorschlag.
+Wissenschaftliche Ausführung bleibt auf Manjaro.
 Keine zusätzlichen Agenten.
 
-## Aktuell: inkonsistenter nativer Verlust in Zelle 5
+## Aktuell: Vorhersageabweichung in Lauf 003
+
+- **Abgeglichener Einstieg:** sauberer eigener Branch
+  `codex/duration-manjaro-003-audit` auf
+  `e501e9d83315289cb4c59716495e93aa25154ecd`, ein Worktree, `origin/main`
+  identisch, keine offenen PRs beim Einstieg. PR #56 ist tatsächlich gemergt;
+  sein Codebaum entspricht dem geprüften Head `be887730d9f57c5fbede914240b57a3724e5eb6d`.
+  Andere Branches einschließlich aufgeschobener WSL2-Arbeit bleiben erhalten.
+- **Selbst ausgeführter Originalaudit:** SHA-256 bestätigt, 143 Dateien
+  erfasst, 96 Verbrauchsanker und 69 Quellen geprüft. Alle vier abgeschlossenen
+  Zellen mit 34 Kandidaten, Originalauswahlen und Diagnosen erneut verifiziert.
+  Die zehn CSV-Bäume der fünften Zelle nativ ohne Suche/Fit nachgerechnet:
+  sämtliche gespeicherten Verluste bitgenau, alle separat geprüften Verlust-
+  und Reduktionsbedingungen bestanden; vier Vorhersagevergleiche scheitern.
+- **Ursache des ersten Abbruchs:** CSV-Index 5, Messpunkt 18 exakt reproduziert.
+  Benachbarte Float64-Ergebnisse der inneren `exp`-Operation werden durch
+  Division mit einer großen Konstante im Sinusargument verstärkt. 81 Teilbäume
+  nativ/NumPy/hochpräzise ausgewertet; erste verursachende Operation zusätzlich
+  mit 100 und 200 Dezimalstellen geprüft. Kein Archivcode und keine
+  serialisierten Zustände ausgeführt; Originaldateien unverändert.
+- **Ergebnisgrenze:** alle vier abgeschlossenen Originalauswahlen bestehen die
+  Kurvenkriterien, nur eine die bestehende Struktur-/Parameterdiagnose.
+  Der vollständige Vergleich bleibt gesperrt; aus CSV-Replays der gescheiterten
+  Zelle wird keine nachträgliche Originalauswahl oder positive Verifikation.
+- **Arbeitsstand:** ausschließlich Audit-/Statusdokumentation; keine Änderung
+  an Laufzeitcode, eingefrorenen Plänen, Toleranzen oder Suchkonfiguration.
+  Lokale Auditbelege unter `/workspace/audits/duration-manjaro-003/`:
+  `audit.json`, `native_replay.json`, `separate_loss_checks.json`, `trace.json`
+  und `rounding_case.json`. Quellskripte dort sind eigene Auditwerkzeuge,
+  kein ausgeführter Archivcode. Dokumentationsprüfung und PR-Stand stehen
+  im zugehörigen PR; keine vollständige Testsuite für diese reine Textänderung.
+- **Nächster abgegrenzter Schritt:** die im Befund vorgeschlagene baumabhängige
+  Vorhersageprüfung methodisch präzisieren, unabhängig begründen und vor Code
+  versionieren. Alle vier betroffenen CSV-Bäume und echte Fehlerfälle müssen
+  abgedeckt werden. Keine pauschale Toleranzerhöhung und noch kein Neustart.
+  Eine Erweiterung des Strukturerkenners bleibt eine getrennte Entscheidung.
+
+## Historisch: inkonsistenter nativer Verlust in Lauf 002
 
 - **Abgeglichener Einstieg:** sauberer Branch `codex/duration-manjaro-002-audit`
   auf `76a740018b4426bc1651a5fed3bf214659a083cf`, ein Worktree, `origin/main`
@@ -43,9 +81,11 @@ Keine zusätzlichen Agenten.
   Serie `duration-manjaro-003`, unveränderte 20-Zellen-Anordnung, alle Seeds
   und Budgets, 600/7200 Sekunden. Keine Übernahme alter Teilzellen, kein
   Warmstart und keine rückwirkende Umwertung. [Startweg](search_duration.md).
-- **Reviewauftrag:** gezieltes KI-basiertes Review in bestehendem Chat
-  „2_Review“ angefragt. Der App-Zugriff scheiterte bisher; ein Reviewstart
-  oder vorliegender Reviewbefund darf daraus nicht behauptet werden.
+- **Nachgetragener Reviewstand:** übermittelter KI-basierter Befund zu Head
+  `be887730d9f57c5fbede914240b57a3724e5eb6d` gegen `76a740018b4426bc1651a5fed3bf214659a083cf`
+  ohne korrekturbedürftige Befunde; im [PR #56](https://github.com/craexxn/ringdown-sr/pull/56)
+  dokumentiert. Die separate Reviewprüfung hatte keinen Zugriff auf die
+  Originalarchive. Der anschließende Manjaro-Lauf 003 ist oben eingeordnet.
 
 ## Historisch: Versionierte Verlust- und Strukturverifikation
 

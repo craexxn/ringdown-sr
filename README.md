@@ -5,8 +5,8 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 03.11.2026; abgeglichener Implementierungsstand auf `main`:
-`76a7400` ([PR #55](https://github.com/craexxn/ringdown-sr/pull/55)).
+Fortsetzungsstand: 04.11.2026; abgeglichener Implementierungsstand auf `main`:
+`e501e9d` ([PR #56](https://github.com/craexxn/ringdown-sr/pull/56)).
 Vorheriger Ergebnisstand: [Grammatikvergleich 001](docs/trigonometric_grammar_results_manjaro_001.md),
 vollständiges Originalarchiv unabhängig geprüft. Frühere Suchbeobachtung:
 `2d9ed90`, übernommener [PR #50](https://github.com/craexxn/ringdown-sr/pull/50).
@@ -16,20 +16,21 @@ Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
 Der [Suchbudgetvergleich](docs/search_duration_plan.md) blieb auch im
-[zweiten Manjaro-Lauf](docs/search_duration_results_manjaro_002.md) unvollständig:
-vier Zellen verifiziert, Zelle 5 nach beendetem Fit wegen eines inkonsistenten
-nativen Verlusts abgebrochen. Beide 2.000er-Originalauswahlen des ersten Seeds
-bestehen Kurven-, Struktur- und Parameterdiagnosen; die Gesamtentscheidung
-bleibt bis zu einer vollständig geprüften Serie gesperrt.
+[dritten Manjaro-Lauf](docs/search_duration_results_manjaro_003.md) unvollständig:
+vier Zellen verifiziert, Zelle 5 nach beendetem Fit beim Python-/Julia-
+Vorhersagevergleich abgebrochen. Alle vier Originalauswahlen des ersten Seeds
+bestehen die Kurvenkriterien; eine besteht zusätzlich die vorhandene
+Struktur-/Parameterdiagnose. Gruppenaggregate und Gesamtentscheidung bleiben
+gesperrt; weitere Suchen sind noch nicht vorbereitet.
 
-Ein unabhängiger Gegenfall zeigt, dass das gepinnte Backend nach algebraischer
-Vereinfachung einen veralteten Float64-Verlust behalten kann. Die
-[gebundene Abhilfe](docs/search_duration_simplification_plan.md) verwendet
-im neuen Suchbudgetformat 3 für alle Zellen `should_simplify=false`.
-Die Formelsprache und die strenge Verlustprüfung bleiben erhalten;
-Suchtrajektorien können sich ändern. Vorbereitet ist `duration-manjaro-003`
-mit 20 frischen Prozessen nach vollständiger CI, gezieltem Review und manuellem
-Merge. [Bedienung](docs/search_duration.md),
+Die [gebundene Abhilfe](docs/search_duration_simplification_plan.md) mit
+`should_simplify=false` war in allen gestarteten Zellen aktiv. Alle zehn
+CSV-Verluste der fünften Zelle werden nativ bitgenau reproduziert. Der neue
+Abbruch entsteht durch einen kleinen `exp`-Rundungsunterschied, den eine große
+Konstante im Ausdruck verstärkt. Vier CSV-Bäume überschreiten die bestehende
+Vorhersagegrenze. Der Audit begründet einen Vorschlag zur baumabhängigen
+numerischen Verifikation; keine Toleranz, Auswahl oder Diagnose wurde geändert.
+[Bedienung](docs/search_duration.md),
 [Literatur](docs/search_duration_literature.md) und
 [Prüf-/Fortsetzungsstand](docs/representation_implementation_status.md) enthalten
 die Details. WSL2-Portabilität und Parallelisierung sind zurückgestellt.
