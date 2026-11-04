@@ -1,6 +1,10 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 04.11.2026. Ergebnis-PR #62 ist als
+Stand: 04.11.2026. Implementierungs-PR #63 ist als
+`5215c5e1c93f220a3f7ea59b1c37580d2f2b5ea4` übernommen; sein Dateibaum entspricht
+dem vollständig technisch geprüften Head `a47a273b6531ab4600633390e1b5ece1b4f0dfe2`.
+Die äußere Iterationsstaffel ist vollständig ausgeführt und unabhängig nachgerechnet.
+Ergebnis-PR #62 ist als
 `6d1501443f6385517c7acc19b4def869d59bd3a8` übernommen; sein Dateibaum entspricht
 dem geprüften Ergebnis-Head `1037b01b4bff428fd99d08190d500258281348f8`.
 PR #61 ist als
@@ -19,7 +23,48 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: äußere Suchbudgets bei festem 300/5 vorbereiten
+## Aktuell: äußere Suchbudgets bei festem 300/5 ausgewertet
+
+- **Einstieg:** sauberer Branch `codex/outer-search-ladder-preparation` bei
+  a47a273, ein Worktree; #63 gemergt, main bei 5215c5e, keine offenen PRs.
+  Neuer eigener Ergebnisbranch `codex/outer-ladder-manjaro-001-audit` ab main.
+- **Originalarchiv:** berechneter SHA-256
+  `ac7e841b79042e216d6aacae2961ffb8395f298bbcc7ecc11f1092c90b3deb40`.
+  Die übermittelte 63-stellige Angabe ließ das führende `a` aus. Alle
+  545 Dateien, 544 Manifest-Einträge, 542 Verbrauchsanker, 86 Quellen,
+  eingefrorenen Plan-/Datenbits und 20 Zellidentitäten geprüft. Saubere
+  Ausführung bei 5215c5e; vollständige Serie innerhalb 1.800/14.400 Sekunden.
+- **Selbst nachgerechnet:** alle 164 Kandidaten durch den unveränderten
+  Elternprüfpfad, CSV-Bäume, Originalauswahlen und skalare Kurvenmarker auf
+  beiden Rastern. Alle nativen Vorhersagen und Verluste bitgleich bestätigt,
+  null Zielfunktionscallbacks; keine Suche oder Optimierung. Alle Referenzen
+  bei 128 Bit. Fünf Kontraste, 25 Paare, C-/S-Wechsel und Kosten zusätzlich
+  unabhängig nachgerechnet. Originaldateien unverändert; Nachweise unter
+  `/workspace/audits/outer-ladder-manjaro-001/`.
+- **Befund:** 200/500/2.000/5.000 erreichen C = 1/5, 5/5, 5/5, 5/5 und
+  S = 1/5, 4/5, 3/5, 2/5. Gesamtdauer 2 h 3 min 38,192 s. 2.000/5.000
+  kosten rund 3,05-/6,24-mal die summierte Zellzeit von 500.
+  [Ergebnisbericht](outer_search_ladder_results_manjaro_001.md) enthält alle
+  Originalauswahlen und fünf festgelegten Kontraste.
+- **Getrennter Zusatzbefund:** sechs kurvengenaue, formal nicht unterstützte
+  Originalauswahlen sind reell Ringdown-Formen. Explizite algebraische
+  Ableitungen und 12.204 Hochpräzisions-Punktvergleiche bei 80/120 Dezimalstellen
+  bestätigen konstante Funktionsfaktoren beziehungsweise zusammenfassbare
+  Exponentialprodukte. Keine Änderung des Erkenners, der Originalbäume, der
+  Auswahl oder der planmäßigen S-Zählung; keine Behauptung bitgleicher
+  Float64-Auswertung nach Umformung. Die Erkennungsabdeckung begrenzt die
+  Interpretation von S als Strukturstabilität.
+- **Fortsetzung:** 500 äußere Iterationen bei lokal 300/5 als begründete
+  Arbeitsgrundlage für eine separat zu bindende Folgeprüfung; kein Optimum.
+  300/2 bleibt optional und separat vor Ausführung zu planen, keine automatische
+  Wiederholung der Staffel oder Erhöhung auf 10.000. Vor Nutzung als
+  Strukturstabilitätsmaß die Erkennungsabdeckung gesondert festlegen.
+  Pilotroute und Planungsziele 8./9. und etwa 15. November erhalten.
+  Ergebnisnachtrag ausschließlich Dokumentation; keine Implementierung,
+  Hauptstudie, größere Bereinigung, WSL2- oder Parallelisierungsarbeit.
+  Keine zusätzlichen Agenten.
+
+## Grundlage: äußere Suchbudgets bei festem 300/5 vorbereiten
 
 - **Auftrag:** 20 frische Manjaro-Zellen mit 200, 500, 2.000 und 5.000 äußeren
   Iterationen, durchgehend lokale Optimierung 300/5, unrestricted und

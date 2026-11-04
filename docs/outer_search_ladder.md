@@ -1,5 +1,13 @@
 # Bedienung: äußere Suchbudgets bei festem 300/5-Profil
 
+**Status vom 04.11.2026:** Die 20 Manjaro-Zellen sind vollständig ausgeführt
+und unabhängig nachgerechnet. [Ergebnis und Grenzen](outer_search_ladder_results_manjaro_001.md)
+halten die Nachrechnung aller 164 Originalkandidaten, die fünf Kontraste und
+den Aufwand fest.
+Die Befehle unten beschreiben den abgeschlossenen Laufweg und geben keine
+automatische Wiederholung frei. Der optionale 300/2-Anschluss bleibt separat
+festzulegen.
+
 Die [angenommene Methodenfestlegung](outer_search_ladder_plan.md) wurde vor
 Implementierung am Commit `e1ea601286042aadcc5b5291ae72d114c7846dbf` eingefroren,
 SHA-256 `95aca0069d6b8a6ad0305d5722c558e4bbea1c23e7f3b70630d2eb33e816fa35`.
@@ -30,8 +38,8 @@ separat; Erkennungsgrenzen und der Blindfleck bei 8·fs bleiben dokumentiert.
 
 Der Implementierungs-PR enthält den vollständigen Vorbereitungsblock mit
 dem abschließend geprüften Head und einem Dateibaumvergleich zu main.
-Der Ergebnisnachtrag #62 ist als `6d15014` übernommen; der Implementierungs-PR
-folgt nach vollständiger technischer Prüfung. Historische Plancommits durch
+Der Ergebnisnachtrag #62 ist als `6d15014` und Implementierungs-PR #63 nach
+vollständiger CI als `5215c5e` übernommen. Historische Plancommits durch
 Fetch der PR-Heads erhalten;
 fehlende Historie darf nicht durch abgeschaltete Prüfungen ersetzt werden.
 `git switch --detach` vermeidet einen bereits belegten main-Worktree.
