@@ -1,6 +1,9 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 04.11.2026. PR #61 ist als
+Stand: 04.11.2026. Ergebnis-PR #62 ist als
+`6d1501443f6385517c7acc19b4def869d59bd3a8` übernommen; sein Dateibaum entspricht
+dem geprüften Ergebnis-Head `1037b01b4bff428fd99d08190d500258281348f8`.
+PR #61 ist als
 `cf04476057b95c1517e1a303f4b48fbd30545a47` übernommen; sein Dateibaum entspricht
 dem abschließend geprüften Head `3fe7e7a181ba5b8d00ecbc81fe00bf62e49c2ce7`.
 Der lokale Optimiererbudgetlauf ist vollständig abgeschlossen und unabhängig
@@ -24,8 +27,10 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   insgesamt; Abbruchgrenzen, keine Laufzeitprognose.
 - **Einstieg:** eigener Branch `codex/outer-search-ladder-preparation` ab
   Ergebnis-Head `1037b01b4bff428fd99d08190d500258281348f8`, ein Worktree;
-  main bei cf04476, Ergebnis-PR #62 noch offen. Ergebnisnachtrag zuerst
-  übernehmen; dieser Implementierungszweig baut darauf auf.
+  main beim Einstieg bei cf04476, Ergebnis-PR #62 damals noch offen.
+  Inzwischen ist #62 dateigleich als 6d15014 übernommen. Diese Basis wurde
+  nach ausdrücklichem Dateibaumvergleich ohne Implementierungsänderung
+  aufgenommen; Implementierungs-PR #63 zielt auf main.
 - **Vor Code eingefroren:** [Plan](outer_search_ladder_plan.md), Commit
   `e1ea601286042aadcc5b5291ae72d114c7846dbf`, SHA-256
   `95aca0069d6b8a6ad0305d5722c558e4bbea1c23e7f3b70630d2eb33e816fa35`.

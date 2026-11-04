@@ -30,8 +30,9 @@ separat; Erkennungsgrenzen und der Blindfleck bei 8·fs bleiben dokumentiert.
 
 Der Implementierungs-PR enthält den vollständigen Vorbereitungsblock mit
 dem abschließend geprüften Head und einem Dateibaumvergleich zu main.
-Vorher den Ergebnisnachtrag #62 und anschließend den Implementierungs-PR
-übernehmen. Historische Plancommits durch Fetch der PR-Heads erhalten;
+Der Ergebnisnachtrag #62 ist als `6d15014` übernommen; der Implementierungs-PR
+folgt nach vollständiger technischer Prüfung. Historische Plancommits durch
+Fetch der PR-Heads erhalten;
 fehlende Historie darf nicht durch abgeschaltete Prüfungen ersetzt werden.
 `git switch --detach` vermeidet einen bereits belegten main-Worktree.
 Git-Ausdrücke mit `^{tree}` für Zsh stets in Anführungszeichen setzen.
