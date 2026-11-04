@@ -1,6 +1,10 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 04.11.2026. PR #59 ist als
+Stand: 04.11.2026. PR #61 ist als
+`cf04476057b95c1517e1a303f4b48fbd30545a47` übernommen; sein Dateibaum entspricht
+dem abschließend geprüften Head `3fe7e7a181ba5b8d00ecbc81fe00bf62e49c2ce7`.
+Der lokale Optimiererbudgetlauf ist vollständig abgeschlossen und unabhängig
+nachgerechnet. PR #59 ist als
 `79ff670b825efd8ba0e999edb983aec6f7e804ae` übernommen; der Dateibaum entspricht
 dem geprüften Head `401ca5d79eff5a96b98bc99b89ecabd982c429e7`.
 [Suchbudgetlauf 004](search_duration_results_manjaro_004.md) ist vollständig
@@ -12,7 +16,43 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: lokales Optimiererbudget vorbereiten
+## Aktuell: lokaler Optimiererbudgetlauf abgeschlossen
+
+- **Einstieg:** sauberer Branch `codex/local-optimizer-comparison` bei 3fe7e7a,
+  ein Worktree; #61 gemergt, main bei cf04476, keine offenen PRs. Neuer eigener
+  Ergebnisbranch `codex/local-optimizer-manjaro-001-audit` ab main.
+- **Originalarchiv:** `local-optimizer-manjaro-001.tar.gz`, SHA-256
+  `1ab8c0aa91436c4b169c6c6efa8053e04c47ef57d07915f36ac476483276866d` bestätigt.
+  545 Dateien, 544 Abschlussmanifest-Einträge, 542 Verbrauchsanker und
+  80 Quellen geprüft; saubere Ausführung bei cf04476. Alle 20 Zellen vollständig.
+- **Selbst nachgerechnet:** alle 183 Originalkandidaten durch den bestehenden
+  Elternprüfpfad, alle CSV-Bäume, skalare Kurvenmarker auf beiden Rastern,
+  ursprüngliche Auswahlen, Gruppenwerte und 25 Paare. Sämtliche nativen
+  Vorhersagen/Verluste bitgleich reproduziert; null Zielfunktionscallbacks,
+  keine neue Suche oder Optimierung. Referenzen durchgehend bei 128 Bit.
+  Unabhängige Endpunkt-/Kontrast-/Kostenrechnung bestätigt alle fünf Kontraste.
+  Nachweise unter `/workspace/audits/local-optimizer-manjaro-001/`.
+- **Befund:** 100/2, 300/2, 100/5 und 300/5 erreichen 1/5, 2/5, 2/5 und
+  3/5 Kurvenerfolge; vollständig unterstützte Rekonstruktionen jeweils 1/5.
+  300/5 gewinnt drei und verliert einen Baseline-Kurvenerfolg, darunter ein
+  neuer unterstützter Gewinn. Gemessene Zellzeit rund +32 %, Gesamtdauer
+  21 min 55,952 s. [Ergebnis und Grenzen](local_optimizer_results_manjaro_001.md)
+  enthalten sämtliche Originalauswahlen und die fünf festgelegten Kontraste.
+- **Änderungsumfang:** ausschließlich Ergebnisdokument und Status/Bedienung;
+  keine Implementierungsänderung, neue Fixtures, Pläne oder Archivänderungen.
+  Dokumentationsprüfung und Ergebnis-PR bilden den Abschluss dieses Nachtrags.
+- **Fortsetzung:** 300/5 ist ein begründeter Arbeitsprofil-Kandidat, 100/5 eine
+  günstigere Alternative. Kein automatisches Gewinnerprofil oder neuer Versuch.
+  Vorgemerkte äußere Staffel 200/500/2.000/5.000 separat vor Ausführung planen;
+  10.000 nur als spätere Option bei positivem Trend. Danach die in #61
+  festgehaltene Pilotroute mit neuen Signalparametern, Rauschpipeline, gebundenem
+  Pilotdesign und Auswertung/Hauptversuchsplan. Zwischenbewertung 8./9. November,
+  Pilotabschluss etwa 15. November bleiben Planungsziele. Keine Hauptstudie,
+  breite zusätzliche lokale Budgetsuche oder große Umstrukturierung gestartet.
+  Die kurze Bereinigungsbestandsaufnahme bleibt vorgemerkt; Codeänderungen nur
+  bei konkretem Bedarf. Manjaro bleibt Ausführungsort; keine zusätzlichen Agenten.
+
+## Vorheriger Stand: lokales Optimiererbudget vorbereiten
 
 - **Auftrag:** 20 frische unrestricted-Zellen, 200 äußere Iterationen, lokale
   Profile 100/2, 300/2, 100/5 und 300/5, fünf neue gepaarte Seeds. Die äußere

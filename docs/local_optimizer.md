@@ -1,5 +1,11 @@
 # Bedienung: lokales Optimiererbudget auf Manjaro
 
+**Abgeschlossen am 04.11.2026:** `local-optimizer-manjaro-001` enthält alle
+20 verifizierten Zellen. [Ergebnis und Grenzen](local_optimizer_results_manjaro_001.md)
+dokumentieren den unabhängigen Audit. Die folgenden Befehle halten den
+abgeschlossenen Laufweg fest; sie geben keine Wiederholung oder zusätzliche
+Serie frei. Originalverzeichnis und Archiv erhalten.
+
 Der [angenommene Plan](local_optimizer_plan.md) wurde vor Code am Commit
 `e7b457bf8927cdd1b52c51bb3457b54d0c88f066` eingefroren, SHA-256
 `793006863a739a973dd3ffcf82c6e665f1a77da7eefee4132555843230df7f47`.
