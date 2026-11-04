@@ -27,9 +27,14 @@ bleibt auf Manjaro. Keine zusätzlichen Agenten.
   unrestricted und `should_simplify=false` vorab, im Callback und im Elternprozess
   geprüft. Datenrollen und Originalauswahl erhalten; Grenzen 600/7200 Sekunden.
 - **Prüfstand:** 272 native Assertions ohne Suche/Optimierung und 239 gezielte
-  Python-Prüfungen bestanden. Vollständige technische Prüfung einschließlich
-  der fünf neuen winzigen Integrationsworker ist vor Merge erforderlich;
-  endgültiger Head und CI-Nachweis stehen im Implementierungs-PR.
+  Python-Prüfungen bestanden. Am Implementierungsstand bd674f8 bestanden lokal
+  sämtliche 2.185 Python-Tests und alle fünf neuen winzigen Integrationsworker
+  mit identischen wiederholten Baselinefronten. 20 echte Optionsobjekte,
+  zwölf Referenzfälle und 56 Syntaxfälle bestätigt. Der anschließende
+  Kostenexport ergänzt jeden der 25 Paarvergleiche um beide ursprünglichen
+  Kostenaufnahmen mit explizitem Umfang der Wandzeit. Gezielte Gegenprüfung
+  und vollständige technische CI am endgültigen Head stehen in
+  [PR #61](https://github.com/craexxn/ringdown-sr/pull/61).
 - **Fortsetzung:** #60, danach Implementierungs-PR nach vollständiger Prüfung
   manuell übernehmen; konkreter Vorbereitungsblock im PR und
   [Manjaro-Bedienung](local_optimizer.md). Hier keine wissenschaftlichen Suchen,

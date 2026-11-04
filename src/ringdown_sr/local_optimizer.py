@@ -198,6 +198,22 @@ class SearchInvocationGuard(prior.SearchInvocationGuard):
         return {**super().record(), "format": FORMAT}
 
 
+def _costs(cell):
+    return {
+        "worker_wall_seconds_scope": "worker_launch_and_parent_verification",
+        **{
+            key: cell["diagnostics"].get(key)
+            for key in (
+                "timing_seconds",
+                "worker_wall_seconds",
+                "callback_calls_during_fit",
+                "callback_calls_total",
+                "backend_evaluation_counter",
+            )
+        },
+    }
+
+
 def comparison(cells, *, final_verified):
     result = {"summaries": None, "pair_differences": None, "comparison": None}
     if (
@@ -246,22 +262,7 @@ def comparison(cells, *, final_verified):
                 k: dict(Counter(_markers(c)[k] for c in chosen))
                 for k in ("curve", "structure", "parameters")
             },
-            "cost_by_seed": [
-                {
-                    "seed": c["budget"]["seed"],
-                    **{
-                        k: c["diagnostics"].get(k)
-                        for k in (
-                            "timing_seconds",
-                            "worker_wall_seconds",
-                            "callback_calls_during_fit",
-                            "callback_calls_total",
-                            "backend_evaluation_counter",
-                        )
-                    },
-                }
-                for c in group
-            ],
+            "cost_by_seed": [{"seed": c["budget"]["seed"], **_costs(c)} for c in group],
             "unselected_curve_successes": sum(
                 d["curve_marker"] == "within_tolerance" and not d["is_selected"]
                 for c in group
@@ -289,6 +290,10 @@ def comparison(cells, *, final_verified):
                     fixed=fixed,
                     seed=seed,
                 ),
+                "costs": {
+                    "first": _costs(indexed[left, seed]),
+                    "second": _costs(indexed[right, seed]),
+                },
             }
             for seed in SEEDS
         ]

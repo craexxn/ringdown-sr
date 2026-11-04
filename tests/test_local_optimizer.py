@@ -302,6 +302,33 @@ def test_incomplete_or_changed_design_never_releases_aggregates(diagnoses, fault
         )
 
 
+def test_each_pair_carries_its_own_original_costs_and_explicit_wall_scope(diagnoses):
+    cells = completed(diagnoses, lambda _: False)
+    for cell in cells:
+        cell["diagnostics"].update(
+            worker_wall_seconds=float(cell["number"]),
+            timing_seconds={"fit_including_jit_and_python_exports": cell["number"] / 2},
+            callback_calls_during_fit=10 * cell["number"],
+            backend_evaluation_counter={"status": "unavailable"},
+        )
+    result = control.comparison(cells, final_verified=True)
+    for pair in result["pair_differences"]:
+        for side in ("first", "second"):
+            number = pair[side + "_cell"]
+            costs = pair["costs"][side]
+            assert costs["worker_wall_seconds"] == number
+            assert costs["callback_calls_during_fit"] == 10 * number
+            assert (
+                costs["timing_seconds"]["fit_including_jit_and_python_exports"]
+                == number / 2
+            )
+            assert costs["backend_evaluation_counter"] == {"status": "unavailable"}
+            assert (
+                costs["worker_wall_seconds_scope"]
+                == "worker_launch_and_parent_verification"
+            )
+
+
 def test_invalid_profile_and_changed_bound_plan_fail(monkeypatch, tmp_path):
     for condition in (None, True, [], "unrestricted", "local_500_2"):
         with pytest.raises(ValueError):
