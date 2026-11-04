@@ -1,14 +1,58 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 04.11.2026. PR #58 ist als
-`9bff8a29030026dcdc2de52640556a73a57fe2a4` übernommen. Der geprüfte
-[Methodenplan](search_duration_prediction_plan.md) wird im separat beauftragten
-Implementierungsschritt auf `codex/prediction-verification` umgesetzt.
-Die tatsächliche Suche bleibt gegenüber PR #56 unverändert; die neue
-Vorhersageprüfung gilt ausschließlich nach dem Fit im Suchbudgetformat 4.
-Wissenschaftliche Ausführung bleibt auf Manjaro. Keine zusätzlichen Agenten.
+Stand: 04.11.2026. PR #59 ist als
+`79ff670b825efd8ba0e999edb983aec6f7e804ae` übernommen; der Dateibaum entspricht
+dem geprüften Head `401ca5d79eff5a96b98bc99b89ecabd982c429e7`.
+[Suchbudgetlauf 004](search_duration_results_manjaro_004.md) ist vollständig
+abgeschlossen und unabhängig nachgerechnet. Wissenschaftliche Ausführung
+bleibt auf Manjaro. Keine zusätzlichen Agenten.
 
-## Aktuell: Implementierung der Vorhersageprüfung
+## Aktuell: vollständiger Suchbudgetvergleich 004
+
+- **Einstieg:** sauberer eigener Branch `codex/duration-manjaro-004-audit`
+  ab `79ff670`, ein Worktree, kein offener PR beim Einstieg. Andere Branches,
+  einschließlich zurückgestellter WSL2-Arbeit, erhalten.
+- **Originalarchiv:** SHA-256
+  `c2d9e330770746030bab9467b682a6b595cac25aa132dbb4decd1c4b03472289` bestätigt;
+  523 Dateien, 522 Abschlussmanifest-Einträge, 520 ursprüngliche Verbrauchsanker
+  und 72 Quellen geprüft. Eingangsarchiv 001 nicht erneut vorhanden; alle
+  eingefrorenen Datenkopien und Bindungen geprüft. Keine Archivquellen oder
+  serialisierten Zustände ausgeführt, keine wissenschaftlichen Fits/Suchen.
+- **Selbst nachgerechnet:** alle 20 Zellen und 193 Kandidaten durch den
+  tatsächlichen Elternprüfpfad, sämtliche Diagnosen, Originalauswahlen,
+  Gruppenwerte und 20 Paardifferenzen reproduziert. Alle neuen Referenznachweise
+  bei 128 Bit. Unabhängige skalare Kurvenmarker identisch. Zusätzlich alle
+  193 Originalbäume nativ nachgerechnet: Vorhersagen/Verluste bitgleich,
+  Grammatik, Komplexität und Baumrundreise bestätigt; null Zielfunktionscallbacks.
+  Originaldateien unverändert. Eigene Nachweise unter
+  `/workspace/audits/duration-manjaro-004/` in `audit.json`, `native_replay.json`
+  und `original_sha256.json` samt eigenen Skripten/Logs.
+- **Befund:** K200 → K2000: 3/5 → 4/5, neuer unterstützter Erfolg bei Seed
+  20261107; planmäßig `supported_structure_gain`. A200 → A2000: 2/5 → 3/5,
+  neuer Kurvenerfolg bei Seed 20261106 ohne Erkennerunterstützung;
+  `approximation_gain_only`. Unterstützte K-Auswahlen insgesamt weiter 2/5.
+  Deutlicher Zwischenpunkt-Gegenfall bei K/20261106, deshalb kein pauschaler
+  Schluss aus sinkender Trainings-MSE. Physikalische Identifikation und
+  allgemeine Übertragbarkeit bleiben offen; adaptive Entwicklung.
+- **Aufwand:** 2.576,5844 Sekunden aufgezeichnete Gesamtdauer; alle Worker unter
+  600 Sekunden, Serie unter 7.200 Sekunden. K/A-Iterations-, Profil- und
+  Auswahlregeln unverändert. Neue Referenzkontrolle beendet die drei früheren
+  Teilserien nicht rückwirkend; erste vier frische Fronten identisch zu 003.
+- **Arbeitsstand:** ausschließlich Ergebnis-/Statusdokumentation im neuen
+  Ergebnis-PR. Maßgeblicher Head und Dokumentations-CI stehen dort; keine
+  Codeänderung oder erneute volle technische Suite für diesen Textnachtrag.
+  Die vollständige Implementierungs-CI 41785241800 und das übermittelte
+  KI-basierte Review von #59 betreffen den unveränderten Ausführungsstand.
+- **Nächster abgegrenzter Schritt:** gesonderten Übertragbarkeitsplan anhand
+  dieses Befunds festlegen, keine automatische weitere Budget-/Seedserie.
+  Die vereinbarte Erinnerung an eine kurze Bereinigungsbestandsaufnahme wird
+  jetzt ausgelöst: funktionierenden Stand und Originalarchiv erhalten, danach
+  kleine getrennte Änderungen für konkrete Wartungsprobleme. Noch keine
+  Bereinigung implementiert; numerische Abläufe und historische Lesbarkeit
+  bleiben erhalten. Der Schwerpunkt bleibt auf wissenschaftlichen Folgetests.
+
+## Grundlage: Implementierung der Vorhersageprüfung
+
 
 - **Grundlage:** übermitteltes KI-basiertes Methodenreview zu PR #58,
   Head `836f6c0d8e560a6c9900e1a38385cd7137822c96`, Basis
@@ -48,12 +92,14 @@ Wissenschaftliche Ausführung bleibt auf Manjaro. Keine zusätzlichen Agenten.
   Referenz: gmpy2 2.2.2 / MPFR 4.2.1 / GMP 6.3.0; Gegenrechnung:
   Julia 1.13.1 / MPFR 4.2.2. Null Zielfunktionscallbacks, keine Suche/Fits.
   Ruff, Format, Dokumentation und unveränderte frühere Planbytes bestätigt.
-- **Prüf-/Übergabestand:** vollständige technische Prüfungen und gezielter
-  Implementierungsreview sind erforderlich. Aktueller Head, tatsächlich
-  bestandene Prüfungen und verbleibende Punkte werden im Implementierungs-PR
-  festgehalten. [Bedienung und vorbereiteter Manjaro-Start](search_duration.md).
-  Erst nach Review und manuellem Merge alle 20 Zellen frisch als Lauf 004;
-  keine Übernahme aus 001–003. Andere Branches bleiben erhalten.
+- **Abgeschlossener Prüf-/Übergabestand:** vollständige technische CI
+  41785241800 am Head `401ca5d` bestanden, einschließlich 2.075 Python-Tests,
+  festem 44-Baum-Nachweis und allen Integrationen. Übermitteltes KI-basiertes
+  Implementierungsreview desselben Heads ohne korrekturbedürftige Befunde:
+  laut Review 104 fokussierte Python-Tests und 1.012 separat mit Decimal/Taylor
+  geprüfte Modellwerte bestanden; Originalarchive fehlten dort. Befund und
+  Aussagegrenzen stehen in [PR #59](https://github.com/craexxn/ringdown-sr/pull/59).
+  Danach manueller Squash-Merge und frischer Manjaro-Lauf 004; Ergebnis oben.
 - **Vormerkung nach vollständiger Manjaro-Verifikation:** bei der gemeinsamen
   Auswertung ausdrücklich an eine kurze Bestandsaufnahme für gezielte
   Bereinigungen erinnern. Zuerst funktionierenden Code und Originalergebnisse

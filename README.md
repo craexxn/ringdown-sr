@@ -6,43 +6,42 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 ## Projektstatus
 
 Fortsetzungsstand: 04.11.2026; abgeglichener Hauptbranch:
-`9bff8a2` ([PR #58](https://github.com/craexxn/ringdown-sr/pull/58)).
-Die Suchimplementierung entspricht weiterhin `e501e9d`
-([PR #56](https://github.com/craexxn/ringdown-sr/pull/56)).
-Vorheriger Ergebnisstand: [Grammatikvergleich 001](docs/trigonometric_grammar_results_manjaro_001.md),
-vollständiges Originalarchiv unabhängig geprüft. Frühere Suchbeobachtung:
-`2d9ed90`, übernommener [PR #50](https://github.com/craexxn/ringdown-sr/pull/50).
-Vorgegebener Stand des freien Budgetlaufs: `8bdc8db`; frühere Ausführungsstände:
-Konstantendiagnose `0a70f19`, Zeitdarstellungskontrolle `4057caa`.
+`79ff670` ([PR #59](https://github.com/craexxn/ringdown-sr/pull/59)).
+Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
+KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde übernommen.
+Die tatsächliche Suche bleibt unter dem Profil aus #56 mit
+`should_simplify=false`; geändert wurde die Kontrolle nach dem Fit.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
-Der [Suchbudgetvergleich](docs/search_duration_plan.md) blieb auch im
-[dritten Manjaro-Lauf](docs/search_duration_results_manjaro_003.md) unvollständig:
-vier Zellen verifiziert, Zelle 5 nach beendetem Fit beim Python-/Julia-
-Vorhersagevergleich abgebrochen. Alle vier Originalauswahlen des ersten Seeds
-bestehen die Kurvenkriterien; eine besteht zusätzlich die vorhandene
-Struktur-/Parameterdiagnose. Gruppenaggregate und Gesamtentscheidung bleiben
-gesperrt; die technische Vorbereitung eines frischen Laufs 004 ist im Gang.
+Der [Manjaro-Suchbudgetlauf 004](docs/search_duration_results_manjaro_004.md)
+ist vollständig abgeschlossen und unabhängig nachgerechnet: **20 Zellen,
+193 Kandidaten**, alle nativen Vorhersagen und Verluste bitgleich reproduziert.
+Die aufgezeichnete Gesamtdauer beträgt rund 43 Minuten.
 
-Die [gebundene Abhilfe](docs/search_duration_simplification_plan.md) mit
-`should_simplify=false` war in allen gestarteten Zellen aktiv. Alle zehn
-CSV-Verluste der fünften Zelle werden nativ bitgenau reproduziert. Der neue
-Abbruch entsteht durch einen kleinen `exp`-Rundungsunterschied, den eine große
-Konstante im Ausdruck verstärkt. Vier CSV-Bäume überschreiten die bestehende
-Vorhersagegrenze. Der [Methodenplan zur baumabhängigen Vorhersageverifikation](docs/search_duration_prediction_plan.md)
-ist nach sauberem KI-basiertem Methodenreview mit #58 übernommen. Die
-separat beauftragte Implementierung aktiviert Format 4: unabhängige
-MPFR-Rundungsintervalle, feste rationale Breitenbegrenzung und erneute
-Elternprüfung sämtlicher Kandidaten. Sie betrifft die Kontrolle nach dem Fit;
-der tatsächliche Suchlauf bleibt unter dem Profil aus #56. Auswahl, Verluste
-und Parameter-/Aliasdiagnosen bleiben unverändert. Vor einem frischen
-Manjaro-Lauf sind vollständige technische CI, gezieltes Implementierungsreview
-und manueller Merge erforderlich.
+Ohne Grammatikbeschränkung steigt die Zahl erfolgreicher Originalauswahlen
+bei 2.000 statt 200 Iterationen von 3/5 auf 4/5; der neue Erfolg besitzt eine
+unterstützte Ringdown-Struktur mit passenden Parametern. Mit Beschränkung
+steigt die Zahl von 2/5 auf 3/5, ohne unterstützten Strukturnachweis beim neu
+erfolgreichen Seed. Das ist ein positives Entwicklungssignal für das höhere
+Budget ohne Einschränkung und ein zusätzlicher Approximationserfolg mit
+Einschränkung. Ein Gegenfall zeigt trotz kleinerer Trainings-MSE erheblich
+schlechtere Zwischenpunktfehler. Fünf adaptive Seeds am bekannten Signal
+begründen keine allgemeine Leistungsvalidierung oder physikalische Identifikation.
+
+Nächster wissenschaftlicher Schritt: einen getrennten Übertragbarkeitsvergleich
+vor Ausführung festlegen. Zusätzlich ist die vorgemerkte kurze Bestandsaufnahme
+zur gezielten Bereinigung jetzt fällig; Code und Originalergebnisse zuerst
+sichern, danach nur konkrete Wartungsprobleme mit kleinen getrennten Änderungen.
+Keine neuen Suchen, keine große Umstrukturierung oder Strukturerweiterung
+in diesem Ergebnisschritt. WSL2 und Parallelisierung bleiben zurückgestellt.
+
+[Ergebnis und Grenzen](docs/search_duration_results_manjaro_004.md),
 [Bedienung](docs/search_duration.md),
-[Literatur](docs/search_duration_literature.md) und
-[Prüf-/Fortsetzungsstand](docs/representation_implementation_status.md) enthalten
-die Details. WSL2-Portabilität und Parallelisierung sind zurückgestellt.
+[Methodenplan](docs/search_duration_plan.md) und
+[Prüf-/Fortsetzungsstand](docs/representation_implementation_status.md)
+enthalten die Details. Die Startbefehle dokumentieren den abgeschlossenen
+Laufweg; sie geben keine automatische Wiederholung frei.
 
 Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
 Übergaberegeln stehen in [AGENTS.md](AGENTS.md); vor Fortsetzung sind lokale
