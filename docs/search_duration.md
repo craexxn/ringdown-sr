@@ -32,8 +32,9 @@ den historischen Laufweg. Der separat geprüfte und mit #58 übernommene
 Rundungsintervalle, unabhängige Breitenbegrenzung und erneute Elternnachrechnung.
 Bindung an den erreichbaren Merge-Commit `9bff8a29030026dcdc2de52640556a73a57fe2a4`,
 SHA-256 `2a215b6f178c085cad6611070124e09e929f35917eba66723f4522c1fe81393c`.
-Die Startvorbereitung für Lauf 004 unten gilt erst nach vollständiger CI,
-gezieltem Implementierungsreview und manuellem Merge.
+Der [Lauf 004](search_duration_results_manjaro_004.md) ist mit allen 20 Zellen
+abgeschlossen und unabhängig nachgerechnet. Die Befehle unten dokumentieren
+diesen abgeschlossenen Laufweg, keine Wiederholungsfreigabe.
 
 20 frische Suchen kreuzen K/A mit 200/2.000 Suchiterationen bei denselben fünf
 vorab festgelegten Seeds. Sie sind nach dem Teilstand nicht mehr vollständig
@@ -218,13 +219,13 @@ Physikalische Identifikation bleibt `not_assessed`; der Alias-Blindfleck bei
 `8*fs` bleibt bestehen. Weitere Tests werden erst anhand der neuen Ergebnisse
 begründet und vor Ausführung festgelegt.
 
-## Vorbereiteter Neustart: Serie 004 auf Manjaro
+## Abgeschlossener Laufweg: Serie 004 auf Manjaro
 
-Erst nach vollständiger CI, gezieltem Implementierungsreview und manuellem
-Merge. Im sauberen Checkout des geprüften baumgleichen Merge-Stands ausführen;
-dessen konkrete SHA und PR-Referenz werden im Implementierungs-PR dokumentiert.
-Alte Ergebnisverzeichnisse und Archive erhalten. Die folgenden Befehle starten
-alle 20 Zellen frisch; sie setzen keinen Teilstand fort.
+Ausgeführt nach vollständiger CI, gezieltem KI-basiertem Implementierungsreview
+und Squash-Merge von #59 im sauberen Stand
+`79ff670b825efd8ba0e999edb983aec6f7e804ae`. Alle 20 Zellen liefen frisch;
+keine Teilstände wurden fortgesetzt. Den Ergebnisordner und das Originalarchiv
+erhalten. Die folgenden historischen Befehle sind keine Freigabe weiterer Suchen.
 
 ```bash
 (
@@ -257,9 +258,8 @@ alle 20 Zellen frisch; sie setzen keinen Teilstand fort.
 )
 ```
 
-Bei der späteren gemeinsamen Auswertung des ersten vollständig verifizierten
-Manjaro-Laufs an die vorgemerkte kurze Bestandsaufnahme zur gezielten Bereinigung
-erinnern. Zuerst Code und Originalergebnisse sichern; danach nur konkrete
+Mit der gemeinsamen Auswertung des vollständig verifizierten Laufs 004 ist
+die vorgemerkte kurze Bestandsaufnahme zur gezielten Bereinigung jetzt fällig. Zuerst Code und Originalergebnisse sichern; danach nur konkrete
 Wartungsprobleme mit kleinen getrennten Regressionen behandeln. Keine große
 Umstrukturierung, keine Änderung numerischer Reihenfolge oder historischer
 Lesbarkeit. Erfolgreiche technische Tests allein lösen diesen Folgeschritt
