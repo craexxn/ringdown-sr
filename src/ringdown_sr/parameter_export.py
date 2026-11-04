@@ -139,7 +139,9 @@ def _node_count(tree):
     return 1 + sum(_node_count(child) for child in tree.get("children", []))
 
 
-def _candidate(candidate, index, selected_index, time_s, fs):
+def _candidate(
+    candidate, index, selected_index, time_s, fs, *, prediction_verifier=None
+):
     # analyze_tree validates the bounded complete tree before any other traversal.
     analysis = analyze_tree(candidate["tree"], time_s, sample_rate_hz=fs)
     if (
@@ -154,7 +156,12 @@ def _candidate(candidate, index, selected_index, time_s, fs):
     saved = np.asarray(candidate["prediction"])
     if saved.dtype.kind not in "fiu" or saved.shape != time_s.shape:
         raise ValueError("Saved prediction must cover the recorded sample window.")
-    replay = _check_prediction_replay(evaluate_tree(candidate["tree"], time_s), saved)
+    python = evaluate_tree(candidate["tree"], time_s)
+    replay = (
+        _check_prediction_replay(python, saved)
+        if prediction_verifier is None
+        else prediction_verifier(candidate, time_s, python, saved)
+    )
     return {
         "source_index": index,
         "is_selected": index == selected_index,

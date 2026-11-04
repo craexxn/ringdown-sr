@@ -27,12 +27,13 @@ verifizierten Zellen unvollständig: Zelle 5 scheiterte diesmal beim
 Python-/Julia-Vorhersagevergleich. Alle zehn CSV-Verluste werden nativ
 bitgenau reproduziert; kleine Rundungsunterschiede überschreiten bei vier
 CSV-Bäumen die Vorhersagegrenze. Die folgenden Startbefehle dokumentieren
-den bereits ausgeführten Laufweg, keine Wiederholungsfreigabe. Vor einer
-weiteren Serie ist die numerische Verifikation gesondert zu begründen.
-Der dazu ausgearbeitete [Methodenplan](search_duration_prediction_plan.md)
-beschreibt Rundungsintervalle, eine unabhängige Breitenbegrenzung und
-die vorgesehene Elternnachrechnung. Dies ist bisher ausschließlich Schritt 1;
-der neue Verifikationspfad ist nicht implementiert oder aktiviert.
+den historischen Laufweg. Der separat geprüfte und mit #58 übernommene
+[Methodenplan](search_duration_prediction_plan.md) wird in Format 4 umgesetzt:
+Rundungsintervalle, unabhängige Breitenbegrenzung und erneute Elternnachrechnung.
+Bindung an den erreichbaren Merge-Commit `9bff8a29030026dcdc2de52640556a73a57fe2a4`,
+SHA-256 `2a215b6f178c085cad6611070124e09e929f35917eba66723f4522c1fe81393c`.
+Die Startvorbereitung für Lauf 004 unten gilt erst nach vollständiger CI,
+gezieltem Implementierungsreview und manuellem Merge.
 
 20 frische Suchen kreuzen K/A mit 200/2.000 Suchiterationen bei denselben fünf
 vorab festgelegten Seeds. Sie sind nach dem Teilstand nicht mehr vollständig
@@ -79,7 +80,41 @@ und einen unabhängigen Achtpunkt-Gegenfall für beide nativen
 Vereinfachungspfade sowie die deaktivierte Simplify-Mutation, ohne Suche/Fit. Die Fixture ist ein ausdrücklich
 nachträglicher Regressionstest, kein wiederhergestellter Originalbaumexport.
 
-## Versionierte Verifikation
+## Baumabhängige Vorhersageprüfung ab Format 4
+
+`prediction_reference.py` verwendet die neue gepinnte Abhängigkeit
+`gmpy2==2.2.2` für gerichtete MPFR-Operationen; Grundrechenarten, Binary64-
+Rundung und Breitenentscheidungen verwenden exakte rationale Werte. Die
+Referenz läuft direkt im jeweiligen Python-Prozess, auch im Elternprozess.
+Daher entsteht weder ein zusätzlicher Referenzprozess noch ein neuer Julia-
+Start pro Kandidat. Lokale MPFR-Kontexte werden nach jedem Aufruf restauriert;
+die Float64-Rundungsumgebung der Suche bleibt unberührt. Die tatsächlich
+verwendeten gmpy2-/MPFR-/GMP-Versionen werden in jedem Nachweis erfasst.
+
+Die Konstruktion erhält ausschließlich vollständige validierte Bäume und
+Zeitbits. Beobachtungen, tatsächliche Vorhersagen und Auswahl gehen nicht in
+Intervall, Präzision oder Skala ein. Nach der ersten ausreichend engen
+Einschließung aus 128/256/512/1024 Bit müssen beide tatsächlichen Vorhersagen
+punktweise darin liegen. Die Regel ist keine allgemeine Bibliotheksgarantie.
+Sie prüft Vereinbarkeit mit dem festgelegten Rundungsmodell, nicht die
+Authentizität oder den tatsächlich durchlaufenen internen Rundungspfad.
+
+`prediction_replay` enthält Quellen-/Planbindung, Baumhash, Zeitfingerprint,
+Bibliotheksversionen, exakte Hex-Endpunkte, rationale Skala/Maximalbreite,
+Präzisionsversuche und Mitgliedschaft. Der Elternprozess berechnet alles
+für sämtliche Kandidaten neu und vergleicht den gespeicherten Beleg vollständig.
+Es gibt keinen Cache. Bei einem unbestimmten oder fehlgeschlagenen Referenz-
+nachweis hält der Worker zusätzlich `prediction_failure.json` fest und bricht ab.
+Der Aufwand zählt unverändert in 600/7200 Sekunden einschließlich Elternarbeit.
+
+Nur der dedizierte Worker-Hook, die explizite Dauervergleich-Option von
+`parameter_export._candidate` und der zugehörige Verlustnachweis ersetzen den
+alten Vorhersagevergleich. `_check_prediction_replay`, Parameter-, Alias-
+und ältere Kontrollpfade bleiben unverändert. Verlustnachweise tragen im
+neuen Pfad Version 2; ältere Aufrufer behalten Version 1. Die alte relative
+Vorhersagegrenze ist im Format-4-Trainingspfad kein zusätzliches verstecktes Gate.
+
+## Versionierte Verlustverifikation
 
 Nur der neue Suchbudgetworker aktiviert `duration_replay.verify_loss_replay`;
 der Standardadapter und ältere Kontrollpfade behalten ihre bisherige skalare
@@ -182,3 +217,50 @@ sind keine allgemeine Leistungsvalidierung.
 Physikalische Identifikation bleibt `not_assessed`; der Alias-Blindfleck bei
 `8*fs` bleibt bestehen. Weitere Tests werden erst anhand der neuen Ergebnisse
 begründet und vor Ausführung festgelegt.
+
+## Vorbereiteter Neustart: Serie 004 auf Manjaro
+
+Erst nach vollständiger CI, gezieltem Implementierungsreview und manuellem
+Merge. Im sauberen Checkout des geprüften baumgleichen Merge-Stands ausführen;
+dessen konkrete SHA und PR-Referenz werden im Implementierungs-PR dokumentiert.
+Alte Ergebnisverzeichnisse und Archive erhalten. Die folgenden Befehle starten
+alle 20 Zellen frisch; sie setzen keinen Teilstand fort.
+
+```bash
+(
+  set -e
+  test -z "$(git status --porcelain=v1 --untracked-files=all)"
+  export OPENBLAS_CORETYPE=Haswell
+  export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+  export MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+  env -u VIRTUAL_ENV uv sync --locked --dev --python 3.12.14
+  env -u VIRTUAL_ENV uv run --locked --python 3.12.14 \
+    python scripts/run_python.py scripts/check_environment.py
+  env -u VIRTUAL_ENV uv run --locked --python 3.12.14 \
+    pytest -q tests/test_prediction_reference.py tests/test_duration_verification.py \
+    tests/test_search_duration_driver.py tests/test_search_duration.py
+  printf '%s\n' \
+    'a5b0cdae4262a7f759c72fbe1e7e9c142d817fbffa088107953250da861050db  results/representation-manjaro-001.tar.gz' \
+    | sha256sum --check --strict
+  test ! -e results/duration-manjaro-004
+  test ! -e results/duration-manjaro-004.tar.gz
+  run_status=0
+  env -u VIRTUAL_ENV uv run --locked --python 3.12.14 \
+    python scripts/run_search_duration.py \
+    --archive results/representation-manjaro-001.tar.gz \
+    --output results/duration-manjaro-004 --label manjaro || run_status=$?
+  if test -d results/duration-manjaro-004; then
+    tar -czf results/duration-manjaro-004.tar.gz -C results duration-manjaro-004
+    sha256sum results/duration-manjaro-004.tar.gz
+  fi
+  exit "$run_status"
+)
+```
+
+Bei der späteren gemeinsamen Auswertung des ersten vollständig verifizierten
+Manjaro-Laufs an die vorgemerkte kurze Bestandsaufnahme zur gezielten Bereinigung
+erinnern. Zuerst Code und Originalergebnisse sichern; danach nur konkrete
+Wartungsprobleme mit kleinen getrennten Regressionen behandeln. Keine große
+Umstrukturierung, keine Änderung numerischer Reihenfolge oder historischer
+Lesbarkeit. Erfolgreiche technische Tests allein lösen diesen Folgeschritt
+noch nicht aus.

@@ -29,7 +29,8 @@ werden nicht abgerufen beziehungsweise validiert.
 `docs/search_trajectory_replay_policy.md`, `docs/trigonometric_grammar_plan.md`
 `docs/search_duration_plan.md`, `docs/search_duration_verification_plan.md`
 `docs/search_duration_table_loss_note.md`
-und `docs/search_duration_simplification_plan.md`
+`docs/search_duration_simplification_plan.md`
+und `docs/search_duration_prediction_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -153,3 +154,13 @@ Profilworker mit jeweils zwei Iterationen am technischen linearen Signal
 `y=1+t`. Dieses gesonderte technische Budget ändert keine Vorgabe der
 wissenschaftlichen Neun-Zellen-Serie und liefert keinen Rekonstruktionsbefund.
 Die Fehler-Injektionstests des Treibers gehören zum regulären pytest-Lauf.
+
+Format 4 ergänzt `scripts/check_prediction_reference.py`: alle 34 vollständigen
+Originalkandidaten und zehn ausdrücklich nachträglichen CSV-Rekonstruktionen
+von Lauf 003 werden nativ und mit der neuen Referenz nachgerechnet. Es werden
+keine serialisierten Suchzustände oder Archivquellen ausgeführt. Hinzu kommen
+unabhängige gerichtete Julia-MPFR-Vergleiche und native FMA-/Knotenfolgegenfälle;
+kein Fit und keine Suche. Die Python-Tests decken Intervallbreite, Nachbarbudget,
+Halbwegsrundung, Unter-/Überlauf, Extrema, unabhängige Elternnachrechnung und
+Abbruch während tatsächlicher Referenzarbeit ab. Die bestehenden kleinen
+Integrationen bleiben erforderlich und nutzen im Suchbudgetpfad Format 4.

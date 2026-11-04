@@ -15,7 +15,7 @@ _MIN_NORMAL = Fraction.from_float(sys.float_info.min)
 _MAX_FINITE = Fraction.from_float(sys.float_info.max)
 
 
-def candidate_evidence(candidate, times, observed):
+def candidate_evidence(candidate, times, observed, *, prediction_check=None):
     """Recompute evidence independently in the parent from consumed artifacts."""
     record = candidate.get("loss_replay")
     if not isinstance(record, dict) or "table_loss" not in record:
@@ -29,6 +29,7 @@ def candidate_evidence(candidate, times, observed):
         record["table_loss"],
         candidate["python_loss"],
         None,
+        prediction_check=prediction_check,
     )
 
 
@@ -72,6 +73,8 @@ def verify_loss_replay(
     table_loss,
     python_loss,
     loss_object,
+    *,
+    prediction_check=None,
 ):
     """Check each loss against its own residuals before comparing the replays.
 
@@ -97,7 +100,20 @@ def verify_loss_replay(
         raise ValueError("Replay needs equal nonempty vectors.")
     for loss in (raw_loss, replay_loss, table_loss, python_loss):
         _loss(loss)
-    prediction_check = _check_prediction_replay(python, native)
+    if prediction_check is None:
+        prediction_check = _check_prediction_replay(python, native)
+        evidence_format = FORMAT
+    else:
+        # Only the duration-4 caller supplies its independently computed proof.
+        # This routine certifies losses; it does not authenticate that proof.
+        from .prediction_reference import FORMAT as PREDICTION_FORMAT
+
+        if (
+            prediction_check.get("format") != PREDICTION_FORMAT
+            or prediction_check.get("status") != "passed"
+        ):
+            raise ValueError("Missing bounded prediction evidence.")
+        evidence_format = "ringdown-sr-duration-loss-replay-2"
     np.testing.assert_allclose([replay_loss, table_loss], raw_loss, rtol=1e-10, atol=0)
     k = observed.size + 2
     ku = k * _UNIT_ROUNDOFF
@@ -135,7 +151,7 @@ def verify_loss_replay(
     if difference > bound:
         raise ValueError("Independent MSE difference exceeds its residual bound.")
     return {
-        "format": FORMAT,
+        "format": evidence_format,
         "status": "passed",
         "metric": "ordinary_mse",
         "samples": int(observed.size),

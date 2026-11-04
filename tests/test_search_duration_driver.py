@@ -18,6 +18,7 @@ from ringdown_sr.duration_replay import candidate_evidence
 from ringdown_sr.losses import mean_squared_error
 from ringdown_sr.noiseless_control import frozen_data
 from ringdown_sr.pilot import _json_bytes, _sha256, _write_json
+from ringdown_sr.prediction_reference import verify_prediction
 
 DRIVER = control.load_module(
     control.ROOT / "scripts/run_search_duration.py", "duration_factory"
@@ -134,8 +135,17 @@ def runtime(request, monkeypatch, tmp_path):
                 - symbolic.evaluate_tree(candidate["tree"], arrays["time_s"])
             )
             candidate["loss_replay"] = {"table_loss": candidate["loss"]}
+            candidate["prediction_replay"] = verify_prediction(
+                candidate["tree"],
+                arrays["time_s"],
+                symbolic.evaluate_tree(candidate["tree"], arrays["time_s"]),
+                candidate["prediction"],
+            )
             candidate["loss_replay"] = candidate_evidence(
-                candidate, arrays["time_s"], arrays["observed"]
+                candidate,
+                arrays["time_s"],
+                arrays["observed"],
+                prediction_check=candidate["prediction_replay"],
             )
         if state.alter:
             state.alter(number, directory, docs)
@@ -152,6 +162,87 @@ def assert_locked(output):
         report[k] is None for k in ("summaries", "pair_differences", "comparison")
     )
     return report
+
+
+@pytest.mark.parametrize("cell_number", [1, 5])
+@pytest.mark.parametrize(
+    "fault",
+    [
+        "missing",
+        "endpoint",
+        "precision",
+        "hash",
+        "library",
+        "shared_wrong",
+        "loss_copy",
+    ],
+)
+def test_parent_recomputes_unselected_prediction_evidence(
+    runtime, tmp_path, cell_number, fault
+):
+    def alter(number, directory, documents):
+        if number != cell_number:
+            return
+        front = documents["result.json"]
+        index = next(
+            i for i in range(len(front["candidates"])) if i != front["selected_index"]
+        )
+        candidate = front["candidates"][index]
+        proof = candidate["prediction_replay"]
+        if fault == "missing":
+            del candidate["prediction_replay"]
+        elif fault == "endpoint":
+            proof["intervals_hex"][0][0] = (-1e30).hex()
+        elif fault == "precision":
+            proof["precision_bits"] = 1024
+        elif fault == "hash":
+            proof["tree_sha256"] = "0" * 64
+        elif fault == "library":
+            proof["binding"]["library"]["mpfr"] = "untrusted"
+        elif fault == "shared_wrong":
+            candidate["tree"]["value_hex"] = (7.0).hex()
+            candidate["prediction"] = [7.0] * len(candidate["prediction"])
+        else:
+            candidate["loss_replay"]["prediction_replay"]["scale"]["numerator"] = "999"
+
+    runtime.alter = alter
+    output = tmp_path / "bad-reference"
+    with pytest.raises((ValueError, AssertionError)):
+        DRIVER.run(runtime.archive, output, label="fixture")
+    assert len(runtime.calls) == cell_number
+    assert_locked(output)
+
+
+def test_actual_reference_work_is_interrupted_by_parent_deadline(
+    runtime, monkeypatch, tmp_path
+):
+    from ringdown_sr import prediction_reference
+
+    original = prediction_reference._intervals
+    # The fixture prepares worker evidence before parent verification. Trigger
+    # the real alarm inside the first independent parent reference calculation.
+    original_verify = DRIVER.verify_cell
+
+    def verify(*args):
+        def blocked(*args):
+            import signal
+
+            signal.setitimer(signal.ITIMER_REAL, 0.01)
+            while True:
+                pass
+
+        monkeypatch.setattr(prediction_reference, "_intervals", blocked)
+        try:
+            return original_verify(*args)
+        finally:
+            monkeypatch.setattr(prediction_reference, "_intervals", original)
+
+    monkeypatch.setattr(DRIVER, "verify_cell", verify)
+    output = tmp_path / "reference-timeout"
+    with pytest.raises(TimeoutError):
+        DRIVER.run(runtime.archive, output, label="fixture")
+    assert len(runtime.calls) == 1
+    assert_locked(output)
 
 
 @pytest.mark.parametrize(

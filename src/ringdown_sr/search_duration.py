@@ -8,16 +8,21 @@ from collections import Counter
 from dataclasses import asdict
 from statistics import median
 
+from . import prediction_reference
 from . import trigonometric_grammar as grammar
 from .pilot import _sha256
 from .representation_control import _markers, _metric_availability, _metrics
 from .symbolic import ROOT, SearchBudget
 
-FORMAT = "ringdown-sr-search-duration-3"
-PROFILE_FORMAT = "ringdown-sr-search-duration-profile-3"
-PLAN = "docs/search_duration_simplification_plan.md"
-PLAN_COMMIT = "f13d7687ddd06d5c68fbbf7ae5baa67639d74ca3"
-PLAN_SHA256 = "46fb2510957a4ee37d3f61e59291b8a5081db9ff64e7bd36a62aad0073901a0d"
+FORMAT = "ringdown-sr-search-duration-4"
+PROFILE_FORMAT = "ringdown-sr-search-duration-profile-4"
+PLAN = prediction_reference.PLAN
+PLAN_COMMIT = prediction_reference.PLAN_COMMIT
+PLAN_SHA256 = prediction_reference.PLAN_SHA256
+SIMPLIFICATION_PLAN = "docs/search_duration_simplification_plan.md"
+SIMPLIFICATION_PLAN_SHA256 = (
+    "46fb2510957a4ee37d3f61e59291b8a5081db9ff64e7bd36a62aad0073901a0d"
+)
 VERIFICATION_PLAN = "docs/search_duration_verification_plan.md"
 VERIFICATION_PLAN_SHA256 = (
     "b6f7cef2227eeacccf8156d02e8899e6fc83b7bd1f29735c1a402922a9d83062"
@@ -65,13 +70,18 @@ def source_hashes():
         ORIGINAL_PLAN,
         VERIFICATION_PLAN,
         TABLE_NOTE,
+        SIMPLIFICATION_PLAN,
+        *prediction_reference.SOURCES,
         *RUNTIME.values(),
         "scripts/run_search_duration.py",
         "scripts/check_search_duration_integration.py",
+        "scripts/check_prediction_reference.py",
     ):
         hashes[name] = _sha256((ROOT / name).read_bytes())
     if hashes[PLAN] != PLAN_SHA256:
         raise ValueError("The frozen search duration plan changed.")
+    if hashes[SIMPLIFICATION_PLAN] != SIMPLIFICATION_PLAN_SHA256:
+        raise ValueError("The frozen simplification plan changed.")
     if hashes[ORIGINAL_PLAN] != ORIGINAL_PLAN_SHA256:
         raise ValueError("The original search duration plan changed.")
     if hashes[VERIFICATION_PLAN] != VERIFICATION_PLAN_SHA256:

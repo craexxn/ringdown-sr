@@ -9,6 +9,10 @@ from ringdown_sr import search_duration as control
 from ringdown_sr import symbolic
 from ringdown_sr.duration_replay import verify_loss_replay
 from ringdown_sr.pilot import _write_json
+from ringdown_sr.prediction_reference import (
+    PredictionVerificationError,
+    verify_prediction,
+)
 
 
 def run(directory):
@@ -25,6 +29,7 @@ def run(directory):
     worker.SHOULD_SIMPLIFY = False
     original_snapshot = symbolic._environment_snapshot
     original_replay = symbolic._verify_loss_replay
+    original_prediction = symbolic._verify_prediction_replay
     module = original_backend = guard = None
 
     def snapshot(phase, *, julia_used):
@@ -45,11 +50,16 @@ def run(directory):
 
     symbolic._environment_snapshot = snapshot
     symbolic._verify_loss_replay = verify_loss_replay
+    symbolic._verify_prediction_replay = verify_prediction
     try:
         worker.run(directory)
+    except PredictionVerificationError as error:
+        _write_json(directory / "prediction_failure.json", error.evidence)
+        raise
     finally:
         symbolic._environment_snapshot = original_snapshot
         symbolic._verify_loss_replay = original_replay
+        symbolic._verify_prediction_replay = original_prediction
         if module is not None:
             module.SymbolicRegression = original_backend
 
