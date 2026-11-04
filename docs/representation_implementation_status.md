@@ -1,13 +1,50 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 04.11.2026. PR #56 ist auf `main` als `e501e9d` übernommen.
+Stand: 04.11.2026. PR #57 ist auf `main` als `4c49723` übernommen;
+Suchimplementierung unverändert gegenüber PR #56 (`e501e9d`).
 Der [dritte Suchbudgetlauf](search_duration_results_manjaro_003.md) ist nach
-vier verifizierten Zellen unvollständig. Sein numerischer Abbruch ist fest
-nachgerechnet; die nächste Verifikationsänderung ist erst ein Vorschlag.
+vier verifizierten Zellen unvollständig. Die nächste Verifikationsregel ist
+als [Methodenplan vor Code](search_duration_prediction_plan.md) ausgearbeitet,
+aber noch nicht implementiert oder aktiviert.
 Wissenschaftliche Ausführung bleibt auf Manjaro.
 Keine zusätzlichen Agenten.
 
-## Aktuell: Vorhersageabweichung in Lauf 003
+## Aktuell: Methodenplan für die Vorhersageprüfung
+
+- **Auftrag und Einstieg:** ausschließlich Schritt 1, Regel und mathematische
+  Begründung; keine Implementierung, keine wissenschaftliche Ausführung.
+  Eigener sauber angelegter Branch `codex/prediction-verification-plan` ab
+  `4c49723e08f6deb9eb086922c1be546819f3408f`, ein Worktree. PR #57 wurde während
+  des Einstiegs als tatsächlich gemergt bestätigt; sein geprüfter Head blieb
+  `2e7c2bccd9e20261adc413ef60ec542ae3221fcd`. Andere Arbeiten erhalten.
+- **Planstand vor Code:** Commit
+  `68cbe10b4acbe228a07cdb07fb798a36d99b532e`, SHA-256
+  `2a215b6f178c085cad6611070124e09e929f35917eba66723f4522c1fe81393c`.
+  Grundoperationen folgen RN64; transzendente Knoten erhalten höchstens einen
+  Float64-Nachbarschritt um die korrekte Rundung. Gerichtete Referenzintervalle
+  werden durch den Originalbaum fortgepflanzt. Beide Endwerte müssen darin
+  liegen; die Breite wird unabhängig von ihnen rational durch
+  `w_i² <= 2^-53*S²` begrenzt. Präzisionsleiter 128/256/512/1024 Bits.
+- **Begründung und Grenzen:** Intervallinduktion und Breitenfolgerung explizit
+  hergeleitet; Nachbarbudget und Breitenobergrenze als Qualitätsentscheidungen
+  benannt, keine universelle Bibliotheksgarantie. Unbestimmtes bleibt gesperrt.
+  Native Suche, Verlustverträge, Originalauswahl, Parameter-/Aliasdiagnosen und
+  Strukturerkenner bleiben getrennt. Neue Kontrolle kann Zulässigkeit und
+  Serienfortsetzung beeinflussen; ihr Aufwand zählt zu 600/7200 Sekunden.
+- **Quellenprüfung:** relevante GNU-MPFR-Handbuchstellen sowie gepinnte
+  Julia-/NumPy-/DynamicExpressions-Quellen gelesen. Das MPFR-Handbuch ist
+  Version 3.1.3 aus einem GNU-Textspiegel, kein Nachweis der installierten
+  Bibliotheksversion. Gepinnte DynamicExpressions-Datei zusätzlich bitgleich
+  mit dem veröffentlichten Tag bestätigt. Keine neuen numerischen Tests,
+  Fits oder Suchen für diese Planausarbeitung.
+- **Arbeitsstand und nächster Schritt:** Plan und Statusdokumentation sind
+  die einzigen Änderungen; bisherige Laufzeitpläne unverändert. Aktueller
+  Head und Dokumentationsprüfungen stehen im Plan-PR. Der Plan ist konkret
+  prüfbar; erst ein eigener Auftrag würde Schritt 2, seine Implementierung
+  und den dort festgelegten technischen Prüfauftrag, beginnen. Noch kein
+  neuer Manjaro-Start und keine Erweiterung des Strukturerkenners.
+
+## Grundlage: Vorhersageabweichung in Lauf 003
 
 - **Abgeglichener Einstieg:** sauberer eigener Branch
   `codex/duration-manjaro-003-audit` auf
