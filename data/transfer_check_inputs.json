@@ -1,0 +1,105 @@
+{
+  "format": "ringdown-sr-transfer-inputs-1",
+  "sha256": "e4de71bb6aa5cb5e3afc72914466b997adb2ef6438bbe38d7baa421a85bd2628",
+  "sample_rate_hz": 4096,
+  "cases": [
+    {
+      "name": "anchor",
+      "truth": {
+        "amplitude": 1.0,
+        "frequency_hz": 250.0,
+        "decay_time_s": 0.008,
+        "phase_rad": 0.0
+      }
+    },
+    {
+      "name": "frequency",
+      "truth": {
+        "amplitude": 1.0,
+        "frequency_hz": 417.0,
+        "decay_time_s": 0.008,
+        "phase_rad": 0.0
+      }
+    },
+    {
+      "name": "decay",
+      "truth": {
+        "amplitude": 1.0,
+        "frequency_hz": 250.0,
+        "decay_time_s": 0.004,
+        "phase_rad": 0.0
+      }
+    },
+    {
+      "name": "phase",
+      "truth": {
+        "amplitude": 1.0,
+        "frequency_hz": 250.0,
+        "decay_time_s": 0.008,
+        "phase_rad": 0.7
+      }
+    },
+    {
+      "name": "amplitude",
+      "truth": {
+        "amplitude": 0.4,
+        "frequency_hz": 250.0,
+        "decay_time_s": 0.008,
+        "phase_rad": 0.0
+      }
+    },
+    {
+      "name": "combined",
+      "truth": {
+        "amplitude": 0.6,
+        "frequency_hz": 180.0,
+        "decay_time_s": 0.012,
+        "phase_rad": -0.9
+      }
+    }
+  ],
+  "arrays": {
+    "time_s": {
+      "shape": [
+        128
+      ],
+      "dtype": "<f8",
+      "sha256": "50c345daa383e450558fca37cd20adf54f13549035ae53eeb0c528d140666c5c"
+    },
+    "observed": {
+      "shape": [
+        6,
+        128
+      ],
+      "dtype": "<f8",
+      "sha256": "a751adc86e5818cec056b05586fa1e00b3077e97d342fdb1aea6d5cbed6fe5f8"
+    },
+    "diagnostic_time_s": {
+      "shape": [
+        889
+      ],
+      "dtype": "<f8",
+      "sha256": "d93b19b716759c30734a68c0448a0f6bc619d00110dc458a461a237b2ebce854"
+    },
+    "diagnostic_truth": {
+      "shape": [
+        6,
+        889
+      ],
+      "dtype": "<f8",
+      "sha256": "539e98b19ec0575296a742c06bb0f076e31c90724b953cfc72c2683a28250241"
+    }
+  },
+  "generation": {
+    "source": "src/ringdown_sr/signals.py",
+    "source_sha256": "7be30656875bc0276be19a0cbd5df1f2d925add6eacdc241d30dfee94451f7cd",
+    "numpy": "2.5.3",
+    "recipe": "t[j]=j/4096, j=0..127; q[j,k]=(j+k/8)/4096, j=0..126, k=1..7; ringdown_signal(t, **truth) per case in listed order",
+    "independent_check": {
+      "method": "100-decimal mpmath analytic formula at exact Binary64 parameter and time values, mathematical pi",
+      "values_checked": 6102,
+      "max_absolute_error_over_amplitude": 1.1394927466234832e-15,
+      "bound": 1e-13
+    }
+  }
+}
