@@ -1,48 +1,66 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 04.11.2026. PR #57 ist auf `main` als `4c49723` übernommen;
-Suchimplementierung unverändert gegenüber PR #56 (`e501e9d`).
-Der [dritte Suchbudgetlauf](search_duration_results_manjaro_003.md) ist nach
-vier verifizierten Zellen unvollständig. Die nächste Verifikationsregel ist
-als [Methodenplan vor Code](search_duration_prediction_plan.md) ausgearbeitet,
-aber noch nicht implementiert oder aktiviert.
-Wissenschaftliche Ausführung bleibt auf Manjaro.
-Keine zusätzlichen Agenten.
+Stand: 04.11.2026. PR #58 ist als
+`9bff8a29030026dcdc2de52640556a73a57fe2a4` übernommen. Der geprüfte
+[Methodenplan](search_duration_prediction_plan.md) wird im separat beauftragten
+Implementierungsschritt auf `codex/prediction-verification` umgesetzt.
+Die tatsächliche Suche bleibt gegenüber PR #56 unverändert; die neue
+Vorhersageprüfung gilt ausschließlich nach dem Fit im Suchbudgetformat 4.
+Wissenschaftliche Ausführung bleibt auf Manjaro. Keine zusätzlichen Agenten.
 
-## Aktuell: Methodenplan für die Vorhersageprüfung
+## Aktuell: Implementierung der Vorhersageprüfung
 
-- **Auftrag und Einstieg:** ausschließlich Schritt 1, Regel und mathematische
-  Begründung; keine Implementierung, keine wissenschaftliche Ausführung.
-  Eigener sauber angelegter Branch `codex/prediction-verification-plan` ab
-  `4c49723e08f6deb9eb086922c1be546819f3408f`, ein Worktree. PR #57 wurde während
-  des Einstiegs als tatsächlich gemergt bestätigt; sein geprüfter Head blieb
-  `2e7c2bccd9e20261adc413ef60ec542ae3221fcd`. Andere Arbeiten erhalten.
-- **Planstand vor Code:** Commit
-  `68cbe10b4acbe228a07cdb07fb798a36d99b532e`, SHA-256
-  `2a215b6f178c085cad6611070124e09e929f35917eba66723f4522c1fe81393c`.
-  Grundoperationen folgen RN64; transzendente Knoten erhalten höchstens einen
-  Float64-Nachbarschritt um die korrekte Rundung. Gerichtete Referenzintervalle
-  werden durch den Originalbaum fortgepflanzt. Beide Endwerte müssen darin
-  liegen; die Breite wird unabhängig von ihnen rational durch
-  `w_i² <= 2^-53*S²` begrenzt. Präzisionsleiter 128/256/512/1024 Bits.
-- **Begründung und Grenzen:** Intervallinduktion und Breitenfolgerung explizit
-  hergeleitet; Nachbarbudget und Breitenobergrenze als Qualitätsentscheidungen
-  benannt, keine universelle Bibliotheksgarantie. Unbestimmtes bleibt gesperrt.
-  Native Suche, Verlustverträge, Originalauswahl, Parameter-/Aliasdiagnosen und
-  Strukturerkenner bleiben getrennt. Neue Kontrolle kann Zulässigkeit und
-  Serienfortsetzung beeinflussen; ihr Aufwand zählt zu 600/7200 Sekunden.
-- **Quellenprüfung:** relevante GNU-MPFR-Handbuchstellen sowie gepinnte
-  Julia-/NumPy-/DynamicExpressions-Quellen gelesen. Das MPFR-Handbuch ist
-  Version 3.1.3 aus einem GNU-Textspiegel, kein Nachweis der installierten
-  Bibliotheksversion. Gepinnte DynamicExpressions-Datei zusätzlich bitgleich
-  mit dem veröffentlichten Tag bestätigt. Keine neuen numerischen Tests,
-  Fits oder Suchen für diese Planausarbeitung.
-- **Arbeitsstand und nächster Schritt:** Plan und Statusdokumentation sind
-  die einzigen Änderungen; bisherige Laufzeitpläne unverändert. Aktueller
-  Head und Dokumentationsprüfungen stehen im Plan-PR. Der Plan ist konkret
-  prüfbar; erst ein eigener Auftrag würde Schritt 2, seine Implementierung
-  und den dort festgelegten technischen Prüfauftrag, beginnen. Noch kein
-  neuer Manjaro-Start und keine Erweiterung des Strukturerkenners.
+- **Grundlage:** übermitteltes KI-basiertes Methodenreview zu PR #58,
+  Head `836f6c0d8e560a6c9900e1a38385cd7137822c96`, Basis
+  `4c49723e08f6deb9eb086922c1be546819f3408f`, ohne korrekturbedürftige Befunde.
+  Laut Review 61 numerische Assertions, sechs native und acht Python-
+  Nachrechnungen bestanden; CI 41781938938 eingesehen. Die Originalarchive
+  fehlten im separaten Review. Diese Prüfungen sind übermittelte Nachweise.
+- **Planbindung:** SHA-256
+  `2a215b6f178c085cad6611070124e09e929f35917eba66723f4522c1fe81393c`,
+  zur Laufzeit an den tatsächlichen Merge-Commit `9bff8a2` gebunden.
+  Ursprünglicher Plancommit vor Code `68cbe10`; frühere Planbytes unverändert.
+- **Umsetzung:** Originalbaum mit rationalen Grundoperationen und RN64,
+  gerichtete MPFR-Bereiche mit einem Nachbarschritt für exp/sin/cos,
+  unveränderte Präzisionsleiter und rationale Breitenentscheidung. Neue
+  gepinnte Abhängigkeit gmpy2 2.2.2. Referenzarbeit direkt in Worker und
+  Elternprozess, ohne zusätzlichen Prozess, Suchzustand oder Cache.
+  Tatsächliche Bibliotheksversionen werden protokolliert; lokale Kontexte
+  ändern die Float64-Suchumgebung nicht. Vollständige unabhängige Nachrechnung
+  aller Belege einschließlich ungewählter Kandidaten.
+- **Erhalten:** native und tabellarische Verluste, eigene Reduktionsschranken,
+  Originalauswahl, Datenrollen, Parameter-/Aliasreplays, Strukturerkenner,
+  Optionen einschließlich `should_simplify=false` und Zeitgrenzen 600/7200.
+  Keine wissenschaftliche Cloud-Suche, kein WSL2- oder Parallelisierungsschritt.
+- **Originaldatenbezug:** Archiv 003 erneut gegen den bekannten SHA und alle
+  143 ursprünglichen Dateihashes bestätigt. Fixture enthält 34 originale
+  Kandidaten sowie zehn ausdrücklich nachträgliche CSV-Rekonstruktionen;
+  kein Archivcode und keine serialisierten Suchzustände ausgeführt. Alle
+  44 Vorhersagereferenzen bestehen hier bereits bei 128 Bit. Die vier alten
+  Abweisungsfälle sind abgedeckt; das ist kein vollständiger Serienbefund.
+- **Selbst ausgeführte technische Nachweise:** 183 gezielte Python-Tests
+  bestanden. Der feste native Lauf
+  `results/prediction-reference-development-003.json` bestätigt alle 44 Bäume,
+  deren unveränderte nativen Vorhersagen/Verluste und die neue Kontrolle;
+  zusätzlich 152 unabhängige gerichtete MPFR-/Knotenfolge-Assertions.
+  Referenzarbeit für 44 Bäume hier 1,35 Sekunden, fester Gesamttest nach
+  Runtime-Start 18,31 Sekunden; keine Laufzeitgarantie für neue Suchfronten.
+  Referenz: gmpy2 2.2.2 / MPFR 4.2.1 / GMP 6.3.0; Gegenrechnung:
+  Julia 1.13.1 / MPFR 4.2.2. Null Zielfunktionscallbacks, keine Suche/Fits.
+  Ruff, Format, Dokumentation und unveränderte frühere Planbytes bestätigt.
+- **Prüf-/Übergabestand:** vollständige technische Prüfungen und gezielter
+  Implementierungsreview sind erforderlich. Aktueller Head, tatsächlich
+  bestandene Prüfungen und verbleibende Punkte werden im Implementierungs-PR
+  festgehalten. [Bedienung und vorbereiteter Manjaro-Start](search_duration.md).
+  Erst nach Review und manuellem Merge alle 20 Zellen frisch als Lauf 004;
+  keine Übernahme aus 001–003. Andere Branches bleiben erhalten.
+- **Vormerkung nach vollständiger Manjaro-Verifikation:** bei der gemeinsamen
+  Auswertung ausdrücklich an eine kurze Bestandsaufnahme für gezielte
+  Bereinigungen erinnern. Zuerst funktionierenden Code und Originalergebnisse
+  sichern; nur konkrete Wartungsprobleme, kleine getrennte Änderungen mit
+  Regressionen. Numerische Reihenfolge, Suchverhalten, eingefrorene Pläne und
+  historische Lesbarkeit erhalten. Kein großes Refactoring; reine technische
+  Testerfolge lösen die Vormerkung noch nicht aus.
 
 ## Grundlage: Vorhersageabweichung in Lauf 003
 

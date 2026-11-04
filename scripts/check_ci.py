@@ -21,6 +21,7 @@ RUNTIME_DOCUMENTS = {
     "docs/search_duration_verification_plan.md",
     "docs/search_duration_table_loss_note.md",
     "docs/search_duration_simplification_plan.md",
+    "docs/search_duration_prediction_plan.md",
 }
 SHA = re.compile(r"[0-9a-f]{40}\Z")
 LINK = re.compile(

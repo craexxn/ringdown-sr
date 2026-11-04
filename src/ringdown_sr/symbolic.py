@@ -63,6 +63,11 @@ def _check_prediction_replay(python_prediction, julia_prediction) -> dict:
     }
 
 
+def _verify_prediction_replay(tree, times, python_prediction, native_prediction):
+    """Dedicated worker hook; parameter and alias replays keep the legacy gate."""
+    return _check_prediction_replay(python_prediction, native_prediction)
+
+
 def _verify_loss_replay(
     observed,
     native_prediction,
@@ -72,6 +77,8 @@ def _verify_loss_replay(
     table_loss,
     python_loss,
     loss_object,
+    *,
+    prediction_check=None,
 ):
     """Keep the legacy scalar contract unless a versioned worker opts in."""
     np.testing.assert_allclose(
@@ -519,7 +526,9 @@ def _worker_search(directory: Path, metadata: dict, started: float) -> None:
         prediction, replay_loss = backend.replay(restored, options)
         prediction = np.asarray(prediction, dtype=np.float64)
         python_prediction = evaluate_tree(tree, time_values)
-        prediction_replay = _check_prediction_replay(python_prediction, prediction)
+        prediction_replay = _verify_prediction_replay(
+            tree, time_values, python_prediction, prediction
+        )
         residual = target - prediction
         python_residual = target - python_prediction
         python_loss = (
@@ -537,6 +546,7 @@ def _worker_search(directory: Path, metadata: dict, started: float) -> None:
             float(row["loss"]),
             python_loss,
             loss_object,
+            prediction_check=prediction_replay,
         )
         complexity = int(jl.SymbolicRegression.compute_complexity(member.tree, options))
         if complexity != int(row["complexity"]):

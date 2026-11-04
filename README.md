@@ -6,7 +6,7 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 ## Projektstatus
 
 Fortsetzungsstand: 04.11.2026; abgeglichener Hauptbranch:
-`4c49723` ([PR #57](https://github.com/craexxn/ringdown-sr/pull/57)).
+`9bff8a2` ([PR #58](https://github.com/craexxn/ringdown-sr/pull/58)).
 Die Suchimplementierung entspricht weiterhin `e501e9d`
 ([PR #56](https://github.com/craexxn/ringdown-sr/pull/56)).
 Vorheriger Ergebnisstand: [Grammatikvergleich 001](docs/trigonometric_grammar_results_manjaro_001.md),
@@ -23,7 +23,7 @@ vier Zellen verifiziert, Zelle 5 nach beendetem Fit beim Python-/Julia-
 Vorhersagevergleich abgebrochen. Alle vier Originalauswahlen des ersten Seeds
 bestehen die Kurvenkriterien; eine besteht zusätzlich die vorhandene
 Struktur-/Parameterdiagnose. Gruppenaggregate und Gesamtentscheidung bleiben
-gesperrt; weitere Suchen sind noch nicht vorbereitet.
+gesperrt; die technische Vorbereitung eines frischen Laufs 004 ist im Gang.
 
 Die [gebundene Abhilfe](docs/search_duration_simplification_plan.md) mit
 `should_simplify=false` war in allen gestarteten Zellen aktiv. Alle zehn
@@ -31,11 +31,14 @@ CSV-Verluste der fünften Zelle werden nativ bitgenau reproduziert. Der neue
 Abbruch entsteht durch einen kleinen `exp`-Rundungsunterschied, den eine große
 Konstante im Ausdruck verstärkt. Vier CSV-Bäume überschreiten die bestehende
 Vorhersagegrenze. Der [Methodenplan zur baumabhängigen Vorhersageverifikation](docs/search_duration_prediction_plan.md)
-ist vor Implementierung ausgearbeitet: unabhängige Rundungsintervalle mit
-fester Breitenbegrenzung und erneuter Elternprüfung. Er betrifft die Kontrolle
-nach dem Fit; der tatsächliche Suchlauf bleibt unter dem Profil aus #56.
-Noch keine neue Prüfregel aktiviert, keine Auswahl oder Diagnose geändert
-und kein weiterer wissenschaftlicher Lauf vorbereitet.
+ist nach sauberem KI-basiertem Methodenreview mit #58 übernommen. Die
+separat beauftragte Implementierung aktiviert Format 4: unabhängige
+MPFR-Rundungsintervalle, feste rationale Breitenbegrenzung und erneute
+Elternprüfung sämtlicher Kandidaten. Sie betrifft die Kontrolle nach dem Fit;
+der tatsächliche Suchlauf bleibt unter dem Profil aus #56. Auswahl, Verluste
+und Parameter-/Aliasdiagnosen bleiben unverändert. Vor einem frischen
+Manjaro-Lauf sind vollständige technische CI, gezieltes Implementierungsreview
+und manueller Merge erforderlich.
 [Bedienung](docs/search_duration.md),
 [Literatur](docs/search_duration_literature.md) und
 [Prüf-/Fortsetzungsstand](docs/representation_implementation_status.md) enthalten

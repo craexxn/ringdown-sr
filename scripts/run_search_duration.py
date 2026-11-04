@@ -6,6 +6,7 @@ from ringdown_sr import search_duration as control
 from ringdown_sr import symbolic
 from ringdown_sr.duration_replay import candidate_evidence
 from ringdown_sr.pilot import _json_bytes, _sha256, _write_json
+from ringdown_sr.prediction_reference import verify_prediction
 from ringdown_sr.representation_control import diagnose_candidate
 
 
@@ -33,6 +34,16 @@ def load_driver():
         setattr(driver, name, getattr(control, name))
     driver.EXTRA_FILES += ("search_invocation.json",)
     driver.diagnose_candidate = partial(diagnose_candidate, extended_structure=True)
+
+    def prediction_verifier(candidate, times, python, native):
+        expected = verify_prediction(candidate["tree"], times, python, native)
+        if _json_bytes(candidate.get("prediction_replay")) != _json_bytes(expected):
+            raise ValueError("Changed or missing duration prediction evidence.")
+        return expected
+
+    driver._candidate = partial(
+        driver._candidate, prediction_verifier=prediction_verifier
+    )
 
     def verify_preflight(record, initial, sources, support, probe):
         if (
@@ -70,7 +81,10 @@ def load_driver():
         arrays = args[0]
         for candidate in front["candidates"]:
             expected = candidate_evidence(
-                candidate, arrays["time_s"], arrays["observed"]
+                candidate,
+                arrays["time_s"],
+                arrays["observed"],
+                prediction_check=candidate["prediction_replay"],
             )
             if _json_bytes(candidate["loss_replay"]) != _json_bytes(expected):
                 raise ValueError("Changed duration candidate loss evidence.")
