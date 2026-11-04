@@ -47,10 +47,22 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   Neuer gebundener Adapter, Datenleser und Bericht mit sechs Gruppen und 15
   Paaren. Unveränderte Originalauswahl und sämtliche numerischen Prüfgates;
   kein erweiterter Strukturerkenner, keine neue Abhängigkeit.
-- **Prüfstand:** gezielte Python-Gegenprüfungen, native Miniintegration und volle
-  CI sind in Bearbeitung. Vor wissenschaftlicher Ausführung technische Prüfung
-  und manueller Merge; [Bedienung](transfer_check.md). Aktuellen Head und lokale
-  Änderungen bei Fortsetzung erneut prüfen; wissenschaftliche Serie nicht gestartet.
+- **Selbst geprüft:** 299 fachliche/Treibertests, 54 CI-Regeltests, statische und
+  Formatprüfung, 71 Markdown-Dateien und beide Manjaro-Befehlsblöcke bestanden.
+  Drei native Seedoptionen und feste Referenzen ohne Suche bestätigt; danach
+  drei frische technische Miniworker mit geänderten Achtpunkt-Trainingsdaten
+  und je zwei äußeren Iterationen bestanden, wiederholte Front identisch.
+  Nachweis bei `0baef51712957586ee751b2ea15dd78d2e39bba2` unter
+  `results/transfer-technical-001/`; danach nur Dokumentation und CI-Jobreserve
+  geändert, gebundene Laufzeitquellen unverändert.
+- **Abschlussprüfung:** vollständige CI und endgültiger Head werden in
+  [PR #65](https://github.com/craexxn/ringdown-sr/pull/65) dokumentiert.
+  Der CI-Job erhält mit der zusätzlichen nativen Integration 75 Minuten;
+  wissenschaftliche Grenzen unverändert. #64 zuerst übernehmen, anschließend
+  #65 auf die geprüfte Main-Basis umstellen. Vor wissenschaftlicher Ausführung
+  technische Prüfung und manueller Merge; [Bedienung](transfer_check.md).
+  Aktuellen Head und lokale Änderungen bei Fortsetzung erneut prüfen;
+  wissenschaftliche Serie nicht gestartet.
 - **Danach:** Transfer auswerten, begrenzten nächsten Schritt zur Rauschpipeline
   begründen. Pilotroute und Planungsziele 8./9. und etwa 15. November erhalten.
   Keine Hauptstudie, WSL2-/Parallelisierungsarbeit, größere Bereinigung,

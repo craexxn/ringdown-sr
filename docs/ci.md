@@ -110,8 +110,11 @@ fehlenden oder nicht vergleichbaren Commits wird vollständig geprüft.
 
 Die bisherigen Prüfbefehle, Versionspins, Rechte, Thread-/Haswell-Vorgaben
 und das Cacheverhalten bleiben erhalten. Der technische CI-Job erhält
-60 Minuten Gesamtzeit einschließlich der nativen Profilprüfungen sowie der
-lokalen Optimierer- und äußeren Budgetintegrationen. Die bisherigen Schritte bleiben erhalten;
+75 Minuten Gesamtzeit einschließlich der nativen Profilprüfungen sowie der
+lokalen Optimierer-, äußeren Budget- und neuen Transferintegration. Die neue
+Prüffolge ergänzt drei frische Prozesse einschließlich JIT; die zusätzliche
+Jobreserve verhindert, dass deshalb bestehende Prüfungen gekürzt werden.
+Die bisherigen Schritte bleiben erhalten;
 die zusätzliche Reserve erweitert keine wissenschaftliche Laufgrenze. Lauf
 [41425713993](https://github.com/craexxn/ringdown-sr/actions/runs/41425713993)
 am Head `2d9b028` wurde bei bisher 30 Minuten Joblimit nach rund 31 Minuten

@@ -55,9 +55,10 @@ angenommenen [Transfercheck](docs/transfer_check_plan.md): sechs feste
 Signalbedingungen mit drei neuen gepaarten Seeds, **18 frische Manjaro-Zellen**.
 Referenzfall, einzelne Änderungen von Frequenz, Abklingzeit, Phase und Amplitude
 sowie ein gemeinsamer Fall. Grenzen: 15 Minuten je Worker und zwei Stunden
-insgesamt. Plan und Daten sind vor Implementierung eingefroren; Vorbereitung
-und technische Prüfungen laufen, die wissenschaftliche Serie ist noch nicht
-ausgeführt. [Bedienung](docs/transfer_check.md).
+insgesamt. Plan und Daten sind vor Implementierung eingefroren; Implementierung
+und Bedienung liegen vor, die wissenschaftliche Serie ist noch nicht ausgeführt.
+Technischer Prüfstand in [PR #65](https://github.com/craexxn/ringdown-sr/pull/65),
+[Manjaro-Bedienung](docs/transfer_check.md).
 
 2.000 und 5.000 benötigten am bisherigen Signal rund 3,05-/6,24-mal die summierte
 Zellzeit der 500er-Gruppe. Ein allgemeines Optimum oder Übertragbarkeit ist

@@ -16,7 +16,7 @@ concurrency:
 jobs:
   technical-checks:
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 75
     env:
       UV_PYTHON: "3.12.14"
       PYTHONUNBUFFERED: "1"

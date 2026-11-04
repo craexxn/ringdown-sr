@@ -3,8 +3,9 @@
 **Stand 04.11.2026:** Vorbereitung des angenommenen
 [Transferchecks](transfer_check_plan.md). Keine wissenschaftliche Zelle
 auf den neuen Daten ausgeführt. Vor dem einmaligen Manjaro-Lauf müssen
-technische Prüfung und manueller Merge abgeschlossen sein. Der PR enthält
-den konkreten Checkoutblock mit geprüftem Head und Dateibaumvergleich.
+technische Prüfung und manueller Merge abgeschlossen sein.
+[PR #65](https://github.com/craexxn/ringdown-sr/pull/65) enthält den Prüfstand
+und den konkreten Checkoutblock mit geprüftem Head und Dateibaumvergleich.
 
 ## Umfang und Daten
 
