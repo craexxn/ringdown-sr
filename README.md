@@ -6,12 +6,13 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 ## Projektstatus
 
 Fortsetzungsstand: 04.11.2026; abgeglichener Hauptbranch:
-`f9f4bae` ([Ergebnis-PR #60](https://github.com/craexxn/ringdown-sr/pull/60)).
+`cf04476` ([Implementierungs-PR #61](https://github.com/craexxn/ringdown-sr/pull/61)).
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit
 [PR #59](https://github.com/craexxn/ringdown-sr/pull/59) übernommen.
-Die tatsächliche Suche bleibt unter dem Profil aus #56 mit
-`should_simplify=false`; geändert wurde die Kontrolle nach dem Fit.
+Die Suche behält `should_simplify=false` aus #56. Im lokalen Vergleich aus #61
+werden die Grenzen für lokale Iterationen und Neustarts ausdrücklich variiert;
+die übrigen Einstellungen und numerischen Prüfungen bleiben erhalten.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
@@ -30,14 +31,23 @@ Einschränkung. Ein Gegenfall zeigt trotz kleinerer Trainings-MSE erheblich
 schlechtere Zwischenpunktfehler. Fünf adaptive Seeds am bekannten Signal
 begründen keine allgemeine Leistungsvalidierung oder physikalische Identifikation.
 
-Als nächster Entwicklungsschritt ist der
-[lokale Optimiererbudgetvergleich](docs/local_optimizer_plan.md) angenommen:
-20 frische unrestricted-Suchen bei fest 200 äußeren Iterationen, lokale
-Profile 100/2, 300/2, 100/5 und 300/5 mit fünf neuen gepaarten Seeds.
-`should_simplify=false` und sämtliche numerischen Prüfungen bleiben erhalten.
-Die [Bedienung](docs/local_optimizer.md) bereitet die einmalige Manjaro-Serie
-nach vollständiger technischer Prüfung und Merge vor. Äußere Iterationsstaffel
-und Übertragbarkeit bleiben nachgelagerte eigene Entscheidungen.
+Der [lokale Optimiererbudgetvergleich](docs/local_optimizer_results_manjaro_001.md)
+ist ebenfalls abgeschlossen: **20 frische Zellen, 183 Kandidaten**, sämtliche
+nativen Vorhersagen und Verluste bitgleich nachgerechnet; Gesamtdauer knapp
+22 Minuten. Bei fest 200 äußeren Iterationen erreichen 100/2, 300/2, 100/5 und
+300/5 jeweils **1/5, 2/5, 2/5 und 3/5 Kurvenerfolge**. Unterstützte
+Rekonstruktionen bleiben in allen Gruppen 1/5. 300/5 benötigt rund 32 % mehr
+summierte Zellzeit als 100/2 und verliert einen Baselineerfolg.
+Es ist ein Kandidat für das nächste Arbeitsprofil, kein belegtes Optimum.
+
+Die vorgemerkte äußere Staffel 200, 500, 2.000 und 5.000 bleibt separat vor
+Ausführung zu planen; 10.000 erst später bei positivem Trend. Danach folgen
+Transfercheck, Rauschpipeline, kompaktes Pilotdesign und Pilotauswertung mit
+Hauptversuchsplan gemäß der in #61 festgehaltenen Route. Wissenschaftliche
+Ausführung bleibt auf Manjaro; kein neuer Lauf ist durch diesen Ergebnisnachtrag
+freigegeben. Die [Bedienung](docs/local_optimizer.md) dokumentiert die
+abgeschlossene Serie. Allgemeine Grammatik, `should_simplify=false` und alle
+Prüfungen bleiben erhalten; Übertragbarkeit und Hauptstudie bleiben offen.
 Die vorgemerkte kurze Bereinigungsbestandsaufnahme bleibt offen; funktionierenden
 Code und Originalergebnisse erhalten, anschließend nur konkrete kleine Änderungen.
 WSL2, Parallelisierung und größere Umstrukturierung bleiben zurückgestellt.
