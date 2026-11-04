@@ -10,6 +10,7 @@ from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME_DOCUMENTS = {
+    "docs/local_optimizer_plan.md",
     "docs/constant_diagnostic_plan.md",
     "docs/free_optimizer_budget_plan.md",
     "docs/noiseless_control_plan.md",

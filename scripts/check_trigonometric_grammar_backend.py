@@ -25,6 +25,14 @@ from ringdown_sr.trigonometric_grammar import (
 )
 
 SHOULD_SIMPLIFY = True
+NATIVE_MODULE = "TrigonometricGrammar"
+NATIVE_FILES = (
+    "RingdownSRLoss.jl",
+    "RingdownSRSearch.jl",
+    "RepresentationProfiles.jl",
+    "FreeOptimizerBudget.jl",
+    "TrigonometricGrammar.jl",
+)
 
 
 def load_base():
@@ -125,13 +133,7 @@ def inspect(mode):
 
     initial = snapshot()
     runtime = Path(__file__).resolve().parent
-    native_files = (
-        "RingdownSRLoss.jl",
-        "RingdownSRSearch.jl",
-        "RepresentationProfiles.jl",
-        "FreeOptimizerBudget.jl",
-        "TrigonometricGrammar.jl",
-    )
+    native_files = NATIVE_FILES
     paths = [runtime / name for name in native_files]
     if not all(path.is_file() for path in paths):
         paths = [symbolic.ROOT / "julia/src" / name for name in native_files]
@@ -147,7 +149,7 @@ def inspect(mode):
     if mode == "options":
         for path in paths:
             jl.include(str(path))
-        module = jl.TrigonometricGrammar
+        module = getattr(jl, NATIVE_MODULE)
         first = None
         for condition in CONDITIONS:
             for seed in SEEDS:
@@ -178,7 +180,10 @@ def inspect(mode):
             namespace = getattr(jl, name)
             for path in paths:
                 jl.Base.include(namespace, str(path))
-            backend, module = namespace.RingdownSRSearch, namespace.TrigonometricGrammar
+            backend, module = (
+                namespace.RingdownSRSearch,
+                getattr(namespace, NATIVE_MODULE),
+            )
             backend.bind_context(
                 array(arrays["time_s"]), array(arrays["observed"]), None
             )

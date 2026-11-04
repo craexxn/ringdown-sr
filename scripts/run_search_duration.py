@@ -10,7 +10,7 @@ from ringdown_sr.prediction_reference import verify_prediction
 from ringdown_sr.representation_control import diagnose_candidate
 
 
-def load_driver():
+def load_driver(control=control):
     driver = control.load_module(
         symbolic.ROOT / "scripts/run_trigonometric_grammar.py", "duration_driver"
     )
@@ -30,6 +30,9 @@ def load_driver():
         "verify_manifest",
         "comparison",
         "common_parameters",
+        "CONDITIONS",
+        "common_options",
+        "verify_tree_grammar",
     ):
         setattr(driver, name, getattr(control, name))
     driver.EXTRA_FILES += ("search_invocation.json",)
@@ -52,7 +55,7 @@ def load_driver():
             or record["mode"] != "options"
             or record["callback_calls"] != 0
             or record["source_sha256"] != sources
-            or len(record["profiles"]) != 10
+            or len(record["profiles"]) != len(control.CONDITIONS) * len(control.SEEDS)
             or record["search_profiles"] != control.search_profiles()
         ):
             raise ValueError("Invalid search-duration preflight.")

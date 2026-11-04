@@ -7,7 +7,36 @@ dem geprüften Head `401ca5d79eff5a96b98bc99b89ecabd982c429e7`.
 abgeschlossen und unabhängig nachgerechnet. Wissenschaftliche Ausführung
 bleibt auf Manjaro. Keine zusätzlichen Agenten.
 
-## Aktuell: vollständiger Suchbudgetvergleich 004
+## Aktuell: lokales Optimiererbudget vorbereiten
+
+- **Auftrag:** 20 frische unrestricted-Zellen, 200 äußere Iterationen, lokale
+  Profile 100/2, 300/2, 100/5 und 300/5, fünf neue gepaarte Seeds. Die äußere
+  Iterationsstaffel und Übertragbarkeit folgen gegebenenfalls separat.
+- **Einstieg:** sauberer Branch `codex/duration-manjaro-004-audit` bei fa5758d,
+  ein Worktree, #60 als einziger offener PR. Neuer eigener Branch
+  `codex/local-optimizer-comparison` darauf; #60 bleibt separat erhalten.
+- **Planbindung vor Code:** [Methodenplan](local_optimizer_plan.md), Commit
+  `e7b457bf8927cdd1b52c51bb3457b54d0c88f066`, SHA-256
+  `793006863a739a973dd3ffcf82c6e665f1a77da7eefee4132555843230df7f47`.
+  Seeds 20261120–20261124, ausgeglichene Reihenfolge der ersten vier Blöcke,
+  vier einfache Faktorkontraste plus kombinierter Baselinevergleich. Alle
+  drei Baselinekontraste sichtbar; kein automatisches Gewinnerprofil.
+- **Umsetzung:** eigener versionierter Adapter und nativer Wrapper; bestehende
+  Dauervergleich-Lebenszyklus-, Verlust- und Intervallprüfungen wiederverwendet.
+  Alle nativen Felder einschließlich Neustarts, Iterationen, Seed, Plugins,
+  unrestricted und `should_simplify=false` vorab, im Callback und im Elternprozess
+  geprüft. Datenrollen und Originalauswahl erhalten; Grenzen 600/7200 Sekunden.
+- **Prüfstand:** 272 native Assertions ohne Suche/Optimierung und 239 gezielte
+  Python-Prüfungen bestanden. Vollständige technische Prüfung einschließlich
+  der fünf neuen winzigen Integrationsworker ist vor Merge erforderlich;
+  endgültiger Head und CI-Nachweis stehen im Implementierungs-PR.
+- **Fortsetzung:** #60, danach Implementierungs-PR nach vollständiger Prüfung
+  manuell übernehmen; konkreter Vorbereitungsblock im PR und
+  [Manjaro-Bedienung](local_optimizer.md). Hier keine wissenschaftlichen Suchen,
+  keine zusätzlichen Agenten, keine WSL2-/Parallelisierungsarbeit. Vorgemerkte
+  kleine Bereinigungsbestandsaufnahme weiterhin offen, keine Bereinigung umgesetzt.
+
+## Grundlage: vollständiger Suchbudgetvergleich 004
 
 - **Einstieg:** sauberer eigener Branch `codex/duration-manjaro-004-audit`
   ab `79ff670`, ein Worktree, kein offener PR beim Einstieg. Andere Branches,

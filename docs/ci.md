@@ -1,7 +1,7 @@
 # CI nach Änderungsumfang
 
-Der Workflow `Technical checks` startet weiterhin bei Pull Requests nach
-`main`, bei Pushes nach `main` und bei manuellem Aufruf. Der bestehende
+Der Workflow `Technical checks` startet bei Pull Requests einschließlich
+gestapelter Entwicklungsbranches, bei Pushes nach `main` und bei manuellem Aufruf. Der bestehende
 Jobname `technical-checks` bleibt erhalten. Die Auswahl geschieht innerhalb
 dieses Jobs; es gibt keinen Workflow-Pfadfilter, der den Statuscheck ganz
 ausfallen lässt.
@@ -30,7 +30,7 @@ werden nicht abgerufen beziehungsweise validiert.
 `docs/search_duration_plan.md`, `docs/search_duration_verification_plan.md`
 `docs/search_duration_table_loss_note.md`
 `docs/search_duration_simplification_plan.md`
-und `docs/search_duration_prediction_plan.md`
+`docs/search_duration_prediction_plan.md` und `docs/local_optimizer_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -109,7 +109,9 @@ fehlenden oder nicht vergleichbaren Commits wird vollständig geprüft.
 
 Die bisherigen Prüfbefehle, Versionspins, Rechte, Thread-/Haswell-Vorgaben
 und das Cacheverhalten bleiben erhalten. Der technische CI-Job erhält
-45 Minuten Gesamtzeit. Lauf
+60 Minuten Gesamtzeit einschließlich der neuen nativen Profilprüfung und fünf
+lokalen Optimierer-Integrationsworker. Die bisherigen Schritte bleiben erhalten;
+die zusätzliche Reserve erweitert keine wissenschaftliche Laufgrenze. Lauf
 [41425713993](https://github.com/craexxn/ringdown-sr/actions/runs/41425713993)
 am Head `2d9b028` wurde bei bisher 30 Minuten Joblimit nach rund 31 Minuten
 in der zweiten abschließenden Haswell-Wiederholung abgebrochen; alle vorherigen
@@ -118,6 +120,15 @@ Laufzeitreserve, ohne Prüfungen auszulassen oder deren Budgets zu verändern.
 Die Grenzen der wissenschaftlichen Serien und ihrer Worker bleiben unverändert.
 Ein Fehler im ausgewählten Prüfpfad führt
 weiterhin zu einem fehlgeschlagenen Job.
+
+Der lokale Optimiererbudgetvergleich ergänzt `check_local_optimizer_native.py`
+mit 272 nativen Assertions am festen Achtpunkt-Signal, ohne Optimierung/Suche.
+`check_local_optimizer_integration.py` prüft alle 20 echten Seed-/Profiloptionen,
+zwölf feste Ringdown-/Aliasfälle und alle vier lokalen Profile plus frische
+Baselinewiederholung mit jeweils zwei äußeren Iterationen an acht Punkten y=1+t.
+Falsche lokale Iterationen, Neustarts und gemeinsame Optionen müssen vor der
+numerischen Zielfunktion scheitern. Die identische wiederholte Front prüft
+Prozessisolation. Keine der 20 wissenschaftlichen Zellen wird ausgeführt.
 
 ## Ermittlung des Diffs
 
