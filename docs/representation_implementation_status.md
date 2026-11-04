@@ -1,6 +1,9 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 04.11.2026. Implementierungs-PR #63 ist als
+Stand: 04.11.2026. Ergebnis-PR #64 ist als
+`d9f445f02fb147ab8d13db68bed159de68375983` übernommen; sein Dateibaum entspricht
+dem geprüften Ergebnis-Head `5ae2a2cdd48193dee6303fb109d6a7698c980845`.
+Implementierungs-PR #63 ist als
 `5215c5e1c93f220a3f7ea59b1c37580d2f2b5ea4` übernommen; sein Dateibaum entspricht
 dem vollständig technisch geprüften Head `a47a273b6531ab4600633390e1b5ece1b4f0dfe2`.
 Die äußere Iterationsstaffel ist vollständig ausgeführt und unabhängig nachgerechnet.
@@ -58,8 +61,9 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 - **Abschlussprüfung:** vollständige CI und endgültiger Head werden in
   [PR #65](https://github.com/craexxn/ringdown-sr/pull/65) dokumentiert.
   Der CI-Job erhält mit der zusätzlichen nativen Integration 75 Minuten;
-  wissenschaftliche Grenzen unverändert. #64 zuerst übernehmen, anschließend
-  #65 auf die geprüfte Main-Basis umstellen. Vor wissenschaftlicher Ausführung
+  wissenschaftliche Grenzen unverändert. #64 ist dateigleich als d9f445f
+  übernommen. Die Main-Abstammung wurde nach explizitem Dateibaumvergleich
+  ohne Implementierungsänderung aufgenommen; #65 zielt jetzt auf main. Vor wissenschaftlicher Ausführung
   technische Prüfung und manueller Merge; [Bedienung](transfer_check.md).
   Aktuellen Head und lokale Änderungen bei Fortsetzung erneut prüfen;
   wissenschaftliche Serie nicht gestartet.

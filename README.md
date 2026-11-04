@@ -6,7 +6,7 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 ## Projektstatus
 
 Fortsetzungsstand: 04.11.2026; abgeglichener Hauptbranch:
-`5215c5e` ([Implementierungs-PR #63](https://github.com/craexxn/ringdown-sr/pull/63)).
+`d9f445f` ([Ergebnis-PR #64](https://github.com/craexxn/ringdown-sr/pull/64)).
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit
 [PR #59](https://github.com/craexxn/ringdown-sr/pull/59) übernommen.
