@@ -121,10 +121,14 @@ Originalauswahl. Gegenläufige Effekte, ungewählte gute Kandidaten, fehlende
 Diagnosen und Kosten werden sichtbar; kein automatisches Gewinnerprofil.
 
 Jeder Paarvergleich enthält die ursprünglichen Kosten beider Zellen.
-`worker_wall_seconds` umfasst im bestehenden Treiber Start und anschließende
-Elternverifikation; die reine Workerwandzeit steht separat in der jeweiligen
-`status.json` als `total_wall_seconds`. Fitzeit enthält JIT/Export. Diese
-Größen werden nicht als reine Optimiererzeit oder eindeutige Baumzahl ausgegeben.
+`worker_wall_seconds` umfasst im bestehenden Treiber den gesamten
+`run_search_arm`-Aufruf und die anschließende Elternverifikation.
+`status.json.total_wall_seconds` beginnt innerhalb dieses Aufrufs unmittelbar
+vor der Metadatenerfassung und endet nach dem Workeraufruf sowie dem Lesen
+und der Basisprüfung seines Ergebnisses. Es enthält damit auch Metadaten-
+und Startvorbereitung im Elternprozess und ist keine reine Prozesslaufzeit.
+Fitzeit enthält JIT/Export. Diese Größen werden nicht als reine Optimiererzeit
+oder eindeutige Baumzahl ausgegeben.
 
 Die technische CI ergänzt einen festen nativen Abweisungstest und fünf
 frische Worker auf separaten acht Punkten y=1+t: alle vier lokalen Profile
