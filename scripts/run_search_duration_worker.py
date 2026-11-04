@@ -22,6 +22,7 @@ def run(directory):
     )
     for name in ("FORMAT", "checked_profile", "verify_manifest", "profile_parameters"):
         setattr(worker, name, getattr(control, name))
+    worker.SHOULD_SIMPLIFY = False
     original_snapshot = symbolic._environment_snapshot
     original_replay = symbolic._verify_loss_replay
     module = original_backend = guard = None

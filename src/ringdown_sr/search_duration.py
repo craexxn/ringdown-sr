@@ -13,11 +13,15 @@ from .pilot import _sha256
 from .representation_control import _markers, _metric_availability, _metrics
 from .symbolic import ROOT, SearchBudget
 
-FORMAT = "ringdown-sr-search-duration-2"
-PROFILE_FORMAT = "ringdown-sr-search-duration-profile-2"
-PLAN = "docs/search_duration_verification_plan.md"
-PLAN_COMMIT = "2a0b50926cd2983d0cd6cc1307ccc28d0a2822fa"
-PLAN_SHA256 = "b6f7cef2227eeacccf8156d02e8899e6fc83b7bd1f29735c1a402922a9d83062"
+FORMAT = "ringdown-sr-search-duration-3"
+PROFILE_FORMAT = "ringdown-sr-search-duration-profile-3"
+PLAN = "docs/search_duration_simplification_plan.md"
+PLAN_COMMIT = "f13d7687ddd06d5c68fbbf7ae5baa67639d74ca3"
+PLAN_SHA256 = "46fb2510957a4ee37d3f61e59291b8a5081db9ff64e7bd36a62aad0073901a0d"
+VERIFICATION_PLAN = "docs/search_duration_verification_plan.md"
+VERIFICATION_PLAN_SHA256 = (
+    "b6f7cef2227eeacccf8156d02e8899e6fc83b7bd1f29735c1a402922a9d83062"
+)
 ORIGINAL_PLAN = "docs/search_duration_plan.md"
 ORIGINAL_PLAN_SHA256 = (
     "8906a66930848d733e5b2744d40c5fa9c4051db2b876e200908d74ae9ac0b75d"
@@ -59,6 +63,7 @@ def source_hashes():
     for name in (
         PLAN,
         ORIGINAL_PLAN,
+        VERIFICATION_PLAN,
         TABLE_NOTE,
         *RUNTIME.values(),
         "scripts/run_search_duration.py",
@@ -69,6 +74,8 @@ def source_hashes():
         raise ValueError("The frozen search duration plan changed.")
     if hashes[ORIGINAL_PLAN] != ORIGINAL_PLAN_SHA256:
         raise ValueError("The original search duration plan changed.")
+    if hashes[VERIFICATION_PLAN] != VERIFICATION_PLAN_SHA256:
+        raise ValueError("The bound loss verification plan changed.")
     if hashes[TABLE_NOTE] != TABLE_NOTE_SHA256:
         raise ValueError("The bound CSV loss clarification changed.")
     return dict(sorted(hashes.items()))
@@ -111,8 +118,23 @@ def checked_profile(document):
     return document["condition"]
 
 
-profile_parameters = grammar.profile_parameters
-verify_options = grammar.verify_options
+def profile_parameters(budget, condition):
+    parameters = grammar.profile_parameters(budget, condition)
+    parameters["should_simplify"] = False
+    return parameters
+
+
+def verify_options(record, seed, condition, base, support):
+    fields = support.backend_without_output(record["backend_options"])
+    if fields.get("should_simplify") != {"type": "Bool", "value": "false"}:
+        raise ValueError("Duration searches must disable automatic simplification.")
+    normalized = copy.deepcopy(record)
+    for field in normalized["backend_options"]:
+        if field["name"] == "should_simplify":
+            field["value"] = "true"
+    return grammar.verify_options(normalized, seed, condition, base, support)
+
+
 common_options = grammar.common_options
 verify_tree_grammar = grammar.verify_tree_grammar
 supported_reconstruction = grammar.supported_reconstruction

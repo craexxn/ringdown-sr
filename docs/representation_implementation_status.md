@@ -1,18 +1,54 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 03.11.2026. PR #52 ist übernommen, der darin enthaltene Literatur-PR #51
-als ersetzt geschlossen. Die einmalige Grammatikserie auf Manjaro ist
-abgeschlossen und ihr Originalarchiv unabhängig geprüft: C_K = C_A = 0/3,
-kein Kurvenerfolg unter 51 Frontkandidaten. Die zusätzliche Regel wird gemäß
-Plan nicht übernommen. PR #54 ist übernommen; der neue Suchbudgetvergleich
-auf Manjaro blieb beim Replay von Zelle 3 unvollständig. Der Originalarchiv-Audit
-bestätigt sehr genaue Sinus-/Exponentialquotienten im Teilstand und grenzt
-zwei Verifikationsprobleme ein. Die gebundene Ergänzung für Format 2 ist
-implementiert; aktueller Prüfstand in PR #55. Hier Vorbereitung und technische Prüfung;
-die wissenschaftliche Ausführung bleibt auf Manjaro.
+Stand: 03.11.2026. PR #55 ist auf `main` als `76a7400` übernommen.
+Der [zweite Suchbudgetlauf](search_duration_results_manjaro_002.md) ist nach
+vier verifizierten Zellen unvollständig. Aktuell wird ausschließlich die
+Manjaro-Abhilfe vorbereitet. Wissenschaftliche Ausführung bleibt auf Manjaro.
 Keine zusätzlichen Agenten.
 
-## Aktuell: Versionierte Verlust- und Strukturverifikation
+## Aktuell: inkonsistenter nativer Verlust in Zelle 5
+
+- **Abgeglichener Einstieg:** sauberer Branch `codex/duration-manjaro-002-audit`
+  auf `76a740018b4426bc1651a5fed3bf214659a083cf`, ein Worktree, `origin/main`
+  identisch, keine offenen PRs. Andere Branches erhalten. Die aufgeschobene
+  WSL2-Datenportabilität bleibt ausschließlich im lokalen Branch
+  `codex/frozen-archive-inputs` bei `c5f1c5c`; nicht Teil dieser Änderung.
+- **Originalaudit:** Archivhash bestätigt, 143 Dateien, 96 Verbrauchsanker,
+  68 Quellen und alle vier abgeschlossenen Zellverifikationen geprüft.
+  Die letzten zwei Originalauswahlen bestehen Kurven-/Parameterdiagnose;
+  Gesamtvergleich weiter gesperrt. Sieben feste native CSV-Replays ohne
+  Suche/Fit: sechs gespeicherte Verluste bitgenau, der siebte reproduziert
+  exakt den gemeldeten Abstand `0.03399585286266448` zu
+  `0.03399585394761332`. Keine serialisierten Zustände ausgeführt.
+- **Begründung:** Ein unabhängiger Achtpunktfall beweist in beiden nativen
+  Vereinfachungspfaden veraltete Verluste. Ohne Mutationshistorie bleibt die
+  alleinige Ursachenzuordnung für den Archivfall offen. Die strenge
+  Verlustprüfung ist korrekt und bleibt unverändert.
+- **Plan vor Code:** [gemeinsames Profil ohne automatische Vereinfachung](search_duration_simplification_plan.md),
+  Commit `f13d7687ddd06d5c68fbbf7ae5baa67639d74ca3`, SHA-256
+  `46fb2510957a4ee37d3f61e59291b8a5081db9ff64e7bd36a62aad0073901a0d`.
+  Format 3 setzt nur im Suchbudgetpfad `should_simplify=false`; alle früheren
+  nativen Aufrufer behalten `true`. Optionen werden nativ und im Elternprozess
+  absolut geprüft, einschließlich erster Zelle. Frühere Planbytes bleiben gebunden.
+- **Selbst ausgeführte Prüfungen:** alle 1.929 Python-Tests, Ruff, Format und
+  Dokumentationsprüfung bestanden. `results/duration-simplification-technical-003.json`
+  bestätigt die drei festen nativen Replayfälle, 180 native Assertions und
+  zusätzliche Callback-Guard-Prüfungen ohne Suche/Fit. Die vollständige lokale
+  Integration `results/duration-simplification-integration-001` bestand:
+  zehn native Profile, 20 Pythonprofile, feste Referenzen und fünf frische
+  K2–A2–K3–A3–K2-Worker am Achtpunkt-Signal; wiederholte Front identisch.
+  Maßgeblicher Head, vollständige CI und gezieltes KI-basiertes Review werden
+  im PR festgehalten. Kein Merge und kein wissenschaftlicher Lauf hier.
+- **Nächster Schritt:** nach Prüfung und manuellem Merge vollständige frische
+  Serie `duration-manjaro-003`, unveränderte 20-Zellen-Anordnung, alle Seeds
+  und Budgets, 600/7200 Sekunden. Keine Übernahme alter Teilzellen, kein
+  Warmstart und keine rückwirkende Umwertung. [Startweg](search_duration.md).
+- **Reviewauftrag:** gezieltes KI-basiertes Review in bestehendem Chat
+  „2_Review“ angefragt. Der App-Zugriff scheiterte bisher; ein Reviewstart
+  oder vorliegender Reviewbefund darf daraus nicht behauptet werden.
+
+## Historisch: Versionierte Verlust- und Strukturverifikation
+
 
 - **Abgeglichener Einstieg:** eigener sauberer Branch `codex/duration-abort-audit`
   bei `6dccd469fdb9f1688f54755b3c6c48e4f105e14d`, ein Worktree, andere Branches

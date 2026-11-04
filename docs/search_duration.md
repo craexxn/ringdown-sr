@@ -7,7 +7,7 @@ Die [Literaturgrundlage](search_duration_literature.md) begründet die
 Budgetprüfung, keinen optimalen Iterationswert oder garantierten Erfolg.
 
 Der erste Lauf blieb [beim Replay unvollständig](search_duration_results_manjaro_001.md).
-Für Format 2 gilt zusätzlich die vor Code eingefrorene
+Seit Format 2 gilt zusätzlich die vor Code eingefrorene
 [Verifikationsergänzung](search_duration_verification_plan.md), Commit
 `2a0b50926cd2983d0cd6cc1307ccc28d0a2822fa`, SHA-256
 `b6f7cef2227eeacccf8156d02e8899e6fc83b7bd1f29735c1a402922a9d83062`.
@@ -15,7 +15,14 @@ Die zusätzlich gebundene [Tabellenpräzisierung](search_duration_table_loss_not
 trennt Pandas-CSV-Einlesen von nativer Reduktion: Commit
 `fee62058992c84a9930aa765233ebdc095c54cb1`, SHA-256
 `56c0807127ff208148df9057607c698218bf87b0cdcf73471b58add14485372c`.
-Diese Bedienung beschreibt die neue vollständige Serie `duration-manjaro-002`.
+Auch der [zweite Lauf](search_duration_results_manjaro_002.md) blieb unvollständig:
+vier verifizierte Zellen, danach inkonsistenter gespeicherter nativer Verlust.
+Format 3 bindet die [Abhilfe ohne automatische Vereinfachung](search_duration_simplification_plan.md),
+Commit `f13d7687ddd06d5c68fbbf7ae5baa67639d74ca3`, SHA-256
+`46fb2510957a4ee37d3f61e59291b8a5081db9ff64e7bd36a62aad0073901a0d`.
+`should_simplify=false` gilt für alle Zellen. Die Formelsprache bleibt gleich,
+die Suchtrajektorien können sich ändern; frühere Zellen werden nicht vermischt.
+Diese Bedienung beschreibt die neue vollständige Serie `duration-manjaro-003`.
 
 20 frische Suchen kreuzen K/A mit 200/2.000 Suchiterationen bei denselben fünf
 vorab festgelegten Seeds. Sie sind nach dem Teilstand nicht mehr vollständig
@@ -28,6 +35,22 @@ kurzer Läufe und keine Übernahme früherer Zellen als neue Kontrollen.
 Die vollständige technische CI muss am dokumentierten Implementierungs-Head
 bestanden sein. Ein späterer Merge ist nur bei bestätigter Baumgleichheit
 derselbe geprüfte Dateistand. Kein eigenständiger Merge durch diesen Ablauf.
+Bei einem Squash-Merge fehlen im lokalen `main`-Verlauf möglicherweise die
+vor Code eingefrorenen Plankommits. Vor den lokalen Tests zusätzlich den
+PR-Head dieser Änderung und den von #55 holen; der zweite Befehl erhält den
+historischen Tabellenplan auch in einem frischen Checkout:
+
+```bash
+git fetch origin main
+git fetch origin refs/pull/55/head:refs/remotes/origin/pr-55
+```
+
+Den neuen PR-Head ebenfalls in einer lokalen Remote-Referenz erhalten
+(der konkrete Befehl steht im PR). Nach Merge den geprüften, baumgleichen
+Stand mit `git switch --detach` verwenden; ein bereits in einem anderen
+Worktree belegtes `main` muss nicht gewechselt werden. Eine unvollständige
+Historie ist kein Grund, Planprüfungen zu überspringen.
+
 Lokale technische Integration bei Bedarf:
 
 ```bash
@@ -41,7 +64,9 @@ Achtpunkt-Signal `y=1+t`: K2, A2, K3, A3, K2. Der tatsächliche Aufruf an
 müssen identisch sein. Dieser Test führt keine wissenschaftliche Zelle aus.
 
 Zusätzlich prüft die volle CI mit `scripts/check_duration_replay.py` die zwei
-vorhandenen CSV-Bäume nativ ohne Suche/Fit. Die Fixture ist ein ausdrücklich
+früheren CSV-Bäume, die weiterhin abzulehnende Verlustabweichung aus Zelle 5
+und einen unabhängigen Achtpunkt-Gegenfall für beide nativen
+Vereinfachungspfade sowie die deaktivierte Simplify-Mutation, ohne Suche/Fit. Die Fixture ist ein ausdrücklich
 nachträglicher Regressionstest, kein wiederhergestellter Originalbaumexport.
 
 ## Versionierte Verifikation
@@ -93,7 +118,7 @@ Der Treiber prüft Archivhash und Float64-Bits selbst. Diagnosepunkte und
 Wahrheit gelangen nicht an die Suchworker.
 
 ```bash
-env -u VIRTUAL_ENV OPENBLAS_CORETYPE=Haswell OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 uv run --locked python scripts/run_search_duration.py --archive results/representation-manjaro-001.tar.gz --output results/duration-manjaro-002 --label manjaro
+env -u VIRTUAL_ENV OPENBLAS_CORETYPE=Haswell OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 uv run --locked python scripts/run_search_duration.py --archive results/representation-manjaro-001.tar.gz --output results/duration-manjaro-003 --label manjaro
 ```
 
 Das Ausgabeverzeichnis muss neu sein. **600 Sekunden je Worker, insgesamt
@@ -106,8 +131,8 @@ fremder Timer wird nicht überschrieben. Dieser Pfad ist für Linux vorgesehen.
 Nach Abschluss oder Abbruch unverändert sichern:
 
 ```bash
-tar -czf results/duration-manjaro-002.tar.gz -C results duration-manjaro-002
-sha256sum results/duration-manjaro-002.tar.gz
+tar -czf results/duration-manjaro-003.tar.gz -C results duration-manjaro-003
+sha256sum results/duration-manjaro-003.tar.gz
 ```
 
 Bestehende Archive erhalten; gegebenenfalls einen neuen Sicherungsnamen

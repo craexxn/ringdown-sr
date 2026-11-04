@@ -16,6 +16,8 @@ from ringdown_sr.trigonometric_grammar import (
     verify_manifest,
 )
 
+SHOULD_SIMPLIFY = True
+
 
 def run(directory):
     directory = Path(directory).resolve()
@@ -53,7 +55,9 @@ def run(directory):
                     )
                 (directory / name).write_bytes(contents)
                 jl.include(str(directory / name))
-            jl.TrigonometricGrammar.configure(condition, seed)
+            jl.TrigonometricGrammar.configure(
+                condition, seed, should_simplify=SHOULD_SIMPLIFY
+            )
         elif phase == "after_search":
             from juliacall import Main as jl
 

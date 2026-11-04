@@ -10,6 +10,7 @@ from types import SimpleNamespace
 import pytest
 from test_noiseless_control import candidate, reference_tree
 from test_structure import constant
+from test_trigonometric_grammar import option_fixture as grammar_options
 
 from ringdown_sr import search_duration as control
 from ringdown_sr import trigonometric_grammar as grammar
@@ -17,6 +18,14 @@ from ringdown_sr.noiseless_control import frozen_data
 from ringdown_sr.pilot import _sha256
 from ringdown_sr.representation_control import diagnose_candidate
 from ringdown_sr.symbolic import SearchBudget
+
+
+def option_fixture(seed, condition):
+    record = grammar_options(seed, condition)
+    record["backend_options"].append(
+        {"name": "should_simplify", "type": "Bool", "value": "false"}
+    )
+    return record
 
 
 def test_fresh_module_uses_source_despite_valid_timestamp_cached_bytecode(tmp_path):
@@ -57,7 +66,9 @@ def test_bound_plan_factorial_design_and_unchanged_shared_policy():
     for cell in cells:
         budget = SearchBudget(**cell["budget"])
         profile = control.profile_parameters(budget, cell["condition"])
-        assert profile == grammar.profile_parameters(budget, cell["condition"])
+        old = grammar.profile_parameters(budget, cell["condition"])
+        assert "should_simplify" not in old  # Existing PySR default, checked natively.
+        assert profile == {**old, "should_simplify": False}
         assert profile["niterations"] == budget.niterations
         assert profile["optimizer_iterations"] == 100
         current = control.common_parameters(profile)
@@ -71,6 +82,14 @@ def test_bound_plan_factorial_design_and_unchanged_shared_policy():
             ["git", "show", f"{control.PLAN_COMMIT}:{control.PLAN}"], cwd=control.ROOT
         )
         == contents
+    )
+    assert (
+        _sha256((control.ROOT / control.VERIFICATION_PLAN).read_bytes())
+        == control.VERIFICATION_PLAN_SHA256
+    )
+    assert (
+        _sha256((control.ROOT / control.ORIGINAL_PLAN).read_bytes())
+        == control.ORIGINAL_PLAN_SHA256
     )
     assert len(grammar.planned_cells()) == 6
     note = (control.ROOT / control.TABLE_NOTE).read_bytes()
@@ -277,3 +296,14 @@ def test_unselected_success_does_not_count_and_unavailable_metrics_keep_denomina
         assert group["unselected_curve_successes"] == 5
     pair = result["pair_differences"][0]["metrics"]["diagnostic/relative_rms"]
     assert pair["difference"] is None and pair["status"] == "not_assessed"
+
+
+@pytest.mark.parametrize(
+    "name", ["PLAN", "VERIFICATION_PLAN", "ORIGINAL_PLAN", "TABLE_NOTE"]
+)
+def test_all_bound_duration_plans_reject_changed_bytes(monkeypatch, tmp_path, name):
+    path = tmp_path / "changed.md"
+    path.write_text("changed plan\n")
+    monkeypatch.setattr(control, name, str(path))
+    with pytest.raises(ValueError):
+        control.source_hashes()

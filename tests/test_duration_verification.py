@@ -336,3 +336,35 @@ def test_mixed_phase_alias_orientation_is_derived_with_exact_pi(orientation):
 def test_parent_requires_replay_evidence_even_for_perfect_predictions():
     with pytest.raises(ValueError, match="Missing"):
         candidate_evidence({}, np.arange(8), np.ones(8))
+
+
+def test_archived_stale_loss_stays_rejected_without_replacing_original_selection():
+    case = json.loads((FIXTURE.parent / "duration_stale_loss_case.json").read_bytes())
+    inputs = json.loads(FIXTURE.read_bytes())["training_inputs"]
+    times, observed = (np.asarray(inputs[k]) for k in ("time_s", "observed"))
+    native = np.asarray(case["native_prediction"])
+    python = symbolic.evaluate_tree(case["tree"], times)
+    python_loss = mean_squared_error(observed - python)
+    with pytest.raises(AssertionError):
+        verify_loss_replay(
+            observed,
+            native,
+            python,
+            case["loss"],
+            case["native_replay_loss"],
+            case["loss"],
+            python_loss,
+            None,
+        )
+    evidence = verify_loss_replay(
+        observed,
+        native,
+        python,
+        case["native_replay_loss"],
+        case["native_replay_loss"],
+        case["native_replay_loss"],
+        python_loss,
+        None,
+    )
+    assert evidence["status"] == "passed"
+    assert case["loss"] == 0.03399585286266448

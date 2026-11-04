@@ -1,4 +1,4 @@
-"""Replay two archived CSV regression trees natively, without fitting or searching."""
+"""Check fixed native replays and simplification counterexamples without fitting."""
 
 import argparse
 import json
@@ -53,8 +53,8 @@ def check():
     array = lambda values: convert(jl.Array[jl.Float64], values)
     backend.bind_context(array(arrays["time_s"]), array(arrays["observed"]), None)
     seed = backend_seed(20261103)
-    grammar.configure("no_nested_trig", seed)
-    options = grammar.reference_options("no_nested_trig", seed)
+    grammar.configure("no_nested_trig", seed, should_simplify=False)
+    options = grammar.reference_options("no_nested_trig", seed, should_simplify=False)
     records = []
     for case in fixture["cases"]:
         tree = case["tree"]
@@ -107,11 +107,53 @@ def check():
                 "diagnosis": diagnosis,
             }
         )
+    stale_path = fixture_path.with_name("duration_stale_loss_case.json")
+    stale_bytes = stale_path.read_bytes()
+    stale = json.loads(stale_bytes)
+    restored = symbolic._import_tree(stale["tree"], backend)
+    native, loss = backend.replay(restored, options)
+    native, loss = np.asarray(native, dtype=np.float64), float(loss)
+    python = symbolic.evaluate_tree(stale["tree"], arrays["time_s"])
+    python_loss = mean_squared_error(arrays["observed"] - python)
+    assert symbolic._export_tree(restored, options) == stale["tree"]
+    assert abs(loss - stale["loss"]) > 1e-10 * stale["loss"]
+    try:
+        verify_loss_replay(
+            arrays["observed"],
+            native,
+            python,
+            stale["loss"],
+            loss,
+            stale["loss"],
+            python_loss,
+            None,
+        )
+    except AssertionError:
+        pass
+    else:
+        raise AssertionError("The archived stale native loss was accepted.")
+    # This independent consistent replay is a test, never a corrected candidate.
+    verify_loss_replay(
+        arrays["observed"], native, python, loss, loss, loss, python_loss, None
+    )
+    test_path = symbolic.ROOT / "julia/test/duration_simplification.jl"
+    test_bytes = test_path.read_bytes()
+    jl.include(str(test_path))
+    jl.DurationSimplificationTests.check()
+    assert (
+        stale_path.read_bytes() == stale_bytes and test_path.read_bytes() == test_bytes
+    )
     assert len(records) == 2 and int(backend.CALLS[()]) == 0
     assert source_hashes() == sources and fixture_path.read_bytes() == fixture_bytes
     return {
         "status": "verified",
-        "scope": "two fixed post-hoc CSV trees; no search, fit or recovered original selection",
+        "scope": "three fixed post-hoc CSV trees and native simplification counterexamples; no search, fit or recovered original selection",
+        "stale_loss_rejected": True,
+        "simplification_counterexamples": "passed_both_grammars",
+        "additional_source_sha256": {
+            str(p.relative_to(symbolic.ROOT)): _sha256(b)
+            for p, b in ((stale_path, stale_bytes), (test_path, test_bytes))
+        },
         "source_sha256": sources,
         "fixture_sha256": _sha256(fixture_bytes),
         "original_archive_sha256": fixture["archive_sha256"],
@@ -131,5 +173,5 @@ if __name__ == "__main__":
         raise ValueError("Use a new technical output outside sources.")
     _write_json(output, check())
     print(
-        "Two native duration loss/structure regression cases passed; no search or fit."
+        "Native loss/structure replays and simplification counterexamples passed; no search or fit."
     )

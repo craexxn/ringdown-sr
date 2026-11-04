@@ -24,6 +24,8 @@ from ringdown_sr.trigonometric_grammar import (
     verify_options,
 )
 
+SHOULD_SIMPLIFY = True
+
 
 def load_base():
     spec = importlib.util.spec_from_file_location(
@@ -55,7 +57,9 @@ def native_runtime():
 
 
 def option_record(jl, module, options, seed, condition):
-    module.verify_options(options, condition, backend_seed(seed))
+    module.verify_options(
+        options, condition, backend_seed(seed), should_simplify=SHOULD_SIMPLIFY
+    )
     return {
         "python_seed": seed,
         "backend_seed": backend_seed(seed),
@@ -147,7 +151,9 @@ def inspect(mode):
         first = None
         for condition in CONDITIONS:
             for seed in SEEDS:
-                options = module.reference_options(condition, backend_seed(seed))
+                options = module.reference_options(
+                    condition, backend_seed(seed), should_simplify=SHOULD_SIMPLIFY
+                )
                 record = option_record(jl, module, options, seed, condition)
                 record["policy_verification"] = verify_options(
                     record, seed, condition, base, support
@@ -176,8 +182,12 @@ def inspect(mode):
             backend.bind_context(
                 array(arrays["time_s"]), array(arrays["observed"]), None
             )
-            module.configure(condition, backend_seed(SEEDS[0]))
-            options = module.reference_options(condition, backend_seed(SEEDS[0]))
+            module.configure(
+                condition, backend_seed(SEEDS[0]), should_simplify=SHOULD_SIMPLIFY
+            )
+            options = module.reference_options(
+                condition, backend_seed(SEEDS[0]), should_simplify=SHOULD_SIMPLIFY
+            )
             grammar.extend(grammar_cases(jl, backend, options, condition))
             dataset = backend.CONTEXT[()]._dataset
             c, t, u, b = (
