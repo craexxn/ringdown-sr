@@ -37,10 +37,8 @@ REFERENCE = re.compile(r"^\s{0,3}\[([^\]]+)\]:\s*(?:<([^>\n]+)>|(\S+))")
 NATIVE_JOBS = ("native-a", "native-b", "native-c")
 
 
-def check_completion(needs, cancelled):
+def check_completion(needs):
     """Reject every result except the two explicitly complete coverage paths."""
-    if cancelled != "false":
-        raise ValueError("Workflow cancelled or cancellation status unavailable.")
     if not isinstance(needs, dict) or set(needs) != {"prepare", *NATIVE_JOBS}:
         raise ValueError("Missing or unexpected CI jobs.")
     if any(not isinstance(job, dict) for job in needs.values()):
@@ -271,7 +269,7 @@ def main():
     parser.add_argument("mode", choices=("scope", "docs", "history", "gate"))
     args = parser.parse_args()
     if args.mode == "gate":
-        check_completion(json.loads(os.environ["CI_NEEDS"]), os.environ["CI_CANCELLED"])
+        check_completion(json.loads(os.environ["CI_NEEDS"]))
         return
     if args.mode == "history":
         prepare_history(

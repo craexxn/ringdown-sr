@@ -246,7 +246,7 @@ def complete_needs(full="true"):
 
 @pytest.mark.parametrize("full", ["true", "false"])
 def test_gate_accepts_only_complete_technical_or_prose_paths(full):
-    CI.check_completion(complete_needs(full), "false")
+    CI.check_completion(complete_needs(full))
 
 
 @pytest.mark.parametrize("job", ["prepare", *CI.NATIVE_JOBS])
@@ -257,7 +257,7 @@ def test_gate_blocks_every_failed_cancelled_skipped_or_missing_required_result(
     needs = complete_needs()
     needs[job]["result"] = result
     with pytest.raises(ValueError):
-        CI.check_completion(needs, "false")
+        CI.check_completion(needs)
 
 
 @pytest.mark.parametrize("job", CI.NATIVE_JOBS)
@@ -266,7 +266,7 @@ def test_prose_gate_requires_all_three_explicit_skips(job, result):
     needs = complete_needs("false")
     needs[job]["result"] = result
     with pytest.raises(ValueError):
-        CI.check_completion(needs, "false")
+        CI.check_completion(needs)
 
 
 @pytest.mark.parametrize("scope", [None, "", "TRUE", "False", " true", True, False, 0])
@@ -274,7 +274,7 @@ def test_successful_native_jobs_cannot_mask_invalid_scope(scope):
     needs = complete_needs()
     needs["prepare"]["outputs"]["full"] = scope
     with pytest.raises(ValueError, match="scope"):
-        CI.check_completion(needs, "false")
+        CI.check_completion(needs)
 
 
 @pytest.mark.parametrize("field", ["outputs", "result"])
@@ -283,33 +283,27 @@ def test_missing_job_or_required_field_blocks_gate(job, field):
     needs = complete_needs()
     del needs[job]
     with pytest.raises(ValueError):
-        CI.check_completion(needs, "false")
+        CI.check_completion(needs)
     needs = complete_needs()
     if field == "outputs" and job != "prepare":
         needs[job] = None
     else:
         del needs[job][field]
     with pytest.raises(ValueError):
-        CI.check_completion(needs, "false")
+        CI.check_completion(needs)
 
 
 @pytest.mark.parametrize("needs", [None, [], {}, {**complete_needs(), "extra": {}}])
 def test_gate_requires_exact_job_set(needs):
     with pytest.raises(ValueError):
-        CI.check_completion(needs, "false")
-
-
-@pytest.mark.parametrize("cancelled", ["true", "", None, False])
-def test_workflow_cancellation_or_missing_status_never_passes(cancelled):
-    with pytest.raises(ValueError, match="cancelled"):
-        CI.check_completion(complete_needs(), cancelled)
+        CI.check_completion(needs)
 
 
 @pytest.mark.parametrize("raw", ["{}", "{broken", "null", ""])
 def test_gate_cli_fails_closed_on_missing_or_malformed_json(raw):
     result = subprocess.run(
         [sys.executable, str(SCRIPT), "gate"],
-        env={**os.environ, "CI_NEEDS": raw, "CI_CANCELLED": "false"},
+        env={**os.environ, "CI_NEEDS": raw},
         capture_output=True,
         check=False,
     )
@@ -492,6 +486,7 @@ def test_all_original_commands_options_error_wrappers_and_order_are_preserved():
         "Record tested commit and tree",
         "Prepare historical Git references",
         "Require complete CI coverage",
+        "Reject workflow cancellation",
     }
     for group in CI.NATIVE_JOBS:
         ordered = [
@@ -533,5 +528,9 @@ def test_workflow_requires_early_success_and_all_native_results_without_bypasses
     gate = jobs["technical-checks"]
     assert "needs: [prepare, native-a, native-b, native-c]\n    if: always()" in gate
     assert "CI_NEEDS: ${{ toJSON(needs) }}" in gate
-    assert "CI_CANCELLED: ${{ cancelled() }}" in gate
+    assert "if: cancelled()\n        run: exit 1" in gate
+    assert "if: ${{ !cancelled() }}" in gate
+    assert gate.index("Reject workflow cancellation") < gate.index(
+        "Require complete CI coverage"
+    )
     assert "run: python3 scripts/check_ci.py gate" in gate
