@@ -59,8 +59,9 @@ PR #70 und seine bereits laufende CI werden dafür nicht geändert.
   eine technische Merge-Sperre ist nicht belegt. Kein eigenständiger Merge.
 - **PR und zwei Implementierungsschritte:**
   [PR #71](https://github.com/craexxn/ringdown-sr/pull/71) wurde als Draft eröffnet.
-  Draft-Steuerung in `faf5339`, danach
-  Zusammenlegung von `native-a/b/c` zu `native` in unveränderter Blockfolge.
+  Draft-Steuerung in `faf5339960c10760a726dd0908692c8e374be7c0`, danach
+  Zusammenlegung von `native-a/b/c` zu `native` in unveränderter Blockfolge
+  in `c48a7eb758e32d35944bc2c487467049c71fc65e` (aktueller Remote-Head).
   `full` und `comparison_known` binden den Prüfbedarf, `mode` die Ausführung.
   Ein erfolgreicher Draft-Schnelltest bleibt ausdrücklich ohne vollständige
   Erfolgsfreigabe. Manueller Abschluss heißt `manual-technical-checks`.
@@ -79,25 +80,48 @@ PR #70 und seine bereits laufende CI werden dafür nicht geändert.
   ungültige Ereignisse, fehlende/abgebrochene Jobs, manuelle Abschlussnamen,
   Befehlsverlust, Pfadkollisionen und Prozessisolation geprüft. Kein weiterer
   korrekturbedürftiger Befund in dieser eigenen Prüfung; kein unabhängiger
-  Zweitreview. GitHub-Ereignissteuerung und die gemeinsame native Umgebung
-  bleiben bis zur tatsächlichen Draft-/Ready-Abnahme offen.
-- **Abnahme und nächster Schritt:** Den günstigen Pfad des Draft-PRs prüfen
-  und anschließend einmal Ready wählen. Die erste
-  vollständige serielle CI muss sämtliche bisherigen Fachschritte bestehen;
-  Laufzeit und Runner-Summe werden an diesem ohnehin nötigen Lauf gemessen.
-  Danach Übergabe zum Review; keine behauptete Einsparungsmessung vor Abschluss.
-  Der erste Main-Lauf bleibt vollständig. Main-Wiederverwendung folgt bei
-  weiterem Bedarf als abgegrenztes Arbeitspaket.
+  Zweitreview. Die gemeinsame native Umgebung bleibt bis zur vollständigen
+  GitHub-Abnahme offen.
+- **Tatsächlicher Draft-Nachweis:**
+  [42083589204](https://github.com/craexxn/ringdown-sr/actions/runs/42083589204)
+  bestätigt `mode=development`, erfolgreiches `prepare` mit 2.912 Pythonfällen,
+  ausdrücklich übersprungenes `native` und den absichtlich fehlgeschlagenen
+  Abschluss mit eindeutiger Meldung zur zurückgestellten Vollprüfung.
+  Beide ausgeführten Jobs protokollieren Checkout
+  `9b1d7bfe43790d8b5ad4330caf236d135b9a5cc8` und den zum Head gleichen Tree
+  `dcc45b3106e726785bd226a7c4615439fb791f25`. Der erste, überholte Draft-Lauf
+  42083525019 wurde automatisch abgebrochen.
+- **Ready und ausdrückliche Rückkehr zu Draft:** Einmal Ready gewählt;
+  [42085186899](https://github.com/craexxn/ringdown-sr/actions/runs/42085186899)
+  begann die Vollprüfung. Nach bestätigter Reihenfolge zuerst #70, dann #71
+  wurde #71 wieder auf Draft gesetzt. GitHub bestätigt den Abbruch der
+  Vollprüfung und den neuen Draft-Lauf
+  [42086542312](https://github.com/craexxn/ringdown-sr/actions/runs/42086542312).
+  Der abgebrochene Lauf liefert keine native Gesamtabnahme oder belastbare
+  Vollprüfungsdauer. Diese Statusdokumentation wird lokal bis zum nächsten
+  Basisabgleich gebündelt; kein weiterer Push nur zur Statuspflege.
+- **Abnahme und nächster Schritt:** Zuerst gezieltes Nachreview und bestätigte
+  Übernahme von PR #70. Danach PR #71 mit dem neuen main abgleichen, nötige
+  Konflikte und Prüfungen bündeln und erst dann erneut Ready wählen. Die
+  abschließende Vollprüfung muss den kombinierten Stand vor dessen Übernahme
+  bestätigen; zwei grüne Einzel-PRs auf der alten Basis ersetzen diesen
+  Nachweis nicht. Laufzeitmessung am ohnehin nötigen vollständigen Lauf,
+  kein zusätzlicher Messlauf und kein eigenständiger Merge. Der erste
+  Main-Lauf bleibt vollständig; Wiederverwendung ist getrennte Folgearbeit.
 - **Fortsetzung Zusatzbewertung:** PR #69 ist übernommen. Stufe 2 liegt in
   [PR #70](https://github.com/craexxn/ringdown-sr/pull/70), Remote-Head
   `da05b9e36a27cb5f60f0e5ff6aa8644e61b232ee`. Der dortige P2 ist in
   `0f3b9222d90b5995394bd36b5cef2bbe66937ce7` korrigiert; 385 gezielte Tests
   bestanden und die vier Strukturstatus aller 78 Originalauswahlen blieben
   unverändert. Die [CI 42081241726](https://github.com/craexxn/ringdown-sr/actions/runs/42081241726)
-  prüft diese Nachbesserung mit der bestehenden parallelen Aufteilung.
-  Dieser separate CI-Auftrag verändert PR #70 nicht. Die spätere Übernahmereihenfolge
-  und gegebenenfalls nötige Basisabgleiche richten sich nach den abgeschlossenen
-  Prüfungen; kein eigenständiger Merge. **Stufe 3, quantifizierte Zusatzterm-
+  bestand mit allen fünf Jobs, 2.928 Pythonfällen und allen nativen Kontrollen.
+  Alle Joblogs bestätigen Checkout `1602f76f219d619ac76782ff293afe1effb23dcb`
+  und den zum Head gleichen Tree `dd606e43264247f96a8210c973e2f0e28c80f19e`.
+  Beide Stufe-2-Exporte und die historischen Miniworker bestanden; die reale
+  lokale Bindung aller 53 Vorbereitungsdateien bestand am finalen Head.
+  Zur gezielten P2-Gegenprüfung gegen `15d8f13a269f1f1905ca10aebd59b134747682b7`
+  übergeben; Review und Übernahme stehen aus. Dieser separate CI-Auftrag
+  verändert PR #70 nicht. **Stufe 3, quantifizierte Zusatzterm-
   Diagnose, bleibt bis zur bestätigten Übernahme von Stufe 2 ausstehend.**
 
 ## Übernommen: Zusatzbewertung, Stufe 1 von 3
