@@ -1,13 +1,20 @@
 # Leitfaden: wiederholbare Ringdown-Rekonstruktion und Übergang zu Rauschversuchen
 
+Übernommener technischer Begleitauftrag zu Phase 1: Der
+[CI-Sparplan](github_actions_savings_plan.md) bündelt lokale Prüfungen vor dem
+Ready-Wechsel und führt native Kontrollen seriell aus. Die wissenschaftlichen
+Phasen und Kriterien bleiben erhalten; tatsächlicher Prüf- und Übernahmestand
+im [Fortsetzungsstand](representation_implementation_status.md).
+
 Version 1, Stand: 05.11.2026. Als Dokumentationsergänzung in
 [PR #69](https://github.com/craexxn/ringdown-sr/pull/69) übernommen.
 Der PR ist übernommen und umfasst ausschließlich **Phase 1, Bewertungsstufe 1**.
 Bewertungsstufe 2 ist mit [PR #70](https://github.com/craexxn/ringdown-sr/pull/70)
-übernommen. Stufe 3 beginnt parallel zur technischen CI von PR #71 als eigener
-fachlicher Auftrag. Ihr [Resttermvertrag](supplemental_remainder.md) bindet die
+übernommen. Stufe 3 ist als eigener fachlicher Auftrag implementiert und
+[auf die Originalauswahlen angewandt](supplemental_remainder_results_001.md).
+Ihr [Resttermvertrag](supplemental_remainder.md) bindet die
 bestätigten Mehrfachdiagnosen und die begrenzte adaptive Intervallunterteilung.
-Implementierung und Anwendung sind damit noch nicht als abgeschlossen erklärt.
+Die eigene vollständige technische CI und Review-Abnahme stehen noch aus.
 
 Diese Datei hält die vereinbarte Vorgehensrichtung fest. Konkrete Seeds,
 Auswahlregeln, Budgets und noch offene methodische Einzelentscheidungen werden

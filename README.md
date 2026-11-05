@@ -6,8 +6,11 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 ## Projektstatus
 
 Fortsetzungsstand: 05.11.2026; abgeglichener Hauptbranch:
-`7b7b9df` ([Zusatzbewertung Stufe 2 #70](https://github.com/craexxn/ringdown-sr/pull/70)).
-Die [technische CI](docs/ci.md) mit drei parallelen nativen Jobs ist übernommen.
+`168e276` ([CI-Sparplan #71](https://github.com/craexxn/ringdown-sr/pull/71)).
+Der [CI-Sparplan](docs/github_actions_savings_plan.md) ist mit
+[PR #71](https://github.com/craexxn/ringdown-sr/pull/71) übernommen:
+günstige Draft-Prüfungen, danach vollständige [serielle native CI](docs/ci.md)
+beim Ready-Wechsel. Vollständige Prüfung bleibt vor der Übernahme erforderlich.
 Aktuell ist [Stufe 1 der ergänzenden Ergebnisbewertung](docs/supplemental_assessment.md)
 mit [PR #69](https://github.com/craexxn/ringdown-sr/pull/69) übernommen:
 verifizierter Originalimport und zusätzliche Kurvenklassen A/B/C/D, ergänzt um
@@ -22,10 +25,11 @@ Der [Leitfaden zur wiederholbaren Rekonstruktion](docs/ringdown_recovery_roadmap
 ordnet Phasen, Begründungen und Entscheidungskriterien. Aktuell läuft dessen
 Phase 1. Stufe 2 ist mit [PR #70](https://github.com/craexxn/ringdown-sr/pull/70)
 übernommen und [auf die 78 Originalauswahlen angewandt](docs/supplemental_structure_results_001.md).
-Während der vollständigen CI des separaten [PR #71](https://github.com/craexxn/ringdown-sr/pull/71)
-beginnt die [quantifizierte Zusatzterm-Diagnose](docs/supplemental_remainder.md)
-als Stufe 3. Mehrere Grundterme und begrenzte adaptive Schranken sind beschlossen;
-Die Implementierung wird geprüft; Anwendung und eigener Review-PR folgen.
+Die [quantifizierte Zusatzterm-Diagnose](docs/supplemental_remainder.md)
+ist als Stufe 3 implementiert, lokal geprüft und
+[auf die 78 Originalauswahlen angewandt](docs/supplemental_remainder_results_001.md).
+Mehrere Grundterme werden separat diagnostiziert; adaptive Schranken bleiben
+begrenzt. Die eigene vollständige CI und der Review-PR folgen.
 Suchversuche stehen aus.
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit

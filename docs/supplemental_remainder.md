@@ -1,7 +1,8 @@
 # Zusatzbewertung Stufe 3: Vertrag der quantifizierten Zusatzterm-Diagnose
 
 Stand: 05.11.2026. **Mehrfachdiagnosen und begrenzte adaptive Intervallunterteilung
-am 05.11.2026 ausdrücklich beschlossen; Implementierung in Prüfung.** Leitfadenphase 1, Bewertungsstufe 3 von 3. Stufe 2 wurde
+am 05.11.2026 ausdrücklich beschlossen; implementiert, lokal geprüft und
+lesend angewandt.** Leitfadenphase 1, Bewertungsstufe 3 von 3. Stufe 2 wurde
 mit [PR #70](https://github.com/craexxn/ringdown-sr/pull/70) übernommen.
 Der Auftrag erlaubt den Beginn während der vollständigen CI von PR #71.
 Arbeitsstand und Entscheidungen stehen im
@@ -104,7 +105,7 @@ wird nicht durch diese Schranke begrenzt. Insbesondere ist `B/max|y|`
 keine RMS-Schranke. Eine praktisch kleine Schranke erzeugt keine neue
 binäre Erfolgsaussage.
 
-## Vorgesehene Integration und Prüfung
+## Integration und Prüfung
 
 Ein eigener begrenzter Diagnosekern ergänzt beide vorhandenen Exportwege:
 verifizierte historische Originalauswahlen und zukünftige Schema-3-Läufe.
@@ -146,6 +147,10 @@ Unabhängig zu begründende Gegenprüfungen:
 - Ressourcenende, widersprüchliche Quellen sowie späte Änderungen an allen
   neu veröffentlichten Diagnosen und deren Widerruf.
 
-Diese Liste ist ein Prüfplan. Sie behauptet keine bereits implementierten oder
-bestandenen Stufe-3-Tests. Ein eigener PR wird nach Umsetzung und vollständiger
-technischer Prüfung zum Review übergeben; kein eigenständiger Merge.
+Diese Gegenfallarten sind in der lokalen Suite geprüft. Auf dem
+Anwendungscommit `97e02afca0591ba731fdb95f76eea4d8223cea99` bestanden
+2.997 Pythonfälle; die Quellenbindung aller 57 Vorbereitungsdateien bestand
+ohne Fit. Die [Anwendung auf 78 Originalauswahlen](supplemental_remainder_results_001.md)
+und eine separate symbolische/Intervall-Nachrechnung sind abgeschlossen.
+Aktuelle CI-, Review- und Übernahmenachweise führt der Fortsetzungsstand;
+kein eigenständiger Merge.
