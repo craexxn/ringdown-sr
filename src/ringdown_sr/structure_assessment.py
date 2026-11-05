@@ -77,6 +77,7 @@ def bound_interval(binding):
         set(binding) != {"unit", "closed", "endpoints"}
         or binding["unit"] != "seconds"
         or binding["closed"] != [True, True]
+        or any(type(value) is not bool for value in binding["closed"])
         or len(binding["endpoints"]) != 2
     ):
         raise ValueError("Invalid structure interval binding.")
@@ -84,6 +85,11 @@ def bound_interval(binding):
     for endpoint in binding["endpoints"]:
         if set(endpoint) != {"numerator_hex", "denominator_hex"}:
             raise ValueError("Invalid exact endpoint.")
+        if any(
+            type(value) is not str or len(value) > LIMITS.rational_bits // 4 + 4
+            for value in endpoint.values()
+        ):
+            raise ValueError("Invalid or oversized exact endpoint.")
         value = Fraction(
             int(endpoint["numerator_hex"], 16), int(endpoint["denominator_hex"], 16)
         )

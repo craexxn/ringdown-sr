@@ -289,7 +289,7 @@ class Algebra:
                 if first % 2 or first < last:
                     lower = Fraction(-1)
             return lower, upper
-        except (OverflowError, ValueError, ZeroDivisionError) as error:
+        except (ArithmeticError, ValueError) as error:
             if isinstance(error, Unresolved):
                 raise
             raise Unresolved("interval_arithmetic_limit") from error

@@ -1,0 +1,161 @@
+"""End-to-end interval/proof policy binding, including legacy and publication cases."""
+
+import subprocess
+from pathlib import Path
+
+import pytest
+import test_future_assessment as fixtures
+from test_future_assessment import rehash
+from test_symbolic_pilot import read
+
+from ringdown_sr import future_assessment as future
+from ringdown_sr.assessment_publication import LOCK, PENDING, REPORT
+from ringdown_sr.assessment_sources import json_bytes, sha256
+
+software = fixtures.software
+worker = fixtures.worker
+run_source = fixtures.run_source
+LEGACY_COMMIT = "e09ab286fc853fe2991f070c4d96d9f070b55d9d"
+
+
+def bind_root_contract(source):
+    binding = {
+        name: sha256((source / name).read_bytes())
+        for name in (future.INPUTS, future.CONTRACT)
+    }
+    for name in ("metadata.json", "metadata_initial.json"):
+        path = source / name
+        document = read(path)
+        document["supplemental_assessment"] = binding
+        path.write_bytes(json_bytes(document))
+    rehash(source)
+
+
+@pytest.mark.parametrize(
+    "change",
+    ["nominal_end", "open_end", "missing_interval", "units", "resources", "downgrade"],
+)
+def test_consistently_rehashed_structure_contract_cannot_change_the_method(
+    run_source, tmp_path, change
+):
+    source, _, _ = run_source
+    path = source / future.CONTRACT
+    contract = read(path)
+    if change == "nominal_end":
+        contract["structure_interval"]["endpoints"][1] = {
+            "numerator_hex": "0x1",
+            "denominator_hex": "0x1",
+        }
+    elif change == "open_end":
+        contract["structure_interval"]["closed"][1] = False
+    elif change == "missing_interval":
+        del contract["structure_interval"]
+    elif change == "units":
+        contract["structure_interval"]["unit"] = "samples"
+    elif change == "resources":
+        contract["software"]["policy"]["proof_resource_limits"]["precisions"].append(
+            2048
+        )
+    else:
+        contract["format"] = "ringdown-sr-future-assessment-1"
+        del contract["structure_interval"]
+    path.write_bytes(json_bytes(contract))
+    bind_root_contract(source)
+    output = tmp_path / "invalid-proof-contract"
+    with pytest.raises((ValueError, KeyError)):
+        future.export_assessment(source, output)
+    assert (output / LOCK).exists()
+    assert read(output / REPORT)["groups"] == []
+
+
+def test_approved_stage1_snapshot_upgrades_explicitly_retrospectively(
+    run_source, tmp_path, monkeypatch
+):
+    source, _, _ = run_source
+
+    def git(*args):
+        return subprocess.check_output(
+            ["git", *args], cwd=future.ROOT, text=True
+        ).strip()
+
+    def blob(commit, name):
+        if commit == LEGACY_COMMIT:
+            return subprocess.check_output(
+                ["git", "show", f"{commit}:{name}"], cwd=future.ROOT
+            )
+        return (future.ROOT / name).read_bytes()
+
+    monkeypatch.setattr(future, "git", git)
+    monkeypatch.setattr(future.sources, "_git_file", blob)
+    names = future.preparation_source_names(LEGACY_COMMIT, 1)
+    hashes = {name: sha256(blob(LEGACY_COMMIT, name)) for name in names}
+    path = source / future.CONTRACT
+    contract = read(path)
+    contract["format"] = "ringdown-sr-future-assessment-1"
+    del contract["structure_interval"]
+    contract["software"].update(
+        software_commit=LEGACY_COMMIT,
+        source_sha256=hashes,
+        policy=future.sources.read_json(
+            blob(LEGACY_COMMIT, future.LEGACY_CONTRACT_FILES[0])
+        ),
+    )
+    path.write_bytes(json_bytes(contract))
+    for path in source.rglob("metadata*.json"):
+        document = read(path)
+        for key in ("provenance", "worker_provenance"):
+            if key not in document:
+                continue
+            provenance = document[key]
+            provenance["git"].update(commit=LEGACY_COMMIT, dirty=False, changes=[])
+            python = {
+                name.removeprefix("src/"): digest
+                for name, digest in hashes.items()
+                if name.startswith("src/") and name.endswith(".py")
+            }
+            provenance["python_source_sha256"] = python
+            provenance["python_source_set_sha256"] = sha256(json_bytes(python))
+            provenance["project_file_sha256"] = {
+                name: hashes[name] for name in future.PROJECT_FILES
+            }
+        path.write_bytes(json_bytes(document))
+    bind_root_contract(source)
+    before = {
+        p.relative_to(source): p.read_bytes() for p in source.rglob("*") if p.is_file()
+    }
+    output = tmp_path / "legacy-upgrade"
+    report = future.export_assessment(source, output)
+    assert (
+        report["structure_policy_timing"] == "retrospective_upgrade_of_stage1_snapshot"
+    )
+    assert report["status"] == "completed"
+    assert all(
+        r["supplemental"]["domain"]["status"] == "defined_everywhere"
+        for r in read(output / "assessment_records.json")
+    )
+    assert before == {
+        p.relative_to(source): p.read_bytes() for p in source.rglob("*") if p.is_file()
+    }
+
+
+def test_late_proof_record_mutation_revokes_stage2_release(
+    run_source, tmp_path, monkeypatch
+):
+    source, _, _ = run_source
+    output = tmp_path / "late-proof"
+    write = Path.write_bytes
+
+    def mutate(path, raw):
+        result = write(path, raw)
+        if path.name == PENDING:
+            target = output / "assessment_records.json"
+            records = read(target)
+            records[0]["supplemental"]["original_family"]["status"] = "proven_member"
+            write(target, json_bytes(records))
+        return result
+
+    monkeypatch.setattr(Path, "write_bytes", mutate)
+    with pytest.raises(ValueError, match="artifact changed"):
+        future.export_assessment(source, output)
+    assert (output / LOCK).exists()
+    assert read(output / REPORT)["groups"] == []

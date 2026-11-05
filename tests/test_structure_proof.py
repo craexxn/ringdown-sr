@@ -204,6 +204,14 @@ def test_constant_sign_enclosure_including_zero_stays_unknown():
         algebra.sign(value)
 
 
+@pytest.mark.parametrize("exponent", [1000000, -1000000])
+def test_mpfr_range_exhaustion_is_unresolved(exponent):
+    tree = op("*", op("exp", q(exponent)), BY_ID["S001"]["original_tree"])
+    result = assess_structure(tree, (0, 1))
+    assert result["original_family"]["status"] == "unresolved"
+    assert result["algebraic_identity"]["status"] == "unresolved"
+
+
 @pytest.mark.parametrize("precision", LIMITS.precisions)
 def test_directed_constant_enclosures_against_independent_high_precision_oracle(
     precision,

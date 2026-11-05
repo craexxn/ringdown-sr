@@ -206,6 +206,25 @@ def test_preparation_is_saved_before_first_reference_fit(
         parent = output.parent
         assert (parent / future.INPUTS).is_file()
         assert read(parent / "metadata_initial.json")["supplemental_assessment"]
+        contract = read(parent / future.CONTRACT)
+        assert contract["software"]["policy"]["stage"] == 2
+        assert contract["structure_interval"]["closed"] == [True, True]
+        assert contract["software"]["policy"]["proof_resource_limits"][
+            "precisions"
+        ] == [128, 256, 512, 1024]
+        with np.load(parent / future.INPUTS, allow_pickle=False) as arrays:
+            from fractions import Fraction
+
+            bounds = tuple(
+                Fraction(
+                    int(value["numerator_hex"], 16), int(value["denominator_hex"], 16)
+                )
+                for value in contract["structure_interval"]["endpoints"]
+            )
+            assert bounds == tuple(
+                Fraction.from_float(float(value))
+                for value in arrays["training_time_s"][[0, -1]]
+            )
         raise RuntimeError("synthetic preparation stop")
 
     monkeypatch.setattr(symbolic_pilot, "run_covariance_pilot", fail)
