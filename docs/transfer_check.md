@@ -1,11 +1,13 @@
 # Bedienung: begrenzter Signaltransfer bei 500/300/5
 
-**Stand 04.11.2026:** Vorbereitung des angenommenen
-[Transferchecks](transfer_check_plan.md). Keine wissenschaftliche Zelle
-auf den neuen Daten ausgeführt. Vor dem einmaligen Manjaro-Lauf müssen
-technische Prüfung und manueller Merge abgeschlossen sein.
-[PR #65](https://github.com/craexxn/ringdown-sr/pull/65) enthält den Prüfstand
-und den konkreten Checkoutblock mit geprüftem Head und Dateibaumvergleich.
+**Stand 05.11.2026:** Der angenommene [Transfercheck](transfer_check_plan.md)
+ist mit 18 Zellen auf Manjaro abgeschlossen und unabhängig nachgerechnet.
+[Ergebnis und Grenzen](transfer_check_results_manjaro_001.md) dokumentieren
+alle 198 Originalkandidaten, sechs Signalgruppen und 15 Seedpaare.
+[PR #65](https://github.com/craexxn/ringdown-sr/pull/65) ist als `bc4025d`
+übernommen; sein Dateibaum entspricht dem geprüften Head `92b96ec`.
+Die Befehle unten beschreiben den abgeschlossenen Laufweg und geben keine
+automatische Wiederholung frei.
 
 ## Umfang und Daten
 
@@ -130,7 +132,8 @@ Miniworker. Diese erhalten ausschließlich eigene acht Punkte mit
 Die wiederholte ursprüngliche Front muss identisch bleiben. Keine der
 wissenschaftlichen 500er-Zellen läuft in der Cloud/CI.
 
-Nach Auswertung folgt ein begründeter nächster Pilotschritt. 500/1.000,
+Nach dem ausgewerteten Transfer folgt die Prüfung der vorhandenen
+Rausch-/Kovarianzpipeline auf identischen verrauschten Daten. 500/1.000,
 300/2, eine Erkennererweiterung und größere Bereinigung sind keine
 automatische Anschlussarbeit. Rauschpipeline, abschließendes Pilotdesign
 und Hauptversuchsplan bleiben die vorgemerkte Route; die Hauptstudie selbst
