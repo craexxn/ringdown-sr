@@ -1,0 +1,85 @@
+name: Isolated CI cancellation proof
+
+on:
+  push:
+    branches: [codex/parallel-ci-scheduler-proof]
+permissions:
+  contents: read
+concurrency:
+  group: isolated-ci-cancellation-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      full: ${{ steps.scope.outputs.full }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Scope
+        id: scope
+        run: python3 scripts/check_ci.py scope
+  native-a:
+    needs: prepare
+    if: needs.prepare.outputs.full != 'false'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Wait for deliberate superseding run
+        run: python3 -c "import pathlib,time; time.sleep(int(pathlib.Path('ci-proof-delay.txt').read_text()))"
+  native-b:
+    needs: prepare
+    if: needs.prepare.outputs.full != 'false'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Wait for deliberate superseding run
+        run: python3 -c "import pathlib,time; time.sleep(int(pathlib.Path('ci-proof-delay.txt').read_text()))"
+  native-c:
+    needs: prepare
+    if: needs.prepare.outputs.full != 'false'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Wait for deliberate superseding run
+        run: python3 -c "import pathlib,time; time.sleep(int(pathlib.Path('ci-proof-delay.txt').read_text()))"
+  technical-checks:
+    needs: [prepare, native-a, native-b, native-c]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Require complete CI coverage
+        env:
+          CI_NEEDS: ${{ toJSON(needs) }}
+          CI_CANCELLED: ${{ cancelled() }}
+        run: python3 scripts/check_ci.py gate
