@@ -54,14 +54,17 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 - **Abgeschlossene Umsetzung / PR:** Stufe 1 ist in
   [PR #69](https://github.com/craexxn/ringdown-sr/pull/69) implementiert; kein Merge.
   Vertrags-/Implementierungscommit vor Anwendung:
-  `fee9418071834b1ea42692cb436ecdd8fb6d4fd3`.
+  `fee9418071834b1ea42692cb436ecdd8fb6d4fd3`; abschließender Export mit
+  `a7d615fda122ab59124987729527303090225a13` nach zusätzlicher Inventarprüfung.
 - **Methodenbeschluss:** inklusive bisherige Float64-Schwellen ohne Rundung oder
   zusätzliche Toleranz am 05.11.2026 ausdrücklich bestätigt. Versionsvertrag,
   Hexgrenzen, Statusschema und Korpus wurden vor Anwendung committed. Die
   Vorbereitung ist Referenz, keine Ersatzquelle für fehlende Primärdaten.
 - **Prüfnachweise:** 17 Vorbereitungshashes und 29 referenzierte Quellenbindungen
-  geprüft. Lokal 2.787 Pythonfälle bestanden, darunter 245 neue Bewertungsfälle
-  und eine zusätzliche CI-Scope-Prüfung. Importgegenfälle, unabhängige Grenz-/Normfälle,
+  geprüft. Lokal 2.787 Pythonfälle am Implementierungsstand bestanden, darunter
+  245 neue Bewertungsfälle und eine zusätzliche CI-Scope-Prüfung. Nach Ergänzung
+  des Inventargegenfalls nochmals alle 32 Veröffentlichungstests bestanden.
+  Importgegenfälle, unabhängige Grenz-/Normfälle,
   späte Änderungen von Abschlussdateien, Signale und Widerrufsfehler bestanden;
   ebenso Ruff, Format, Dokumentations-/Diff-Prüfung und Python-/Julia-Umgebungscheck.
   Die vollständige externe technische CI wird in #69 mit vollständigem Head,

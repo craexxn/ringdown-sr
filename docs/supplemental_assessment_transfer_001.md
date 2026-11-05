@@ -3,8 +3,12 @@
 Stand: 05.11.2026. Lesende Anwendung der [Bewertungsfassung 1](supplemental_assessment.md)
 auf das vollständige, verifizierte Original `transfer-manjaro-001.tar.gz`.
 Implementierung und Versionsvertrag wurden vor Anwendung als
-`fee9418071834b1ea42692cb436ecdd8fb6d4fd3` committed. Dieser Nachtrag enthält
-nur die Anwendung und ihren Nachweis; die Bewertungsregeln bleiben unverändert.
+`fee9418071834b1ea42692cb436ecdd8fb6d4fd3` committed. Der abschließende Export
+verwendet `a7d615fda122ab59124987729527303090225a13`, einschließlich einer
+zusätzlichen Prüfung auf während der Veröffentlichung eingefügte Dateien.
+Bewertungsregeln, sämtliche Einzelbewertungen und historischer Serienbericht
+sind gegenüber der ersten Anwendung bytegleich; nur die Softwarebindung des
+Abschlussberichts und sein Manifest ändern sich.
 
 ## Primärdaten und Prüfung
 
@@ -64,13 +68,13 @@ Dezimaldarstellung. Der Auswahlindex ist wie in `result.json` nullbasiert.
 
 ## Ausgabebindung und Grenzen
 
-Lokales separates Ausgabeziel: `results/supplemental-assessment-transfer-001`.
+Lokales separates Ausgabeziel: `results/supplemental-assessment-transfer-002`.
 Die Ausgabe wird nicht in die historischen Ergebnisverzeichnisse geschrieben.
 
 | Artefakt | SHA-256 |
 | --- | --- |
-| `assessment_checksums.json` | `1d6890ecd51990aa0297fc39e7192e534e88f551e030af228917020816643a43` |
-| `assessment_report.json` | `bdb18b84724e91148d6bd0ab037873becd86660b7b90c1045bf070894639e9c2` |
+| `assessment_checksums.json` | `71397aef6d89854b5372cac6d475a56f2ecfa8acc55e63f8de4a4b986e436f00` |
+| `assessment_report.json` | `81b39a348e7e1a5651ecd3562752a2fc8c688cfb6382921f358b5a812788a9f0` |
 | `assessment_records.json` | `e3c9d80c40d92584f64bfbecc48384415f28cd24b9002d78a5b21c3026f0b264` |
 
 Der vollständige geplante Korpus umfasst 78 Auswahlen. Die drei anderen
