@@ -51,17 +51,26 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   Felder, unveränderte Originalauswahl, sichere Veröffentlichung und Widerruf.
   Neue Struktur-, Domain-, Fortsetzungs-, Restterm- und Parameterfelder bleiben
   ausdrücklich `not_assessed`.
+- **Abgeschlossene Umsetzung / PR:** Stufe 1 ist in
+  [PR #69](https://github.com/craexxn/ringdown-sr/pull/69) implementiert; kein Merge.
+  Vertrags-/Implementierungscommit vor Anwendung:
+  `fee9418071834b1ea42692cb436ecdd8fb6d4fd3`.
 - **Methodenbeschluss:** inklusive bisherige Float64-Schwellen ohne Rundung oder
   zusätzliche Toleranz am 05.11.2026 ausdrücklich bestätigt. Versionsvertrag,
-  Hexgrenzen, Statusschema und Korpus werden vor Anwendung committed. Die
+  Hexgrenzen, Statusschema und Korpus wurden vor Anwendung committed. Die
   Vorbereitung ist Referenz, keine Ersatzquelle für fehlende Primärdaten.
 - **Prüfnachweise:** 17 Vorbereitungshashes und 29 referenzierte Quellenbindungen
   geprüft. Lokal 2.787 Pythonfälle bestanden, darunter 245 neue Bewertungsfälle
   und eine zusätzliche CI-Scope-Prüfung. Importgegenfälle, unabhängige Grenz-/Normfälle,
   späte Änderungen von Abschlussdateien, Signale und Widerrufsfehler bestanden;
   ebenso Ruff, Format, Dokumentations-/Diff-Prüfung und Python-/Julia-Umgebungscheck.
-  Vollständige technische CI und konkrete Anwendung werden im eigenen PR mit
-  vollständigem Head, Basis und tatsächlichem Checkout nachgetragen.
+  Die vollständige externe technische CI wird in #69 mit vollständigem Head,
+  Basis und tatsächlichem Checkout belegt; Übergabe erst nach ihrem Abschluss.
+- **Abgeschlossene Anwendung:** [18 Transfer-Auswahlen](supplemental_assessment_transfer_001.md)
+  verifiziert und bewertet; separate exakte rationale Gegenprüfung bestätigt alle
+  Klassen. Originalarchive/-felder und historischer Serienbericht unverändert;
+  neue Klasse A stimmt in jedem Fall mit dem alten Kurvenkriterium überein.
+  Kein neuer Fit, keine Suche und keine pauschale native Gesamtnachrechnung.
 - **Primärdaten:** Nur `transfer-manjaro-001.tar.gz` liegt hier im verankerten
   Original vor. Es fehlen `duration-manjaro-004.tar.gz`,
   `local-optimizer-manjaro-001.tar.gz` und `outer-ladder-manjaro-001.tar.gz`:
@@ -72,7 +81,9 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   Intervall `[0,127/4096]` s bleibt ein Vorschlag. Vor Stufe 3 regelbasierte
   Zerlegung und zertifizierte Schranken festlegen; keine unbeschlossene
   Vernachlässigbarkeitsschwelle und kein neuer Fit.
-- **Nächster konkreter Schritt:** Stufe 1 mit Prüfnachweisen zum Review übergeben.
+- **Nächster konkreter Schritt:** [PR #69](https://github.com/craexxn/ringdown-sr/pull/69)
+  nach vollständiger CI mit Prüfnachweisen zum Review übergeben; Review und
+  Übernahmeentscheidung bleiben ausstehend.
   Erst nach bestätigter Übernahme beginnt **Stufe 2: exakte Strukturprüfung,
   Originaldefinitionsbereich und stetige Fortsetzung**, als eigener PR. Danach
   folgt Stufe 3 mit quantifizierter Zusatzterm-Diagnose. Ein neuer fachlicher
