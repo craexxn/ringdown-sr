@@ -1,6 +1,9 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 05.11.2026. Transfer-PR #65 ist als
+Stand: 05.11.2026. Ergebnis-PR #66 ist als
+`b9636ad92ecd57b24b142f39548a7a713d0934a0` übernommen; sein Dateibaum entspricht
+dem Dokumentationshead `f7070889f9ace44d0359d9e9921fb655dea4cbac`.
+Transfer-PR #65 ist als
 `bc4025d13b4954dee779341026d282430521686a` übernommen; sein Dateibaum entspricht
 exakt dem geprüften Head `92b96ecea46191fa879244fb9497db900340afd5`.
 Der Transfercheck ist mit 18 Zellen abgeschlossen und unabhängig nachgerechnet.
@@ -30,7 +33,43 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: begrenzten Signaltransfer bei 500/300/5 ausgewertet
+## Aktuell: zwei Seed-/Treiber-Gegenrichtungen implementieren
+
+- **Arbeitsbranch:** `codex/seed-driver-crosscheck`,
+  [PR #67](https://github.com/craexxn/ringdown-sr/pull/67), ab main b9636ad;
+  Implementierung in `96822dab20471423f8ba55b1761cf95110876949`, bestehende
+  Ergebnisbranches erhalten. Vor Code eingefrorener
+  [Plan](seed_driver_crosscheck_plan.md), Commit
+  `be6fc1bd2339df5b429684dfce8e992073d88506`, SHA-256
+  `e6e2df830dd2e4254d60bd73a5b9e34678377c9bc1e6a2f81830592e4f85b15e`.
+- **Umfang:** Seed 20261201 über historischen Transferworker, Seed 20261210
+  über historischen Staffelworker; jeweils 500/300/5, genau zwei frische
+  Zellen auf Manjaro. Originalarchive, ganze Kandidatenfronten, effektive
+  Optionen und Laufzeitumgebung gebunden; keine Änderung der Suchkerne.
+  [Bedienung und Aussagegrenzen](seed_driver_crosscheck.md) dokumentieren
+  den gemeinsamen Einzelzelladapter und den Abgleich der beiden Originale.
+- **Prüfstand:** historische Miniworker auf eigenen acht Punkten bereits
+  mit gleichen Fronten, Optionen und Callbackzahlen geprüft; 179 gezielte
+  Pythonfälle bestanden. Die Transferreferenz mit elf Kandidaten besteht
+  die neue historische Elternprüfung. 116 abschließende fokussierte Fälle
+  decken auch weitere Fehler beim Widerruf ab. Vollständige Pythonprüfung und
+  technische CI werden im Implementierungs-PR
+  belegt. Keine wissenschaftliche Kreuzvergleichszelle in der Cloud.
+- **KI-basierter Reviewbefund und Korrektur:** übermitteltes Review am Head
+  `fe27c2e78d541f55ce60976c41a37b37f17dcaa4`, Basis b9636ad, mit einem P2
+  zur späten Veränderung von Zusammenfassung oder Abschlussmanifest.
+  Beide Gegenfälle selbst reproduziert; abschließender Bytevergleich direkt
+  vor der Erfolgsfreigabe ergänzt. Nach der Korrektur bestehen 118 fokussierte
+  Fälle, einschließlich beider gesperrter Veröffentlichungen. Vollständige CI
+  für den korrigierten Head und Bezug zum übermittelten Review stehen in PR #67;
+  der Nachweis 41988145093 gehört zum vorherigen Head.
+- **Offen:** ursprüngliches Staffelarchiv liegt lokal nicht vor. Nach
+  abgeschlossener technischer Prüfung genau den beschriebenen Manjaro-Aufruf
+  ausführen und beide Gegenrichtungen unabhängig auswerten. Keine automatische
+  Wiederholung oder Budgetanhebung. Danach begründeter nächster Schritt;
+  Rauschpipeline, Pilotdesign und Hauptversuchsplan bleiben vorgemerkt.
+
+## Grundlage: begrenzten Signaltransfer bei 500/300/5 ausgewertet
 
 - **Einstieg:** sauberer Branch `codex/transfer-check-manjaro-handoff` bei
   bc4025d, ein Worktree, main unverändert und keine offenen PRs. Eigener

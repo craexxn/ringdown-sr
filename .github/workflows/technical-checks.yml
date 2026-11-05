@@ -200,6 +200,19 @@ jobs:
             exit 1
           fi
 
+      - name: Compare two historical workers on the tiny fixed crossover control
+        if: steps.scope.outputs.full == 'true'
+        run: |
+          if ! env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/check_seed_driver_crosscheck.py \
+            --output results/ci-seed-driver-crosscheck; then
+            if [ -d results/ci-seed-driver-crosscheck ]; then
+              find results/ci-seed-driver-crosscheck -type f -name '*.log' -print -exec tail -n 100 {} \;
+            fi
+            exit 1
+          fi
+
       - name: Probe fixed trees and actual optimizer paths in fresh workers
         if: steps.scope.outputs.full == 'true'
         run: >-
