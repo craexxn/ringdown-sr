@@ -84,7 +84,16 @@ def repository(tmp_path):
 
 def event(base, head, name="pull_request"):
     if name == "pull_request":
-        return {"pull_request": {"base": {"sha": base}, "head": {"sha": head}}}
+        return {
+            "action": "synchronize",
+            "pull_request": {
+                "base": {"sha": base},
+                "head": {"sha": head},
+                "draft": False,
+                "state": "open",
+                "merged": False,
+            },
+        }
     return {"before": base, "after": head, "forced": False}
 
 
@@ -168,8 +177,144 @@ def test_missing_event_file_writes_full_output(tmp_path, monkeypatch, capsys):
     monkeypatch.setenv("GITHUB_OUTPUT", str(output))
     monkeypatch.setattr("sys.argv", [str(SCRIPT), "scope"])
     CI.main()
-    assert output.read_text() == "full=true\n"
+    assert output.read_text() == "full=true\ncomparison_known=false\nmode=full\n"
     assert "Event unavailable" in capsys.readouterr().out
+
+
+def scope_output(root, data, monkeypatch, name="pull_request"):
+    source, output = root / "event.json", root / "scope.txt"
+    source.write_text(json.dumps(data))
+    monkeypatch.setenv("GITHUB_EVENT_PATH", str(source))
+    monkeypatch.setenv("GITHUB_OUTPUT", str(output))
+    monkeypatch.setenv("GITHUB_EVENT_NAME", name)
+    monkeypatch.setattr(CI, "ROOT", root)
+    monkeypatch.setattr("sys.argv", [str(SCRIPT), "scope"])
+    CI.main()
+    return dict(line.split("=", 1) for line in output.read_text().splitlines())
+
+
+@pytest.mark.parametrize(
+    "action,draft,code_mode",
+    [
+        ("opened", True, "development"),
+        ("reopened", True, "development"),
+        ("synchronize", True, "development"),
+        ("converted_to_draft", True, "development"),
+        ("ready_for_review", False, "full"),
+        ("synchronize", False, "full"),
+    ],
+)
+@pytest.mark.parametrize(
+    "path", ["README.md", "source.py", "docs/supplemental_assessment.md"]
+)
+def test_actual_pr_scope_cli_separates_prose_development_and_ready(
+    repository, monkeypatch, action, draft, code_mode, path
+):
+    root, base = repository
+    target = root / path
+    target.parent.mkdir(exist_ok=True)
+    target.write_text("Changed input.\n")
+    head = commit(root)
+    data = event(base, head)
+    data["action"] = action
+    data["pull_request"]["draft"] = draft
+    prose = path == "README.md"
+    assert scope_output(root, data, monkeypatch) == {
+        "full": "false" if prose else "true",
+        "comparison_known": "true",
+        "mode": "docs" if prose else code_mode,
+    }
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("draft", None),
+        ("draft", "true"),
+        ("draft", 1),
+        ("draft", 0),
+        ("draft", []),
+        ("draft", {}),
+        ("draft", "false"),
+        ("state", "closed"),
+        ("state", None),
+        ("merged", True),
+        ("merged", None),
+        ("action", "edited"),
+        ("action", None),
+        ("action", []),
+        ("action", "ready_for_review"),
+    ],
+)
+@pytest.mark.parametrize("path", ["README.md", "source.py"])
+def test_invalid_or_contradictory_event_metadata_cannot_save_work(
+    repository, monkeypatch, field, value, path
+):
+    root, base = repository
+    (root / path).write_text("Changed input.\n")
+    data = event(base, commit(root))
+    data["pull_request"]["draft"] = True
+    target = data if field == "action" else data["pull_request"]
+    if value is None:
+        del target[field]
+    else:
+        target[field] = value
+    assert scope_output(root, data, monkeypatch) == {
+        "full": "true",
+        "comparison_known": "true",
+        "mode": "full",
+    }
+
+
+def test_converted_to_draft_with_false_draft_cannot_save_work(repository, monkeypatch):
+    root, base = repository
+    (root / "README.md").write_text("Changed prose.\n")
+    data = event(base, commit(root))
+    data["action"] = "converted_to_draft"
+    assert scope_output(root, data, monkeypatch)["mode"] == "full"
+
+
+@pytest.mark.parametrize("unknown", ["missing_commit", "empty_diff"])
+def test_unknown_or_empty_draft_comparison_never_defers_native_work(
+    repository, monkeypatch, unknown
+):
+    root, base = repository
+    data = event(base, "a" * 40 if unknown == "missing_commit" else base)
+    data["pull_request"]["draft"] = True
+    assert scope_output(root, data, monkeypatch) == {
+        "full": "true",
+        "comparison_known": "false",
+        "mode": "full",
+    }
+
+
+@pytest.mark.parametrize("name", ["push", "workflow_dispatch", "unknown"])
+@pytest.mark.parametrize("path", ["README.md", "source.py"])
+def test_main_preserves_scope_and_manual_unknown_always_run_full(
+    repository, monkeypatch, name, path
+):
+    root, base = repository
+    (root / path).write_text("Changed input.\n")
+    data = event(base, commit(root), "push")
+    output = scope_output(root, data, monkeypatch, name)
+    assert output["mode"] == (
+        "docs" if name == "push" and path == "README.md" else "full"
+    )
+    assert output["comparison_known"] == ("true" if name == "push" else "false")
+
+
+def test_unexpected_scope_process_failure_stops_instead_of_deferring(
+    repository, monkeypatch
+):
+    root, base = repository
+
+    def fail(*args):
+        raise RuntimeError("synthetic process error")
+
+    monkeypatch.setattr(CI, "full_check_required", fail)
+    with pytest.raises(RuntimeError, match="process error"):
+        scope_output(root, event(base, base), monkeypatch)
+    assert not (root / "scope.txt").exists()
 
 
 def test_existing_file_targets_external_links_and_fragments(tmp_path):
@@ -234,11 +379,19 @@ def test_documentation_command_checks_all_tracked_markdown(repository, capsys):
         CI.check_documentation(root)
 
 
-def complete_needs(full="true"):
+def complete_needs(full="true", mode=None, known="true"):
+    mode = mode or ("full" if full == "true" else "docs")
     return {
-        "prepare": {"result": "success", "outputs": {"full": full}},
+        "prepare": {
+            "result": "success",
+            "outputs": {
+                "full": full,
+                "mode": mode,
+                "comparison_known": known,
+            },
+        },
         **{
-            name: {"result": "success" if full == "true" else "skipped", "outputs": {}}
+            name: {"result": "success" if mode == "full" else "skipped", "outputs": {}}
             for name in CI.NATIVE_JOBS
         },
     }
@@ -247,6 +400,63 @@ def complete_needs(full="true"):
 @pytest.mark.parametrize("full", ["true", "false"])
 def test_gate_accepts_only_complete_technical_or_prose_paths(full):
     CI.check_completion(complete_needs(full))
+
+
+def test_development_gate_explicitly_withholds_full_clearance(capsys):
+    with pytest.raises(
+        ValueError, match="Schnelle Prüfungen bestanden.*keine vollständige CI-Freigabe"
+    ):
+        CI.check_completion(complete_needs(mode="development"))
+    assert "passed" not in capsys.readouterr().out
+
+
+def test_development_prepare_failure_is_not_reported_as_deferred_success():
+    needs = complete_needs(mode="development")
+    needs["prepare"]["result"] = "failure"
+    with pytest.raises(ValueError, match="Early checks did not succeed"):
+        CI.check_completion(needs)
+
+
+@pytest.mark.parametrize("mode", [None, "", "FULL", "reuse", True, [], {}])
+def test_invalid_mode_never_gives_clearance(mode):
+    needs = complete_needs()
+    needs["prepare"]["outputs"]["mode"] = mode
+    with pytest.raises(ValueError, match="mode"):
+        CI.check_completion(needs)
+
+
+@pytest.mark.parametrize("known", [None, "", "TRUE", True, False, 1, []])
+def test_invalid_comparison_marker_never_gives_clearance(known):
+    with pytest.raises(ValueError, match="comparison"):
+        CI.check_completion(complete_needs(known=known))
+
+
+@pytest.mark.parametrize(
+    "full,mode,known",
+    [
+        ("false", "full", "true"),
+        ("true", "docs", "true"),
+        ("false", "development", "true"),
+        ("true", "development", "false"),
+        ("false", "docs", "false"),
+    ],
+)
+def test_contradictory_scope_mode_comparison_blocks_gate(full, mode, known):
+    with pytest.raises(ValueError, match="contradictory"):
+        CI.check_completion(complete_needs(full, mode, known))
+
+
+def test_conservative_full_scope_can_complete_when_comparison_unknown():
+    CI.check_completion(complete_needs(known="false"))
+
+
+@pytest.mark.parametrize("job", CI.NATIVE_JOBS)
+@pytest.mark.parametrize("result", ["success", "failure", "cancelled", None])
+def test_development_cannot_hide_unexpected_native_results(job, result):
+    needs = complete_needs(mode="development")
+    needs[job]["result"] = result
+    with pytest.raises(ValueError, match=f"{job}: expected skipped"):
+        CI.check_completion(needs)
 
 
 @pytest.mark.parametrize("job", ["prepare", *CI.NATIVE_JOBS])
@@ -474,7 +684,7 @@ def test_all_original_commands_options_error_wrappers_and_order_are_preserved():
             )
     for item in inventory["steps"]:
         matches = found.pop(item["name"])
-        expected = [item["group"]]
+        expected = ["native" if item["group"].startswith("native-") else item["group"]]
         if item["name"] == "Check out repository":
             expected = list(jobs)
         elif item["name"] in {"Install uv", "Install locked Python environment"}:
@@ -488,15 +698,16 @@ def test_all_original_commands_options_error_wrappers_and_order_are_preserved():
         "Require complete CI coverage",
         "Reject workflow cancellation",
     }
-    for group in CI.NATIVE_JOBS:
-        ordered = [
+    ordered = []
+    for group in ("native-a", "native-b", "native-c"):
+        ordered.extend(
             item["name"] for item in inventory["steps"] if item["group"] == group
-        ]
-        actual = [
-            raw.splitlines()[0].split("- name: ", 1)[1]
-            for raw in workflow_steps(jobs[group])
-        ]
-        assert [name for name in actual if name in ordered] == ordered
+        )
+    actual = [
+        raw.splitlines()[0].split("- name: ", 1)[1]
+        for raw in workflow_steps(jobs["native"])
+    ]
+    assert [name for name in actual if name in ordered] == ordered
 
 
 def test_workflow_requires_early_success_and_all_native_results_without_bypasses():
@@ -507,10 +718,10 @@ def test_workflow_requires_early_success_and_all_native_results_without_bypasses
     assert (
         "group: technical-checks-${{ github.ref }}\n  cancel-in-progress: true" in text
     )
-    assert text.count("ref: ${{ github.sha }}") == 5
-    assert text.count("persist-credentials: false") == 5
-    assert text.count("fetch-depth: 0") == 5
-    assert text.count("timeout-minutes: 75") == 5
+    assert text.count("ref: ${{ github.sha }}") == 3
+    assert text.count("persist-credentials: false") == 3
+    assert text.count("fetch-depth: 0") == 3
+    assert text.count("timeout-minutes: 75") == 3
     assert "OPENBLAS" not in text.split("jobs:", 1)[0]
     assert "full: ${{ steps.scope.outputs.full }}" in jobs["prepare"]
     assert jobs["prepare"].count("if: steps.scope.outputs.full != 'false'") == 6
@@ -519,14 +730,14 @@ def test_workflow_requires_early_success_and_all_native_results_without_bypasses
     )
     for job in CI.NATIVE_JOBS:
         assert (
-            "needs: prepare\n    if: needs.prepare.outputs.full != 'false'" in jobs[job]
+            "needs: prepare\n    if: needs.prepare.outputs.mode == 'full'" in jobs[job]
         )
         assert jobs[job].count("if:") == 1
         assert jobs[job].index("scripts/check_ci.py history") < jobs[job].index(
             "scripts/check_environment.py"
         )
     gate = jobs["technical-checks"]
-    assert "needs: [prepare, native-a, native-b, native-c]\n    if: always()" in gate
+    assert "needs: [prepare, native]\n    if: always()" in gate
     assert "CI_NEEDS: ${{ toJSON(needs) }}" in gate
     assert "if: cancelled()\n        run: exit 1" in gate
     assert "if: ${{ !cancelled() }}" in gate
@@ -534,3 +745,46 @@ def test_workflow_requires_early_success_and_all_native_results_without_bypasses
         "Require complete CI coverage"
     )
     assert "run: python3 scripts/check_ci.py gate" in gate
+
+
+def test_workflow_events_outputs_and_manual_gate_name_are_unambiguous():
+    text, jobs = workflow_jobs()
+    assert (
+        "types: [opened, reopened, synchronize, ready_for_review, converted_to_draft]"
+        in text
+    )
+    assert "pull_request_target" not in text
+    assert "paths:" not in text and "paths-ignore:" not in text
+    for field in ("full", "mode", "comparison_known"):
+        assert f"{field}: ${{{{ steps.scope.outputs.{field} }}}}" in jobs["prepare"]
+    assert (
+        "name: ${{ github.event_name == 'workflow_dispatch' && 'manual-technical-checks' || 'technical-checks' }}"
+        in jobs["technical-checks"]
+    )
+
+
+def test_serial_native_outputs_are_distinct_and_pilot_consumers_follow_producer():
+    _, jobs = workflow_jobs()
+    blocks = workflow_steps(jobs["native"])
+    destinations = []
+    producer = None
+    consumers = 0
+    for index, raw in enumerate(blocks):
+        destinations.extend(re.findall(r"--output (results/[\w./-]+)", raw))
+        if "scripts/check_symbolic_pilot.py --output" in raw:
+            assert producer is None
+            producer = index
+        elif "results/ci-sr-controls" in raw:
+            assert producer is not None and producer < index
+            consumers += 1
+    assert consumers == 5
+    assert len(destinations) == len(set(destinations))
+    paths = list(map(Path, destinations))
+    assert all(
+        not a.is_relative_to(b)
+        for i, a in enumerate(paths)
+        for j, b in enumerate(paths)
+        if i != j
+    )
+    assert jobs["native"].count("scripts/check_environment.py") == 1
+    assert jobs["native"].count("scripts/check_ci.py history") == 1

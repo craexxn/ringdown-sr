@@ -39,7 +39,119 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: Zusatzbewertung, Umsetzung der Stufe 2 von 3
+## Aktuell: CI-Sparplan, Draft-Steuerung und serielle native Prüfung
+
+Der Auftrag wurde am 05.11.2026 nach einer Unterbrechung ausdrücklich wieder
+aufgenommen, insbesondere um unnötige Vollprüfungen während der Entwicklung
+zu vermeiden. Der zuvor angehaltene lokale Python-Gesamtlauf ist kein bestandener
+Nachweis; eine neue vollständige lokale Suite ist unten separat belegt.
+Die inzwischen bestätigte Übernahme von PR #70 wird jetzt in PR #71 eingebunden.
+
+- **Auftrag und Phase:** Technische Unterstützung der Leitfadenphase 1 nach
+  [Abschnitten 4 und 5 des Sparplans](github_actions_savings_plan.md).
+  Main-Wiederverwendung, Caches, Runnerbetrieb und Repository-Einstellungen
+  sind getrennte Folgeentscheidungen. SR-Implementierung und wissenschaftliche
+  Budgets werden nicht verändert.
+- **Basis und Branch:** `codex/ci-draft-serial` in eigenem Worktree ab main
+  `e09ab286fc853fe2991f070c4d96d9f070b55d9d`. GitHub und Fetch bestätigen
+  diese ursprüngliche Basis. Nach Übernahme von PR #70 wird
+  `7b7b9dfb9117b4202522cd620c90d0ec861ccc65` ohne Historienänderung eingebunden.
+  Konflikte betreffen README, Leitfaden und dieses Arbeitsdokument; der
+  Stufe-2-Laufzeitvertrag und alle nativen Fachprüfungen bleiben erhalten. Die gelesene
+  Branchantwort meldet `protected:false` und keine erforderlichen Checks;
+  eine technische Merge-Sperre ist nicht belegt. Kein eigenständiger Merge.
+- **PR und zwei Implementierungsschritte:**
+  [PR #71](https://github.com/craexxn/ringdown-sr/pull/71) wurde als Draft eröffnet.
+  Draft-Steuerung in `faf5339960c10760a726dd0908692c8e374be7c0`, danach
+  Zusammenlegung von `native-a/b/c` zu `native` in unveränderter Blockfolge
+  in `c48a7eb758e32d35944bc2c487467049c71fc65e` (bisheriger Remote-Head).
+  `full` und `comparison_known` binden den Prüfbedarf, `mode` die Ausführung.
+  Ein erfolgreicher Draft-Schnelltest bleibt ausdrücklich ohne vollständige
+  Erfolgsfreigabe. Manueller Abschluss heißt `manual-technical-checks`.
+- **Lokaler Prüfstand:** 232 Steuerungstests vor der Zusammenlegung, danach
+  203 Tests mit dem seriellen Job. Die kleinere Zahl folgt den auf einen Job
+  reduzierten Ergebnisparametrisierungen; die Gegenfallarten bleiben erhalten.
+  Alle 30 ursprünglichen Inventarschritte, Befehlsbytes, Optionen und
+  blockinternen Reihenfolgen stimmen. Explizite Ausgabepfade kollidieren nicht;
+  die fünf Pilotverbraucher folgen ihrem Erzeuger. Frische Temp-Verzeichnisse,
+  Prozessaufrufe und historische Worktrees wurden im Code abgeglichen.
+  Die vollständige lokale Suite bestand mit **2.912 Pythonfällen** in 339,18 s
+  (`uv run --locked pytest -q`, Python 3.12.14, Exitstatus 0). Ruff, Format,
+  Dokumentationsprüfung (78 Markdown-Dateien) und Diffprüfung bestanden.
+- **Prüfung nach Übernahme von PR #70:** Der normale Mergecommit
+  `eb1ec1a1d6bdf654c1cd518d0744e49a24d0600e` bindet den aktuellen main ein.
+  Auf diesem gesicherten Stand bestanden **2.992 Pythonfälle in 337,88 s**,
+  Exitstatus 0. Ruff, Format (232 Dateien), Dokumentationsprüfung
+  (80 Markdown-Dateien) und Diffprüfung bestanden. Gegen main sind sämtliche
+  SR-Quellen, Daten, Abhängigkeiten und nativen Fachprüfskripte unverändert.
+  Der kombinierte Diff wurde gezielt auf Ereignis-/Gate-Regeln, vollständiges
+  Befehlsinventar, Ausgabeisolation und den Stufe-2-Laufzeitvertrag geprüft;
+  kein neuer korrekturbedürftiger Befund in dieser eigenen KI-basierten Prüfung.
+  Der erste Lauf vor dem Mergecommit wurde nach 35 Setupfehlern abgebrochen:
+  Die Herkunftsfixtures lasen die Quellenmenge aus dem alten HEAD, dem die
+  gerade eingebundenen Strukturmodule noch fehlten. Ein gezielter Einzeltest
+  bestätigte diese Ursache. Der vollständige Wiederholungslauf auf dem
+  Mergecommit bestand ohne Änderung an Implementierung oder Prüfregeln.
+- **Gezielte KI-basierte Implementierungsprüfung:** Abschließender Diff gegen
+  `e09ab286fc853fe2991f070c4d96d9f070b55d9d` auf fehlerhafte Sparfreigaben,
+  ungültige Ereignisse, fehlende/abgebrochene Jobs, manuelle Abschlussnamen,
+  Befehlsverlust, Pfadkollisionen und Prozessisolation geprüft. Kein weiterer
+  korrekturbedürftiger Befund in dieser eigenen Prüfung; kein unabhängiger
+  Zweitreview. Die gemeinsame native Umgebung bleibt bis zur vollständigen
+  GitHub-Abnahme offen.
+- **Tatsächlicher Draft-Nachweis:**
+  [42083589204](https://github.com/craexxn/ringdown-sr/actions/runs/42083589204)
+  bestätigt `mode=development`, erfolgreiches `prepare` mit 2.912 Pythonfällen,
+  ausdrücklich übersprungenes `native` und den absichtlich fehlgeschlagenen
+  Abschluss mit eindeutiger Meldung zur zurückgestellten Vollprüfung.
+  Beide ausgeführten Jobs protokollieren Checkout
+  `9b1d7bfe43790d8b5ad4330caf236d135b9a5cc8` und den zum Head gleichen Tree
+  `dcc45b3106e726785bd226a7c4615439fb791f25`. Der erste, überholte Draft-Lauf
+  42083525019 wurde automatisch abgebrochen.
+- **Ready und ausdrückliche Rückkehr zu Draft:** Einmal Ready gewählt;
+  [42085186899](https://github.com/craexxn/ringdown-sr/actions/runs/42085186899)
+  begann die Vollprüfung. Nach bestätigter Reihenfolge zuerst #70, dann #71
+  wurde #71 wieder auf Draft gesetzt. GitHub bestätigt den Abbruch der
+  Vollprüfung und den neuen Draft-Lauf
+  [42086542312](https://github.com/craexxn/ringdown-sr/actions/runs/42086542312).
+  Auch dieser Draft-Lauf ist anhand der Jobs und Logs geprüft: `prepare=success`
+  mit 2.912 Pythonfällen, `mode=development`, `native=skipped` und absichtliche
+  Abschlusssperre ausschließlich wegen der zurückgestellten Vollprüfung.
+  Der abgebrochene Lauf liefert keine native Gesamtabnahme oder belastbare
+  Vollprüfungsdauer. Die Statuspflege wurde bis zum jetzigen Basisabgleich
+  lokal gebündelt; kein zusätzlicher Push nur zur Statuspflege.
+- **Abnahme und nächster Schritt:** PR #70 ist nach gezieltem Nachreview ohne
+  neue Befunde übernommen. Nach dem Basisabgleich und den lokalen Prüfungen
+  PR #71 erneut Ready wählen. Die
+  abschließende Vollprüfung muss den kombinierten Stand vor dessen Übernahme
+  bestätigen; zwei grüne Einzel-PRs auf der alten Basis ersetzen diesen
+  Nachweis nicht. Laufzeitmessung am ohnehin nötigen vollständigen Lauf,
+  kein zusätzlicher Messlauf und kein eigenständiger Merge. Der erste
+  Main-Lauf bleibt vollständig; Wiederverwendung ist getrennte Folgearbeit.
+- **Fortsetzung Zusatzbewertung:** PR #69 und Stufe 2 in
+  [PR #70](https://github.com/craexxn/ringdown-sr/pull/70) sind übernommen.
+  Geprüfter Head von PR #70:
+  `da05b9e36a27cb5f60f0e5ff6aa8644e61b232ee`. Der dortige P2 ist in
+  `0f3b9222d90b5995394bd36b5cef2bbe66937ce7` korrigiert; 385 gezielte Tests
+  bestanden und die vier Strukturstatus aller 78 Originalauswahlen blieben
+  unverändert. Die [CI 42081241726](https://github.com/craexxn/ringdown-sr/actions/runs/42081241726)
+  bestand mit allen fünf Jobs, 2.928 Pythonfällen und allen nativen Kontrollen.
+  Alle Joblogs bestätigen Checkout `1602f76f219d619ac76782ff293afe1effb23dcb`
+  und den zum Head gleichen Tree `dd606e43264247f96a8210c973e2f0e28c80f19e`.
+  Beide Stufe-2-Exporte und die historischen Miniworker bestanden; die reale
+  lokale Bindung aller 53 Vorbereitungsdateien bestand am finalen Head.
+  Das übermittelte gezielte KI-basierte Nachreview desselben finalen Heads
+  gegen `15d8f13a269f1f1905ca10aebd59b134747682b7` bestätigt die Behebung
+  ohne neue Befunde: **83 dort ausgeführte Tests**, einschließlich der vier
+  ursprünglichen Gegenfälle. Innere und beide Randlücken bleiben bei ungeklärter
+  Originaldomain ungeklärt; belegte Pole und beide Exportwege bleiben korrekt.
+  Diese 83 Fälle sind ein übermittelter Nachweis, keine hier erneut ausgeführte
+  Testsuite. Head, Basis und alle fünf erfolgreichen CI-Jobs wurden erneut mit
+  GitHub abgeglichen. Kein weiterer Nachreview für diesen unveränderten Stand
+  erforderlich. **Stufe 3, quantifizierte Zusatzterm-Diagnose, beginnt nach
+  Start der vollständigen CI von PR #71; Methodenentscheidungen bleiben offen.**
+
+## Übernommen: Zusatzbewertung, Stufe 2 von 3
 
 - **Phase und Umfang:** Leitfadenphase 1, Bewertungsstufe 2: exakte
   Familienerkennung, Originaldefinitionsbereich und stetige Fortsetzung als
@@ -131,24 +243,22 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   `da38b8d6ee08937cfca9400edcc6fd9e03bf97a4cc8489e05dd880bf3e58ca35`.
   Dies ist ein Statusabgleich, keine erneute Archivimportprüfung oder
   Veröffentlichung; Originalausgaben und damalige Quellenbindung bleiben erhalten.
-- **Fortsetzung nach aufgehobener Pause:** Der CI-Sparumbau wurde ausdrücklich
-  verworfen; seine unvollständigen Änderungen bleiben ausschließlich im
-  isolierten lokalen Branch `codex/ci-draft-serial`. Er wurde weder gepusht
-  noch als PR eröffnet. PR #70 wird mit der bestehenden parallelen CI
-  fortgesetzt; keine Änderung an Workflow, Repository-Einstellungen oder
-  wissenschaftlichen Budgets durch diese Nachbesserung.
-- **Offen und nächster konkreter Schritt:** Nachbesserung und aktualisierte
-  Übergabe gebündelt pushen, die vollständige CI am finalen Head einschließlich
-  tatsächlichem Checkout/Dateibaum prüfen und den PR zur gezielten
-  Gegenprüfung des P2 übergeben. Die bisherigen 385 lokalen Tests gehören zur
-  Korrektur `0f3b922`; ein alter grüner Lauf ersetzt keine CI des neuen Heads.
-  Kein eigenständiger Merge.
-  Danach bleibt **Stufe 3: quantifizierte Zusatzterm-Diagnose** ausstehend.
+- **Abschluss und Übernahme:** PR #70 ist als
+  `7b7b9dfb9117b4202522cd620c90d0ec861ccc65` übernommen. Sein Dateibaum
+  `dd606e43264247f96a8210c973e2f0e28c80f19e` entspricht exakt dem geprüften
+  Head `da05b9e36a27cb5f60f0e5ff6aa8644e61b232ee`; GitHub und Fetch bestätigen
+  die Übernahme. Die endgültige CI und das übermittelte Nachreview sind oben
+  belegt. Der zwischenzeitlich angehaltene CI-Sparauftrag wurde ausdrücklich
+  wieder aufgenommen und wird separat in PR #71 abgeschlossen.
+- **Offen und nächster konkreter Schritt:** Nach Start der vollständigen CI
+  von PR #71 beginnt Stufe 3 in einem eigenen Branch und PR. Zunächst sind
+  Zerlegungsregeln, quantitative Normierung und Schranken zu klären; Vorschläge
+  gelten weiterhin nicht als Methodenbeschluss. Kein eigenständiger Merge.
 
 ## Übernommen: Zusatzbewertung, Stufe 1 von 3
 
-Die folgenden Punkte dokumentieren die Umsetzung und damalige Übergabe von
-PR #69. Der abschließende Nachreview- und Übernahmestand steht oben.
+Die folgenden Angaben halten die damalige Umsetzung und Übergabe von PR #69
+fest; der aktuelle Übernahme- und Fortsetzungsstand steht oben.
 
 - **Leitfadenphase:** [Phase 1: Bewertung abschließen](ringdown_recovery_roadmap.md#1-bewertung-abschließen),
   darin Bewertungsstufe 1. Der versionierte Leitfaden wird als Dokumentation in

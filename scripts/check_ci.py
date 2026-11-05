@@ -36,7 +36,14 @@ LINK = re.compile(
     r"!?\[[^\]\n]*\]\(\s*(?:<([^>\n]+)>|([^\s)\n]+))(?:\s+[\"'][^\n]*?[\"'])?\s*\)"
 )
 REFERENCE = re.compile(r"^\s{0,3}\[([^\]]+)\]:\s*(?:<([^>\n]+)>|(\S+))")
-NATIVE_JOBS = ("native-a", "native-b", "native-c")
+NATIVE_JOBS = ("native",)
+PR_ACTIONS = {
+    "opened",
+    "reopened",
+    "synchronize",
+    "ready_for_review",
+    "converted_to_draft",
+}
 
 
 def check_completion(needs):
@@ -52,10 +59,24 @@ def check_completion(needs):
     full = outputs.get("full") if isinstance(outputs, dict) else None
     if full not in ("true", "false"):
         raise ValueError("Missing or invalid CI scope output.")
-    expected = "success" if full == "true" else "skipped"
+    mode = outputs.get("mode")
+    known = outputs.get("comparison_known")
+    if (mode, full, known) not in (
+        ("docs", "false", "true"),
+        ("development", "true", "true"),
+        ("full", "true", "true"),
+        ("full", "true", "false"),
+    ):
+        raise ValueError("Missing, invalid or contradictory CI mode/comparison output.")
+    expected = "success" if mode == "full" else "skipped"
     for name in NATIVE_JOBS:
         if needs[name].get("result") != expected:
-            raise ValueError(f"{name}: expected {expected} for full={full}.")
+            raise ValueError(f"{name}: expected {expected} for mode={mode}.")
+    if mode == "development":
+        raise ValueError(
+            "Schnelle Prüfungen bestanden; vollständige technische Prüfung bis Ready "
+            "zurückgestellt. Dieser Stand besitzt noch keine vollständige CI-Freigabe."
+        )
     print(
         "Complete technical CI passed."
         if full == "true"
@@ -185,14 +206,40 @@ def full_check_required(event_name, event, root):
         OSError,
         subprocess.CalledProcessError,
     ) as error:
-        return True, f"Comparison unavailable ({type(error).__name__})."
+        return True, False, f"Comparison unavailable ({type(error).__name__})."
     full = not documentation_only(paths)
     reason = (
         "Code, runtime input, other path or empty diff."
         if full
         else "Documentation-only diff."
     )
-    return full, reason
+    return full, bool(paths), reason
+
+
+def execution_mode(full, comparison_known, event_name, event):
+    """Only a known comparison and consistent event metadata allow cheap execution."""
+    if not comparison_known or not isinstance(event, dict):
+        return "full"
+    if event_name == "pull_request":
+        pr = event.get("pull_request")
+        action = event.get("action")
+        if (
+            not isinstance(pr, dict)
+            or not isinstance(action, str)
+            or action not in PR_ACTIONS
+            or type(pr.get("draft")) is not bool
+            or pr.get("state") != "open"
+            or pr.get("merged") is not False
+            or (action == "ready_for_review" and pr["draft"])
+            or (action == "converted_to_draft" and not pr["draft"])
+        ):
+            return "full"
+        if not full:
+            return "docs"
+        return "development" if pr["draft"] else "full"
+    if event_name == "push" and event.get("forced") is False and not full:
+        return "docs"
+    return "full"
 
 
 def check_document(path, root):
@@ -284,19 +331,28 @@ def main():
     if args.mode == "docs":
         check_documentation(ROOT)
         return
+    event = None
+    event_name = os.environ.get("GITHUB_EVENT_NAME")
     try:
         event = json.loads(
             Path(os.environ["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8")
         )
     except (KeyError, OSError, ValueError) as error:
-        full, reason = True, f"Event unavailable ({type(error).__name__})."
-    else:
-        full, reason = full_check_required(
-            os.environ.get("GITHUB_EVENT_NAME"), event, ROOT
+        full, known, reason = (
+            True,
+            False,
+            f"Event unavailable ({type(error).__name__}).",
         )
-    print(f"Full technical CI: {str(full).lower()}. {reason}")
+    else:
+        full, known, reason = full_check_required(event_name, event, ROOT)
+    mode = execution_mode(full, known, event_name, event)
+    # Invalid event metadata cannot use prose scope to skip the Python checks.
+    full = full or mode == "full"
+    print(f"Full technical scope: {str(full).lower()}; mode={mode}. {reason}")
     with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as output:
-        output.write(f"full={str(full).lower()}\n")
+        output.write(
+            f"full={str(full).lower()}\ncomparison_known={str(known).lower()}\nmode={mode}\n"
+        )
 
 
 if __name__ == "__main__":
