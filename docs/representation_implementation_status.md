@@ -78,6 +78,20 @@ Die inzwischen bestätigte Übernahme von PR #70 wird jetzt in PR #71 eingebunde
   Die vollständige lokale Suite bestand mit **2.912 Pythonfällen** in 339,18 s
   (`uv run --locked pytest -q`, Python 3.12.14, Exitstatus 0). Ruff, Format,
   Dokumentationsprüfung (78 Markdown-Dateien) und Diffprüfung bestanden.
+- **Prüfung nach Übernahme von PR #70:** Der normale Mergecommit
+  `eb1ec1a1d6bdf654c1cd518d0744e49a24d0600e` bindet den aktuellen main ein.
+  Auf diesem gesicherten Stand bestanden **2.992 Pythonfälle in 337,88 s**,
+  Exitstatus 0. Ruff, Format (232 Dateien), Dokumentationsprüfung
+  (80 Markdown-Dateien) und Diffprüfung bestanden. Gegen main sind sämtliche
+  SR-Quellen, Daten, Abhängigkeiten und nativen Fachprüfskripte unverändert.
+  Der kombinierte Diff wurde gezielt auf Ereignis-/Gate-Regeln, vollständiges
+  Befehlsinventar, Ausgabeisolation und den Stufe-2-Laufzeitvertrag geprüft;
+  kein neuer korrekturbedürftiger Befund in dieser eigenen KI-basierten Prüfung.
+  Der erste Lauf vor dem Mergecommit wurde nach 35 Setupfehlern abgebrochen:
+  Die Herkunftsfixtures lasen die Quellenmenge aus dem alten HEAD, dem die
+  gerade eingebundenen Strukturmodule noch fehlten. Ein gezielter Einzeltest
+  bestätigte diese Ursache. Der vollständige Wiederholungslauf auf dem
+  Mergecommit bestand ohne Änderung an Implementierung oder Prüfregeln.
 - **Gezielte KI-basierte Implementierungsprüfung:** Abschließender Diff gegen
   `e09ab286fc853fe2991f070c4d96d9f070b55d9d` auf fehlerhafte Sparfreigaben,
   ungültige Ereignisse, fehlende/abgebrochene Jobs, manuelle Abschlussnamen,
