@@ -3,13 +3,11 @@
 Version 1, Stand: 05.11.2026. Als Dokumentationsergänzung in
 [PR #69](https://github.com/craexxn/ringdown-sr/pull/69) übernommen.
 Der PR ist übernommen und umfasst ausschließlich **Phase 1, Bewertungsstufe 1**.
-Aktuell wird Bewertungsstufe 2 umgesetzt; ihr
-[Intervall- und Beweisvertrag](supplemental_structure.md) ist am 05.11.2026
-ausdrücklich beschlossen. Eine lokale Nachbesserung aus dem KI-basierten
-Review liegt vor; neue GitHub-CI und Übernahme stehen noch aus.
-Die Umsetzung und lesende Anwendung gehören zu
-[PR #70](https://github.com/craexxn/ringdown-sr/pull/70); die Zusatzterm-Stufe
-bleibt ein nachfolgender eigener PR.
+Bewertungsstufe 2 ist mit [PR #70](https://github.com/craexxn/ringdown-sr/pull/70)
+übernommen. Stufe 3 beginnt parallel zur technischen CI von PR #71 als eigener
+fachlicher Auftrag. Ihr [Resttermvertrag](supplemental_remainder.md) bindet die
+bestätigten Mehrfachdiagnosen und die begrenzte adaptive Intervallunterteilung.
+Implementierung und Anwendung sind damit noch nicht als abgeschlossen erklärt.
 
 Diese Datei hält die vereinbarte Vorgehensrichtung fest. Konkrete Seeds,
 Auswahlregeln, Budgets und noch offene methodische Einzelentscheidungen werden

@@ -39,7 +39,47 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: Zusatzbewertung, Umsetzung der Stufe 2 von 3
+## Aktuell: Zusatzbewertung, Stufe 3 von 3
+
+- **Übernahme und Basis:** Stufe 2 / [PR #70](https://github.com/craexxn/ringdown-sr/pull/70)
+  ist als `7b7b9dfb9117b4202522cd620c90d0ec861ccc65` übernommen. Der Dateibaum
+  entspricht exakt dem geprüften Head `da05b9e36a27cb5f60f0e5ff6aa8644e61b232ee`.
+  Vollständige CI 42081241726 mit fünf Jobs und 2.928 Pythonfällen bestanden;
+  übermitteltes gezieltes KI-Nachreview ohne neue Befunde, 83 dort bestandene Tests.
+- **Parallel laufender technischer Auftrag:** [PR #71](https://github.com/craexxn/ringdown-sr/pull/71)
+  bindet main ein, Head `8058647a5d3888c54251805415554682f5f2bdcb`.
+  Lokal 2.992 Pythonfälle sowie Ruff, Format und Dokumentationsprüfung bestanden.
+  Seine [vollständige CI 42090756118](https://github.com/craexxn/ringdown-sr/actions/runs/42090756118)
+  ist gestartet. Der vorausgehende Draft-Lauf wurde automatisch abgebrochen.
+  Auf ausdrücklichen Auftrag beginnt Stufe 3 während dieser CI; kein Merge.
+- **Branch und Phase:** `codex/assessment-additional-terms`, eigener Worktree ab
+  dem genannten main; Leitfadenphase 1, letzter eigener Bewertungs-PR.
+  Der Umfang ergänzt historischen Import und zukünftige Schema-3-Ausgaben.
+- **Methodenbeschluss:** Alle regelbasiert erkannten Grundterme getrennt
+  diagnostizieren, ohne bevorzugte Komponente. Adaptive exakte Halbierung bei
+  nicht bewiesener endlicher Schranke, links zuerst, höchstens Tiefe 8 und
+  256 Teilintervalle pro Grundterm; insgesamt 10.000 Analyseschritte je
+  Originalformel. Bestehende Ressourcen-/Präzisionsgrenzen und getrennte
+  Normierung `B/RMS(y)` bzw. `B/max|y|` übernehmen. Kein Vernachlässigbarkeits-
+  schwellwert. Am 05.11.2026 ausdrücklich festgelegt; Details und Alternativen
+  im [Resttermvertrag](supplemental_remainder.md) und
+  [maschinenlesbaren Vertrag](../data/remainder_assessment_v1.json).
+- **Vorbereitung:** Alle 17 Nutzdateien des Vorbereitungspakets gegen dessen
+  vollständiges Inventar und SHA-256-Werte geprüft. Paketprogramme wurden
+  nicht ausgeführt. Bestehende Algebra, Originaldomainprüfung, Exportbindung
+  und vorbereitete Gegenfälle T118–T126 gelesen. Noch keine Stufe-3-Tests
+  oder Anwendung auf historische Ergebnisse ausgeführt.
+- **Offen / nächster konkreter Schritt:** Den beschlossenen Vertrag versionieren,
+  dann separaten Diagnosekern, Quellen-/Referenzbindung und beide Exportwege
+  samt unabhängigen Gegenprüfungen implementieren. Vollständige technische
+  Prüfung und eigener PR zum Review folgen. Keine weitere Bewertungsstufe
+  nach Stufe 3; spätere Suchversuche benötigen ihren eigenen Laufauftrag.
+
+## Übernommen: Zusatzbewertung, Stufe 2 von 3
+
+Die folgenden Angaben dokumentieren Umsetzung und damalige Übergabe. Der
+bestätigte Abschluss und die Fortsetzung stehen oben.
+
 
 - **Phase und Umfang:** Leitfadenphase 1, Bewertungsstufe 2: exakte
   Familienerkennung, Originaldefinitionsbereich und stetige Fortsetzung als
