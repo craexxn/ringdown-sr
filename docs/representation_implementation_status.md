@@ -35,7 +35,9 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
 ## Aktuell: zwei Seed-/Treiber-Gegenrichtungen implementieren
 
-- **Arbeitsbranch:** `codex/seed-driver-crosscheck` ab main b9636ad; bestehende
+- **Arbeitsbranch:** `codex/seed-driver-crosscheck`,
+  [PR #67](https://github.com/craexxn/ringdown-sr/pull/67), ab main b9636ad;
+  Implementierung in `96822dab20471423f8ba55b1761cf95110876949`, bestehende
   Ergebnisbranches erhalten. Vor Code eingefrorener
   [Plan](seed_driver_crosscheck_plan.md), Commit
   `be6fc1bd2339df5b429684dfce8e992073d88506`, SHA-256
@@ -49,7 +51,9 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 - **Prüfstand:** historische Miniworker auf eigenen acht Punkten bereits
   mit gleichen Fronten, Optionen und Callbackzahlen geprüft; 179 gezielte
   Pythonfälle bestanden. Die Transferreferenz mit elf Kandidaten besteht
-  die neue historische Elternprüfung. Vollständige Pythonprüfung und technische CI werden im Implementierungs-PR
+  die neue historische Elternprüfung. 116 abschließende fokussierte Fälle
+  decken auch weitere Fehler beim Widerruf ab. Vollständige Pythonprüfung und
+  technische CI werden im Implementierungs-PR
   belegt. Keine wissenschaftliche Kreuzvergleichszelle in der Cloud.
 - **Offen:** ursprüngliches Staffelarchiv liegt lokal nicht vor. Nach
   abgeschlossener technischer Prüfung genau den beschriebenen Manjaro-Aufruf

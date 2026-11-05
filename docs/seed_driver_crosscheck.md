@@ -1,6 +1,7 @@
 # Seed-/Treiber-Kreuzvergleich auf Manjaro
 
-Stand: 05.11.2026. Implementierung auf `codex/seed-driver-crosscheck`, ausgehend
+Stand: 05.11.2026. [Implementierungs-PR #67](https://github.com/craexxn/ringdown-sr/pull/67)
+auf `codex/seed-driver-crosscheck`, ausgehend
 von main `b9636ad92ecd57b24b142f39548a7a713d0934a0` nach Ergebnis-PR #66.
 Die wissenschaftlichen Kreuzvergleichszellen wurden noch nicht ausgeführt.
 Der [vorab gebundene Plan](seed_driver_crosscheck_plan.md) wurde vor dem Code
@@ -34,8 +35,8 @@ Die vollständige Historie beider ursprünglicher Mergecommits muss vorhanden se
 Auf **demselben Manjaro-Rechner wie beide Originalserien**, im sauberen Checkout:
 
 ```bash
-git fetch origin codex/seed-driver-crosscheck
-git switch --detach origin/codex/seed-driver-crosscheck
+git fetch origin pull/67/head:refs/remotes/origin/pr-67-head
+git switch --detach refs/remotes/origin/pr-67-head
 git status --short
 git cat-file -e be6fc1bd2339df5b429684dfce8e992073d88506
 git cat-file -e 5215c5e1c93f220a3f7ea59b1c37580d2f2b5ea4
@@ -135,7 +136,10 @@ Lokal bestanden 179 gezielte Pythonfälle einschließlich der bisherigen
 Transfer-Treibertests sowie beide historischen Miniworker mit identischen
 Fronten, Optionen, Callbackzahlen und Markern. Die neue Referenzprüfung hat
 alle elf Kandidaten der festgelegten Transferzelle unverändert bestätigt.
-Der vollständige lokale/CI-Prüfnachweis wird im Implementierungs-PR festgehalten.
+Zusätzlich bestehen 116 abschließende fokussierte Fälle einschließlich eines
+zweiten Signals und eines weiteren Schreib-/Löschfehlers beim Widerruf.
+Der vollständige lokale/CI-Prüfnachweis wird im
+[Implementierungs-PR #67](https://github.com/craexxn/ringdown-sr/pull/67) festgehalten.
 Das übermittelte Originalarchiv der äußeren Staffel liegt dieser Cloudinstanz
 nicht vor; seine Originalprüfung und die wissenschaftliche Gegenüberstellung
 bleiben Teil des Manjaro-Aufrufs. Das Transferoriginal wurde separat lesend
