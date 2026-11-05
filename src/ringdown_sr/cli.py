@@ -46,6 +46,8 @@ def main(argv: list[str] | None = None) -> int:
         OverflowError,
         RuntimeError,
         KeyError,
+        AssertionError,
+        IndexError,
     ) as error:
         print(
             f"Pilot konnte nicht vollständig ausgeführt werden: {error}",

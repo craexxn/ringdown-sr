@@ -77,12 +77,16 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   Die Reviewumgebung hatte keine vollständigen Originalarchive; ihre Aussage
   bestätigt daher nicht unabhängig die Primärdatenanwendung. Der Reviewbefund
   gilt für den damaligen Head, nicht für die jetzt ergänzte Zukunftsanbindung.
-- **Prüfung der Ergänzung:** 30 neue Pythonfälle prüfen die vollständige
+- **Prüfung der Ergänzung:** 32 neue Pythonfälle prüfen die vollständige
   CLI-/Pipeline-Anbindung mit synthetischen Suchworkern, unabhängige Vektornormen,
   unveränderte ursprüngliche Ergebnisse/Sucheingaben, vorab gespeicherte Daten,
   Originaldefinitionslücken, Git-/Manifest-/Auswahlbindungen, Abbruch und späte
   Quellenänderungen. Ruff, Format, lokale Dokumentationslinks und
-  Python-/Julia-Umgebungscheck bestanden. Die bestehenden zwei nativen
+  Python-/Julia-Umgebungscheck bestanden. Die vollständige Python-Suite bestand
+  am Ergänzungscommit `6ac48b64e5f5b6e61519ed308fc11cc2609c1205` mit 2.818 Fällen.
+  Zwei anschließende Gegenfälle sichern den Ausschluss eines ungeprüften
+  Selbsthashs im Quellenmanifest und den CLI-Fehlerstatus bei Replayabweichung.
+  Die bestehenden zwei nativen
   Schema-3-Kontrollläufe prüfen zusätzlich Snapshot, Originalauswahl und neue
   Kurvenklassen; keine zusätzlichen Suchläufe oder veränderten Budgets.
   Vollständiger finaler Head, Basis, Python-Gesamtergebnis, CI und tatsächlicher

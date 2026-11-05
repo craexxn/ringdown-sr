@@ -223,6 +223,7 @@ def test_saved_export_is_read_only_and_needs_no_archive_or_worker(
         "policy",
         "origin",
         "loss",
+        "self_manifest",
         "missing_snapshot",
         "duplicate_json",
     ],
@@ -292,6 +293,11 @@ def test_consistently_rehashed_source_corruption_is_blocked(
     if change == "duplicate_json":
         (arm / "result.json").write_bytes(b'{"selected_index": 1, "selected_index": 0}')
     rehash(source)
+    if change == "self_manifest":
+        path = source / "metadata.json"
+        record = read(path)
+        record["artifact_sha256"]["metadata.json"] = "0" * 64
+        path.write_bytes(json_bytes(record))
     if change == "missing_snapshot":
         (source / future.INPUTS).unlink()
     destination = tmp_path / "bad"
@@ -470,3 +476,16 @@ def test_software_and_policy_are_committed_before_use(tmp_path, monkeypatch, cha
     else:
         with pytest.raises(ValueError):
             future.freeze_software(consumed)
+
+
+def test_cli_replay_failure_reports_export_error_and_keeps_lock(run_source, tmp_path):
+    source, _, _ = run_source
+    path = source / "symbolic/ordinary/result.json"
+    front = read(path)
+    front["candidates"][1]["prediction"][0] += 0.25
+    path.write_bytes(json_bytes(front))
+    rehash(source)
+    destination = tmp_path / "bad-replay"
+    assert main(["assess", str(source), "--output", str(destination)]) == 2
+    assert (destination / LOCK).exists()
+    assert read(destination / REPORT)["groups"] == []

@@ -201,6 +201,10 @@ class Source:
     def __init__(self, root, consumed):
         self.root = root
         self.source = _Source(root)
+        if "metadata.json" in self.source.manifest:
+            raise ValueError(
+                "The root metadata must not list an unverifiable self checksum."
+            )
         self.files = {}
         names = set(self.source.manifest) | {"metadata.json"}
 
