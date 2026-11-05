@@ -6,10 +6,13 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 ## Projektstatus
 
 Fortsetzungsstand: 05.11.2026; abgeglichener Hauptbranch:
-`46da82e` ([parallele technische CI #68](https://github.com/craexxn/ringdown-sr/pull/68)).
-Die [technische CI](docs/ci.md) mit drei parallelen nativen Jobs ist übernommen.
+`e09ab28` ([Zusatzbewertung Stufe 1 #69](https://github.com/craexxn/ringdown-sr/pull/69)).
+Der [CI-Sparplan](docs/github_actions_savings_plan.md) wird in
+[PR #71](https://github.com/craexxn/ringdown-sr/pull/71) umgesetzt:
+günstige Draft-Prüfungen, danach vollständige [serielle native CI](docs/ci.md)
+beim Ready-Wechsel. Vollständige Prüfung bleibt vor der Übernahme erforderlich.
 Aktuell ist [Stufe 1 der ergänzenden Ergebnisbewertung](docs/supplemental_assessment.md)
-in [PR #69](https://github.com/craexxn/ringdown-sr/pull/69) implementiert:
+mit [PR #69](https://github.com/craexxn/ringdown-sr/pull/69) übernommen:
 verifizierter Originalimport und zusätzliche Kurvenklassen A/B/C/D, ergänzt um
 zukünftige Schema-3-Läufe mit `--assessment-output`. Die Bewertungsgrundlage wird
 vor der Suche gespeichert; bewertet wird die Originalauswahl gegen das saubere Signal.
@@ -20,7 +23,9 @@ Zusatzterme) folgen jeweils erst nach bestätigter Übernahme des vorherigen PRs
 Prüfstand und offene Arbeit stehen im [Fortsetzungsstand](docs/representation_implementation_status.md).
 Der [Leitfaden zur wiederholbaren Rekonstruktion](docs/ringdown_recovery_roadmap.md)
 ordnet Phasen, Begründungen und Entscheidungskriterien. Aktuell läuft dessen
-Phase 1, Bewertungsstufe 1; Strukturprüfung, Zusatzterm-Diagnose und Suchversuche
+Phase 1, Bewertungsstufe 2 in [PR #70](https://github.com/craexxn/ringdown-sr/pull/70).
+Dessen P2-Nachbesserung ist gepusht und wird separat mit der bisherigen
+vollständigen CI geprüft. Übernahme, Zusatzterm-Diagnose und Suchversuche
 stehen noch aus.
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit

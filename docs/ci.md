@@ -1,105 +1,147 @@
-# CI nach Änderungsumfang
+# CI nach Änderungsumfang und Entwicklungsstand
 
-Der Workflow `Technical checks` startet bei Pull Requests einschließlich
-gestapelter Entwicklungsbranches, bei Pushes nach `main` und bei manuellem Aufruf. Der bestehende
-Jobname `technical-checks` bleibt als verbindlicher Abschluss erhalten.
-`prepare` ermittelt den Umfang und führt Dokumentations-, Ruff-, Format- und
-Python-Prüfungen aus. Erst nach dessen Erfolg starten drei native Jobs auf
-getrennten Ubuntu-24.04-Runnern. Es gibt keinen Workflow-Pfadfilter, der den
-Statuscheck ganz ausfallen lässt.
+Der Workflow `Technical checks` startet bei PR-Ereignissen `opened`, `reopened`,
+`synchronize`, `ready_for_review` und `converted_to_draft`, bei Pushes nach `main`
+und bei manuellem Aufruf. Es gibt keine Workflow-Pfadfilter. Die Umsetzung folgt
+[Abschnitten 4 und 5 des Sparplans](github_actions_savings_plan.md); die dortige
+Main-Wiederverwendung bleibt getrennte Folgearbeit.
 
-## Parallele technische Prüfungen
+## Scope und Ausführungsmodus
 
-| Job | Prüfungen |
+`prepare` gibt `full`, `comparison_known` und `mode` aus. `full` beschreibt den
+fachlichen Prüfbedarf; ein Draft macht aus Code niemals reine Prosa.
+Nur ein erfolgreicher, nichtleerer Git-Vergleich und konsistente Ereignisdaten
+ermöglichen einen günstigen Pfad. Fehlende, falsch typisierte oder widersprüchliche
+Draft-/Aktions-/Zustandsangaben wählen konservativ die volle Ausführung.
+
+| Ereignis und Umfang | Modus | Tatsächliche Prüfung |
+| --- | --- | --- |
+| Bekannte reine Prosa, gültiges PR- oder Push-Ereignis | `docs`, `full=false` | Dokumentation |
+| Code oder Laufzeitdokument, gültiger Draft-PR | `development`, `full=true` | Dokumentation, Ruff, Format, vollständige Python-Suite |
+| Ready-Wechsel oder neuer Push auf einen Ready-PR mit Code | `full`, `full=true` | Schnelle und sämtliche nativen Prüfungen |
+| Main-Push mit Code | `full`, `full=true` | Vollständig, ohne Wiederverwendung eines PR-Ergebnisses |
+| Manueller Aufruf, unbekannter/erzwungener Vorgang oder unklarer Diff | `full`, `full=true` | Vollständig auf dem gewählten Ref |
+
+Bei reinem Prosaumfang darf auch ein Ready-Ereignis den Dokumentationspfad
+verwenden. `comparison_known=false` erlaubt nur `full`. Ein tatsächlicher
+Fehler des Scope-Prozesses sperrt bereits `prepare`; eine fehlende Ausgabe
+wird niemals als Dokumentationsfreigabe behandelt.
+
+Implementierungs-PRs zunächst als Draft führen, gezieltes KI-basiertes Review
+und passende lokale Tests bündeln, danach Ready wählen. Vor weiteren
+Entwicklungsiterationen wieder Draft wählen. Ein anderer Zielbranch oder eine
+neue Basis erfordert Abgleich und eine neue Ready-Prüfung. Vor Merge Head,
+Base und tatsächlich geprüften Mergecommit kontrollieren. Ein Review ohne
+Befund ist kein Nachweis bestandener Tests.
+
+## Serielle technische Prüfungen
+
+| Job / Abschnitt | Prüfungen |
 | --- | --- |
-| `prepare` | Umfang, Dokumentation, bei vollem Umfang historische Referenzen, uv/Sync, Ruff, Format und pytest |
-| `native-a` | Julia-Starts, Verlustkern, Schema-3-Pilot, feste Konstantendiagnose, Verlust-/Vorhersagereplays, Suchbudget und sämtliche fünf Pilot-Folgeprüfungen |
-| `native-b` | Suchbeobachtung, freie PySR-Suche, Repräsentation, freier Optimierer und Grammatik |
-| `native-c` | lokaler Optimierer einschließlich nativem Guard, äußere Staffel, Transfer und historische Kreuzprüfung |
-| `technical-checks` | verbindliche Vollständigkeitsprüfung aller vier Vorgänger |
+| `prepare` | Umfang und Modus, Dokumentation; bei vollem Scope historische Referenzen, uv/Sync, Ruff, Format und pytest |
+| `native`, Block A | Julia-Starts, Verlustkern, Schema-3-Pilot, feste Konstantendiagnose, Verlust-/Vorhersagereplays, Suchbudget und fünf Pilot-Folgeprüfungen |
+| `native`, Block B | Suchbeobachtung, freie PySR-Suche, Repräsentation, freier Optimierer und Grammatik |
+| `native`, Block C | lokaler Optimierer einschließlich nativem Guard, äußere Staffel, Transfer und historische Kreuzprüfung |
+| `technical-checks` | verbindliche Vollständigkeitsprüfung von `prepare` und `native` |
 
-Alle 30 bisherigen Schritte bleiben enthalten. Checkout läuft in fünf Jobs,
-uv/Sync in vier Jobs und der Python-/Julia-Umgebungscheck auf jedem nativen
-Runner. Die übrigen Fachprüfungen laufen jeweils genau einmal, innerhalb
-jedes Blocks in ihrer bisherigen Reihenfolge. Der ursprüngliche Befehlsstand
-von #67 dc7f4a2 ist als
-[Prüfinventar](../tests/fixtures/ci_steps_before_parallel.json) gebunden;
-Tests vergleichen Befehle einschließlich Argumenten, Launcher, env-Präfixen
-und Fehlerausgabe. Es gibt keine Matrix, neuen Caches oder Abhängigkeiten.
-Haswell-/Threadvorgaben bleiben ausschließlich an den bisherigen Befehlen.
+`native` startet nur nach erfolgreichem `prepare` mit `mode=full`. Die Blöcke
+laufen A, B, C, innerhalb jedes Blocks in der bisherigen Reihenfolge. Alle
+30 ursprünglichen Schritte des [Prüfinventars](../tests/fixtures/ci_steps_before_parallel.json)
+bleiben enthalten; nur wiederholte Runner-Vorbereitung entfällt. Checkout läuft
+in drei Jobs, uv/Sync in zwei Jobs, der allgemeine Python-/Julia-Umgebungscheck
+einmal im nativen Job. Befehle, Optionen, Budgets, Launcher, env-Präfixe und
+Fehlerausgaben sind gegen das unveränderte Inventar gebunden. Kein Cache,
+keine Matrix und keine neue Abhängigkeit; Haswell-/Threadvorgaben gelten
+weiterhin nur an den bisherigen einzelnen Befehlen.
 
-Der Schema-3-Pilot erzeugt seine Daten frisch in `native-a`. Beide festen
-Numerikproben, Parameterexport, Diagnoseexport/-vergleich und die beiden
-abschließenden freien Haswell-Suchen lesen diese Daten im selben Job.
-Die Haswell-Suchwiederholung liest den ursprünglichen Pilotarm, nicht den
-Output der Numerikprobe. Zwischen Jobs werden keine Ergebnisdateien übertragen.
-Aus/an/aus, 20–100–20, K–A–K und die übrigen Wiederholungsfolgen bleiben
-ungeteilte Aufrufe mit frischen Unterprozessen. Wissenschaftliche Suchbudgets
-und Originalarchive gehören nicht zu dieser CI-Umstellung.
+Alle expliziten Ausgabepfade sind verschieden und überdecken einander nicht.
+Der Schema-3-Pilot und seine fünf Folgeprüfungen liegen in Block A zusammen;
+Verbraucher folgen ihrem Erzeuger. Die Haswell-Wiederholung liest den
+ursprünglichen Pilotarm. Start-/Sperrtest und freie Suchkontrolle behalten ihre
+eigenen `TemporaryDirectory`-Verzeichnisse; die historischen Worktrees erhalten
+ein eigenes, vom Ausgabepfad abgeleitetes Hilfsverzeichnis. Jeder Fachbefehl
+startet weiterhin einen eigenen Python-Prozess, explizite frische Worker und
+Wiederholungsfolgen bleiben erhalten. Der nun gemeinsame Runner und seine
+Julia-Installation werden im ersten vollständigen Lauf als Integration geprüft.
+Keine wissenschaftlichen Serien oder geänderten SR-Suchparameter.
 
-Stufe 1 der Zusatzbewertung erweitert den bestehenden Schema-3-Prüfaufruf um
-die prospektive Anbindung: Beide vorhandenen Kontrollläufe speichern ihre
-Bewertungsgrundlage vor der Suche und veröffentlichen anschließend die drei
-Originalauswahlen getrennt. Eine unabhängige Norm-/Klassenkontrolle prüft die
-Zusatzdateien. Es kommen keine zusätzlichen Suchläufe, Jobs oder Budgets hinzu.
+Die vorhandenen Schema-3-Kontrollen speichern die Bewertungsgrundlage vor der
+Suche und prüfen anschließend die ergänzende Bewertung ihrer Originalauswahlen.
+Die Anbindung erhält keine zusätzlichen Suchläufe oder Budgets.
 
 Jeder Job checkt ausdrücklich `${{ github.sha }}` aus und protokolliert Commit
-und Dateibaum. Bei PR-Ereignissen ist dies der getestete Mergecommit. Volle
-Historie und `persist-credentials: false` bleiben erhalten. Vor pytest und
-auf jedem nativen Runner werden zusätzlich die dauerhaften PR-Head-Refs
-55/61/63/65/67 abgerufen. Der lesende Actions-Token wird nur dem einzelnen
-Fetch über dessen Prozessumgebung übergeben; er wird weder protokolliert
-noch in Gitkonfiguration oder historische Worktrees geschrieben.
-[Historische Bindungen](../scripts/ci_historical_refs.json) prüfen acht
-Commits, ihre Abstammung und feste Dateihashes. Fehlende Refs/Commits oder
-abweichende Dateien stoppen vor den Tests; HEAD muss unverändert bleiben.
-Die bisherigen inhaltlichen Bindungsprüfungen der Programme bleiben bestehen.
+und Dateibaum. Bei PR-Ereignissen ist dies der Mergecommit. Volle Historie und
+`persist-credentials: false` bleiben erhalten. Vor pytest und im nativen Job
+werden zusätzlich die dauerhaften PR-Head-Refs 55/61/63/65/67 abgerufen.
+Der lesende Actions-Token bleibt auf die Prozessumgebung dieses Fetchs begrenzt.
+[Historische Bindungen](../scripts/ci_historical_refs.json) prüfen acht Commits,
+ihre Abstammung und feste Dateihashes; HEAD muss unverändert bleiben.
 
-`technical-checks` nennt alle vier Vorgänger in `needs` und läuft mit
-`always()` auch nach Fehlern. Eine Standardbibliotheksprüfung liest die
-Ergebnisse als JSON aus einer Umgebungsvariablen; es wird kein Ergebnis als
-Shellcode ausgewertet. Nur diese beiden Fälle bestehen:
+## Abschluss, Cancellation und manuelle Läufe
 
-- `prepare=success`, exakt `full=true`, alle drei nativen Jobs `success`.
-- `prepare=success`, exakt `full=false`, alle drei nativen Jobs `skipped`.
+Der Job `technical-checks` hat `needs: [prepare, native]` und `if: always()`.
+Er liest Ergebnisse als JSON aus einer Umgebungsvariablen, ohne Shellauswertung.
+Nur diese Kombinationen erhalten Erfolg:
 
-Fehler, Abbrüche, fehlende Jobs/Ergebnisse, ungültige Scope-Ausgabe und
-unerwartete Skips sperren den Abschluss. Auch drei erfolgreiche native Jobs
-ersetzen keine gültige Scope-Ausgabe. Alle vollen Bedingungen lauten
-`full != 'false'`; fehlender Scope wählt niemals den Prosaweg. Ein normal
-erkannter unklarer Diff liefert dagegen regulär `full=true`. Ein tatsächlicher
-Scope-Prozessfehler lässt `prepare` scheitern. Workflowabbruch wird zusätzlich
-über `cancelled()` geprüft. Die bisherige Cancellation-Gruppe und
-`cancel-in-progress: true` bleiben erhalten; kein Pflichtschritt nutzt
-`continue-on-error`.
+- `prepare=success`, `full=true`, `mode=full`, gültiger Vergleichsmarker und
+  `native=success`: vollständige technische CI.
+- `prepare=success`, `full=false`, `mode=docs`, `comparison_known=true` und
+  `native=skipped`: Dokumentationsprüfung.
 
-Die bereitgestellte Zeitbasis
-[41988145093](https://github.com/craexxn/ringdown-sr/actions/runs/41988145093)
-betrug 39:48 Jobzeit beziehungsweise 41:23 von Run-Anlage bis Jobabschluss.
-Die Vorbereitung schätzt etwa 18–20 Minuten für die Aufteilung, ohne gesicherte
-Queue-/JIT-Kosten; dies ist keine Zusage. Drei frische Julia-Umgebungen erhöhen
-voraussichtlich die summierte Runnerzeit. Der Implementierungs-PR hält die
-tatsächlich gemessenen Jobzeiten, Schedulinggrenzen, Summe und geprüften
-Commit/Dateibaum fest. Einzelmessungen belegen keine stabile Beschleunigung;
-Jobzeiten sind keine Abrechnungsminuten.
+Development verlangt zwar `full=true`, `comparison_known=true`, erfolgreiche
+Vorbereitung und ausdrücklich übersprungenes `native`, beendet den Abschluss
+aber bewusst nicht erfolgreich:
+
+> Schnelle Prüfungen bestanden; vollständige technische Prüfung bis Ready
+> zurückgestellt. Dieser Stand besitzt noch keine vollständige CI-Freigabe.
+
+Der grüne `prepare` zeigt bestandene schnelle Prüfungen, der rote Abschluss
+die zurückgestellte Vollprüfung. Ein echter Vorbereitungsfehler wird gesondert
+benannt. Fehlende Modi/Jobs, widersprüchliche Angaben, Abbrüche und unerwartete
+Skips sperren weiterhin. Das Gate wird nicht übersprungen; ein GitHub-Skip kann
+bei erforderlichen Checks sonst als Erfolg gelten. Kein `continue-on-error`.
+
+Die gemeinsame Concurrency-Gruppe `technical-checks-${{ github.ref }}` und
+`cancel-in-progress: true` bleiben erhalten. Draft und Ready desselben PRs
+teilen sich die Gruppe; main bleibt getrennt. Ein Draft-Wechsel kann den
+bisherigen vollen Lauf abbrechen. Ein Re-run behält den alten Ereigniskontext;
+nach Draft-Wechsel deshalb den neuen Lauf nutzen und keinen alten Ready-Lauf
+neu starten. Es wird kein Ergebnis auf einen anderen Commit übertragen.
+
+Nur bei `workflow_dispatch` heißt derselbe Abschlussjob sichtbar
+`manual-technical-checks`, sonst `technical-checks`. Es gibt keinen zusätzlichen
+übersprungenen PR-Abschluss im manuellen Lauf. Ein manueller Branchlauf
+berechtigt nicht zur Freigabe eines anderen PR-Mergecommits.
+
+Am 05.11.2026 meldete die gelesene Main-Branchantwort weiterhin `protected:false`
+und keine erforderlichen Statuschecks. Eine automatisch erzwungene Merge-Sperre
+ist damit nicht belegt. Vollständige Prüfung vor Merge bleibt Arbeitsregel;
+Repository-Einstellungen werden mit diesem Auftrag nicht verändert.
+
+## Kosten und Abnahme
+
+Der [Sparplan](github_actions_savings_plan.md) nennt historische Jobzeiten und
+rechnerische Einsparungen, keine gemessenen Kosten des neuen Ablaufs. Durch zwei
+entfallende allgemeine Umgebungsprüfungen werden neun bis elf Runner-Minuten je
+Vollprüfung erwartet; die sichtbare Dauer kann auf etwa 45–65 Minuten steigen.
+Die einmalige Draft-/Ready-Abnahme und tatsächliche Jobzeiten stehen im
+[Fortsetzungsstand](representation_implementation_status.md) beziehungsweise PR.
+Es gibt keinen zusätzlichen Volltest allein zur Kostenmessung. Die nächsten
+drei ohnehin anstehenden PRs dienen der Verbrauchsbeobachtung.
 
 ## Schlanker Dokumentationspfad
 
-Wenn alle geänderten Dateien ausschließlich `README.md`, `AGENTS.md` oder
-Markdown-Dateien unter `docs/` sind, läuft nur die Vorbereitung mit Checkout
-und die Prüfung der Dokumentation sowie der Abschlussjob mit den drei
-erwarteten Skips. Zusätzliche historische Fetches entfallen. Die Prüfung verwendet die Python-
-Standardbibliothek des Ubuntu-Runners. Sie installiert weder die
-Projektumgebung noch Julia und startet keine Formelsuche.
+Sind alle geänderten Dateien ausschließlich erlaubte Prosa (`README.md`,
+`AGENTS.md` oder Markdown unter `docs/`), installiert `prepare` weder die
+Projektumgebung noch Julia. Der native Job wird ausdrücklich übersprungen;
+Python aus der Runner-Standardinstallation prüft die Dokumentation.
 
 Geprüft werden alle versionierten Markdown-Dateien: UTF-8, abschließender
-Zeilenumbruch, unerwünschte Leerzeichen am Zeilenende und abgeschlossene
-Codeblöcke sowie lokale Dateiziele von Inline- und Referenzlinks. Zwei
-Leerzeichen als Markdown-Zeilenumbruch sind zulässig. Beispiele in
-Codeblöcken und Inline-Code werden nicht als Links geprüft. CRLF-Dateien
-bleiben zulässig. Dies ist eine begrenzte Prüfung, kein vollständiger
-Markdown-Parser. Externe Webadressen und Sprungmarken innerhalb von Dateien
-werden nicht abgerufen beziehungsweise validiert.
+Zeilenumbruch, unerwünschte Leerzeichen und abgeschlossene Codeblöcke sowie
+lokale Dateiziele von Inline- und Referenzlinks. Zwei Leerzeichen als
+Markdown-Zeilenumbruch und CRLF bleiben zulässig. Codebeispiele werden nicht
+als Links geprüft; externe Webadressen und Sprungmarken werden nicht validiert.
+Dies ist eine begrenzte Prüfung, kein vollständiger Markdown-Parser.
 
 **Ausnahmen:** `docs/noiseless_control_plan.md`,
 `docs/search_representation_plan.md`, `docs/constant_diagnostic_plan.md`,
@@ -185,15 +227,16 @@ Testdaten enthalten; gespeicherte Vorhersagebits dienen plattformneutralen
 Vergleichen. Sie verlangen keine neue wissenschaftliche Suche und keine
 bitweise Gleichheit großer trigonometrischer Ausdrücke zwischen Rechnern.
 
-Jede andere geänderte Datei aktiviert alle bisherigen Prüfungen, insbesondere
+Jede andere geänderte Datei verlangt vollen fachlichen Prüfumfang, insbesondere
 Code, Tests, Konfigurationen, Lockdateien, Julia-Dateien und CI-Werkzeuge.
-Gemischte Änderungen erhalten ebenfalls die volle CI. Bei manuellen
+Gemischte Änderungen behalten ebenfalls `full=true`; im gültigen Draft-Modus
+werden die nativen Prüfungen bis Ready zurückgestellt. Bei manuellen
 Aufrufen, unbekannten oder erzwungenen Ereignissen, leerem Diff sowie
 fehlenden oder nicht vergleichbaren Commits wird vollständig geprüft.
 
 Die bisherigen Prüfbefehle, Versionspins, Rechte, Thread-/Haswell-Vorgaben
 und das Cacheverhalten bleiben erhalten. Jeder Job behält zunächst die
-bisherige Reserve von 75 Minuten. Die parallele Aufteilung verkürzt keine
+bisherige Reserve von 75 Minuten. Die serielle Zusammenlegung verkürzt keine
 Prüfung und verändert keine fachliche Laufgrenze.
 Die bisherigen Schritte bleiben erhalten;
 die zusätzliche Reserve erweitert keine wissenschaftliche Laufgrenze. Lauf
@@ -253,7 +296,8 @@ einen Drei-Punkt-Vergleich zwischen Basis und Head; Pushes den Vorher-/Nachher-
 Vergleich. Git liefert alle Pfade mit NUL-Trennung, ohne API-Seitenlimit.
 Bei Pull Requests zählt der gesamte PR-Diff, nicht nur der letzte Commit.
 Ein Dokumentationsnachtrag in einem PR mit Codeänderungen erhält daher
-weiterhin die vollständige Prüfung.
+weiterhin vollen fachlichen Scope; nur ein gültiger Draft kann die native
+Ausführung bis Ready zurückstellen.
 Umbenennungen werden ausdrücklich als Löschung und Neuanlage betrachtet,
 damit auch ein aus dem Code in die Dokumentation verschobener Pfad die
 volle CI aktiviert. Metadaten werden als JSON gelesen; Commitkennungen

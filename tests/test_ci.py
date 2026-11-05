@@ -684,7 +684,7 @@ def test_all_original_commands_options_error_wrappers_and_order_are_preserved():
             )
     for item in inventory["steps"]:
         matches = found.pop(item["name"])
-        expected = [item["group"]]
+        expected = ["native" if item["group"].startswith("native-") else item["group"]]
         if item["name"] == "Check out repository":
             expected = list(jobs)
         elif item["name"] in {"Install uv", "Install locked Python environment"}:
@@ -698,15 +698,16 @@ def test_all_original_commands_options_error_wrappers_and_order_are_preserved():
         "Require complete CI coverage",
         "Reject workflow cancellation",
     }
-    for group in CI.NATIVE_JOBS:
-        ordered = [
+    ordered = []
+    for group in ("native-a", "native-b", "native-c"):
+        ordered.extend(
             item["name"] for item in inventory["steps"] if item["group"] == group
-        ]
-        actual = [
-            raw.splitlines()[0].split("- name: ", 1)[1]
-            for raw in workflow_steps(jobs[group])
-        ]
-        assert [name for name in actual if name in ordered] == ordered
+        )
+    actual = [
+        raw.splitlines()[0].split("- name: ", 1)[1]
+        for raw in workflow_steps(jobs["native"])
+    ]
+    assert [name for name in actual if name in ordered] == ordered
 
 
 def test_workflow_requires_early_success_and_all_native_results_without_bypasses():
@@ -717,10 +718,10 @@ def test_workflow_requires_early_success_and_all_native_results_without_bypasses
     assert (
         "group: technical-checks-${{ github.ref }}\n  cancel-in-progress: true" in text
     )
-    assert text.count("ref: ${{ github.sha }}") == 5
-    assert text.count("persist-credentials: false") == 5
-    assert text.count("fetch-depth: 0") == 5
-    assert text.count("timeout-minutes: 75") == 5
+    assert text.count("ref: ${{ github.sha }}") == 3
+    assert text.count("persist-credentials: false") == 3
+    assert text.count("fetch-depth: 0") == 3
+    assert text.count("timeout-minutes: 75") == 3
     assert "OPENBLAS" not in text.split("jobs:", 1)[0]
     assert "full: ${{ steps.scope.outputs.full }}" in jobs["prepare"]
     assert jobs["prepare"].count("if: steps.scope.outputs.full != 'false'") == 6
@@ -736,7 +737,7 @@ def test_workflow_requires_early_success_and_all_native_results_without_bypasses
             "scripts/check_environment.py"
         )
     gate = jobs["technical-checks"]
-    assert "needs: [prepare, native-a, native-b, native-c]\n    if: always()" in gate
+    assert "needs: [prepare, native]\n    if: always()" in gate
     assert "CI_NEEDS: ${{ toJSON(needs) }}" in gate
     assert "if: cancelled()\n        run: exit 1" in gate
     assert "if: ${{ !cancelled() }}" in gate
@@ -760,3 +761,30 @@ def test_workflow_events_outputs_and_manual_gate_name_are_unambiguous():
         "name: ${{ github.event_name == 'workflow_dispatch' && 'manual-technical-checks' || 'technical-checks' }}"
         in jobs["technical-checks"]
     )
+
+
+def test_serial_native_outputs_are_distinct_and_pilot_consumers_follow_producer():
+    _, jobs = workflow_jobs()
+    blocks = workflow_steps(jobs["native"])
+    destinations = []
+    producer = None
+    consumers = 0
+    for index, raw in enumerate(blocks):
+        destinations.extend(re.findall(r"--output (results/[\w./-]+)", raw))
+        if "scripts/check_symbolic_pilot.py --output" in raw:
+            assert producer is None
+            producer = index
+        elif "results/ci-sr-controls" in raw:
+            assert producer is not None and producer < index
+            consumers += 1
+    assert consumers == 5
+    assert len(destinations) == len(set(destinations))
+    paths = list(map(Path, destinations))
+    assert all(
+        not a.is_relative_to(b)
+        for i, a in enumerate(paths)
+        for j, b in enumerate(paths)
+        if i != j
+    )
+    assert jobs["native"].count("scripts/check_environment.py") == 1
+    assert jobs["native"].count("scripts/check_ci.py history") == 1

@@ -35,7 +35,7 @@ LINK = re.compile(
     r"!?\[[^\]\n]*\]\(\s*(?:<([^>\n]+)>|([^\s)\n]+))(?:\s+[\"'][^\n]*?[\"'])?\s*\)"
 )
 REFERENCE = re.compile(r"^\s{0,3}\[([^\]]+)\]:\s*(?:<([^>\n]+)>|(\S+))")
-NATIVE_JOBS = ("native-a", "native-b", "native-c")
+NATIVE_JOBS = ("native",)
 PR_ACTIONS = {
     "opened",
     "reopened",

@@ -78,7 +78,7 @@ jobs:
         if: steps.scope.outputs.full != 'false'
         run: uv run --locked pytest -q
 
-  native-a:
+  native:
     needs: prepare
     if: needs.prepare.outputs.mode == 'full'
     runs-on: ubuntu-24.04
@@ -189,41 +189,6 @@ jobs:
           uv run --locked python scripts/repeat_symbolic_arm.py
           results/ci-sr-controls/white/symbolic/ordinary --label ci-haswell
           --require-openblas-core Haswell --output results/ci-free-search-haswell
-  native-b:
-    needs: prepare
-    if: needs.prepare.outputs.mode == 'full'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 75
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ github.sha }}
-          persist-credentials: false
-          fetch-depth: 0
-
-      - name: Record tested commit and tree
-        run: |
-          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          git rev-parse HEAD
-          git rev-parse HEAD^{tree}
-
-      - name: Prepare historical Git references
-        env:
-          CI_GITHUB_TOKEN: ${{ github.token }}
-        run: python3 scripts/check_ci.py history
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
-        with:
-          version: "0.12.21"
-          enable-cache: false
-
-      - name: Install locked Python environment
-        run: uv sync --locked --dev
-
-      - name: Check Python and Julia environment
-        run: uv run --locked python scripts/run_python.py scripts/check_environment.py
 
       - name: Verify passive search observation and fresh off-on-off workers
         run: |
@@ -265,42 +230,6 @@ jobs:
             fi
             exit 1
           fi
-
-  native-c:
-    needs: prepare
-    if: needs.prepare.outputs.mode == 'full'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 75
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ github.sha }}
-          persist-credentials: false
-          fetch-depth: 0
-
-      - name: Record tested commit and tree
-        run: |
-          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          git rev-parse HEAD
-          git rev-parse HEAD^{tree}
-
-      - name: Prepare historical Git references
-        env:
-          CI_GITHUB_TOKEN: ${{ github.token }}
-        run: python3 scripts/check_ci.py history
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
-        with:
-          version: "0.12.21"
-          enable-cache: false
-
-      - name: Install locked Python environment
-        run: uv sync --locked --dev
-
-      - name: Check Python and Julia environment
-        run: uv run --locked python scripts/run_python.py scripts/check_environment.py
 
       - name: Verify local optimizer native guards and five tiny workers
         run: |
@@ -355,7 +284,7 @@ jobs:
 
   technical-checks:
     name: ${{ github.event_name == 'workflow_dispatch' && 'manual-technical-checks' || 'technical-checks' }}
-    needs: [prepare, native-a, native-b, native-c]
+    needs: [prepare, native]
     if: always()
     runs-on: ubuntu-24.04
     timeout-minutes: 75
