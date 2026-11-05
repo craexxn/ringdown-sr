@@ -1,0 +1,60 @@
+{
+  "policy_id": "ringdown-sr-future-assessment-3",
+  "schema": "ringdown-sr-future-record-3",
+  "stage": 3,
+  "source_schema": 3,
+  "interpretation": "post_selection_original_tree_only",
+  "reference": "known_clean_signal_on_both_grids",
+  "preparation": "persist_before_first_fit_or_search",
+  "diagnostic_grid": "((k+j/8)/sample_rate_hz) for k=0..n_samples-2, j=1..7; interval-major; no extrapolation",
+  "threshold_semantics": "binary64_inclusive_no_rounding_no_tolerance",
+  "thresholds": [
+    {
+      "grade": "A",
+      "relative_rms": 0.001,
+      "relative_max": 0.01,
+      "rms_hex": "0x1.0624dd2f1a9fcp-10",
+      "max_hex": "0x1.47ae147ae147bp-7"
+    },
+    {
+      "grade": "B",
+      "relative_rms": 0.01,
+      "relative_max": 0.02,
+      "rms_hex": "0x1.47ae147ae147bp-7",
+      "max_hex": "0x1.47ae147ae147bp-6"
+    },
+    {
+      "grade": "C",
+      "relative_rms": 0.05,
+      "relative_max": 0.1,
+      "rms_hex": "0x1.999999999999ap-5",
+      "max_hex": "0x1.999999999999ap-4"
+    }
+  ],
+  "normalization": "per_grid: norm(p-y,2)/norm(y,2), max(abs(p-y))/max(abs(y)); shared amplitude scaling, no floor",
+  "missing_or_invalid_endpoint": "not_assessable; no synthetic replacement",
+  "selection": "recorded selected_index; no reranking or optimization",
+  "planned_arms": [
+    "ordinary",
+    "known_covariance",
+    "estimated_covariance"
+  ],
+  "aggregation": "one planned selection per arm; no pooled success rate",
+  "domain_interval": "closed_verified_training_span_in_physical_seconds",
+  "later_stages": "not_assessed",
+  "proof_resource_limits": {
+    "nodes": 4096,
+    "terms": 256,
+    "roots": 4096,
+    "steps": 10000,
+    "rational_bits": 16384,
+    "precisions": [
+      128,
+      256,
+      512,
+      1024
+    ]
+  },
+  "structure_proof_policy": "data/structure_assessment_v1.json",
+  "remainder_rules": "data/remainder_assessment_v1.json"
+}

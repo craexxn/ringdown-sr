@@ -207,7 +207,7 @@ def test_preparation_is_saved_before_first_reference_fit(
         assert (parent / future.INPUTS).is_file()
         assert read(parent / "metadata_initial.json")["supplemental_assessment"]
         contract = read(parent / future.CONTRACT)
-        assert contract["software"]["policy"]["stage"] == 2
+        assert contract["software"]["policy"]["stage"] == 3
         assert contract["structure_interval"]["closed"] == [True, True]
         assert contract["software"]["policy"]["proof_resource_limits"][
             "precisions"

@@ -14,6 +14,7 @@ from types import MappingProxyType
 
 import numpy as np
 
+from .remainder_assessment import reference_records
 from .structure import _validated_tree
 from .structure_assessment import interval_binding
 
@@ -375,8 +376,10 @@ def _selection(files, cell, expected, arrays, spec, provenance, sources):
     saved = _npz(files[prefix + "inputs.npz"], ("time_s", "observed"))
     signal = expected.get("signal", "anchor")
     observed = arrays["observed"]
+    diagnostic_truth = arrays["diagnostic_truth"]
     if len(spec["signal_order"]) > 1:
         observed = observed[spec["signal_order"].index(signal)]
+        diagnostic_truth = diagnostic_truth[spec["signal_order"].index(signal)]
     for key, value in (("time_s", arrays["time_s"]), ("observed", observed)):
         if (
             saved[key].dtype != value.dtype
@@ -468,6 +471,9 @@ def _selection(files, cell, expected, arrays, spec, provenance, sources):
         "source_file_sha256": anchors,
         "candidate": selected,
         "unchanged_historical": old,
+        "assessment_references": reference_records(
+            arrays["time_s"], observed, arrays["diagnostic_time_s"], diagnostic_truth
+        ),
         "grid_binding": {
             "time_coordinate": "physical_seconds",
             "structure_interval": interval_binding(arrays["time_s"]),
