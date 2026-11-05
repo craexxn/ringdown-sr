@@ -78,8 +78,11 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
           fetch-depth: 0
+      - name: Reject workflow cancellation
+        if: cancelled()
+        run: exit 1
       - name: Require complete CI coverage
+        if: ${{ !cancelled() }}
         env:
           CI_NEEDS: ${{ toJSON(needs) }}
-          CI_CANCELLED: ${{ cancelled() }}
         run: python3 scripts/check_ci.py gate

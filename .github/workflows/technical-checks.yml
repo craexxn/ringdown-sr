@@ -64,10 +64,13 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
           fetch-depth: 0
+      - name: Reject workflow cancellation
+        if: cancelled()
+        run: exit 1
       - name: Run unchanged production gate on actual scheduler results
+        if: ${{ !cancelled() }}
         env:
           CI_NEEDS: ${{ toJSON(needs) }}
-          CI_CANCELLED: ${{ cancelled() }}
           PROOF_CASE: full
         run: python3 scripts/ci_scheduler_proof.py gate
   docs-prepare:
@@ -125,10 +128,13 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
           fetch-depth: 0
+      - name: Reject workflow cancellation
+        if: cancelled()
+        run: exit 1
       - name: Run unchanged production gate on actual scheduler results
+        if: ${{ !cancelled() }}
         env:
           CI_NEEDS: ${{ toJSON(needs) }}
-          CI_CANCELLED: ${{ cancelled() }}
           PROOF_CASE: docs
         run: python3 scripts/ci_scheduler_proof.py gate
   missing-prepare:
@@ -186,10 +192,13 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
           fetch-depth: 0
+      - name: Reject workflow cancellation
+        if: cancelled()
+        run: exit 1
       - name: Run unchanged production gate on actual scheduler results
+        if: ${{ !cancelled() }}
         env:
           CI_NEEDS: ${{ toJSON(needs) }}
-          CI_CANCELLED: ${{ cancelled() }}
           PROOF_CASE: missing
         run: python3 scripts/ci_scheduler_proof.py gate
   invalid-prepare:
@@ -247,10 +256,13 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
           fetch-depth: 0
+      - name: Reject workflow cancellation
+        if: cancelled()
+        run: exit 1
       - name: Run unchanged production gate on actual scheduler results
+        if: ${{ !cancelled() }}
         env:
           CI_NEEDS: ${{ toJSON(needs) }}
-          CI_CANCELLED: ${{ cancelled() }}
           PROOF_CASE: invalid
         run: python3 scripts/ci_scheduler_proof.py gate
   scope-error-prepare:
@@ -308,10 +320,13 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
           fetch-depth: 0
+      - name: Reject workflow cancellation
+        if: cancelled()
+        run: exit 1
       - name: Run unchanged production gate on actual scheduler results
+        if: ${{ !cancelled() }}
         env:
           CI_NEEDS: ${{ toJSON(needs) }}
-          CI_CANCELLED: ${{ cancelled() }}
           PROOF_CASE: scope-error
         run: python3 scripts/ci_scheduler_proof.py gate
   native-error-prepare:
@@ -369,10 +384,13 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
           fetch-depth: 0
+      - name: Reject workflow cancellation
+        if: cancelled()
+        run: exit 1
       - name: Run unchanged production gate on actual scheduler results
+        if: ${{ !cancelled() }}
         env:
           CI_NEEDS: ${{ toJSON(needs) }}
-          CI_CANCELLED: ${{ cancelled() }}
           PROOF_CASE: native-error
         run: python3 scripts/ci_scheduler_proof.py gate
   unexpected-skip-prepare:
@@ -430,9 +448,12 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
           fetch-depth: 0
+      - name: Reject workflow cancellation
+        if: cancelled()
+        run: exit 1
       - name: Run unchanged production gate on actual scheduler results
+        if: ${{ !cancelled() }}
         env:
           CI_NEEDS: ${{ toJSON(needs) }}
-          CI_CANCELLED: ${{ cancelled() }}
           PROOF_CASE: unexpected-skip
         run: python3 scripts/ci_scheduler_proof.py gate
