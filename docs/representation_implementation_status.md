@@ -67,12 +67,21 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 - **Vorbereitung:** Alle 17 Nutzdateien des Vorbereitungspakets gegen dessen
   vollständiges Inventar und SHA-256-Werte geprüft. Paketprogramme wurden
   nicht ausgeführt. Bestehende Algebra, Originaldomainprüfung, Exportbindung
-  und vorbereitete Gegenfälle T118–T126 gelesen. Noch keine Stufe-3-Tests
-  oder Anwendung auf historische Ergebnisse ausgeführt.
-- **Offen / nächster konkreter Schritt:** Den beschlossenen Vertrag versionieren,
-  dann separaten Diagnosekern, Quellen-/Referenzbindung und beide Exportwege
-  samt unabhängigen Gegenprüfungen implementieren. Vollständige technische
-  Prüfung und eigener PR zum Review folgen. Keine weitere Bewertungsstufe
+  und vorbereitete Gegenfälle T118–T126 gelesen. Vertrag vor Implementierung
+  in `9c771f4` gesichert; Kern und Exportanbindung in `92308ae` implementiert.
+- **Implementierung und gezielte Prüfung:** Eigenständiger Diagnosekern,
+  Quellen-/Referenzbindung und Ausgabeversion 3 ergänzen beide Exportwege.
+  Vorherige Snapshots werden ausdrücklich retrospektiv ergänzt. Synthetische
+  Gegenprüfungen decken unabhängige symbolische Zerlegungen, adaptive Schranken,
+  verschiedene Referenznormen, Originaldomain, Budgets, MPFR-Kontext, beide
+  Exportwege, fehlende Quellenbindungen und späte Resttermänderungen ab.
+  Die alten Quellenfixtures wurden um die zusätzlichen Vertragsdateien
+  ergänzt; Implementierung und Herkunftsprüfungen wurden dafür nicht gelockert.
+  Keine Anwendung auf historische Ergebnisse bis zu diesem Prüfstand.
+- **Offen / nächster konkreter Schritt:** Abschließende lokale Gesamtsuite,
+  reale Quellenbindung und gezielte Implementierungsprüfung; anschließend
+  lesende Anwendung auf die vier Originalarchive. Vollständige technische
+  CI und eigener PR zum Review folgen. Keine weitere Bewertungsstufe
   nach Stufe 3; spätere Suchversuche benötigen ihren eigenen Laufauftrag.
 
 ## Übernommen: Zusatzbewertung, Stufe 2 von 3

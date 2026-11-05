@@ -25,7 +25,8 @@ Phase 1. Stufe 2 ist mit [PR #70](https://github.com/craexxn/ringdown-sr/pull/70
 Während der vollständigen CI des separaten [PR #71](https://github.com/craexxn/ringdown-sr/pull/71)
 beginnt die [quantifizierte Zusatzterm-Diagnose](docs/supplemental_remainder.md)
 als Stufe 3. Mehrere Grundterme und begrenzte adaptive Schranken sind beschlossen;
-Implementierung, Prüfung und eigener Review-PR folgen. Suchversuche stehen aus.
+Die Implementierung wird geprüft; Anwendung und eigener Review-PR folgen.
+Suchversuche stehen aus.
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit
 [PR #59](https://github.com/craexxn/ringdown-sr/pull/59) übernommen.

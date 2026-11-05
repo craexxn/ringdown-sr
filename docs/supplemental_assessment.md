@@ -1,4 +1,19 @@
-# Ergänzende Ergebnisbewertung: Kurve und exakte Struktur
+# Ergänzende Ergebnisbewertung: Kurve, Struktur und Zusatzterme
+
+Seit Stufe 3 erzeugen die beschriebenen Befehle Fassung 3. Der
+[Resttermvertrag](supplemental_remainder.md) ergänzt alle regelbasiert erkannten
+Ringdown-Grundterme mit jeweils eigener exakter Restzerlegung, zertifizierten
+Schranken und getrennten Referenznormen. Keine bevorzugte Komponente und keine
+zusätzliche Erfolgs- oder Vernachlässigbarkeitsschwelle. Die Diagnose begrenzt
+den exakten reellen Rest, nicht einen Float64-Replayfehler.
+
+Fassung-1- und Fassung-2-Snapshots bleiben unverändert lesbar. Ihre Ergänzung
+wird ausdrücklich als `retrospective_upgrade_of_stage1_snapshot` bzw.
+`retrospective_upgrade_of_stage2_snapshot` für die Restdiagnose ausgewiesen.
+Bei neuen Läufen werden auch Resttermvertrag, Ressourcen und Quellen vor dem
+ersten Fit gebunden. Suche und Originalauswahl erhalten diese Daten nicht.
+Neue Parametermatches bleiben `not_assessed`. Die folgenden Stufenbeschreibungen
+dokumentieren außerdem die ursprünglichen Fassungen und ihre Datenrollen.
 
 Seit Stufe 2 erzeugen die unten beschriebenen Befehle die Bewertungsfassung 2:
 zusätzlich zur unveränderten Kurvenskala werden Identität, Originaldomain und
@@ -270,12 +285,13 @@ Float64-Grenzen und ihre Nachbarn, bekannte Vektornormen, fehlende Zustände,
 Auswahl-/Hash-/Rasterwidersprüche sowie Veröffentlichung und Widerruf.
 Konkreter Prüf- und Anwendungsstand: [Arbeitsdokument](representation_implementation_status.md).
 
-Beauftragt sind drei aufeinanderfolgende PRs. Stufe 1 ist mit PR #69 übernommen.
-Stufe 2 wird mit dem am 05.11.2026 bestätigten Intervall- und Beweisvertrag
-implementiert; Review und Übernahme bleiben ausstehend.
-**Nächste ausstehende Stufe nach Übernahme von Stufe 2 ist Stufe 3:**
-Sie ergänzt eine quantifizierte Zusatzterm-Diagnose;
-Zerlegungsregeln und Schrankenverfahren bleiben vor ihrer Umsetzung zu klären.
+Beauftragt sind drei aufeinanderfolgende PRs. Stufe 1 ist mit PR #69 und Stufe 2
+mit PR #70 übernommen. **Stufe 3 wird jetzt als letzter eigener Bewertungs-PR
+umgesetzt.** Die quantifizierte Zusatzterm-Diagnose folgt den am 05.11.2026
+bestätigten Mehrfachdiagnosen und begrenzten adaptiven Schranken; der
+[Resttermvertrag](supplemental_remainder.md) hält Regeln und Grenzen fest.
+Tatsächliche Abnahme und Anwendung stehen im Arbeitsdokument, keine weitere
+Bewertungsstufe ist nach Stufe 3 beauftragt.
 Kein neuer fachlicher Implementierungsauftrag ist für die Folgestufen erforderlich;
 Review-/Übernahmegrenzen gelten weiterhin. Keine zusätzlichen Agenten, kein
 eigenständiger Merge und keine neue wissenschaftliche Suche.

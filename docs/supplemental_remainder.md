@@ -1,7 +1,7 @@
 # Zusatzbewertung Stufe 3: Vertrag der quantifizierten Zusatzterm-Diagnose
 
 Stand: 05.11.2026. **Mehrfachdiagnosen und begrenzte adaptive Intervallunterteilung
-am 05.11.2026 ausdrücklich beschlossen; Implementierung folgt.** Leitfadenphase 1, Bewertungsstufe 3 von 3. Stufe 2 wurde
+am 05.11.2026 ausdrücklich beschlossen; Implementierung in Prüfung.** Leitfadenphase 1, Bewertungsstufe 3 von 3. Stufe 2 wurde
 mit [PR #70](https://github.com/craexxn/ringdown-sr/pull/70) übernommen.
 Der Auftrag erlaubt den Beginn während der vollständigen CI von PR #71.
 Arbeitsstand und Entscheidungen stehen im
@@ -98,7 +98,9 @@ positive Skala, bleibt die betreffende relative Angabe nicht bewertbar;
 eine unabhängig bewiesene absolute Schranke bleibt davon unterscheidbar.
 Die Referenz beeinflusst nur die Normierung, niemals die Auswahl von `g0`.
 Die Schranke betrifft `Original minus Grundterm`, nicht den Fehler des
-Grundterms gegenüber dem bekannten Signal. Insbesondere ist `B/max|y|`
+Grundterms gegenüber dem bekannten Signal. Die Originalformel wird dabei im
+beschlossenen exakten reellen Modell ausgewertet; ein Float64-Replayfehler
+wird nicht durch diese Schranke begrenzt. Insbesondere ist `B/max|y|`
 keine RMS-Schranke. Eine praktisch kleine Schranke erzeugt keine neue
 binäre Erfolgsaussage.
 
@@ -112,6 +114,24 @@ Frühere Snapshots werden nur ausdrücklich retrospektiv ergänzt. Gespeicherte
 Originalauswahl, Herkunftsprüfung, Veröffentlichung und Widerruf bleiben gültig.
 Neue native Suchläufe sind dafür nicht vorgesehen; bestehende kleine technische
 Kontrollen können den zusätzlichen Export prüfen.
+
+Die Implementierung verwendet `ringdown-sr-remainder-proof-1` und die
+[maschinenlesbare Fassung](../data/remainder_assessment_v1.json). Beide
+Exportwege erzeugen Bewertungs-/Einzelschemas der Version 3. Der unabhängige
+Stufe-2-Beweiser und seine Fassung bleiben erhalten; nur das separate
+`remainder`-Feld wird ergänzt. Jede Komponente speichert Koeffizienten,
+Zerlegung, Domainnachweis, Intervallabdeckung und separate relative Schranken.
+Der Gesamtstatus `bound_proven` bedeutet, dass für alle ausgegebenen
+Komponenten eine absolute Schranke vorliegt. Einzelne bewiesene Schranken
+bleiben bei anderen ungeklärten Komponenten sichtbar. Ungültige Referenzskalen
+betreffen nur die jeweiligen relativen Angaben. Gruppen behalten ihre
+ursprünglichen Nenner; Komponentenzahlen sind keine zusätzlichen Versuche.
+
+Tabellarische Zahlenanzeigen sind gerundet. Die kanonischen rationalen
+Hexwerte und ihre Nachweise in `assessment_records.json` sind maßgeblich.
+Technischer Status `completed` erlaubt weiterhin mathematisch ungeklärte
+Einzelfälle. Fehlende Originale bleiben `not_assessed`; sie werden nicht als
+Nullrest ausgegeben.
 
 Unabhängig zu begründende Gegenprüfungen:
 

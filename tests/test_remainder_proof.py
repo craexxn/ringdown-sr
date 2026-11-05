@@ -5,10 +5,19 @@ import math
 from dataclasses import replace
 from fractions import Fraction
 
+import gmpy2
 import numpy as np
 import pytest
 import sympy as sp
-from test_structure_proof import T, op, q, sym_exact, unresolved_pole_tree
+from test_structure_proof import (
+    CASES,
+    T,
+    op,
+    original_exact,
+    q,
+    sym_exact,
+    unresolved_pole_tree,
+)
 
 from ringdown_sr.remainder_proof import (
     _fraction,
@@ -205,3 +214,33 @@ def test_reference_outside_interval_has_no_relative_contribution_certificate():
         c["relative_contribution_bounds"]["diagnostic"]["reason"]
         == "reference_outside_bound_interval"
     )
+
+
+@pytest.mark.parametrize("case", CASES, ids=lambda case: case["id"])
+def test_each_prepared_component_has_an_independent_exact_decomposition(case):
+    result = diagnose(case["original_tree"])
+    for component in result["components"]:
+        difference = (
+            original_exact(case["original_tree"])
+            - sym_exact(component["core_expression"])
+            - sym_exact(component["remainder_expression"])
+        )
+        assert sp.simplify(sp.expand_trig(difference)) == 0
+    if case["mathematical_expectation"]["original_family"] == "proven_member":
+        assert len(result["components"]) == 1
+        assert _fraction(result["components"][0]["bound"]["upper"]) == 0
+
+
+def test_partition_limit_never_publishes_a_partial_cover_as_a_bound():
+    a = Algebra()
+    result = bound_remainder(a.div(ONE, TIME), (Fraction(0), Fraction(1)), a)
+    assert result["status"] == "unresolved" and result["upper"] is None
+    assert result["reason"] == "subdivision_depth_limit"
+    assert result["partition_slots"] <= 256
+
+
+def test_ambient_mpfr_rounding_precision_and_inexact_traps_do_not_change_proofs():
+    tree = op("+", core(), q(0.5))
+    expected = diagnose(tree)
+    with gmpy2.context(precision=7, round=gmpy2.RoundToZero, trap_inexact=True):
+        assert diagnose(tree) == expected

@@ -492,6 +492,9 @@ def test_software_and_policy_are_committed_before_use(tmp_path, monkeypatch, cha
     (tmp_path / future.structure.FILES[0]).write_bytes(
         json_bytes(future.structure.POLICY)
     )
+    (tmp_path / future.remainder.FILES[0]).write_bytes(
+        json_bytes(future.remainder.POLICY)
+    )
     monkeypatch.setattr(future, "ROOT", tmp_path)
     monkeypatch.setattr(future, "POLICY", tmp_path / names[0])
     monkeypatch.setattr(

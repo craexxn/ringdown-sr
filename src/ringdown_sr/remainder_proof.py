@@ -274,6 +274,9 @@ def reference_scales(reference, interval, algebra):
                     trap_invalid=True,
                     trap_erange=True,
                     trap_divzero=True,
+                    trap_inexact=False,
+                    subnormalize=False,
+                    allow_complex=False,
                 ):
                     value = gmpy2.sqrt(
                         gmpy2.mpfr(gmpy2.mpq(square.numerator, square.denominator))
@@ -298,6 +301,7 @@ def reference_scales(reference, interval, algebra):
 
 
 def _normalize_bounds(result, references, interval, algebra):
+    references = references if isinstance(references, dict) else {}
     scales = {}
     for grid in ("training", "diagnostic"):
         try:

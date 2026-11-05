@@ -290,7 +290,7 @@ def test_policy_document_matches_confirmed_float64_contract():
 def software(tmp_path, monkeypatch):
     original_policy = sources.read_json(assessment.POLICY.read_bytes())
     paths = [
-        "data/supplemental_assessment_v2.json",
+        "data/supplemental_assessment_v3.json",
         "data/supplemental_series.json",
         "scripts/export_supplemental_assessment.py",
         "docs/supplemental_assessment.md",
@@ -298,6 +298,7 @@ def software(tmp_path, monkeypatch):
         "pyproject.toml",
         ".python-version",
         *assessment.structure.FILES,
+        *assessment.remainder.FILES,
     ]
     for name in paths:
         path = tmp_path / name
@@ -307,6 +308,9 @@ def software(tmp_path, monkeypatch):
     policy.write_bytes(sources.json_bytes(original_policy))
     (tmp_path / assessment.structure.FILES[0]).write_bytes(
         sources.json_bytes(assessment.structure.POLICY)
+    )
+    (tmp_path / assessment.remainder.FILES[0]).write_bytes(
+        sources.json_bytes(assessment.remainder.POLICY)
     )
     monkeypatch.setattr(assessment, "ROOT", tmp_path)
     monkeypatch.setattr(assessment, "POLICY", policy)
@@ -347,7 +351,7 @@ def test_sources_are_frozen_before_consumption_and_rechecked(software):
     consumed = Consumption(Deadline(60))
     provenance = assessment.freeze_software(consumed)
     assert provenance["source_sha256"][
-        "data/supplemental_assessment_v2.json"
+        "data/supplemental_assessment_v3.json"
     ] == sources.sha256(path.read_bytes())
     path.write_bytes(path.read_bytes() + b"\n")
     with pytest.raises(ValueError, match="Consumed file changed"):

@@ -112,8 +112,12 @@ def test_consistently_rehashed_structure_contract_cannot_change_the_method(
     assert read(output / REPORT)["groups"] == []
 
 
-def test_approved_stage1_snapshot_upgrades_explicitly_retrospectively(
-    run_source, tmp_path, monkeypatch
+@pytest.mark.parametrize(
+    "stage, legacy_commit",
+    [(1, LEGACY_COMMIT), (2, "7b7b9dfb9117b4202522cd620c90d0ec861ccc65")],
+)
+def test_approved_earlier_snapshot_upgrades_explicitly_retrospectively(
+    run_source, tmp_path, monkeypatch, stage, legacy_commit
 ):
     source, _, _ = run_source
 
@@ -123,7 +127,7 @@ def test_approved_stage1_snapshot_upgrades_explicitly_retrospectively(
         ).strip()
 
     def blob(commit, name):
-        if commit == LEGACY_COMMIT:
+        if commit == legacy_commit:
             return subprocess.check_output(
                 ["git", "show", f"{commit}:{name}"], cwd=future.ROOT
             )
@@ -131,17 +135,18 @@ def test_approved_stage1_snapshot_upgrades_explicitly_retrospectively(
 
     monkeypatch.setattr(future, "git", git)
     monkeypatch.setattr(future.sources, "_git_file", blob)
-    names = future.preparation_source_names(LEGACY_COMMIT, 1)
-    hashes = {name: sha256(blob(LEGACY_COMMIT, name)) for name in names}
+    names = future.preparation_source_names(legacy_commit, stage)
+    hashes = {name: sha256(blob(legacy_commit, name)) for name in names}
     path = source / future.CONTRACT
     contract = read(path)
-    contract["format"] = "ringdown-sr-future-assessment-1"
-    del contract["structure_interval"]
+    contract["format"] = f"ringdown-sr-future-assessment-{stage}"
+    if stage == 1:
+        del contract["structure_interval"]
     contract["software"].update(
-        software_commit=LEGACY_COMMIT,
+        software_commit=legacy_commit,
         source_sha256=hashes,
         policy=future.sources.read_json(
-            blob(LEGACY_COMMIT, future.LEGACY_CONTRACT_FILES[0])
+            blob(legacy_commit, future.STAGE_CONTRACTS[stage][0])
         ),
     )
     path.write_bytes(json_bytes(contract))
@@ -151,7 +156,7 @@ def test_approved_stage1_snapshot_upgrades_explicitly_retrospectively(
             if key not in document:
                 continue
             provenance = document[key]
-            provenance["git"].update(commit=LEGACY_COMMIT, dirty=False, changes=[])
+            provenance["git"].update(commit=legacy_commit, dirty=False, changes=[])
             python = {
                 name.removeprefix("src/"): digest
                 for name, digest in hashes.items()
@@ -169,8 +174,12 @@ def test_approved_stage1_snapshot_upgrades_explicitly_retrospectively(
     }
     output = tmp_path / "legacy-upgrade"
     report = future.export_assessment(source, output)
+    assert report["structure_policy_timing"] == (
+        "retrospective_upgrade_of_stage1_snapshot" if stage == 1 else "before_first_fit"
+    )
     assert (
-        report["structure_policy_timing"] == "retrospective_upgrade_of_stage1_snapshot"
+        report["remainder_policy_timing"]
+        == f"retrospective_upgrade_of_stage{stage}_snapshot"
     )
     assert report["status"] == "completed"
     assert all(
