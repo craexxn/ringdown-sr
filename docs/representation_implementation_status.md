@@ -68,7 +68,8 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   `3aceb638f9a648caab4019008cb5beeba336f1a2`. Finale Dokumentation ergänzt diese
   Implementierung am bisherigen PR-Head
   `15d8f13a269f1f1905ca10aebd59b134747682b7`. Die Nachbesserung des unten
-  genannten P2 liegt ausschließlich im lokalen Branch und ist noch nicht gepusht.
+  genannten P2 ist in `0f3b9222d90b5995394bd36b5cef2bbe66937ce7` gesichert.
+  Finaler Übergabe-Head, CI-Checkout und Prüfergebnis werden in #70 geführt.
   Die übrigen Worktrees und Originalausgaben bleiben erhalten.
 - **Vorbereitungsnachweise:** Alle 17 Nutzdatei-Hashes des Vorbereitungspakets
   stimmen; alle 36 synthetischen Struktur-Fixtures erfüllen die unveränderte
@@ -130,12 +131,18 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   `da38b8d6ee08937cfca9400edcc6fd9e03bf97a4cc8489e05dd880bf3e58ca35`.
   Dies ist ein Statusabgleich, keine erneute Archivimportprüfung oder
   Veröffentlichung; Originalausgaben und damalige Quellenbindung bleiben erhalten.
-- **Offen und nächster konkreter Schritt:** Den angekündigten CI-Sparplan
-  abwarten und auf die lokale Korrektur anwenden. Bis dahin ausdrücklich kein
-  Push und kein neuer GitHub-CI-Lauf; keine Änderung der CI-Konfiguration oder
-  Umgehung erforderlicher Mergeprüfungen. Anschließend die Nachbesserung in
-  PR #70 mit den erforderlichen technischen Nachweisen zur gezielten
-  Gegenprüfung des P2 übergeben. Kein eigenständiger Merge.
+- **Fortsetzung nach aufgehobener Pause:** Der CI-Sparumbau wurde ausdrücklich
+  verworfen; seine unvollständigen Änderungen bleiben ausschließlich im
+  isolierten lokalen Branch `codex/ci-draft-serial`. Er wurde weder gepusht
+  noch als PR eröffnet. PR #70 wird mit der bestehenden parallelen CI
+  fortgesetzt; keine Änderung an Workflow, Repository-Einstellungen oder
+  wissenschaftlichen Budgets durch diese Nachbesserung.
+- **Offen und nächster konkreter Schritt:** Nachbesserung und aktualisierte
+  Übergabe gebündelt pushen, die vollständige CI am finalen Head einschließlich
+  tatsächlichem Checkout/Dateibaum prüfen und den PR zur gezielten
+  Gegenprüfung des P2 übergeben. Die bisherigen 385 lokalen Tests gehören zur
+  Korrektur `0f3b922`; ein alter grüner Lauf ersetzt keine CI des neuen Heads.
+  Kein eigenständiger Merge.
   Danach bleibt **Stufe 3: quantifizierte Zusatzterm-Diagnose** ausstehend.
 
 ## Übernommen: Zusatzbewertung, Stufe 1 von 3
