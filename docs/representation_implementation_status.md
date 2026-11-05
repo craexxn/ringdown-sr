@@ -1,6 +1,10 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 04.11.2026. Ergebnis-PR #64 ist als
+Stand: 05.11.2026. Transfer-PR #65 ist als
+`bc4025d13b4954dee779341026d282430521686a` übernommen; sein Dateibaum entspricht
+exakt dem geprüften Head `92b96ecea46191fa879244fb9497db900340afd5`.
+Der Transfercheck ist mit 18 Zellen abgeschlossen und unabhängig nachgerechnet.
+Ergebnis-PR #64 ist als
 `d9f445f02fb147ab8d13db68bed159de68375983` übernommen; sein Dateibaum entspricht
 dem geprüften Ergebnis-Head `5ae2a2cdd48193dee6303fb109d6a7698c980845`.
 Implementierungs-PR #63 ist als
@@ -26,7 +30,58 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: begrenzten Signaltransfer bei 500/300/5 vorbereiten
+## Aktuell: begrenzten Signaltransfer bei 500/300/5 ausgewertet
+
+- **Einstieg:** sauberer Branch `codex/transfer-check-manjaro-handoff` bei
+  bc4025d, ein Worktree, main unverändert und keine offenen PRs. Eigener
+  Ergebnisbranch `codex/transfer-manjaro-001-audit` ab main; bestehende Branches
+  und unversionierte Dateien erhalten.
+- **Originalarchiv:** `transfer-manjaro-001.tar.gz`, übermittelter und selbst
+  bestätigter SHA-256
+  `e363fe1be629973a460fc6e2188bf680c21b2c5519d331bc7e257968dcaaa139`.
+  493 Dateien, 492 Abschlussmanifest-Einträge, 490 Verbrauchsanker und
+  94 Quellen geprüft. Sauberer Ausführungscommit bc4025d; Plan-/Datenbits,
+  Zellreihenfolge, Seeds, Originalauswahl und Profil 500/300/5 unverändert.
+- **Selbst nachgerechnet:** alle 198 Kandidaten im vorhandenen Elternprüfpfad,
+  sämtliche CSV-Ausdrücke und 201.366 unabhängige skalare Punktwerte auf
+  beiden Rastern. Alle nativen Vorhersagen und Verluste bitgleich, null
+  Zielfunktionscallbacks. Alle MPFR-Referenzen bei 128 Bit; Gruppenwerte,
+  fünf Kontraste, 15 Seedpaare, Kosten und vier positive Parameterbefunde
+  unabhängig bestätigt. Bericht und Zusammenfassung bytegleich neu erzeugt.
+  Keine neue Suche, kein Fit, keine Archivprogramme oder Suchzustände ausgeführt.
+  Originaldateien unverändert; Nachweise unter
+  `/workspace/audits/transfer-manjaro-001/`.
+- **Befund:** anchor/frequency/decay/phase/amplitude/combined erreichen
+  C = 0/3, 1/3, 1/3, 2/3, 1/3, 2/3 und S = 0/3, 1/3, 1/3, 1/3, 0/3, 1/3.
+  Bereits der frische bekannte Referenzfall scheitert mit allen drei neuen
+  Seeds. Die frühere 5/5-Beobachtung ist keine robuste Wiederfindungsgarantie;
+  keine gepaarte Implementierungsverschlechterung daraus ableiten.
+  Gesamtdauer 50 min 19,784 s, alle Grenzen 900/7200 Sekunden eingehalten.
+  [Ergebnisbericht](transfer_check_results_manjaro_001.md) enthält alle
+  Originalauswahlen, Parameterbefunde, Kontraste und Aussagegrenzen.
+- **Getrennter Zusatzbefund:** die drei kurvengenauen, formal nicht unterstützten
+  Originalauswahlen lassen sich reell auf Ringdown-Formen zurückführen;
+  bei Zelle 5 nur auf dem Definitionsbereich des Originalquotienten mit
+  hebbaren Lücken an Kosinusnullstellen. Explizite Ableitungen und 6.102
+  Hochpräzisions-Punktvergleiche bei 80/120 Dezimalstellen bestätigen dies.
+  Keine Umklassifikation, Erkenneränderung oder nachträgliche Parameterauswahl.
+- **Arbeitsstand:** Ergebnisbericht, README, Bedienung und Fortsetzungsstand
+  bilden einen reinen Dokumentationsnachtrag. Implementierung, eingefrorene
+  Pläne und Daten unverändert; Dokumentationsprüfung und PR halten den Abschluss
+  fest. Die vollständige CI 41893653816 und das übermittelte KI-basierte Review
+  gehören zum unveränderten Implementierungsstand und wurden nicht wiederholt.
+- **Nächster abgegrenzter Schritt:** vorhandene Rauschpipeline auf identischen
+  verrauschten Daten prüfen: gewöhnliche MSE, bekannte Kovarianz und aus
+  unabhängigen Hintergrundfenstern geschätzte Kovarianz; wenige Weißrausch-/AR(1)-Fälle.
+  Vor wissenschaftlichem Piloten Datenrollen, Hintergrundmengen, Auswahl,
+  Seedabhängigkeit und praktikable Strukturstabilitätsregel verbindlich festlegen.
+  Diese Pipelineprüfung und ein neues Pilotdesign wurden hier nicht ausgeführt.
+  500/1.000, 300/2, automatische Wiederholungen und Budgeterhöhungen bleiben
+  zurückgestellt. Planungsziele 8./9. und etwa 15. November erhalten;
+  keine Hauptstudie, WSL2-/Parallelisierungsarbeit, große Umstrukturierung
+  oder zusätzliche Agenten.
+
+## Grundlage: begrenzten Signaltransfer bei 500/300/5 vorbereiten
 
 - **Auftrag:** Nach der ausgewerteten Iterationsstaffel 500/300/5 beibehalten
   und den kleinen Transfercheck vorbereiten. Weitere Budgetfeinabstimmung
@@ -58,15 +113,16 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   Nachweis bei `0baef51712957586ee751b2ea15dd78d2e39bba2` unter
   `results/transfer-technical-001/`; danach nur Dokumentation und CI-Jobreserve
   geändert, gebundene Laufzeitquellen unverändert.
-- **Abschlussprüfung:** vollständige CI und endgültiger Head werden in
-  [PR #65](https://github.com/craexxn/ringdown-sr/pull/65) dokumentiert.
-  Der CI-Job erhält mit der zusätzlichen nativen Integration 75 Minuten;
-  wissenschaftliche Grenzen unverändert. #64 ist dateigleich als d9f445f
-  übernommen. Die Main-Abstammung wurde nach explizitem Dateibaumvergleich
-  ohne Implementierungsänderung aufgenommen; #65 zielt jetzt auf main. Vor wissenschaftlicher Ausführung
-  technische Prüfung und manueller Merge; [Bedienung](transfer_check.md).
-  Aktuellen Head und lokale Änderungen bei Fortsetzung erneut prüfen;
-  wissenschaftliche Serie nicht gestartet.
+- **Abschlussprüfung der Vorbereitung:** vollständige CI 41893653816 am
+  endgültigen Head `92b96ecea46191fa879244fb9497db900340afd5` erfolgreich;
+  das übermittelte KI-basierte Review fand keine korrekturbedürftigen Befunde.
+  [PR #65](https://github.com/craexxn/ringdown-sr/pull/65) dokumentiert Umfang
+  und Herkunft der Nachweise. Der CI-Job erhielt mit der zusätzlichen nativen
+  Integration 75 Minuten; wissenschaftliche Grenzen unverändert. #64 wurde
+  dateigleich als d9f445f übernommen und seine Main-Abstammung nach explizitem
+  Dateibaumvergleich ohne Implementierungsänderung aufgenommen. Nach der
+  manuellen Übernahme von #65 als bc4025d folgte die oben ausgewertete
+  Manjaro-Serie; [Bedienung](transfer_check.md).
 - **Danach:** Transfer auswerten, begrenzten nächsten Schritt zur Rauschpipeline
   begründen. Pilotroute und Planungsziele 8./9. und etwa 15. November erhalten.
   Keine Hauptstudie, WSL2-/Parallelisierungsarbeit, größere Bereinigung,

@@ -5,8 +5,8 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 04.11.2026; abgeglichener Hauptbranch:
-`d9f445f` ([Ergebnis-PR #64](https://github.com/craexxn/ringdown-sr/pull/64)).
+Fortsetzungsstand: 05.11.2026; abgeglichener Hauptbranch:
+`bc4025d` ([Transferimplementierung #65](https://github.com/craexxn/ringdown-sr/pull/65)).
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit
 [PR #59](https://github.com/craexxn/ringdown-sr/pull/59) übernommen.
@@ -50,15 +50,26 @@ Kurvenerfolge reell auf Ringdown-Formen zurück. Der Rückgang dieser Wertung
 belegt daher keine schlechtere physikalische Struktur; die Originalzählungen
 und der Erkenner wurden nicht verändert.
 
-**500 äußere Iterationen bei lokal 300/5** bleiben das Arbeitsprofil für den
-angenommenen [Transfercheck](docs/transfer_check_plan.md): sechs feste
-Signalbedingungen mit drei neuen gepaarten Seeds, **18 frische Manjaro-Zellen**.
-Referenzfall, einzelne Änderungen von Frequenz, Abklingzeit, Phase und Amplitude
-sowie ein gemeinsamer Fall. Grenzen: 15 Minuten je Worker und zwei Stunden
-insgesamt. Plan und Daten sind vor Implementierung eingefroren; Implementierung
-und Bedienung liegen vor, die wissenschaftliche Serie ist noch nicht ausgeführt.
-Technischer Prüfstand in [PR #65](https://github.com/craexxn/ringdown-sr/pull/65),
-[Manjaro-Bedienung](docs/transfer_check.md).
+Der [Transfercheck bei 500/300/5](docs/transfer_check_results_manjaro_001.md)
+ist auf Manjaro abgeschlossen und unabhängig nachgerechnet: **18 Zellen,
+198 Kandidaten**, alle nativen Vorhersagen und Verluste bitgleich;
+Gesamtdauer rund 50 Minuten. Je drei neue gepaarte Seeds ergeben für
+anchor/frequency/decay/phase/amplitude/combined **C = 0/3, 1/3, 1/3, 2/3,
+1/3, 2/3** und **S = 0/3, 1/3, 1/3, 1/3, 0/3, 1/3**.
+Bereits der frische bekannte Referenzfall erreicht keinen Kurvenerfolg;
+die frühere 5/5-Beobachtung überträgt sich nicht auf diese neue Seedgruppe.
+500/300/5 ist damit kein belegtes robustes Rekonstruktionsprofil.
+Die fünf Signaländerungen liefern einzelne Erfolge, aber keine allgemeine
+Übertragbarkeit oder gemeinsame Erfolgsquote über die sechs Bedingungen.
+
+Drei kurvengenaue Originalauswahlen bleiben formal unerkannt. Eine getrennte
+nachträgliche algebraische Diagnose erklärt diese Schreibweisen; bei einem
+verschachtelten Quotienten bleiben Definitionslücken an Kosinusnullstellen.
+Die planmäßigen S-Zählungen und Parameterstatus bleiben unverändert.
+Der [Plan](docs/transfer_check_plan.md) und alle Eingabedaten sind unverändert;
+die [Bedienung](docs/transfer_check.md) dokumentiert den abgeschlossenen Laufweg,
+keine Wiederholungsfreigabe. Technischer Prüfstand in
+[PR #65](https://github.com/craexxn/ringdown-sr/pull/65).
 
 2.000 und 5.000 benötigten am bisherigen Signal rund 3,05-/6,24-mal die summierte
 Zellzeit der 500er-Gruppe. Ein allgemeines Optimum oder Übertragbarkeit ist
@@ -68,8 +79,11 @@ werden für jedes Signal passend verglichen; keine Auswahl anhand der Wahrheit.
 
 Weitere 500/1.000-Tests und die optionale Staffel mit **300/2** sind zurückgestellt,
 keine automatische Anschlussfreigabe. Auch 10.000 ist derzeit nicht begründet.
-Nach dem Transfercheck folgen Rauschpipeline, kompaktes Pilotdesign und
-Pilotauswertung mit Hauptversuchsplan gemäß der in #61 festgehaltenen Route.
+Als nächster abgegrenzter Schritt folgt die Prüfung der vorhandenen
+Rauschpipeline auf identischen verrauschten Daten; danach kompaktes
+Pilotdesign und Pilotauswertung mit Hauptversuchsplan gemäß der in #61
+festgehaltenen Route. Die Seedabhängigkeit und eine praktikable Messregel
+für Strukturstabilität müssen im Pilotdesign ausdrücklich berücksichtigt werden.
 Wissenschaftliche Ausführung bleibt auf Manjaro; Hauptstudie und
 wissenschaftliche Übertragbarkeit bleiben offen.
 Die vorgemerkte kurze Bereinigungsbestandsaufnahme bleibt offen; funktionierenden
