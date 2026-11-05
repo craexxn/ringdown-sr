@@ -66,7 +66,9 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   [PR #70](https://github.com/craexxn/ringdown-sr/pull/70) implementiert.
   Implementierungs-/Anwendungsstand:
   `3aceb638f9a648caab4019008cb5beeba336f1a2`. Finale Dokumentation ergänzt diese
-  Implementierung; vollständiger Head, Basis und CI-Checkout werden in #70 geführt.
+  Implementierung am bisherigen PR-Head
+  `15d8f13a269f1f1905ca10aebd59b134747682b7`. Die Nachbesserung des unten
+  genannten P2 liegt ausschließlich im lokalen Branch und ist noch nicht gepusht.
   Die übrigen Worktrees und Originalausgaben bleiben erhalten.
 - **Vorbereitungsnachweise:** Alle 17 Nutzdatei-Hashes des Vorbereitungspakets
   stimmen; alle 36 synthetischen Struktur-Fixtures erfüllen die unveränderte
@@ -80,8 +82,8 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   Enden. Der [Vertrag](supplemental_structure.md) hält die konkreten Regeln,
   Zahlen, Alternativen und Aussagegrenzen fest. Für Stufe 2 ist keine dieser
   Entscheidungen mehr offen; neue Parametermatches bleiben ausgeschlossen.
-- **Eigene technische Prüfnachweise:** Vollständige lokale Suite: **2.921
-  Pythonfälle bestanden** in 315,63 s. Zuvor 368 fokussierte Fälle, anschließend
+- **Eigene technische Prüfnachweise vor der Nachbesserung:** Vollständige lokale
+  Suite: **2.921 Pythonfälle bestanden** in 315,63 s. Zuvor 368 fokussierte Fälle, anschließend
   72 Kern-/Anbindungsfälle einschließlich 36 unveränderter vorbereiteter
   Strukturbeispiele, unabhängiger symbolischer Identitätskontrollen,
   Domain-/Rand-/Pol-/Ressourcengegenfälle und gerichteter Intervalle. Konsistent
@@ -90,8 +92,29 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   nachweislich retrospektiv ergänzt. Die reale prospektive Bindung aller 53
   Vorbereitungsdateien bestand am sauberen Implementierungscommit. Ruff,
   Format, Dokumentations-/Diff-Prüfung und gepinnte Python-/Julia-Umgebung
-  bestanden. Die vollständige externe CI am finalen Head wird in #70 belegt;
-  Übergabe erst nach ihrem Abschluss.
+  bestanden. Die [CI 42065464612](https://github.com/craexxn/ringdown-sr/actions/runs/42065464612)
+  bestand mit fünf Jobs und 2.921 Pythonfällen für den bisherigen PR-Head
+  `15d8f13a269f1f1905ca10aebd59b134747682b7`; dieser Nachweis gilt nicht für
+  die anschließende lokale Korrektur.
+- **Übermitteltes KI-basiertes Review:** Ein P2 am genannten PR-Head gegen
+  Basis `e09ab286fc853fe2991f070c4d96d9f070b55d9d`: Ein Pol der Normalform
+  konnte trotz ungeklärter Originaldomain einen negativen Fortsetzungsbefund
+  liefern. Übermittelt wurden 314 bestandene gezielte Repository-Tests und
+  vier reproduzierende Gegenfälle einschließlich beider Ränder und eines
+  vollständigen Exports. Die externe Reproduktionsdatei lag lokal nicht vor.
+- **Lokale Korrektur und eigene Nachweise:** Hebbarkeit und Nichthebbarkeit
+  setzen nun beide die vollständige Domainprüfung voraus; auch die globale
+  Fortsetzungsentscheidung prüft diese Voraussetzung ausdrücklich. Die
+  vier neu formulierten Gegenfälle reproduzierten den Fehler vor der Korrektur.
+  Danach bestanden alle **79 Struktur-/Anbindungsfälle**, darunter diese vier
+  sowie drei Kontrollen mit belegten Polen im Inneren und an beiden Rändern.
+  Weitere **306 bestehende Fälle** für Archivimport, prospektive Herkunftsprüfung,
+  Veröffentlichung und Widerruf bestanden (insgesamt **385**). Ruff und Format
+  der geänderten Python-Dateien sowie Dokumentations- und Diffprüfung bestanden.
+  Die vollständige Suite und die
+  nativen Kontrollen wurden für diese lokale Korrektur nicht erneut gestartet.
+  Ohne Domainnachweis bleiben Lückenart und Fortsetzung `unresolved`, auch
+  bei einem technisch erfolgreich abgeschlossenen Export.
 - **Abgeschlossene lesende Anwendung:**
   [78 Originalauswahlen und 18 getrennte Gruppen](supplemental_structure_results_001.md)
   aus allen vier verankerten Archiven. Originalidentitäten, Kandidaten,
@@ -100,11 +123,19 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   algebraischen Identitätsnachweise; dies ist keine eigenständige Domainprüfung
   durch CAS-Kürzung. Ungeklärte Befunde bleiben sichtbar, darunter ein Fall
   am Analyseschrittlimit. Kein Fit, keine neue wissenschaftliche Suche.
-- **Nächster konkreter Schritt:** Vollständige CI für PR #70 abschließen und
-  den fertigen PR zum KI-basierten Review übergeben. Prüfschwerpunkte:
-  exakte Konstanten/Identitäten, vollständige Originaldomain samt Randlücken,
-  getrennte Fortsetzungsnachweise und gebundene prospektive Anbindung.
-  Review und Übernahme bleiben ausstehend; kein eigenständiger Merge.
+- **Gezielter Abgleich nach der Korrektur:** Die vier Statusfelder für Identität,
+  Domain, Originalfamilie und Fortsetzung wurden lesend aus allen 78 gespeicherten
+  Originalbäumen mit dem korrigierten Kern erneut bestimmt; kein Status änderte
+  sich. Eingaberecords: SHA-256
+  `da38b8d6ee08937cfca9400edcc6fd9e03bf97a4cc8489e05dd880bf3e58ca35`.
+  Dies ist ein Statusabgleich, keine erneute Archivimportprüfung oder
+  Veröffentlichung; Originalausgaben und damalige Quellenbindung bleiben erhalten.
+- **Offen und nächster konkreter Schritt:** Den angekündigten CI-Sparplan
+  abwarten und auf die lokale Korrektur anwenden. Bis dahin ausdrücklich kein
+  Push und kein neuer GitHub-CI-Lauf; keine Änderung der CI-Konfiguration oder
+  Umgehung erforderlicher Mergeprüfungen. Anschließend die Nachbesserung in
+  PR #70 mit den erforderlichen technischen Nachweisen zur gezielten
+  Gegenprüfung des P2 übergeben. Kein eigenständiger Merge.
   Danach bleibt **Stufe 3: quantifizierte Zusatzterm-Diagnose** ausstehend.
 
 ## Übernommen: Zusatzbewertung, Stufe 1 von 3

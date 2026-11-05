@@ -23,6 +23,7 @@ from ringdown_sr.structure_algebra import (
 )
 from ringdown_sr.structure_assessment import bound_interval, interval_binding
 from ringdown_sr.structure_proof import assess_structure
+from ringdown_sr.symbolic import evaluate_tree
 
 CASES = json.loads(
     (
@@ -144,6 +145,61 @@ def test_known_hole_does_not_hide_an_unresolved_second_denominator():
     assert result["domain"]["exclusions"]
     assert result["continuous_extension"]["status"] == "unresolved"
     assert result["algebraic_identity"]["status"] == "unresolved"
+
+
+def cancellation_denominator():
+    # Keep both arithmetic operations: their exact result is one, but
+    # binary64 cancellation evaluates it to zero before applying sin.
+    return op(
+        "+",
+        op("sin", op("-", op("+", q(1e16), q(1)), q(1e16))),
+        op("sin", q(-1)),
+    )
+
+
+def unresolved_pole_tree(root):
+    return op(
+        "+",
+        op("/", q(0), cancellation_denominator()),
+        op("/", q(1), op("-", T, q(root))),
+    )
+
+
+@pytest.mark.parametrize(
+    "root,position",
+    [(0.001, "interior"), (0, "left_endpoint"), (127 / 4096, "right_endpoint")],
+)
+def test_normal_form_pole_requires_approach_from_original_domain(root, position):
+    # Independently prove that the exact original domain is empty, despite
+    # finite binary64 predictions away from the apparent pole.
+    denominator = cancellation_denominator()
+    assert original_exact(denominator) == 0
+    assert evaluate_tree(denominator, [0.002])[0] != 0
+    tree = unresolved_pole_tree(root)
+    assert math.isfinite(evaluate_tree(tree, [0.002])[0])
+    result = assess_structure(tree, (0, Fraction(127, 4096)))
+    domain = result["domain"]
+    assert domain["status"] == "unresolved"
+    assert domain["nonempty_dense_original_domain_proven"] is False
+    assert domain["unresolved_obligations"]
+    assert len(domain["exclusions"]) == 1
+    exclusion = domain["exclusions"][0]
+    assert exclusion["position"] == position
+    assert exclusion["kind"] == "unresolved"
+    assert exclusion["reason"] == "original_domain_completeness_unresolved"
+    assert "proof" not in exclusion
+    assert result["algebraic_identity"]["status"] == "unresolved"
+    assert result["continuous_extension"]["status"] == "unresolved"
+
+
+@pytest.mark.parametrize("root", [0.001, 0, 127 / 4096])
+def test_proven_original_domain_still_supports_simple_poles(root):
+    tree = op("/", q(1), op("-", T, q(root)))
+    result = assess_structure(tree, (0, Fraction(127, 4096)))
+    assert result["domain"]["status"] == "nonremovable_singularities"
+    assert result["domain"]["nonempty_dense_original_domain_proven"] is True
+    assert result["domain"]["exclusions"][0]["kind"] == "nonremovable"
+    assert result["continuous_extension"]["status"] == "proven_nonmember"
 
 
 def test_overwide_denominator_interval_is_not_a_zero_certificate():

@@ -268,7 +268,15 @@ class Domain:
                 if root not in exclusions:
                     exclusions[root] = {**location, "original_node_paths": []}
                 exclusions[root]["original_node_paths"].append(path)
+        complete = not unresolved
         for root, record in exclusions.items():
+            # Both finite limits and poles require approach through the original
+            # domain. The normal form alone cannot establish that prerequisite.
+            if not complete:
+                record.update(
+                    kind="unresolved", reason="original_domain_completeness_unresolved"
+                )
+                continue
             try:
                 limit = self.continuous_at(normalized, root)
                 record.update(
@@ -290,7 +298,6 @@ class Domain:
                 except (Unresolved, NowhereDefined) as error:
                     record.update(kind="unresolved", reason=str(error))
         kinds = {r["kind"] for r in exclusions.values()}
-        complete = not unresolved
         status = "unresolved"
         if complete and "unresolved" not in kinds:
             status = (
@@ -302,15 +309,6 @@ class Domain:
                 if kinds == {"nonremovable"}
                 else "mixed"
             )
-        # A local smooth expression alone does not prove a unique extension
-        # when other original domain obligations remain unresolved.
-        if not complete:
-            for record in exclusions.values():
-                if record["kind"] == "removable":
-                    record.update(
-                        kind="unresolved",
-                        reason="original_domain_completeness_unresolved",
-                    )
         return {
             "status": status,
             "exclusions": list(exclusions.values()),

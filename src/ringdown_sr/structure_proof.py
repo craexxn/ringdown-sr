@@ -221,7 +221,12 @@ def assess_structure(tree, interval, *, limits=LIMITS):
         result["algebraic_identity"] = {"status": status, "reason": reason}
         result["coefficients_exact"] = coefficients
         result["coefficient_sign_proofs"] = signs
-        if domain["status"] == "defined_everywhere":
+        if not domain["nonempty_dense_original_domain_proven"]:
+            result["continuous_extension"] = {
+                "status": "unresolved",
+                "reason": "original_domain_completeness_unresolved",
+            }
+        elif domain["status"] == "defined_everywhere":
             result["original_family"] = {
                 "status": "proven_member"
                 if status == "proven_on_original_domain"

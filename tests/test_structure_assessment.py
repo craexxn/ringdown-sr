@@ -5,17 +5,61 @@ from pathlib import Path
 
 import pytest
 import test_future_assessment as fixtures
+import test_symbolic_pilot as worker_fixtures
 from test_future_assessment import rehash
+from test_structure_proof import q, unresolved_pole_tree
 from test_symbolic_pilot import read
 
 from ringdown_sr import future_assessment as future
 from ringdown_sr.assessment_publication import LOCK, PENDING, REPORT
 from ringdown_sr.assessment_sources import json_bytes, sha256
+from ringdown_sr.pilot import run_pilot
 
 software = fixtures.software
 worker = fixtures.worker
 run_source = fixtures.run_source
 LEGACY_COMMIT = "e09ab286fc853fe2991f070c4d96d9f070b55d9d"
+
+
+def test_completed_export_cannot_claim_pole_from_unresolved_original_domain(
+    tmp_path, software, worker, monkeypatch
+):
+    tree = unresolved_pole_tree(0.001)
+    # The fixed counterexample wins against a deliberately poor baseline;
+    # preserve the ordinary selection rule and all numeric artifact checks.
+    monkeypatch.setattr(worker_fixtures, "candidate_tree", lambda: tree)
+    monkeypatch.setattr(worker_fixtures, "constant", lambda value: q(1e6))
+    write_worker = fixtures.write_worker
+
+    def counterexample_worker(*args, **kwargs):
+        run = write_worker(*args, **kwargs)
+        path = run.output_directory / "result.json"
+        result = read(path)
+        result["candidates"][1]["complexity"] = 17
+        path.write_bytes(json_bytes(result))
+        checks = run.output_directory / "checksums.json"
+        checks.write_bytes(
+            json_bytes({**read(checks), "result.json": sha256(path.read_bytes())})
+        )
+        return run
+
+    monkeypatch.setattr(fixtures, "write_worker", counterexample_worker)
+    config = tmp_path / "input.toml"
+    config.write_text(worker_fixtures.small_config())
+    source, output = tmp_path / "run", tmp_path / "assessment"
+    assert run_pilot(config, source, assessment_output=output).status == "success"
+    assert read(output / REPORT)["status"] == "completed"
+    assert not (output / LOCK).exists()
+    records = read(output / "assessment_records.json")
+    assert len(records) == len(worker) == 3
+    for record in records:
+        assert record["source_identity"]["original_selected_index"] == 1
+        assert record["original_candidate"]["tree"] == tree
+        proof = record["supplemental"]
+        assert proof["domain"]["status"] == "unresolved"
+        assert proof["domain"]["nonempty_dense_original_domain_proven"] is False
+        assert proof["domain"]["exclusions"][0]["kind"] == "unresolved"
+        assert proof["continuous_extension"]["status"] == "unresolved"
 
 
 def bind_root_contract(source):

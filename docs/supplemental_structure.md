@@ -2,7 +2,8 @@
 
 Stand: 05.11.2026. **Intervall, Beweisweg und Ressourcen am 05.11.2026
 ausdrücklich beschlossen. Implementiert in
-[PR #70](https://github.com/craexxn/ringdown-sr/pull/70); Review und Übernahme offen.**
+[PR #70](https://github.com/craexxn/ringdown-sr/pull/70); Nachbesserung lokal geprüft,
+Übernahme offen.**
 Leitfadenphase 1, Bewertungsstufe 2 von 3. Die Umsetzung folgt der bestätigten
 Übernahme von [PR #69](https://github.com/craexxn/ringdown-sr/pull/69).
 Entscheidungen und tatsächlicher Arbeitsstand stehen im
@@ -103,7 +104,16 @@ Das vorbereitete Statusmodell unterscheidet:
 
 Ein vollständig erfasster endlicher Ausschlussbereich und eine bewiesene stetige
 Normalform können hebbare Lücken belegen. Unvollständige Ausschlussnachweise
-erlauben keine pauschale Freigabe. Eine nirgends definierte Formel liefert
+erlauben keine pauschale Freigabe. Auch ein Pol der Normalform beweist nur dann
+eine nichthebbare Singularität der Originalformel, wenn eine Annäherung innerhalb
+ihres Originaldefinitionsbereichs belegt ist, an Intervallrändern einseitig.
+Der begrenzte Beweiser verlangt dafür konservativ dieselbe vollständige
+Domainprüfung: Erst der vollständig erfasste endliche Ausschlussbereich belegt
+die benötigte Dichtheit. Bei offenen Nennerbedingungen bleiben sowohl die
+Lückenart als auch die Fortsetzungsfrage `unresolved`; ein Pol der Normalform
+genügt nicht für `proven_nonmember`. Dies stellt die ursprüngliche
+Nachweispflicht auch für negative Fortsetzungsbefunde sicher.
+Eine nirgends definierte Formel liefert
 keinen positiven Identitätsbeweis und keine eindeutige Fortsetzung.
 Nichtzugehörigkeit erfordert einen Gegenbeweis; eine nicht erkannte Form
 bleibt ungeklärt. Aufwendige Mehrfrequenz- oder Chirpgegenbeweise dürfen

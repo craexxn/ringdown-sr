@@ -24,7 +24,9 @@ Phase 1, Umsetzung der Bewertungsstufe 2. Deren
 [Intervall- und Beweisvertrag](docs/supplemental_structure.md) ist beschlossen;
 die Strukturprüfung ist in [PR #70](https://github.com/craexxn/ringdown-sr/pull/70)
 implementiert und [auf die 78 Originalauswahlen angewandt](docs/supplemental_structure_results_001.md).
-Review und Übernahme stehen noch aus. Zusatzterm-Diagnose und Suchversuche folgen später.
+Der P2 aus dem KI-basierten Review ist lokal korrigiert und geprüft;
+Push und neue GitHub-CI warten auf den angekündigten Sparplan.
+Übernahme, Zusatzterm-Diagnose und Suchversuche stehen weiterhin aus.
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit
 [PR #59](https://github.com/craexxn/ringdown-sr/pull/59) übernommen.
