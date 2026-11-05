@@ -1,7 +1,8 @@
 # Zusatzbewertung Stufe 2: Intervall- und Beweisvertrag
 
 Stand: 05.11.2026. **Intervall, Beweisweg und Ressourcen am 05.11.2026
-ausdrücklich beschlossen. Umsetzung und technische Prüfung in Arbeit.**
+ausdrücklich beschlossen. Implementiert in
+[PR #70](https://github.com/craexxn/ringdown-sr/pull/70); Review und Übernahme offen.**
 Leitfadenphase 1, Bewertungsstufe 2 von 3. Die Umsetzung folgt der bestätigten
 Übernahme von [PR #69](https://github.com/craexxn/ringdown-sr/pull/69).
 Entscheidungen und tatsächlicher Arbeitsstand stehen im
@@ -130,6 +131,8 @@ vor dem ersten Fit mit dem Snapshot gespeichert. Ein späterer Export eines
 vollständigen Fassung-1-Snapshots bleibt möglich und ist ausdrücklich
 `retrospective_upgrade_of_stage1_snapshot`, keine rückwirkende Vorabfestlegung.
 Fehlende oder widersprüchliche Vorbereitungs-/Workerquellen bleiben gesperrt.
+Die [lesende Anwendung auf alle 78 historischen Originalauswahlen](supplemental_structure_results_001.md)
+ist dokumentiert; Originalkennzahlen und Kurvenklassen blieben unverändert.
 
 ## Umsetzung und Prüfung
 

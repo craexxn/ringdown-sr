@@ -6,6 +6,9 @@ Der PR ist übernommen und umfasst ausschließlich **Phase 1, Bewertungsstufe 1*
 Aktuell wird Bewertungsstufe 2 umgesetzt; ihr
 [Intervall- und Beweisvertrag](supplemental_structure.md) ist am 05.11.2026
 ausdrücklich beschlossen. Prüfung und Übernahme stehen noch aus.
+Die Umsetzung und lesende Anwendung gehören zu
+[PR #70](https://github.com/craexxn/ringdown-sr/pull/70); die Zusatzterm-Stufe
+bleibt ein nachfolgender eigener PR.
 
 Diese Datei hält die vereinbarte Vorgehensrichtung fest. Konkrete Seeds,
 Auswahlregeln, Budgets und noch offene methodische Einzelentscheidungen werden

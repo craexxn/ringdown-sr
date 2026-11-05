@@ -62,7 +62,11 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   Schema-3-Kontrollen bestätigten den Bewertungsexport.
 - **Branch und Arbeitsstand:** `codex/assessment-structure-domain`, eigener
   Worktree ab `e09ab286fc853fe2991f070c4d96d9f070b55d9d`; begrenzter Erkenner
-  und Einbindung beider Bewertungswege implementiert, technische Prüfung läuft.
+  und Einbindung beider Bewertungswege in
+  [PR #70](https://github.com/craexxn/ringdown-sr/pull/70) implementiert.
+  Implementierungs-/Anwendungsstand:
+  `3aceb638f9a648caab4019008cb5beeba336f1a2`. Finale Dokumentation ergänzt diese
+  Implementierung; vollständiger Head, Basis und CI-Checkout werden in #70 geführt.
   Die übrigen Worktrees und Originalausgaben bleiben erhalten.
 - **Vorbereitungsnachweise:** Alle 17 Nutzdatei-Hashes des Vorbereitungspakets
   stimmen; alle 36 synthetischen Struktur-Fixtures erfüllen die unveränderte
@@ -76,13 +80,31 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   Enden. Der [Vertrag](supplemental_structure.md) hält die konkreten Regeln,
   Zahlen, Alternativen und Aussagegrenzen fest. Für Stufe 2 ist keine dieser
   Entscheidungen mehr offen; neue Parametermatches bleiben ausgeschlossen.
-- **Bisherige eigene Prüfung:** 62 gezielte Fälle bestanden: alle 36 vorbereiteten
-  Strukturbeispiele, unabhängige symbolische Identitätsnachrechnung,
-  Domain-/Rand-/Polgegenfälle, gerichtete Intervallnachweise und Ressourcenfälle.
-  Dies ist ein Zwischenstand, noch kein vollständiger Implementierungsnachweis.
-- **Nächster konkreter Schritt:** Anbindung, Herkunfts-/Intervallgegenfälle,
-  sichere Veröffentlichung und erforderliche vollständige CI prüfen;
-  fertigen eigenen PR zum Review übergeben, kein eigenständiger Merge.
+- **Eigene technische Prüfnachweise:** Vollständige lokale Suite: **2.921
+  Pythonfälle bestanden** in 315,63 s. Zuvor 368 fokussierte Fälle, anschließend
+  72 Kern-/Anbindungsfälle einschließlich 36 unveränderter vorbereiteter
+  Strukturbeispiele, unabhängiger symbolischer Identitätskontrollen,
+  Domain-/Rand-/Pol-/Ressourcengegenfälle und gerichteter Intervalle. Konsistent
+  neu gehashte Intervall-/Methodenänderungen, Formatdowngrade und späte Änderung
+  der Beweisrecords werden gesperrt. Alte gebundene Fassung-1-Snapshots werden
+  nachweislich retrospektiv ergänzt. Die reale prospektive Bindung aller 53
+  Vorbereitungsdateien bestand am sauberen Implementierungscommit. Ruff,
+  Format, Dokumentations-/Diff-Prüfung und gepinnte Python-/Julia-Umgebung
+  bestanden. Die vollständige externe CI am finalen Head wird in #70 belegt;
+  Übergabe erst nach ihrem Abschluss.
+- **Abgeschlossene lesende Anwendung:**
+  [78 Originalauswahlen und 18 getrennte Gruppen](supplemental_structure_results_001.md)
+  aus allen vier verankerten Archiven. Originalidentitäten, Kandidaten,
+  historische Kennzahlen und Kurvennoten stimmen unverändert mit Stufe 1
+  überein. Eine separate exakte SymPy-Nachrechnung bestätigte alle 40 positiven
+  algebraischen Identitätsnachweise; dies ist keine eigenständige Domainprüfung
+  durch CAS-Kürzung. Ungeklärte Befunde bleiben sichtbar, darunter ein Fall
+  am Analyseschrittlimit. Kein Fit, keine neue wissenschaftliche Suche.
+- **Nächster konkreter Schritt:** Vollständige CI für PR #70 abschließen und
+  den fertigen PR zum KI-basierten Review übergeben. Prüfschwerpunkte:
+  exakte Konstanten/Identitäten, vollständige Originaldomain samt Randlücken,
+  getrennte Fortsetzungsnachweise und gebundene prospektive Anbindung.
+  Review und Übernahme bleiben ausstehend; kein eigenständiger Merge.
   Danach bleibt **Stufe 3: quantifizierte Zusatzterm-Diagnose** ausstehend.
 
 ## Übernommen: Zusatzbewertung, Stufe 1 von 3

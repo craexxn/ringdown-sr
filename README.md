@@ -22,8 +22,9 @@ Der [Leitfaden zur wiederholbaren Rekonstruktion](docs/ringdown_recovery_roadmap
 ordnet Phasen, Begründungen und Entscheidungskriterien. Aktuell läuft dessen
 Phase 1, Umsetzung der Bewertungsstufe 2. Deren
 [Intervall- und Beweisvertrag](docs/supplemental_structure.md) ist beschlossen;
-Prüfung und Übernahme der Strukturprüfung stehen noch aus. Zusatzterm-Diagnose
-und Suchversuche folgen später.
+die Strukturprüfung ist in [PR #70](https://github.com/craexxn/ringdown-sr/pull/70)
+implementiert und [auf die 78 Originalauswahlen angewandt](docs/supplemental_structure_results_001.md).
+Review und Übernahme stehen noch aus. Zusatzterm-Diagnose und Suchversuche folgen später.
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit
 [PR #59](https://github.com/craexxn/ringdown-sr/pull/59) übernommen.
