@@ -42,6 +42,7 @@ def test_only_allowed_prose_can_skip_the_technical_suite(paths):
         "docs/local_optimizer_plan.md",
         "docs/outer_search_ladder_plan.md",
         "docs/transfer_check_plan.md",
+        "docs/seed_driver_crosscheck_plan.md",
         "data/transfer_check_inputs.npz",
         "data/transfer_check_inputs.json",
         "docs/reference.npz",

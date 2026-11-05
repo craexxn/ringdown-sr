@@ -6,7 +6,7 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 ## Projektstatus
 
 Fortsetzungsstand: 05.11.2026; abgeglichener Hauptbranch:
-`bc4025d` ([Transferimplementierung #65](https://github.com/craexxn/ringdown-sr/pull/65)).
+`b9636ad` ([Transferbefund #66](https://github.com/craexxn/ringdown-sr/pull/66)).
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit
 [PR #59](https://github.com/craexxn/ringdown-sr/pull/59) übernommen.
@@ -79,8 +79,13 @@ werden für jedes Signal passend verglichen; keine Auswahl anhand der Wahrheit.
 
 Weitere 500/1.000-Tests und die optionale Staffel mit **300/2** sind zurückgestellt,
 keine automatische Anschlussfreigabe. Auch 10.000 ist derzeit nicht begründet.
-Als nächster abgegrenzter Schritt folgt die Prüfung der vorhandenen
-Rauschpipeline auf identischen verrauschten Daten; danach kompaktes
+Als nächster abgegrenzter Schritt ist ein
+[Seed-/Treiber-Kreuzvergleich](docs/seed_driver_crosscheck.md) implementiert:
+zwei feste Gegenrichtungen mit historischen Workerpfaden, vollständigem
+Frontvergleich und unverändertem 500/300/5-Budget. Wissenschaftlich noch
+nicht ausgeführt; er grenzt Seedabhängigkeit von Ausführungspfadunterschieden
+ein. Danach folgt die vorgemerkte Prüfung der vorhandenen
+Rauschpipeline auf identischen verrauschten Daten; anschließend kompaktes
 Pilotdesign und Pilotauswertung mit Hauptversuchsplan gemäß der in #61
 festgehaltenen Route. Die Seedabhängigkeit und eine praktikable Messregel
 für Strukturstabilität müssen im Pilotdesign ausdrücklich berücksichtigt werden.
