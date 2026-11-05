@@ -1,4 +1,15 @@
-# Ergänzende Ergebnisbewertung: Stufe 1
+# Ergänzende Ergebnisbewertung: Kurve und exakte Struktur
+
+Seit Stufe 2 erzeugen die unten beschriebenen Befehle die Bewertungsfassung 2:
+zusätzlich zur unveränderten Kurvenskala werden Identität, Originaldomain und
+stetige Fortsetzung getrennt geprüft. Der
+[Strukturvertrag](supplemental_structure.md) bindet das geschlossene Intervall
+vom ersten bis zum letzten verifizierten Trainingssample und die beschlossenen
+Beweisregeln/Ressourcen. Die früheren Fassung-1-Verträge und Ausgaben bleiben
+erhalten; ihre unten dokumentierten `not_assessed`-Felder beschreiben Stufe 1.
+Neue Parametermatches und Zusatzterm-Diagnosen bleiben auch in Fassung 2
+`not_assessed`. Die vollständige Anwendung und technische Freigabe der neuen
+Fassung werden im [Arbeitsdokument](representation_implementation_status.md) geführt.
 
 Stand: 05.11.2026. Stufe 1 ergänzt zukünftige Schema-3-Piloten und erhält den
 retrospektiven Import der vier abgeschlossenen Originalserien. Beide Wege bewerten
@@ -259,12 +270,11 @@ Float64-Grenzen und ihre Nachbarn, bekannte Vektornormen, fehlende Zustände,
 Auswahl-/Hash-/Rasterwidersprüche sowie Veröffentlichung und Widerruf.
 Konkreter Prüf- und Anwendungsstand: [Arbeitsdokument](representation_implementation_status.md).
 
-Beauftragt sind drei aufeinanderfolgende PRs. **Nächste ausstehende Stufe ist
-Stufe 2: exakte Strukturprüfung einschließlich Originaldefinitionsbereich und
-stetiger Fortsetzung.** Sie beginnt erst nach bestätigter Übernahme von Stufe 1.
-Vorher sind insbesondere Intervallkonvention (Vorschlag `[0,127/4096]` s statt
-nominalem Aufnahmeende `128/4096` s) und Beweis-/Ressourcengrenzen ausdrücklich zu
-klären. Die anschließende Stufe 3 ergänzt eine quantifizierte Zusatzterm-Diagnose;
+Beauftragt sind drei aufeinanderfolgende PRs. Stufe 1 ist mit PR #69 übernommen.
+Stufe 2 wird mit dem am 05.11.2026 bestätigten Intervall- und Beweisvertrag
+implementiert; Review und Übernahme bleiben ausstehend.
+**Nächste ausstehende Stufe nach Übernahme von Stufe 2 ist Stufe 3:**
+Sie ergänzt eine quantifizierte Zusatzterm-Diagnose;
 Zerlegungsregeln und Schrankenverfahren bleiben vor ihrer Umsetzung zu klären.
 Kein neuer fachlicher Implementierungsauftrag ist für die Folgestufen erforderlich;
 Review-/Übernahmegrenzen gelten weiterhin. Keine zusätzlichen Agenten, kein

@@ -179,7 +179,11 @@ def test_integration_clean_reference_original_selection_and_no_input_leak(
                 assert record["curve_errors"][grid]["relative_max"] == pytest.approx(
                     maximum, rel=1e-14
                 )
-            assert record["supplemental"]["domain"]["status"] == "not_assessed"
+            assert record["supplemental"]["domain"]["status"] == "defined_everywhere"
+            assert (
+                record["supplemental"]["original_family"]["status"]
+                == "proven_nonmember"
+            )
     assert (output / "original-result.json").read_bytes() == (
         source / "result.json"
     ).read_bytes()
@@ -202,6 +206,25 @@ def test_preparation_is_saved_before_first_reference_fit(
         parent = output.parent
         assert (parent / future.INPUTS).is_file()
         assert read(parent / "metadata_initial.json")["supplemental_assessment"]
+        contract = read(parent / future.CONTRACT)
+        assert contract["software"]["policy"]["stage"] == 2
+        assert contract["structure_interval"]["closed"] == [True, True]
+        assert contract["software"]["policy"]["proof_resource_limits"][
+            "precisions"
+        ] == [128, 256, 512, 1024]
+        with np.load(parent / future.INPUTS, allow_pickle=False) as arrays:
+            from fractions import Fraction
+
+            bounds = tuple(
+                Fraction(
+                    int(value["numerator_hex"], 16), int(value["denominator_hex"], 16)
+                )
+                for value in contract["structure_interval"]["endpoints"]
+            )
+            assert bounds == tuple(
+                Fraction.from_float(float(value))
+                for value in arrays["training_time_s"][[0, -1]]
+            )
         raise RuntimeError("synthetic preparation stop")
 
     monkeypatch.setattr(symbolic_pilot, "run_covariance_pilot", fail)
@@ -466,6 +489,9 @@ def test_software_and_policy_are_committed_before_use(tmp_path, monkeypatch, cha
         path = tmp_path / name
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(raw_policy if name == names[0] else b"synthetic source")
+    (tmp_path / future.structure.FILES[0]).write_bytes(
+        json_bytes(future.structure.POLICY)
+    )
     monkeypatch.setattr(future, "ROOT", tmp_path)
     monkeypatch.setattr(future, "POLICY", tmp_path / names[0])
     monkeypatch.setattr(

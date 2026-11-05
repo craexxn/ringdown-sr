@@ -11,12 +11,13 @@ from pathlib import Path
 import numpy as np
 
 from . import assessment_sources as sources
+from . import structure_assessment as structure
 from .assessment_publication import export_transaction
 
 ROOT = sources.ROOT
-POLICY = ROOT / "data/supplemental_assessment_v1.json"
-VERSION = "ringdown-sr-supplemental-assessment-1"
-SCHEMA = "ringdown-sr-supplemental-record-1"
+POLICY = ROOT / "data/supplemental_assessment_v2.json"
+VERSION = "ringdown-sr-supplemental-assessment-2"
+SCHEMA = "ringdown-sr-supplemental-record-2"
 THRESHOLDS = (("A", 0.001, 0.01), ("B", 0.01, 0.02), ("C", 0.05, 0.10))
 
 
@@ -83,7 +84,7 @@ def record(
         else None,
         "source_file_sha256": original["source_file_sha256"] if verified else None,
     }
-    return {
+    result = {
         "schema": SCHEMA,
         "assessment_version": VERSION,
         "source_identity": identity,
@@ -108,6 +109,9 @@ def record(
             "proof_trace": [],
         },
     }
+    if verified:
+        structure.supplement(result, original["grid_binding"]["structure_interval"])
+    return result
 
 
 def groups(records):
@@ -148,6 +152,7 @@ def groups(records):
                         item["source_identity"]["verification_status"] for item in items
                     )
                 ),
+                **structure.status_counts(items),
             }
         )
     return result
@@ -173,6 +178,7 @@ def freeze_software(consumed):
         ROOT / "uv.lock",
         ROOT / "pyproject.toml",
         ROOT / ".python-version",
+        *(ROOT / name for name in structure.FILES),
     ]
     hashes = {}
     for path in paths:
@@ -193,16 +199,18 @@ def freeze_software(consumed):
     if (
         policy["policy_id"] != VERSION
         or policy["schema"] != SCHEMA
-        or policy["stage"] != 1
+        or policy["stage"] != 2
         or policy["threshold_semantics"]
         != "binary64_inclusive_no_rounding_no_tolerance"
         or policy["grid_roles"] != ["training", "diagnostic"]
-        or policy["domain_interval"] is not None
-        or policy["proof_resource_limits"] is not None
+        or policy["domain_interval"] != structure.POLICY["interval"]
+        or policy["proof_resource_limits"] != structure.POLICY["limits"]
+        or policy["structure_proof_policy"] != structure.FILES[0]
         or policy["remainder_rules"] is not None
         or policy["planned_selections"] != 78
     ):
         raise ValueError("Unsupported assessment policy.")
+    structure.check_policy(consumed.files[ROOT / structure.FILES[0]])
     expected = [
         {
             "grade": grade,
@@ -221,18 +229,22 @@ def freeze_software(consumed):
     return {
         "software_commit": commit,
         "source_sha256": hashes,
-        "runtime": {"python": platform.python_version(), "numpy": np.__version__},
+        "runtime": {
+            "python": platform.python_version(),
+            "numpy": np.__version__,
+            **structure.runtime(),
+        },
         "policy": policy,
     }
 
 
 def render_summary(report):
     lines = [
-        "# Ergänzende Kurvenbewertung – Stufe 1",
+        "# Ergänzende Kurven- und Strukturbewertung – Stufe 2",
         "",
         "Retrospektiv; ausschließlich ursprüngliche Auswahlen. Keine neue Suche oder Auswahl.",
         "Keine gemeinsame Erfolgsquote über die unterschiedlichen Versuchsbedingungen.",
-        "Neue Struktur-, Domain-, Fortsetzungs-, Restterm- und Parameterbewertungen: not_assessed.",
+        "Identität, Originaldomain und stetige Fortsetzung getrennt; Restterm und neue Parametermatches: not_assessed.",
         "Nur zusammen mit vollständigem Manifest, completed-Bericht und ohne ASSESSMENT_LOCKED gültig.",
         "",
         "| Serie | Quellenstatus | Geplant | Verifiziert |",
@@ -266,6 +278,27 @@ def render_summary(report):
         "Die neue Klasse C ist kein historischer C-Erfolgszähler. Punktweise Güte beweist keine Definitionslückenfreiheit.",
         "Fehlende oder gesperrte Originale liefern keine historische Neubewertung; ihre geplanten Fälle bleiben im Nenner.",
     ]
+    lines += [
+        "",
+        "| Serie / Bedingung | Nenner | Identität | Originaldomain | Originalfamilie | Fortsetzung |",
+        "| --- | ---: | --- | --- | --- | --- |",
+    ]
+    for group in report["groups"]:
+        c = group["condition"]
+        counts = [
+            str(group[name + "_status_counts"])
+            for name in (
+                "algebraic_identity",
+                "domain",
+                "original_family",
+                "continuous_extension",
+            )
+        ]
+        lines.append(
+            f"| {c['series_id']} / {c['signal_id']} / {c['condition']} / {c['budget_without_seed']['niterations']} | {group['planned_denominator']} | "
+            + " | ".join(counts)
+            + " |"
+        )
     return "\n".join(lines) + "\n"
 
 
@@ -336,7 +369,7 @@ def build_assessment(archives, consumed):
     report = {
         "format": VERSION,
         "schema": SCHEMA,
-        "stage": 1,
+        "stage": 2,
         "software": software,
         "corpus_status": "complete"
         if all(s["verification_status"] == "verified" for s in results)

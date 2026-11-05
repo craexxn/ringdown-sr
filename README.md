@@ -6,7 +6,7 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 ## Projektstatus
 
 Fortsetzungsstand: 05.11.2026; abgeglichener Hauptbranch:
-`e09ab28` ([Zusatzbewertung Stufe 1 #69](https://github.com/craexxn/ringdown-sr/pull/69)).
+`7b7b9df` ([Zusatzbewertung Stufe 2 #70](https://github.com/craexxn/ringdown-sr/pull/70)).
 Der [CI-Sparplan](docs/github_actions_savings_plan.md) wird in
 [PR #71](https://github.com/craexxn/ringdown-sr/pull/71) umgesetzt:
 günstige Draft-Prüfungen, danach vollständige [serielle native CI](docs/ci.md)
@@ -18,17 +18,20 @@ zukünftige Schema-3-Läufe mit `--assessment-output`. Die Bewertungsgrundlage w
 vor der Suche gespeichert; bewertet wird die Originalauswahl gegen das saubere Signal.
 Die [lesende Anwendung auf alle 78 Originalauswahlen](docs/supplemental_assessment_results_001.md)
 ist abgeschlossen; alle vier verankerten Originalarchive liegen verifiziert vor.
-Die anschließenden Stufen (exakte Struktur/Domain/Fortsetzung und quantifizierte
-Zusatzterme) folgen jeweils erst nach bestätigter Übernahme des vorherigen PRs.
+Stufe 2 mit exakter Strukturprüfung, Originaldomain und stetiger Fortsetzung
+ist ebenfalls übernommen; die quantifizierte Zusatzterm-Diagnose folgt separat.
 Prüfstand und offene Arbeit stehen im [Fortsetzungsstand](docs/representation_implementation_status.md).
 Der [Leitfaden zur wiederholbaren Rekonstruktion](docs/ringdown_recovery_roadmap.md)
 ordnet Phasen, Begründungen und Entscheidungskriterien. Aktuell läuft dessen
-Phase 1, Bewertungsstufe 2 in [PR #70](https://github.com/craexxn/ringdown-sr/pull/70).
-Dessen P2-Nachbesserung ist vollständig grün geprüft; das übermittelte gezielte
-KI-basierte Nachreview bestätigt die Korrektur ohne neue Befunde. Die Übernahme
-steht aus. PR #71 bleibt bis zur Übernahme von PR #70 Draft und
-erhält danach den Basisabgleich und seine abschließende Vollprüfung.
-Zusatzterm-Diagnose und Suchversuche stehen weiterhin aus.
+Phase 1. Der [Intervall- und Beweisvertrag](docs/supplemental_structure.md)
+ist beschlossen, die Strukturprüfung aus
+[PR #70](https://github.com/craexxn/ringdown-sr/pull/70) übernommen und
+[auf die 78 Originalauswahlen angewandt](docs/supplemental_structure_results_001.md).
+Vollständige CI und das übermittelte gezielte KI-basierte Nachreview bestätigen
+die P2-Nachbesserung ohne neue Befunde. PR #71 bindet diesen main-Stand ein und
+erhält nach den lokalen Prüfungen seine abschließende vollständige CI.
+Danach beginnt wie beauftragt Stufe 3; ihre noch offenen Methodenentscheidungen
+werden vor der betroffenen Implementierung geklärt. Suchversuche stehen aus.
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit
 [PR #59](https://github.com/craexxn/ringdown-sr/pull/59) übernommen.
