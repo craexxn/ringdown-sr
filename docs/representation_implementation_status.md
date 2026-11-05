@@ -97,11 +97,15 @@ PR #70 und seine bereits laufende CI werden dafür nicht geändert.
   wurde #71 wieder auf Draft gesetzt. GitHub bestätigt den Abbruch der
   Vollprüfung und den neuen Draft-Lauf
   [42086542312](https://github.com/craexxn/ringdown-sr/actions/runs/42086542312).
+  Auch dieser Draft-Lauf ist anhand der Jobs und Logs geprüft: `prepare=success`
+  mit 2.912 Pythonfällen, `mode=development`, `native=skipped` und absichtliche
+  Abschlusssperre ausschließlich wegen der zurückgestellten Vollprüfung.
   Der abgebrochene Lauf liefert keine native Gesamtabnahme oder belastbare
   Vollprüfungsdauer. Diese Statusdokumentation wird lokal bis zum nächsten
   Basisabgleich gebündelt; kein weiterer Push nur zur Statuspflege.
-- **Abnahme und nächster Schritt:** Zuerst gezieltes Nachreview und bestätigte
-  Übernahme von PR #70. Danach PR #71 mit dem neuen main abgleichen, nötige
+- **Abnahme und nächster Schritt:** Das gezielte Nachreview von PR #70 liegt
+  ohne neue Befunde vor; seine bestätigte Übernahme steht aus. Danach PR #71
+  mit dem neuen main abgleichen, nötige
   Konflikte und Prüfungen bündeln und erst dann erneut Ready wählen. Die
   abschließende Vollprüfung muss den kombinierten Stand vor dessen Übernahme
   bestätigen; zwei grüne Einzel-PRs auf der alten Basis ersetzen diesen
@@ -119,9 +123,16 @@ PR #70 und seine bereits laufende CI werden dafür nicht geändert.
   und den zum Head gleichen Tree `dd606e43264247f96a8210c973e2f0e28c80f19e`.
   Beide Stufe-2-Exporte und die historischen Miniworker bestanden; die reale
   lokale Bindung aller 53 Vorbereitungsdateien bestand am finalen Head.
-  Zur gezielten P2-Gegenprüfung gegen `15d8f13a269f1f1905ca10aebd59b134747682b7`
-  übergeben; Review und Übernahme stehen aus. Dieser separate CI-Auftrag
-  verändert PR #70 nicht. **Stufe 3, quantifizierte Zusatzterm-
+  Das übermittelte gezielte KI-basierte Nachreview desselben finalen Heads
+  gegen `15d8f13a269f1f1905ca10aebd59b134747682b7` bestätigt die Behebung
+  ohne neue Befunde: **83 dort ausgeführte Tests**, einschließlich der vier
+  ursprünglichen Gegenfälle. Innere und beide Randlücken bleiben bei ungeklärter
+  Originaldomain ungeklärt; belegte Pole und beide Exportwege bleiben korrekt.
+  Diese 83 Fälle sind ein übermittelter Nachweis, keine hier erneut ausgeführte
+  Testsuite. Head, Basis und alle fünf erfolgreichen CI-Jobs wurden erneut mit
+  GitHub abgeglichen; PR #70 ist offen und mergebar. Kein weiterer Nachreview
+  für diesen unveränderten Stand erforderlich. Die Übernahme steht aus;
+  der geprüfte Head bleibt unverändert. **Stufe 3, quantifizierte Zusatzterm-
   Diagnose, bleibt bis zur bestätigten Übernahme von Stufe 2 ausstehend.**
 
 ## Übernommen: Zusatzbewertung, Stufe 1 von 3

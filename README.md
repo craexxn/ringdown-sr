@@ -24,8 +24,9 @@ Prüfstand und offene Arbeit stehen im [Fortsetzungsstand](docs/representation_i
 Der [Leitfaden zur wiederholbaren Rekonstruktion](docs/ringdown_recovery_roadmap.md)
 ordnet Phasen, Begründungen und Entscheidungskriterien. Aktuell läuft dessen
 Phase 1, Bewertungsstufe 2 in [PR #70](https://github.com/craexxn/ringdown-sr/pull/70).
-Dessen P2-Nachbesserung ist gepusht und vollständig grün geprüft; das gezielte
-Nachreview steht aus. PR #71 bleibt bis zur Übernahme von PR #70 Draft und
+Dessen P2-Nachbesserung ist vollständig grün geprüft; das übermittelte gezielte
+KI-basierte Nachreview bestätigt die Korrektur ohne neue Befunde. Die Übernahme
+steht aus. PR #71 bleibt bis zur Übernahme von PR #70 Draft und
 erhält danach den Basisabgleich und seine abschließende Vollprüfung.
 Zusatzterm-Diagnose und Suchversuche stehen weiterhin aus.
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
