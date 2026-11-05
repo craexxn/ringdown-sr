@@ -369,9 +369,13 @@ def finalize(output, report, unchanged, clock):
         raise ValueError("Final crossover artifacts changed during publication.")
     pending = output / "crosscheck_report.json.tmp"
     pending.write_bytes(staged["crosscheck_report.json"])
+    unchanged()
     if pending.read_bytes() != staged["crosscheck_report.json"]:
         raise ValueError("Pending crossover report changed.")
-    unchanged()
+    if (output / "crosscheck_summary.md").read_bytes() != staged[
+        "crosscheck_summary.md"
+    ] or (output / "crosscheck_checksums.json").read_bytes() != manifest:
+        raise ValueError("Final crossover documents changed before publication.")
     pending.replace(output / "crosscheck_report.json")
     clock.check()
 

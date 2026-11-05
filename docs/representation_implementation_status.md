@@ -55,6 +55,14 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   decken auch weitere Fehler beim Widerruf ab. Vollständige Pythonprüfung und
   technische CI werden im Implementierungs-PR
   belegt. Keine wissenschaftliche Kreuzvergleichszelle in der Cloud.
+- **KI-basierter Reviewbefund und Korrektur:** übermitteltes Review am Head
+  `fe27c2e78d541f55ce60976c41a37b37f17dcaa4`, Basis b9636ad, mit einem P2
+  zur späten Veränderung von Zusammenfassung oder Abschlussmanifest.
+  Beide Gegenfälle selbst reproduziert; abschließender Bytevergleich direkt
+  vor der Erfolgsfreigabe ergänzt. Nach der Korrektur bestehen 118 fokussierte
+  Fälle, einschließlich beider gesperrter Veröffentlichungen. Vollständige CI
+  für den korrigierten Head und Bezug zum übermittelten Review stehen in PR #67;
+  der Nachweis 41988145093 gehört zum vorherigen Head.
 - **Offen:** ursprüngliches Staffelarchiv liegt lokal nicht vor. Nach
   abgeschlossener technischer Prüfung genau den beschriebenen Manjaro-Aufruf
   ausführen und beide Gegenrichtungen unabhängig auswerten. Keine automatische

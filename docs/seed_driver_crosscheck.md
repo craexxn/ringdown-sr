@@ -144,3 +144,16 @@ Das übermittelte Originalarchiv der äußeren Staffel liegt dieser Cloudinstanz
 nicht vor; seine Originalprüfung und die wissenschaftliche Gegenüberstellung
 bleiben Teil des Manjaro-Aufrufs. Das Transferoriginal wurde separat lesend
 gegen den historischen Elternprüfpfad geprüft.
+
+Ein übermitteltes KI-basiertes Review prüfte Head
+`fe27c2e78d541f55ce60976c41a37b37f17dcaa4` gegen
+`b9636ad92ecd57b24b142f39548a7a713d0934a0` und fand einen P2-Befund bei der
+Abschlussverifikation: Eine Änderung von Zusammenfassung oder Abschlussmanifest
+während des Schreibens des temporären Erfolgsberichts konnte unentdeckt bleiben.
+Beide beschriebenen Gegenfälle wurden selbst als Regressionstests reproduziert.
+Unmittelbar vor Veröffentlichung werden nun beide Abschlussdokumente erneut
+gegen die festgehaltenen Bytes geprüft. Eine Abweichung führt in den bestehenden
+Widerrufspfad zu `failed / not_assessed`; das Abschlussmanifest wird entfernt.
+Die beiden Gegenfälle und insgesamt 118 fokussierte Pythonfälle bestehen nach
+der Korrektur. Der neue vollständige CI-Nachweis steht im PR; der bisherige
+grüne Lauf 41988145093 bezieht sich auf den Stand vor dieser Korrektur.

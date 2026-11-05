@@ -376,6 +376,38 @@ def test_finalization_failure_revokes_success(orchestrator, monkeypatch):
     assert not (orchestrator.output / "crosscheck_checksums.json").exists()
 
 
+@pytest.mark.parametrize(
+    "filename", ["crosscheck_summary.md", "crosscheck_checksums.json"]
+)
+def test_late_final_document_changes_revoke_success(
+    orchestrator, monkeypatch, filename
+):
+    write_bytes = Path.write_bytes
+    changed = []
+
+    def change_after_pending_report(path, contents):
+        result = write_bytes(path, contents)
+        if (
+            path == orchestrator.output / "crosscheck_report.json.tmp"
+            and cross.read_json(contents)["status"] == "completed"
+        ):
+            changed.append(filename)
+            write_bytes(orchestrator.output / filename, b"changed after verification\n")
+        return result
+
+    monkeypatch.setattr(Path, "write_bytes", change_after_pending_report)
+    with pytest.raises(ValueError, match="Final crossover documents changed"):
+        orchestrator.run()
+    assert changed == [filename]
+    report = cross.read_json(
+        (orchestrator.output / "crosscheck_report.json").read_bytes()
+    )
+    assert report["status"] == "failed" and report["outcome"] == "not_assessed"
+    assert len(report["comparisons"]) == 2
+    assert not (orchestrator.output / "crosscheck_checksums.json").exists()
+    assert "not_assessed" in (orchestrator.output / "crosscheck_summary.md").read_text()
+
+
 def test_valid_search_difference_is_reported_without_rerunning(
     orchestrator, monkeypatch
 ):
