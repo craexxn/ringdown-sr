@@ -1,0 +1,33 @@
+{
+  "format": "ringdown-sr-structure-proof-1",
+  "stage": 2,
+  "interval": "closed_verified_training_span_in_physical_seconds",
+  "constants": "exact_binary64_rationals_and_symbolic_real_expressions",
+  "family": "exp(-gamma*t)*(a*cos(omega*t)+b*sin(omega*t)); gamma>0; omega>0; a*a+b*b>0",
+  "limits": {
+    "nodes": 4096,
+    "terms": 256,
+    "roots": 4096,
+    "steps": 10000,
+    "rational_bits": 16384,
+    "precisions": [
+      128,
+      256,
+      512,
+      1024
+    ]
+  },
+  "rules": [
+    "exact_ring_and_exponential_identities",
+    "affine_exponential_and_trigonometric_addition",
+    "original_denominators_before_cancellation",
+    "complete_affine_and_trigonometric_zero_sets",
+    "directed_mpfr_sign",
+    "continuous_normal_form_on_dense_original_domain",
+    "nonzero_numerator_over_simple_zero",
+    "single_mode_uniqueness"
+  ],
+  "unresolved_is_nonmember": false,
+  "remainder": "not_assessed",
+  "new_parameter_match": "not_assessed"
+}

@@ -39,7 +39,56 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: Zusatzbewertung, Stufe 1 von 3
+## Aktuell: Zusatzbewertung, Umsetzung der Stufe 2 von 3
+
+- **Phase und Umfang:** Leitfadenphase 1, Bewertungsstufe 2: exakte
+  Familienerkennung, Originaldefinitionsbereich und stetige Fortsetzung als
+  gemeinsames, getrenntes Bewertungsverfahren. Stufe 3 bleibt ausstehend.
+- **Bestätigte Übernahme:** PR #69 ist als
+  `e09ab286fc853fe2991f070c4d96d9f070b55d9d` übernommen. Sein Dateibaum
+  `2e73cb834771e9cc803ff3a8093ebc6f1f7e2388` ist gleich dem geprüften Head
+  `360458ec5b14ec9021d24810cdae1e6ab9544251`. GitHub-Status und gefetchter
+  Hauptbranch wurden abgeglichen; keine offenen PRs beim Einstieg.
+- **Abschluss Stufe 1:** Die übermittelte KI-basierte Gegenprüfung des genannten
+  Heads gegen `0fea3a59f194f39e3286936d84d1a7f464cab31d` bei PR-Basis
+  `46da82ec7bfe24614e0b3fc3203258535343d848` fand keine korrekturbedürftigen
+  Befunde. Alle drei P2 sind behoben. Übermittelt wurden 92 bestandene
+  Repository-Tests, elf bestandene Review-Gegenfälle und die reale Bindung
+  aller 47 Vorbereitungsdateien. Diese externen Nachweise wurden hier nicht
+  erneut ausgeführt. Die selbst abgeglichene
+  [CI 42041386008](https://github.com/craexxn/ringdown-sr/actions/runs/42041386008)
+  bestand mit allen fünf Jobs und 2.848 Pythonfällen; Checkout
+  `bf100abc56ccd5e03af8a28bd106260c814faa92` war baumgleich. Beide nativen
+  Schema-3-Kontrollen bestätigten den Bewertungsexport.
+- **Branch und Arbeitsstand:** `codex/assessment-structure-domain`, eigener
+  Worktree ab `e09ab286fc853fe2991f070c4d96d9f070b55d9d`; begrenzter Erkenner
+  und Einbindung beider Bewertungswege implementiert, technische Prüfung läuft.
+  Die übrigen Worktrees und Originalausgaben bleiben erhalten.
+- **Vorbereitungsnachweise:** Alle 17 Nutzdatei-Hashes des Vorbereitungspakets
+  stimmen; alle 36 synthetischen Struktur-Fixtures erfüllen die unveränderte
+  Originalbaumvalidierung. Dies ist eine Integritäts-/Syntaxprüfung, keine
+  Prüfung eines neuen Erkenners. Die gesperrte Python-Installation ist bereit:
+  Python 3.12.14, gmpy2 2.2.2 und SymPy 1.14.0; vorhandene Julia-Binärdatei
+  meldet 1.13.1. Kein neuer nativer Integrationstest oder wissenschaftlicher Fit.
+- **Beschlossene Methoden:** Am 05.11.2026 sind Beweisregeln und Ressourcen
+  ausdrücklich bestätigt worden, anschließend das geschlossene Intervall vom
+  ersten bis zum letzten gespeicherten Trainingssample einschließlich beider
+  Enden. Der [Vertrag](supplemental_structure.md) hält die konkreten Regeln,
+  Zahlen, Alternativen und Aussagegrenzen fest. Für Stufe 2 ist keine dieser
+  Entscheidungen mehr offen; neue Parametermatches bleiben ausgeschlossen.
+- **Bisherige eigene Prüfung:** 62 gezielte Fälle bestanden: alle 36 vorbereiteten
+  Strukturbeispiele, unabhängige symbolische Identitätsnachrechnung,
+  Domain-/Rand-/Polgegenfälle, gerichtete Intervallnachweise und Ressourcenfälle.
+  Dies ist ein Zwischenstand, noch kein vollständiger Implementierungsnachweis.
+- **Nächster konkreter Schritt:** Anbindung, Herkunfts-/Intervallgegenfälle,
+  sichere Veröffentlichung und erforderliche vollständige CI prüfen;
+  fertigen eigenen PR zum Review übergeben, kein eigenständiger Merge.
+  Danach bleibt **Stufe 3: quantifizierte Zusatzterm-Diagnose** ausstehend.
+
+## Übernommen: Zusatzbewertung, Stufe 1 von 3
+
+Die folgenden Punkte dokumentieren die Umsetzung und damalige Übergabe von
+PR #69. Der abschließende Nachreview- und Übernahmestand steht oben.
 
 - **Leitfadenphase:** [Phase 1: Bewertung abschließen](ringdown_recovery_roadmap.md#1-bewertung-abschließen),
   darin Bewertungsstufe 1. Der versionierte Leitfaden wird als Dokumentation in

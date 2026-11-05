@@ -179,7 +179,11 @@ def test_integration_clean_reference_original_selection_and_no_input_leak(
                 assert record["curve_errors"][grid]["relative_max"] == pytest.approx(
                     maximum, rel=1e-14
                 )
-            assert record["supplemental"]["domain"]["status"] == "not_assessed"
+            assert record["supplemental"]["domain"]["status"] == "defined_everywhere"
+            assert (
+                record["supplemental"]["original_family"]["status"]
+                == "proven_nonmember"
+            )
     assert (output / "original-result.json").read_bytes() == (
         source / "result.json"
     ).read_bytes()
@@ -466,6 +470,9 @@ def test_software_and_policy_are_committed_before_use(tmp_path, monkeypatch, cha
         path = tmp_path / name
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(raw_policy if name == names[0] else b"synthetic source")
+    (tmp_path / future.structure.FILES[0]).write_bytes(
+        json_bytes(future.structure.POLICY)
+    )
     monkeypatch.setattr(future, "ROOT", tmp_path)
     monkeypatch.setattr(future, "POLICY", tmp_path / names[0])
     monkeypatch.setattr(

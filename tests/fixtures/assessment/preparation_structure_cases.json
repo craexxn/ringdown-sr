@@ -1,0 +1,3360 @@
+{
+  "format": "assessment-preparation-structure-fixtures-1",
+  "kind": "synthetic_not_historical",
+  "notice": "Mathematical expectations are reference specifications. A limited prover may report unresolved where explicitly allowed. No production implementation is tested by this package.",
+  "default_interval": "[0,1] s chosen for simple synthetic roots; NOT the historical assessment window",
+  "cases": [
+    {
+      "id": "S001",
+      "display_expression": "exp(-t)*cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "exp",
+            "arity": 1,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "-0x1.0000000000000p+0"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "cos",
+            "arity": 1,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+1"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 9,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "defined_everywhere",
+        "original_family": "proven_member",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "one_decaying_mode"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S002",
+      "display_expression": "exp(-t)*sin(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "exp",
+            "arity": 1,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "-0x1.0000000000000p+0"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "sin",
+            "arity": 1,
+            "operator_index": 2,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+1"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 9,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "defined_everywhere",
+        "original_family": "proven_member",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "sin_cos_equivalence"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S003",
+      "display_expression": "exp(-t)*cos(-2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "exp",
+            "arity": 1,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "-0x1.0000000000000p+0"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "cos",
+            "arity": 1,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "-0x1.0000000000000p+1"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 9,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "defined_everywhere",
+        "original_family": "proven_member",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "even_cosine"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S004",
+      "display_expression": "exp(-t)*sin(-2*t+0.25)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "exp",
+            "arity": 1,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "-0x1.0000000000000p+0"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "sin",
+            "arity": 1,
+            "operator_index": 2,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "+",
+                "arity": 2,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p-2"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 11,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "defined_everywhere",
+        "original_family": "proven_member",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "negative_frequency_and_phase"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S005",
+      "display_expression": "exp(-t)*cos(2*t+0.25)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "exp",
+            "arity": 1,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "-0x1.0000000000000p+0"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "cos",
+            "arity": 1,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "+",
+                "arity": 2,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p-2"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 11,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "defined_everywhere",
+        "original_family": "proven_member",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "phase_coefficients"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S006",
+      "display_expression": "exp(-t+0.5)*cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "exp",
+            "arity": 1,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "+",
+                "arity": 2,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+0"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p-1"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "cos",
+            "arity": 1,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+1"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 11,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "defined_everywhere",
+        "original_family": "proven_member",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "constant_exponent_in_amplitude"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S007",
+      "display_expression": "exp(-2*t)*exp(t)*cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "*",
+            "arity": 2,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "cos",
+            "arity": 1,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+1"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 12,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "defined_everywhere",
+        "original_family": "proven_member",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "merge_exponential_product"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S008",
+      "display_expression": "(exp(-2*t)/exp(-t))*cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "/",
+            "arity": 2,
+            "operator_index": 4,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+0"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "cos",
+            "arity": 1,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+1"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 14,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "defined_everywhere",
+        "original_family": "proven_member",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "merge_exponential_quotient"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S009",
+      "display_expression": "sin(1)*exp(-t)*cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "sin",
+            "arity": 1,
+            "operator_index": 2,
+            "children": [
+              {
+                "kind": "constant",
+                "value_hex": "0x1.0000000000000p+0"
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "*",
+            "arity": 2,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+0"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 12,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "defined_everywhere",
+        "original_family": "proven_member",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "symbolic_constant_with_nonzero_certificate"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S010",
+      "display_expression": "exp(-cos(1)*t)*cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "exp",
+            "arity": 1,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+0"
+                      },
+                      {
+                        "kind": "operator",
+                        "operator": "cos",
+                        "arity": 1,
+                        "operator_index": 3,
+                        "children": [
+                          {
+                            "kind": "constant",
+                            "value_hex": "0x1.0000000000000p+0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "cos",
+            "arity": 1,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+1"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 12,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "defined_everywhere",
+        "original_family": "proven_member",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "positive_cos_one_damping_certificate"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S011",
+      "display_expression": "exp(-t)*(cos(2*t)+2*sin(2*t))",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "exp",
+            "arity": 1,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "-0x1.0000000000000p+0"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "+",
+            "arity": 2,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+1"
+                  },
+                  {
+                    "kind": "operator",
+                    "operator": "sin",
+                    "arity": 1,
+                    "operator_index": 2,
+                    "children": [
+                      {
+                        "kind": "operator",
+                        "operator": "*",
+                        "arity": 2,
+                        "operator_index": 3,
+                        "children": [
+                          {
+                            "kind": "constant",
+                            "value_hex": "0x1.0000000000000p+1"
+                          },
+                          {
+                            "kind": "variable",
+                            "index": 1
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 16,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "defined_everywhere",
+        "original_family": "proven_member",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "combine_same_frequency"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S012",
+      "display_expression": "exp(-(1+(t-t))*t)*cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "exp",
+            "arity": 1,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+0"
+                      },
+                      {
+                        "kind": "operator",
+                        "operator": "+",
+                        "arity": 2,
+                        "operator_index": 1,
+                        "children": [
+                          {
+                            "kind": "constant",
+                            "value_hex": "0x1.0000000000000p+0"
+                          },
+                          {
+                            "kind": "operator",
+                            "operator": "-",
+                            "arity": 2,
+                            "operator_index": 2,
+                            "children": [
+                              {
+                                "kind": "variable",
+                                "index": 1
+                              },
+                              {
+                                "kind": "variable",
+                                "index": 1
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "cos",
+            "arity": 1,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+1"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 15,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "defined_everywhere",
+        "original_family": "proven_member",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "domain_safe_affine_constant_cancellation"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S013",
+      "display_expression": "exp(t)*cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "exp",
+            "arity": 1,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+0"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "cos",
+            "arity": 1,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+1"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 9,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_nonmember",
+        "domain": "defined_everywhere",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "growing_mode_not_decaying"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S014",
+      "display_expression": "cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "cos",
+        "arity": 1,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "*",
+            "arity": 2,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "constant",
+                "value_hex": "0x1.0000000000000p+1"
+              },
+              {
+                "kind": "variable",
+                "index": 1
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 4,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_nonmember",
+        "domain": "defined_everywhere",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "undamped_nonzero_mode"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S015",
+      "display_expression": "exp(-t)*cos(0*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "exp",
+            "arity": 1,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "-0x1.0000000000000p+0"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "cos",
+            "arity": 1,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x0.0p+0"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 9,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_nonmember",
+        "domain": "defined_everywhere",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "nonoscillatory_exponential"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S016",
+      "display_expression": "0*exp(-t)*cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "constant",
+            "value_hex": "0x0.0p+0"
+          },
+          {
+            "kind": "operator",
+            "operator": "*",
+            "arity": 2,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+0"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 11,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_nonmember",
+        "domain": "defined_everywhere",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "zero_amplitude"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S017",
+      "display_expression": "exp(-t)*(cos(2*t)-cos(2*t))",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "exp",
+            "arity": 1,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "-0x1.0000000000000p+0"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "-",
+            "arity": 2,
+            "operator_index": 2,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 14,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_nonmember",
+        "domain": "defined_everywhere",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "exact_amplitude_cancellation"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S018",
+      "display_expression": "exp(-t)*(cos(2*t)+cos(3*t))",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "exp",
+            "arity": 1,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "-0x1.0000000000000p+0"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "+",
+            "arity": 2,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.8000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 14,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_nonmember",
+        "domain": "defined_everywhere",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": false,
+        "conservative_unresolved_allowed": true,
+        "rule_or_reason": "independence_of_distinct_exponential_modes"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S019",
+      "display_expression": "exp(-t)*cos(t*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "exp",
+            "arity": 1,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "-0x1.0000000000000p+0"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "cos",
+            "arity": 1,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 9,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_nonmember",
+        "domain": "defined_everywhere",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": false,
+        "conservative_unresolved_allowed": true,
+        "rule_or_reason": "nonaffine_phase_requires_counterproof"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S020",
+      "display_expression": "(exp(-t)+2^-40)*sin(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "+",
+            "arity": 2,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+0"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "constant",
+                "value_hex": "0x1.0000000000000p-40"
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "sin",
+            "arity": 1,
+            "operator_index": 2,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+1"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 11,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_nonmember",
+        "domain": "defined_everywhere",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": false,
+        "conservative_unresolved_allowed": true,
+        "rule_or_reason": "distinct_damped_and_undamped_modes"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S021",
+      "display_expression": "exp(-t)*(cos(2*t)+cos(nextafter(2,+inf)*t))",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "exp",
+            "arity": 1,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "-0x1.0000000000000p+0"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "+",
+            "arity": 2,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000001p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 14,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_nonmember",
+        "domain": "defined_everywhere",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": false,
+        "conservative_unresolved_allowed": true,
+        "rule_or_reason": "near_frequencies_remain_exactly_distinct"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S022",
+      "display_expression": "1/(exp(t)/cos(2*t))",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "/",
+        "arity": 2,
+        "operator_index": 4,
+        "children": [
+          {
+            "kind": "constant",
+            "value_hex": "0x1.0000000000000p+0"
+          },
+          {
+            "kind": "operator",
+            "operator": "/",
+            "arity": 2,
+            "operator_index": 4,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 9,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "removable_holes",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "proven_member"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "cos_zero_pi_over_4_with_finite_extension"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S023",
+      "display_expression": "1/(exp(t)/cos(t))",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "/",
+        "arity": 2,
+        "operator_index": 4,
+        "children": [
+          {
+            "kind": "constant",
+            "value_hex": "0x1.0000000000000p+0"
+          },
+          {
+            "kind": "operator",
+            "operator": "/",
+            "arity": 2,
+            "operator_index": 4,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 7,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "defined_everywhere",
+        "original_family": "proven_member",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "all_cosine_zeros_outside_closed_zero_one_interval"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S024",
+      "display_expression": "1/cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "/",
+        "arity": 2,
+        "operator_index": 4,
+        "children": [
+          {
+            "kind": "constant",
+            "value_hex": "0x1.0000000000000p+0"
+          },
+          {
+            "kind": "operator",
+            "operator": "cos",
+            "arity": 1,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+1"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 6,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_nonmember",
+        "domain": "nonremovable_singularities",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "proven_nonmember"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": false,
+        "conservative_unresolved_allowed": true,
+        "rule_or_reason": "simple_pole_pi_over_4"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S025",
+      "display_expression": "((t-0.5)/(t-0.5))*exp(-t)*cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "/",
+            "arity": 2,
+            "operator_index": 4,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "-",
+                "arity": 2,
+                "operator_index": 2,
+                "children": [
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  },
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p-1"
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "-",
+                "arity": 2,
+                "operator_index": 2,
+                "children": [
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  },
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p-1"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "*",
+            "arity": 2,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+0"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 17,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "removable_holes",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "proven_member"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "cancelled_affine_factor_with_original_hole"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S026",
+      "display_expression": "(t/t)*exp(-t)*cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "/",
+            "arity": 2,
+            "operator_index": 4,
+            "children": [
+              {
+                "kind": "variable",
+                "index": 1
+              },
+              {
+                "kind": "variable",
+                "index": 1
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "*",
+            "arity": 2,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+0"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 13,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "removable_holes",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "proven_member"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "left_endpoint_hole_is_in_interval"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S027",
+      "display_expression": "((t-1)/(t-1))*exp(-t)*cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "/",
+            "arity": 2,
+            "operator_index": 4,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "-",
+                "arity": 2,
+                "operator_index": 2,
+                "children": [
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  },
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+0"
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "-",
+                "arity": 2,
+                "operator_index": 2,
+                "children": [
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  },
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+0"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "*",
+            "arity": 2,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+0"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 17,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "removable_holes",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "proven_member"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "right_endpoint_hole_is_in_interval"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S028",
+      "display_expression": "((t-2)/(t-2))*exp(-t)*cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "/",
+            "arity": 2,
+            "operator_index": 4,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "-",
+                "arity": 2,
+                "operator_index": 2,
+                "children": [
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  },
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+1"
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "-",
+                "arity": 2,
+                "operator_index": 2,
+                "children": [
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  },
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+1"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "*",
+            "arity": 2,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+0"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 17,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "defined_everywhere",
+        "original_family": "proven_member",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "affine_hole_outside_interval"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S029",
+      "display_expression": "0*(1/(t-0.5))",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "constant",
+            "value_hex": "0x0.0p+0"
+          },
+          {
+            "kind": "operator",
+            "operator": "/",
+            "arity": 2,
+            "operator_index": 4,
+            "children": [
+              {
+                "kind": "constant",
+                "value_hex": "0x1.0000000000000p+0"
+              },
+              {
+                "kind": "operator",
+                "operator": "-",
+                "arity": 2,
+                "operator_index": 2,
+                "children": [
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  },
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p-1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 7,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_nonmember",
+        "domain": "removable_holes",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "proven_nonmember"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "zero_does_not_erase_domain; zero_extension_not_family"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S030",
+      "display_expression": "(0/0)*exp(-t)*cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "/",
+            "arity": 2,
+            "operator_index": 4,
+            "children": [
+              {
+                "kind": "constant",
+                "value_hex": "0x0.0p+0"
+              },
+              {
+                "kind": "constant",
+                "value_hex": "0x0.0p+0"
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "*",
+            "arity": 2,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+0"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 13,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "unresolved",
+        "domain": "nowhere_defined",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "unresolved"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "no_vacuous_identity_or_unique_extension"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S031",
+      "display_expression": "exp(1/(t-0.5))*cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "exp",
+            "arity": 1,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "/",
+                "arity": 2,
+                "operator_index": 4,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+0"
+                  },
+                  {
+                    "kind": "operator",
+                    "operator": "-",
+                    "arity": 2,
+                    "operator_index": 2,
+                    "children": [
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      },
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p-1"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "cos",
+            "arity": 1,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p+1"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 11,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_nonmember",
+        "domain": "nonremovable_singularities",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "proven_nonmember"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": false,
+        "conservative_unresolved_allowed": true,
+        "rule_or_reason": "argument_domain_and_one_sided_divergence"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S032",
+      "display_expression": "sin(1/(t-0.5))",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "sin",
+        "arity": 1,
+        "operator_index": 2,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "/",
+            "arity": 2,
+            "operator_index": 4,
+            "children": [
+              {
+                "kind": "constant",
+                "value_hex": "0x1.0000000000000p+0"
+              },
+              {
+                "kind": "operator",
+                "operator": "-",
+                "arity": 2,
+                "operator_index": 2,
+                "children": [
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  },
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.0000000000000p-1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 6,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_nonmember",
+        "domain": "nonremovable_singularities",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "proven_nonmember"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": false,
+        "conservative_unresolved_allowed": true,
+        "rule_or_reason": "bounded_oscillation_without_limit"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S033",
+      "display_expression": "sin(Float64(pi))*exp(-t)*cos(2*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "sin",
+            "arity": 1,
+            "operator_index": 2,
+            "children": [
+              {
+                "kind": "constant",
+                "value_hex": "0x1.921fb54442d18p+1"
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "*",
+            "arity": 2,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+0"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 12,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "defined_everywhere",
+        "original_family": "proven_member",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "binary64_pi_is_not_exact_pi; sign_certificate_needed"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S034",
+      "display_expression": "exp(-t)*cos(2*t)+2^-40*exp(1000*t)",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "+",
+        "arity": 2,
+        "operator_index": 1,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "*",
+            "arity": 2,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+0"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "*",
+            "arity": 2,
+            "operator_index": 3,
+            "children": [
+              {
+                "kind": "constant",
+                "value_hex": "0x1.0000000000000p-40"
+              },
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.f400000000000p+9"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 16,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_nonmember",
+        "domain": "defined_everywhere",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": false,
+        "conservative_unresolved_allowed": true,
+        "rule_or_reason": "small_coefficient_does_not_bound_large_factor"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S035",
+      "display_expression": "1/(exp(t)/cos(-2*t))",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "/",
+        "arity": 2,
+        "operator_index": 4,
+        "children": [
+          {
+            "kind": "constant",
+            "value_hex": "0x1.0000000000000p+0"
+          },
+          {
+            "kind": "operator",
+            "operator": "/",
+            "arity": 2,
+            "operator_index": 4,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "exp",
+                "arity": 1,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              },
+              {
+                "kind": "operator",
+                "operator": "cos",
+                "arity": 1,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "-0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 9,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "removable_holes",
+        "original_family": "proven_nonmember",
+        "continuous_extension": "proven_member"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "negative_slope_root_enumeration"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    },
+    {
+      "id": "S036",
+      "display_expression": "exp(-t)*sin(2*t+Float64(pi/2))",
+      "original_tree": {
+        "kind": "operator",
+        "operator": "*",
+        "arity": 2,
+        "operator_index": 3,
+        "children": [
+          {
+            "kind": "operator",
+            "operator": "exp",
+            "arity": 1,
+            "operator_index": 1,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "*",
+                "arity": 2,
+                "operator_index": 3,
+                "children": [
+                  {
+                    "kind": "constant",
+                    "value_hex": "-0x1.0000000000000p+0"
+                  },
+                  {
+                    "kind": "variable",
+                    "index": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "operator",
+            "operator": "sin",
+            "arity": 1,
+            "operator_index": 2,
+            "children": [
+              {
+                "kind": "operator",
+                "operator": "+",
+                "arity": 2,
+                "operator_index": 1,
+                "children": [
+                  {
+                    "kind": "operator",
+                    "operator": "*",
+                    "arity": 2,
+                    "operator_index": 3,
+                    "children": [
+                      {
+                        "kind": "constant",
+                        "value_hex": "0x1.0000000000000p+1"
+                      },
+                      {
+                        "kind": "variable",
+                        "index": 1
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "constant",
+                    "value_hex": "0x1.921fb54442d18p+0"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "node_count": 11,
+      "interval": {
+        "left": "0",
+        "right": "1",
+        "units": "s",
+        "closed": true
+      },
+      "mathematical_expectation": {
+        "algebraic_identity": "proven_on_original_domain",
+        "domain": "defined_everywhere",
+        "original_family": "proven_member",
+        "continuous_extension": "not_applicable"
+      },
+      "implementation_expectation": {
+        "expected_decision_required_in_stage2": true,
+        "conservative_unresolved_allowed": false,
+        "rule_or_reason": "phase_kept_exactly_as_binary64_rational_not_snapped_to_pi_over_two"
+      },
+      "evidence_kind": "synthetic_reference_not_historical"
+    }
+  ]
+}
