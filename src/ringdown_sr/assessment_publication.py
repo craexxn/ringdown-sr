@@ -74,8 +74,8 @@ class Consumption:
         self.clock.check()
 
 
-def reserve_output(path):
-    """Allow new sibling outputs, never write into sources or an original run."""
+def validate_output(path):
+    """Check an exclusive sibling destination without creating it."""
     path = Path(path).absolute()
     if path != path.resolve() or path.exists() or ROOT.is_relative_to(path):
         raise ValueError("Use a new assessment directory without symlink parents.")
@@ -105,6 +105,12 @@ def reserve_output(path):
             )
         ):
             raise ValueError("Assessment output cannot be inside an existing run.")
+    return path
+
+
+def reserve_output(path):
+    """Allow new sibling outputs, never write into sources or an original run."""
+    path = validate_output(path)
     path.mkdir(parents=True, exist_ok=False)
     (path / LOCK).write_text("Publication has not completed.\n", encoding="utf-8")
     return path

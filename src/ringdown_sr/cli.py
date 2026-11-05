@@ -17,10 +17,36 @@ def main(argv: list[str] | None = None) -> int:
     )
     run.add_argument("config", type=Path, help="TOML-Konfiguration")
     run.add_argument("--output", type=Path, required=True, help="Neuer Ausgabeordner")
+    run.add_argument(
+        "--assessment-output",
+        type=Path,
+        help="Zusatzbewertung eines neuen Schema-3-Laufs in einem separaten Ordner",
+    )
+    assess = subcommands.add_parser(
+        "assess", help="Gespeicherten Schema-3-Lauf bewerten"
+    )
+    assess.add_argument("source", type=Path)
+    assess.add_argument("--output", type=Path, required=True)
+    assess.add_argument("--timeout-seconds", type=float, default=300)
     args = parser.parse_args(argv)
     try:
-        outcome = run_pilot(args.config, args.output)
-    except (OSError, ValueError, TypeError, OverflowError) as error:
+        if args.command == "assess":
+            from ringdown_sr.future_assessment import export_assessment
+
+            export_assessment(args.source, args.output, seconds=args.timeout_seconds)
+            print(f"Zusatzbewertung: {args.output.resolve()}")
+            return 0
+        outcome = run_pilot(
+            args.config, args.output, assessment_output=args.assessment_output
+        )
+    except (
+        OSError,
+        ValueError,
+        TypeError,
+        OverflowError,
+        RuntimeError,
+        KeyError,
+    ) as error:
         print(
             f"Pilot konnte nicht vollständig ausgeführt werden: {error}",
             file=sys.stderr,
@@ -31,6 +57,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     print(f"Status: {outcome.status}")
     print(f"Ergebnisse: {outcome.output_directory.resolve()}")
+    if args.assessment_output is not None:
+        print(f"Zusatzbewertung: {args.assessment_output.resolve()}")
     if outcome.status != "success":
         print(f"Fehler: {result['error']['message']}", file=sys.stderr)
         return 1

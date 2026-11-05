@@ -49,6 +49,10 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 - **Umfang Stufe 1:** [verifizierter Import und Kurvenskala](supplemental_assessment.md)
   für vier Originalserien mit 78 geplanten Auswahlen, getrennte historische und neue
   Felder, unveränderte Originalauswahl, sichere Veröffentlichung und Widerruf.
+  PR #69 wird vor dem Merge um die zukünftige Schema-3-Pipeline ergänzt;
+  der geprüfte Archivexport und seine Ergebnisse bleiben erhalten. Die Option
+  `--assessment-output` speichert Raster/Referenzen vor dem ersten Fit und
+  veröffentlicht die Bewertung der drei Originalauswahlen danach separat.
   Neue Struktur-, Domain-, Fortsetzungs-, Restterm- und Parameterfelder bleiben
   ausdrücklich `not_assessed`.
 - **Abgeschlossene Umsetzung / PR:** Stufe 1 ist in
@@ -60,6 +64,32 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   zusätzliche Toleranz am 05.11.2026 ausdrücklich bestätigt. Versionsvertrag,
   Hexgrenzen, Statusschema und Korpus wurden vor Anwendung committed. Die
   Vorbereitung ist Referenz, keine Ersatzquelle für fehlende Primärdaten.
+  Für zukünftige simulierte Läufe sind am 05.11.2026 ausdrücklich bestätigt:
+  sauberes Signal als Referenz auf beiden Rastern sowie sieben vorab gespeicherte
+  Zwischenpunkte pro Trainingsintervall, ohne Extrapolation. Die getrennte
+  Fassung `ringdown-sr-future-assessment-1` lässt die Archivfassung unverändert.
+- **Ergänzung nach KI-basiertem Review:** Der übermittelte Befund für
+  `3a064d46e36c5897860f62634926f8d1910b2304` gegen
+  `46da82ec7bfe24614e0b3fc3203258535343d848` meldete keine technischen Befunde in
+  den drei geprüften Bereichen, benannte aber die fehlende Zukunftsanbindung.
+  Seine 385 bestehenden und 21 zusätzlichen Prüffälle (einschließlich 2.401
+  Grenzkombinationen) sind externe Nachweise, hier nicht erneut ausgeführt.
+  Die Reviewumgebung hatte keine vollständigen Originalarchive; ihre Aussage
+  bestätigt daher nicht unabhängig die Primärdatenanwendung. Der Reviewbefund
+  gilt für den damaligen Head, nicht für die jetzt ergänzte Zukunftsanbindung.
+- **Prüfung der Ergänzung:** 30 neue Pythonfälle prüfen die vollständige
+  CLI-/Pipeline-Anbindung mit synthetischen Suchworkern, unabhängige Vektornormen,
+  unveränderte ursprüngliche Ergebnisse/Sucheingaben, vorab gespeicherte Daten,
+  Originaldefinitionslücken, Git-/Manifest-/Auswahlbindungen, Abbruch und späte
+  Quellenänderungen. Ruff, Format, lokale Dokumentationslinks und
+  Python-/Julia-Umgebungscheck bestanden. Die bestehenden zwei nativen
+  Schema-3-Kontrollläufe prüfen zusätzlich Snapshot, Originalauswahl und neue
+  Kurvenklassen; keine zusätzlichen Suchläufe oder veränderten Budgets.
+  Vollständiger finaler Head, Basis, Python-Gesamtergebnis, CI und tatsächlicher
+  Checkout werden in [PR #69](https://github.com/craexxn/ringdown-sr/pull/69)
+  als verbindlicher Übergabenachweis geführt. Der frühere
+  [CI-Erfolg 42018644218](https://github.com/craexxn/ringdown-sr/actions/runs/42018644218)
+  (2.788 Pythonfälle) gilt nur für den zuvor geprüften Archivstand.
 - **Prüfnachweise:** 17 Vorbereitungshashes und 29 referenzierte Quellenbindungen
   geprüft. Lokal 2.787 Pythonfälle am Implementierungsstand bestanden, darunter
   245 neue Bewertungsfälle und eine zusätzliche CI-Scope-Prüfung. Nach Ergänzung
@@ -80,14 +110,17 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   Externe Hashes und vollständige Importe bestanden: 20/20/20/18 Auswahlen;
   Korpusstatus `complete`, getrennte Serienfreigaben und ursprüngliche Nenner.
   Keine Ersatzarchive, Tabellen als Bewertungsquelle oder neue Gesamterfolgsquote.
-- **Offene Entscheidungen:** Für Stufe 1 keine offene Grenzentscheidung mehr.
+- **Offene Entscheidungen:** Für Stufe 1 sind Grenzsemantik, Referenz bei Rauschen
+  und Zwischenpunktraster beschlossen; keine weitere offene Methodenentscheidung.
   Vor Stufe 2 Intervallkonvention und Beweis-/Ressourcengrenzen klären; das
   Intervall `[0,127/4096]` s bleibt ein Vorschlag. Vor Stufe 3 regelbasierte
   Zerlegung und zertifizierte Schranken festlegen; keine unbeschlossene
   Vernachlässigbarkeitsschwelle und kein neuer Fit.
 - **Nächster konkreter Schritt:** [PR #69](https://github.com/craexxn/ringdown-sr/pull/69)
-  nach vollständiger CI mit Prüfnachweisen zum Review übergeben; Review und
-  Übernahmeentscheidung bleiben ausstehend.
+  mit vollständiger CI zur gezielten Prüfung der ergänzten Zukunftsanbindung
+  übergeben. Schwerpunkt: Datenrollen, Bindung vor der Suche, unveränderte Auswahl,
+  Quellen-/Veröffentlichungssperren und Kompatibilität des Archivexports.
+  Diese Prüfung und die Übernahmeentscheidung bleiben ausstehend.
   Erst nach bestätigter Übernahme beginnt **Stufe 2: exakte Strukturprüfung,
   Originaldefinitionsbereich und stetige Fortsetzung**, als eigener PR. Danach
   folgt Stufe 3 mit quantifizierter Zusatzterm-Diagnose. Ein neuer fachlicher

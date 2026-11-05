@@ -10,7 +10,9 @@ Fortsetzungsstand: 05.11.2026; abgeglichener Hauptbranch:
 Die [technische CI](docs/ci.md) mit drei parallelen nativen Jobs ist übernommen.
 Aktuell ist [Stufe 1 der ergänzenden Ergebnisbewertung](docs/supplemental_assessment.md)
 in [PR #69](https://github.com/craexxn/ringdown-sr/pull/69) implementiert:
-verifizierter Originalimport und zusätzliche Kurvenklassen A/B/C/D.
+verifizierter Originalimport und zusätzliche Kurvenklassen A/B/C/D, ergänzt um
+zukünftige Schema-3-Läufe mit `--assessment-output`. Die Bewertungsgrundlage wird
+vor der Suche gespeichert; bewertet wird die Originalauswahl gegen das saubere Signal.
 Die [lesende Anwendung auf alle 78 Originalauswahlen](docs/supplemental_assessment_results_001.md)
 ist abgeschlossen; alle vier verankerten Originalarchive liegen verifiziert vor.
 Die anschließenden Stufen (exakte Struktur/Domain/Fortsetzung und quantifizierte

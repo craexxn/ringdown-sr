@@ -1,10 +1,103 @@
 # Ergänzende Ergebnisbewertung: Stufe 1
 
-Stand: 05.11.2026. Die Zusatzbewertung ist retrospektiv. Sie bewertet nur die
-ursprünglich ausgewählten Kandidaten aus vier abgeschlossenen Originalserien.
+Stand: 05.11.2026. Stufe 1 ergänzt zukünftige Schema-3-Piloten und erhält den
+retrospektiven Import der vier abgeschlossenen Originalserien. Beide Wege bewerten
+ausschließlich die bereits ausgewählten Kandidaten und veröffentlichen getrennte Ausgaben.
 Suchverfahren, Bäume, Seeds, Fronten, Auswahlindizes, alte Erkenner sowie
 C-/S-, Parameter- und Aliaswertungen bleiben unverändert. Keine neue Suche,
 Optimierung oder Anpassung an Referenzparameter gehört zu diesem Export.
+
+## Anbindung zukünftiger Schema-3-Läufe
+
+Der Umfang von PR #69 wurde am 05.11.2026 ausdrücklich um zukünftige Ergebnisse
+erweitert; der geprüfte Archivexport bleibt erhalten. Für simulierte Schema-3-Läufe
+sind folgende Regeln beschlossen:
+
+- Auf **beiden** Bewertungsrastern ist das bekannte **rauschfreie Signal** die
+  Referenz. Verrauschte Messwerte bleiben ausschließlich Ziel der bisherigen
+  Fitverluste und Auswahl. Die Alternative einer gemischten Referenz (Messwerte
+  im Training, sauberes Signal an Zwischenpunkten) wurde nicht gewählt, damit
+  die neue Kurvenklasse in beiden Rastern denselben Rekonstruktionsfehler misst.
+- Das Diagnoseraster wird vor dem ersten Fit und der ersten Suche festgelegt:
+  `t[k,j] = (k+j/8)/fs`, `k=0..N-2`, `j=1..7`, intervallweise geordnet,
+  ohne Randextrapolation. Bei 128 Trainingspunkten sind das 889 Zwischenpunkte.
+  Dies setzt die bisherige Rasterdichte fort; es ist keine Aussage über einen
+  stetigen Definitionsbereich und keine Vorentscheidung für Stufe 2.
+
+Die separate Fassung
+[future_assessment_v1.json](../data/future_assessment_v1.json) trägt die Kennung
+`ringdown-sr-future-assessment-1`, Schema `ringdown-sr-future-record-1`. Sie verwendet
+dieselben vier normierten Fehler und inklusiven Float64-Grenzen wie die unten
+beschriebene Archivfassung. Diese bleibt unverändert retrospektiv.
+
+Ein künftiger, gesondert freigegebener Schema-3-Lauf erhält die Zusatzbewertung
+mit `--assessment-output`. Beispielsyntax, **keine neue wissenschaftliche
+Ausführungsfreigabe**:
+
+```bash
+uv run --locked ringdown-sr run configs/pilot_sr_ar1.toml \
+  --output results/sr-new-001 \
+  --assessment-output results/sr-new-001-assessment
+```
+
+Der Checkout muss sauber und committed sein. Beide Verzeichnisse müssen neu,
+getrennt und ohne Symlinkpfade sein; projektinterne Ausgaben gehören unter
+`results/`, damit die Herkunft aller Worker sauber bleibt. Die Pipeline speichert
+`assessment_inputs.npz` (beide Raster und beide sauberen Referenzen) und
+`assessment_contract.json` vor dem ersten Referenzfit. Das Anfangsmanifest bindet
+ihre Bytes; die automatische Bewertung hält diese Bindung zusätzlich im Speicher
+bis zum Ende. Kein Bewertungsraster und keine zusätzliche Wahrheit wird an die
+Suchworker übergeben. Seeds, Budgets, Kovarianzen, Originalfronten, Verluste und
+Auswahlverfahren bleiben erhalten. Ohne die Option läuft die bisherige Pipeline.
+
+Nach dem unveränderten Lauf erfolgt die lesende Bewertung in einem separaten
+Ausgabeordner. Ein späterer Export derselben aufgezeichneten Daten ist möglich:
+
+```bash
+uv run --locked ringdown-sr assess results/sr-new-001 \
+  --output results/sr-new-001-assessment-002
+```
+
+Dieser zweite Aufruf startet keine Suche und keinen Fit. Er benötigt den
+aufgezeichneten Vorbereitungssnapshot und dessen Git-Commit lokal; die vier
+historischen Originalarchive sind dafür nicht erforderlich. Fehlende Snapshots
+älterer Läufe werden **nicht nachträglich erzeugt**. Der zukünftige Pfad unterstützt
+derzeit die drei Arme `ordinary`, `known_covariance`, `estimated_covariance` eines
+vollständigen Schema-3-Laufs. Historische Spezialtreiber und reale Daten ohne
+bekanntes sauberes Signal erhalten damit keine stillschweigende neue Datenrolle.
+
+Der Import prüft vollständiges Dateiinventar und Manifeste, Vorbereitungsversion,
+originale Git-Quellen und Herkunft jedes Workers, Konfiguration, Raster-/Signalbits,
+Workerinputs, Originalauswahl und Kandidatenbindung. Trainingsvorhersage, Residuum
+und Verlust werden an der unveränderten Auswahl nachgerechnet; es gibt keine
+erneute Rangbildung. Die Kurvenfehler werden aus dem Originalbaum auf beiden
+gespeicherten Rastern berechnet, ohne Vereinfachung, Kürzung oder Schließen von
+Definitionslücken. Der Signalnachbau dient ausschließlich der Prüfung der
+vorhandenen Referenzbytes, niemals als Ersatz für fehlende Eingaben.
+
+`assessment_records.json` erhält je Arm den Originalkandidaten, die unveränderte
+Auswahl samt bisherigen Kennzahlen, die vier neuen Fehler, Kurvenklasse und
+ausdrücklich unbewertete Folgestufen. `original-result.json` ist eine bytegleiche
+Kopie des ursprünglichen Ergebnisses. Der Bericht bindet vollständige Bedingungen,
+Vorbereitungs- und Bewertungssoftware sowie sämtliche Quelldateihashes. Pro Arm
+bleibt ein geplanter Fall im Nenner, auch bei `not_assessable`; keine gepoolte
+Erfolgsquote über die drei unterschiedlichen Verlustfunktionen.
+
+Nichtendliche Originalbaumwerte oder nicht normierbare Referenzen ergeben
+`not_assessable`, keine Klasse D. Quellenwidersprüche, unvollständige Läufe,
+fehlende Vorbereitung, Abbruch oder Veröffentlichungsfehler sperren das gesamte
+Bewertungspaket ohne positive Aggregate. Der ursprüngliche Laufstatus bleibt
+erhalten; der gemeinsame CLI-Aufruf meldet den Bewertungsfehler. Freigabe und
+Widerruf verwenden dieselbe unten beschriebene Transaktion wie der Archivexport.
+Die Exportfrist von standardmäßig 300 Sekunden beginnt **nach** der Suche;
+`assess --timeout-seconds` kann sie ändern. NPZ-Eingaben bleiben auf 2 MiB
+entpackte numerische Daten je Datei begrenzt.
+
+Die aufgezeichneten Manifeste belegen interne Konsistenz und Git-Herkunft,
+keine externe Signatur oder nachträglich unabhängig beweisbare Aufzeichnungszeit.
+Die automatische Anbindung prüft zusätzlich die vor dem Lauf festgehaltenen Bytes.
+Die Rasterbewertung ist eine Diagnose am bekannten simulierten Signal und keine
+unabhängige wissenschaftliche Validierung oder allgemeine Leistungsbewertung.
 
 ## Beschlossener Versionsvertrag
 

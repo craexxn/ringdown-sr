@@ -37,6 +37,12 @@ Aus/an/aus, 20–100–20, K–A–K und die übrigen Wiederholungsfolgen bleibe
 ungeteilte Aufrufe mit frischen Unterprozessen. Wissenschaftliche Suchbudgets
 und Originalarchive gehören nicht zu dieser CI-Umstellung.
 
+Stufe 1 der Zusatzbewertung erweitert den bestehenden Schema-3-Prüfaufruf um
+die prospektive Anbindung: Beide vorhandenen Kontrollläufe speichern ihre
+Bewertungsgrundlage vor der Suche und veröffentlichen anschließend die drei
+Originalauswahlen getrennt. Eine unabhängige Norm-/Klassenkontrolle prüft die
+Zusatzdateien. Es kommen keine zusätzlichen Suchläufe, Jobs oder Budgets hinzu.
+
 Jeder Job checkt ausdrücklich `${{ github.sha }}` aus und protokolliert Commit
 und Dateibaum. Bei PR-Ereignissen ist dies der getestete Mergecommit. Volle
 Historie und `persist-credentials: false` bleiben erhalten. Vor pytest und
