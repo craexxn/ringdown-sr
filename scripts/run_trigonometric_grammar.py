@@ -417,9 +417,7 @@ def verify_cell(
         _candidate(candidate, index, selected, arrays["time_s"], FS)
         verify_tree_grammar(candidate["tree"], cell["condition"])
         checked = BASE.verify_training_loss(candidate, arrays["observed"])
-        diagnosis = diagnose_candidate(
-            candidate, index, selected, arrays, "complexity_frequency"
-        )
+        diagnosis = diagnose_cell_candidate(candidate, index, selected, arrays, cell)
         diagnosis["training_verification"] = checked
         diagnoses.append(diagnosis)
     if selected != symbolic.select_candidate(front["candidates"]):
@@ -667,6 +665,17 @@ def run(archive, output, *, label):
         return run_with_deadline(archive, output, label=label, clock=clock)
 
 
+def arrays_for_cell(arrays, cell):
+    """Reuse the original single-signal inputs unless an adapter selects a case."""
+    return arrays
+
+
+def diagnose_cell_candidate(candidate, index, selected, arrays, cell):
+    return diagnose_candidate(
+        candidate, index, selected, arrays, "complexity_frequency"
+    )
+
+
 def run_with_deadline(archive, output, *, label, clock):
     archive, output = Path(archive).resolve(), Path(output).resolve()
     if (
@@ -777,6 +786,7 @@ def run_with_deadline(archive, output, *, label, clock):
         first_policy = None
         for cell in report["cells"]:
             unchanged()
+            current_arrays = arrays_for_cell(arrays, cell)
             cell.update(status="running", started_at_utc=_utc_now())
             save_report(output, report)
             symbolic._run_worker = dispatch(
@@ -790,8 +800,8 @@ def run_with_deadline(archive, output, *, label, clock):
                 flush=True,
             )
             worker = symbolic.run_search_arm(
-                arrays["time_s"],
-                arrays["observed"],
+                current_arrays["time_s"],
+                current_arrays["observed"],
                 covariance=None,
                 output=output / cell["directory"],
                 budget=symbolic.SearchBudget(**cell["budget"]),
@@ -802,7 +812,7 @@ def run_with_deadline(archive, output, *, label, clock):
             diagnosis = verify_cell(
                 output / cell["directory"],
                 cell,
-                arrays,
+                current_arrays,
                 support,
                 probe,
                 initial,

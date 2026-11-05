@@ -116,8 +116,20 @@ def curve_errors(prediction, truth):
     return result
 
 
-def parameter_match(analysis):
+def parameter_match(analysis, *, truth=None):
     """Compare available alias-class fields, preserving signed amplitude and phase."""
+    truth = TRUTH if truth is None else truth
+    if (
+        set(truth) != set(TRUTH)
+        or any(
+            type(value) not in (int, float) or not math.isfinite(value)
+            for value in truth.values()
+        )
+        or any(truth[key] <= 0 for key in ("amplitude", "frequency_hz", "decay_time_s"))
+    ):
+        raise ValueError(
+            "Expected finite reference parameters with positive A, f, tau."
+        )
     result = {
         "status": "not_assessed",
         "reason": None,
@@ -150,14 +162,18 @@ def parameter_match(analysis):
     ):
         return {**result, "reason": "unavailable_parameter_field"}
     amplitude, decay, frequency, phase = [field["value"] for field in fields]
-    # A0=1 and phi0=0 are frozen by this control; do not rewrite the source fields.
+    reference_amplitude, reference_phase = truth["amplitude"], truth["phase_rad"]
     errors = {
-        "frequency": abs(frequency - TRUTH["frequency_hz"]) / TRUTH["frequency_hz"],
-        "decay_time": abs(decay - TRUTH["decay_time_s"]) / TRUTH["decay_time_s"],
-        "amplitude": abs(abs(amplitude) - 1),
+        "frequency": abs(frequency - truth["frequency_hz"]) / truth["frequency_hz"],
+        "decay_time": abs(decay - truth["decay_time_s"]) / truth["decay_time_s"],
+        "amplitude": abs(abs(amplitude) - reference_amplitude) / reference_amplitude,
         "complex_amplitude": math.hypot(
-            amplitude * math.cos(phase) - 1, amplitude * math.sin(phase)
-        ),
+            amplitude * math.cos(phase)
+            - reference_amplitude * math.cos(reference_phase),
+            amplitude * math.sin(phase)
+            - reference_amplitude * math.sin(reference_phase),
+        )
+        / reference_amplitude,
     }
     result["errors"] = {
         key: value if math.isfinite(value) else None for key, value in errors.items()

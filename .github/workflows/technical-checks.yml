@@ -16,7 +16,7 @@ concurrency:
 jobs:
   technical-checks:
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 75
     env:
       UV_PYTHON: "3.12.14"
       PYTHONUNBUFFERED: "1"
@@ -183,6 +183,19 @@ jobs:
             --output results/ci-outer-search-ladder-technical; then
             if [ -d results/ci-outer-search-ladder-technical ]; then
               find results/ci-outer-search-ladder-technical -type f -name '*.log' -print -exec tail -n 100 {} \;
+            fi
+            exit 1
+          fi
+
+      - name: Verify signal input switching and fresh repeated control
+        if: steps.scope.outputs.full == 'true'
+        run: |
+          if ! env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/check_transfer_check_integration.py \
+            --output results/ci-transfer-check-technical; then
+            if [ -d results/ci-transfer-check-technical ]; then
+              find results/ci-transfer-check-technical -type f -name '*.log' -print -exec tail -n 100 {} \;
             fi
             exit 1
           fi

@@ -1,6 +1,9 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 04.11.2026. Implementierungs-PR #63 ist als
+Stand: 04.11.2026. Ergebnis-PR #64 ist als
+`d9f445f02fb147ab8d13db68bed159de68375983` übernommen; sein Dateibaum entspricht
+dem geprüften Ergebnis-Head `5ae2a2cdd48193dee6303fb109d6a7698c980845`.
+Implementierungs-PR #63 ist als
 `5215c5e1c93f220a3f7ea59b1c37580d2f2b5ea4` übernommen; sein Dateibaum entspricht
 dem vollständig technisch geprüften Head `a47a273b6531ab4600633390e1b5ece1b4f0dfe2`.
 Die äußere Iterationsstaffel ist vollständig ausgeführt und unabhängig nachgerechnet.
@@ -23,7 +26,53 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: äußere Suchbudgets bei festem 300/5 ausgewertet
+## Aktuell: begrenzten Signaltransfer bei 500/300/5 vorbereiten
+
+- **Auftrag:** Nach der ausgewerteten Iterationsstaffel 500/300/5 beibehalten
+  und den kleinen Transfercheck vorbereiten. Weitere Budgetfeinabstimmung
+  500/1.000 und optional 300/2 zurückgestellt; kein neues Staffelprogramm.
+- **Einstieg:** sauberer Ergebnisbranch bei
+  `5ae2a2cdd48193dee6303fb109d6a7698c980845`, ein Worktree; #64 offen,
+  main bei 5215c5e. Eigener Branch `codex/transfer-check-preparation` auf
+  Ergebnis-PR #64. Kein eigenständiger Merge von #64.
+- **Vor Code gebunden:** [Plan](transfer_check_plan.md), Commit
+  `446afbfea8958f409693c2253f8d9d4950f24e45`, SHA-256
+  `f29561b8151a2a4e17cd881a8c4576f406f0efd340309ac54fcbbde2faabb6f3`.
+  Sechs feste Signale und drei neue gepaarte Seeds 20261210–20261212;
+  18 Zellen, überall 500/300/5. 900 Sekunden je Worker, 7.200 insgesamt.
+  Neue gebundene Eingangsdaten im Repository; kein früheres Archiv nötig.
+- **Datenprüfung selbst ausgeführt:** 6.102 Werte aus dem vorhandenen Generator
+  gegen eine unabhängige analytische Hochpräzisionsrechnung bei 100 Dezimalstellen
+  geprüft; größte absolute Abweichung/A etwa 1,14e-15. Keine Suche oder Optimierung.
+- **Notwendige Anpassungen:** gemeinsamer Treiber erhält kleine Hooks für
+  Signaldaten und Diagnose je Zelle; bisherige Standardpfade bleiben erhalten.
+  Parametervergleich berücksichtigt die jeweilige Referenzamplitude und -phase.
+  Neuer gebundener Adapter, Datenleser und Bericht mit sechs Gruppen und 15
+  Paaren. Unveränderte Originalauswahl und sämtliche numerischen Prüfgates;
+  kein erweiterter Strukturerkenner, keine neue Abhängigkeit.
+- **Selbst geprüft:** 299 fachliche/Treibertests, 54 CI-Regeltests, statische und
+  Formatprüfung, 71 Markdown-Dateien und beide Manjaro-Befehlsblöcke bestanden.
+  Drei native Seedoptionen und feste Referenzen ohne Suche bestätigt; danach
+  drei frische technische Miniworker mit geänderten Achtpunkt-Trainingsdaten
+  und je zwei äußeren Iterationen bestanden, wiederholte Front identisch.
+  Nachweis bei `0baef51712957586ee751b2ea15dd78d2e39bba2` unter
+  `results/transfer-technical-001/`; danach nur Dokumentation und CI-Jobreserve
+  geändert, gebundene Laufzeitquellen unverändert.
+- **Abschlussprüfung:** vollständige CI und endgültiger Head werden in
+  [PR #65](https://github.com/craexxn/ringdown-sr/pull/65) dokumentiert.
+  Der CI-Job erhält mit der zusätzlichen nativen Integration 75 Minuten;
+  wissenschaftliche Grenzen unverändert. #64 ist dateigleich als d9f445f
+  übernommen. Die Main-Abstammung wurde nach explizitem Dateibaumvergleich
+  ohne Implementierungsänderung aufgenommen; #65 zielt jetzt auf main. Vor wissenschaftlicher Ausführung
+  technische Prüfung und manueller Merge; [Bedienung](transfer_check.md).
+  Aktuellen Head und lokale Änderungen bei Fortsetzung erneut prüfen;
+  wissenschaftliche Serie nicht gestartet.
+- **Danach:** Transfer auswerten, begrenzten nächsten Schritt zur Rauschpipeline
+  begründen. Pilotroute und Planungsziele 8./9. und etwa 15. November erhalten.
+  Keine Hauptstudie, WSL2-/Parallelisierungsarbeit, größere Bereinigung,
+  zusätzlichen Agenten oder automatische Reviewrunde.
+
+## Grundlage: äußere Suchbudgets bei festem 300/5 ausgewertet
 
 - **Einstieg:** sauberer Branch `codex/outer-search-ladder-preparation` bei
   a47a273, ein Worktree; #63 gemergt, main bei 5215c5e, keine offenen PRs.

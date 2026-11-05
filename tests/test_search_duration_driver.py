@@ -41,11 +41,11 @@ def runtime(request, monkeypatch, tmp_path):
     state.preflight_alter = None
     state.archive = tmp_path / "archive.tar.gz"
     state.archive.write_bytes(b"non-executed archive fixture")
-    arrays = frozen_data()
+    root_arrays = frozen_data()
     monkeypatch.setattr(
         DRIVER,
         "read_archive",
-        lambda archive: (b"non-executed archive fixture", arrays),
+        lambda archive: (b"non-executed archive fixture", root_arrays),
     )
 
     def preflight(output, runtime, initial, sources, support, probe, remaining):
@@ -83,6 +83,7 @@ def runtime(request, monkeypatch, tmp_path):
 
     def enrich(number, directory, docs):
         cell = control.planned_cells()[number - 1]
+        arrays = DRIVER.arrays_for_cell(root_arrays, cell)
         seed, iterations = cell["budget"]["seed"], cell["condition"]
         sources = control.source_hashes()
         native = option_fixture(seed, iterations)
@@ -490,7 +491,11 @@ def test_final_publication_failure_revokes_even_after_rename(
                 report["status"] == "completed"
                 and report["final_verification"] == "passed"
             ):
-                assert len(runtime.calls) == len(report["cells"]) == 20
+                assert (
+                    len(runtime.calls)
+                    == len(report["cells"])
+                    == len(control.planned_cells())
+                )
                 assert all(cell["status"] == "completed" for cell in report["cells"])
                 assert all(
                     report[key] is not None
@@ -509,8 +514,8 @@ def test_final_publication_failure_revokes_even_after_rename(
     with pytest.raises(error_type):
         DRIVER.run(runtime.archive, output, label="fixture")
     assert published is not None
-    assert len(runtime.calls) == 20
+    assert len(runtime.calls) == len(control.planned_cells())
     report = assert_locked(output)
-    assert len(report["cells"]) == 20
+    assert len(report["cells"]) == len(control.planned_cells())
     assert all(cell["status"] == "completed" for cell in report["cells"])
     assert not (output / "checksums.json").exists()

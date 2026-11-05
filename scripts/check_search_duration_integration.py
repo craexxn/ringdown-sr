@@ -14,6 +14,19 @@ from ringdown_sr.search_duration import RUNTIME, planned_cells, source_hashes
 driver = load_driver()
 TECHNICAL_ITERATIONS = (2, 2, 3, 3, 2)
 TECHNICAL_SCOPE = "five isolated two/three-search-iteration workers on eight-point y=1+t; no scientific control cells"
+TECHNICAL_SEQUENCE = (0, 1, 3, 2, 0)
+
+
+def technical_arrays(cell):
+    """Keep integration searches separate from every scientific input bundle."""
+    time = np.arange(8, dtype=np.float64) / 8
+    inner = (np.arange(7, dtype=np.float64) + 0.5) / 8
+    return {
+        "time_s": time,
+        "observed": 1 + time,
+        "diagnostic_time_s": inner,
+        "diagnostic_truth": 1 + inner,
+    }
 
 
 def run(output):
@@ -54,22 +67,15 @@ def run(output):
         ):
             raise ValueError("Technical worker consumed changed sources or artifacts.")
 
-    time = np.arange(8, dtype=np.float64) / 8
-    inner = (np.arange(7, dtype=np.float64) + 0.5) / 8
-    arrays = {
-        "time_s": time,
-        "observed": 1 + time,
-        "diagnostic_time_s": inner,
-        "diagnostic_truth": 1 + inner,
-    }
-    for value in arrays.values():
-        value.flags.writeable = False
     results, signatures = [], []
     cells = planned_cells()
-    sequence = [copy.deepcopy(cells[index]) for index in (0, 1, 3, 2, 0)]
+    sequence = [copy.deepcopy(cells[index]) for index in TECHNICAL_SEQUENCE]
     original = symbolic._run_worker
     try:
         for number, cell in enumerate(sequence, 1):
+            arrays = technical_arrays(cell)
+            for value in arrays.values():
+                value.flags.writeable = False
             cell.update(number=number, directory=f"technical-{number:02d}")
             cell["budget"]["niterations"] = TECHNICAL_ITERATIONS[number - 1]
             symbolic._run_worker = driver.dispatch(
@@ -127,7 +133,7 @@ def run(output):
             )
     finally:
         symbolic._run_worker = original
-    if signatures[0] != signatures[4]:
+    if signatures[0] != signatures[-1]:
         raise ValueError(
             "Repeated-control isolation changed the repeated unrestricted technical result."
         )
