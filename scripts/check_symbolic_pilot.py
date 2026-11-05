@@ -5,6 +5,7 @@ import hashlib
 import json
 import tempfile
 from contextlib import nullcontext
+from fractions import Fraction
 from pathlib import Path
 
 import numpy as np
@@ -191,6 +192,8 @@ def verify_assessment(source, output):
     assert not (output / "ASSESSMENT_LOCKED").exists()
     report = read(output / "assessment_report.json")
     assert report["status"] == "completed"
+    assert report["stage"] == 2
+    assert report["structure_policy_timing"] == "before_first_fit"
     for name, digest in read(output / "assessment_checksums.json").items():
         assert hashlib.sha256((output / name).read_bytes()).hexdigest() == digest
     records = read(output / "assessment_records.json")
@@ -202,6 +205,35 @@ def verify_assessment(source, output):
             index = front["selected_index"]
             assert index == record["source_identity"]["original_selected_index"]
             assert front["candidates"][index] == record["original_candidate"]
+            proof = record["supplemental"]
+            assert proof["structure_proof_format"] == "ringdown-sr-structure-proof-1"
+            exact_endpoints = tuple(
+                Fraction(int(e["numerator_hex"], 16), int(e["denominator_hex"], 16))
+                for e in proof["domain"]["interval"]["endpoints"]
+            )
+            expected_endpoints = tuple(
+                Fraction.from_float(float(t))
+                for t in arrays["training_time_s"][[0, -1]]
+            )
+            assert exact_endpoints == expected_endpoints
+            assert (
+                proof["domain"]["interval"]
+                == read(source / "assessment_contract.json")["structure_interval"]
+            )
+            for name in (
+                "algebraic_identity",
+                "domain",
+                "original_family",
+                "continuous_extension",
+            ):
+                assert proof[name]["status"] != "not_assessed"
+            if proof["original_family"]["status"] == "proven_member":
+                assert proof["domain"]["status"] == "defined_everywhere"
+                assert (
+                    proof["algebraic_identity"]["status"] == "proven_on_original_domain"
+                )
+            assert proof["new_parameter_match"]["status"] == "not_assessed"
+            assert proof["remainder"]["status"] == "not_assessed"
             values = []
             for grid in ("training", "diagnostic"):
                 truth = arrays[grid + "_truth"]
@@ -236,6 +268,7 @@ def verify_assessment(source, output):
                         break
             assert record["supplemental"]["curve"]["grade"] == expected
     print(f"Prospective assessment audit passed: {output}; three original selections.")
+    print("Stage-2 interval, proof statuses and original-selection bindings passed.")
 
 
 def main():

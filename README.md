@@ -6,10 +6,10 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 ## Projektstatus
 
 Fortsetzungsstand: 05.11.2026; abgeglichener Hauptbranch:
-`46da82e` ([parallele technische CI #68](https://github.com/craexxn/ringdown-sr/pull/68)).
+`e09ab28` ([Zusatzbewertung Stufe 1 #69](https://github.com/craexxn/ringdown-sr/pull/69)).
 Die [technische CI](docs/ci.md) mit drei parallelen nativen Jobs ist übernommen.
 Aktuell ist [Stufe 1 der ergänzenden Ergebnisbewertung](docs/supplemental_assessment.md)
-in [PR #69](https://github.com/craexxn/ringdown-sr/pull/69) implementiert:
+mit [PR #69](https://github.com/craexxn/ringdown-sr/pull/69) übernommen:
 verifizierter Originalimport und zusätzliche Kurvenklassen A/B/C/D, ergänzt um
 zukünftige Schema-3-Läufe mit `--assessment-output`. Die Bewertungsgrundlage wird
 vor der Suche gespeichert; bewertet wird die Originalauswahl gegen das saubere Signal.
@@ -20,8 +20,14 @@ Zusatzterme) folgen jeweils erst nach bestätigter Übernahme des vorherigen PRs
 Prüfstand und offene Arbeit stehen im [Fortsetzungsstand](docs/representation_implementation_status.md).
 Der [Leitfaden zur wiederholbaren Rekonstruktion](docs/ringdown_recovery_roadmap.md)
 ordnet Phasen, Begründungen und Entscheidungskriterien. Aktuell läuft dessen
-Phase 1, Bewertungsstufe 1; Strukturprüfung, Zusatzterm-Diagnose und Suchversuche
-stehen noch aus.
+Phase 1, Umsetzung der Bewertungsstufe 2. Deren
+[Intervall- und Beweisvertrag](docs/supplemental_structure.md) ist beschlossen;
+die Strukturprüfung ist in [PR #70](https://github.com/craexxn/ringdown-sr/pull/70)
+implementiert und [auf die 78 Originalauswahlen angewandt](docs/supplemental_structure_results_001.md).
+Der P2 aus dem KI-basierten Review ist korrigiert und lokal geprüft.
+Die Nachbesserung wird mit der bestehenden vollständigen parallelen CI
+zur gezielten Gegenprüfung übergeben; der CI-Sparumbau wurde verworfen.
+Übernahme, Zusatzterm-Diagnose und Suchversuche stehen weiterhin aus.
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit
 [PR #59](https://github.com/craexxn/ringdown-sr/pull/59) übernommen.

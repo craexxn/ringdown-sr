@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 
 from . import assessment_sources as sources
+from . import structure_assessment as structure
 from .assessment_publication import (
     Consumption,
     Deadline,
@@ -24,10 +25,16 @@ from .supplemental_assessment import THRESHOLDS, git, grade_curve
 from .symbolic import FORMAT, _check_prediction_replay, evaluate_tree
 
 ROOT = sources.ROOT
-POLICY = ROOT / "data/future_assessment_v1.json"
-POLICY_SHA256 = "97ee7e796689c0d65ce69de3f9c567bed9dc0fce8319ab541b355e49d0bf7872"
-VERSION = "ringdown-sr-future-assessment-1"
-SCHEMA = "ringdown-sr-future-record-1"
+POLICY = ROOT / "data/future_assessment_v2.json"
+POLICY_SHA256 = "05106be830e8c259a5a9e318e1ce3d6a1e3e488ac11542dfffea0bb3acb6fd5f"
+LEGACY_POLICY_SHA256 = (
+    "97ee7e796689c0d65ce69de3f9c567bed9dc0fce8319ab541b355e49d0bf7872"
+)
+LEGACY_IMPLEMENTATION_SHA256 = (
+    "0107278b728f8890eb54cd84eb5aec49f41fa7c591b52c10ebdbccc35ad3a764"
+)
+VERSION = "ringdown-sr-future-assessment-2"
+SCHEMA = "ringdown-sr-future-record-2"
 INPUTS = "assessment_inputs.npz"
 CONTRACT = "assessment_contract.json"
 KEYS = {"training_time_s", "training_truth", "diagnostic_time_s", "diagnostic_truth"}
@@ -45,7 +52,15 @@ PROJECT_FILES = (
     "julia/Project.toml",
     "julia/Manifest.toml",
 )
-CONTRACT_FILES = ("data/future_assessment_v1.json", "docs/supplemental_assessment.md")
+LEGACY_CONTRACT_FILES = (
+    "data/future_assessment_v1.json",
+    "docs/supplemental_assessment.md",
+)
+CONTRACT_FILES = (
+    "data/future_assessment_v2.json",
+    "docs/supplemental_assessment.md",
+    *structure.FILES,
+)
 SELECTION = "minimum_training_loss_then_complexity"
 
 
@@ -67,9 +82,13 @@ def python_source_names(commit):
     return names
 
 
-def preparation_source_names(commit):
+def preparation_source_names(commit, stage=2):
+    if type(stage) is not int or stage not in (1, 2):
+        raise ValueError("Unsupported preparation stage.")
     return python_source_names(commit) | set(
-        CONTRACT_FILES + ADAPTER_FILES + PROJECT_FILES
+        (CONTRACT_FILES if stage == 2 else LEGACY_CONTRACT_FILES)
+        + ADAPTER_FILES
+        + PROJECT_FILES
     )
 
 
@@ -113,15 +132,22 @@ def freeze_software(consumed):
         or policy["schema"] != SCHEMA
         or policy["reference"] != "known_clean_signal_on_both_grids"
         or policy["planned_arms"] != list(ARMS)
-        or policy["stage"] != 1
-        or policy["domain_interval"] is not None
+        or policy["stage"] != 2
+        or policy["domain_interval"] != structure.POLICY["interval"]
+        or policy["proof_resource_limits"] != structure.POLICY["limits"]
+        or policy["structure_proof_policy"] != structure.FILES[0]
     ):
         raise ValueError("Unsupported future assessment policy.")
+    structure.check_policy(consumed.files[ROOT / structure.FILES[0]])
     return {
         "software_commit": commit,
         "source_sha256": hashes,
         "policy": policy,
-        "runtime": {"python": platform.python_version(), "numpy": np.__version__},
+        "runtime": {
+            "python": platform.python_version(),
+            "numpy": np.__version__,
+            **structure.runtime(),
+        },
     }
 
 
@@ -160,6 +186,7 @@ class PreparedAssessment:
         raw = buffer.getvalue()
         contract = {
             "format": VERSION,
+            "structure_interval": structure.interval_binding(arrays["training_time_s"]),
             "software": software,
             "resolved_config_sha256": sources.sha256(
                 sources.json_bytes(config.to_dict())
@@ -289,10 +316,28 @@ def verify_snapshot(source, software):
         "Configuration differs.",
     )
     contract = source.document(CONTRACT)
-    if contract["format"] != VERSION:
+    if contract["format"] not in (VERSION, "ringdown-sr-future-assessment-1"):
         raise ValueError("Missing supported pre-search assessment contract.")
+    stage = 2 if contract["format"] == VERSION else 1
+    expected_policy = software["policy"]
+    if stage == 1:
+        if (
+            contract["software"]["source_sha256"].get(
+                "src/ringdown_sr/future_assessment.py"
+            )
+            != LEGACY_IMPLEMENTATION_SHA256
+        ):
+            raise ValueError(
+                "Legacy assessment requires the approved stage-1 implementation."
+            )
+        raw = sources._git_file(
+            contract["software"]["software_commit"], LEGACY_CONTRACT_FILES[0]
+        )
+        if sources.sha256(raw) != LEGACY_POLICY_SHA256:
+            raise ValueError("Unsupported legacy curve policy.")
+        expected_policy = sources.read_json(raw)
     sources._same(
-        contract["software"]["policy"], software["policy"], "Assessment policy differs."
+        contract["software"]["policy"], expected_policy, "Assessment policy differs."
     )
     verify_origin(source, contract["software"])
     if contract["inputs_sha256"] != source.hashes[INPUTS]:
@@ -311,6 +356,12 @@ def verify_snapshot(source, software):
             or sources.fingerprint(value) != contract["arrays"][key]
         ):
             raise ValueError("Assessment grid or truth differs: " + key)
+    if stage == 2:
+        sources._same(
+            contract["structure_interval"],
+            structure.interval_binding(arrays["training_time_s"]),
+            "Pre-search structure interval differs.",
+        )
     # Recompute only to verify the recorded snapshot; never replace missing data.
     return config, arrays, contract
 
@@ -325,10 +376,11 @@ def verify_origin(source, frozen):
     ):
         raise ValueError("Invalid preparation commit.")
     hashes = frozen["source_sha256"]
-    if (
-        set(hashes) != preparation_source_names(commit)
-        or hashes["data/future_assessment_v1.json"] != POLICY_SHA256
-    ):
+    stage = frozen["policy"]["stage"]
+    policy_name = CONTRACT_FILES[0] if stage == 2 else LEGACY_CONTRACT_FILES[0]
+    if set(hashes) != preparation_source_names(commit, stage) or hashes[
+        policy_name
+    ] != (POLICY_SHA256 if stage == 2 else LEGACY_POLICY_SHA256):
         raise ValueError("Incomplete preparation source binding.")
     python = {}
     for name, digest in hashes.items():
@@ -337,6 +389,8 @@ def verify_origin(source, frozen):
             python[name.removeprefix("src/")] = digest
         if sources.sha256(sources._git_file(commit, name)) != digest:
             raise ValueError("Preparation source differs from its Git commit.")
+    if stage == 2:
+        structure.check_policy(sources._git_file(commit, structure.FILES[0]))
     adapters = {name: hashes[name] for name in ADAPTER_FILES}
     project = {name: hashes[name] for name in PROJECT_FILES}
 
@@ -506,7 +560,7 @@ def selected_record(source, name, summary, config, shared, arrays):
         )
         for grid in ("training", "diagnostic")
     }
-    return {
+    record = {
         "schema": SCHEMA,
         "assessment_version": VERSION,
         "source_identity": {
@@ -540,6 +594,8 @@ def selected_record(source, name, summary, config, shared, arrays):
             "proof_trace": [],
         },
     }
+    structure.supplement(record, structure.interval_binding(arrays["training_time_s"]))
+    return record
 
 
 def build_assessment(root, consumed, prepared=None):
@@ -629,6 +685,10 @@ def build_assessment(root, consumed, prepared=None):
     ]
     report = {
         "format": VERSION,
+        "stage": 2,
+        "structure_policy_timing": "before_first_fit"
+        if contract["format"] == VERSION
+        else "retrospective_upgrade_of_stage1_snapshot",
         "software": software,
         "pre_search_contract": contract,
         "condition": config.to_dict(),
@@ -650,14 +710,15 @@ def build_assessment(root, consumed, prepared=None):
                     )
                     for key in ("A", "B", "C", "D", "not_assessable")
                 },
+                **structure.status_counts([record]),
             }
             for record in records
         ],
     }
-    summary = "# Zusatzbewertung eines Schema-3-Laufs\n\nOriginalauswahlen; sauberes Signal auf beiden Rastern.\nKeine gemeinsame Erfolgsquote; spätere Bewertungsstufen: not_assessed.\n\n"
+    summary = "# Zusatzbewertung eines Schema-3-Laufs – Stufe 2\n\nOriginalauswahlen; sauberes Signal auf beiden Rastern.\nIdentität, Originaldomain und Fortsetzung getrennt; Restterm und neue Parametermatches: not_assessed.\nKeine gemeinsame Erfolgsquote.\n\n"
     summary += (
         "\n".join(
-            f"- {r['source_identity']['arm']}: {r['supplemental']['curve']['grade'] or 'not_assessable'} (Nenner 1)"
+            f"- {r['source_identity']['arm']}: Kurve {r['supplemental']['curve']['grade'] or 'not_assessable'}, Identität {r['supplemental']['algebraic_identity']['status']}, Domain {r['supplemental']['domain']['status']}, Originalfamilie {r['supplemental']['original_family']['status']}, Fortsetzung {r['supplemental']['continuous_extension']['status']} (Nenner 1)"
             for r in records
         )
         + "\n"

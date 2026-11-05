@@ -15,6 +15,7 @@ from types import MappingProxyType
 import numpy as np
 
 from .structure import _validated_tree
+from .structure_assessment import interval_binding
 
 ROOT = Path(__file__).resolve().parents[2]
 CATALOG = ROOT / "data/supplemental_series.json"
@@ -469,6 +470,7 @@ def _selection(files, cell, expected, arrays, spec, provenance, sources):
         "unchanged_historical": old,
         "grid_binding": {
             "time_coordinate": "physical_seconds",
+            "structure_interval": interval_binding(arrays["time_s"]),
             "signal": signal,
             "input_fingerprints": {
                 key: fingerprint(value) for key, value in arrays.items()

@@ -39,7 +39,116 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: Zusatzbewertung, Stufe 1 von 3
+## Aktuell: Zusatzbewertung, Umsetzung der Stufe 2 von 3
+
+- **Phase und Umfang:** Leitfadenphase 1, Bewertungsstufe 2: exakte
+  Familienerkennung, Originaldefinitionsbereich und stetige Fortsetzung als
+  gemeinsames, getrenntes Bewertungsverfahren. Stufe 3 bleibt ausstehend.
+- **Bestätigte Übernahme:** PR #69 ist als
+  `e09ab286fc853fe2991f070c4d96d9f070b55d9d` übernommen. Sein Dateibaum
+  `2e73cb834771e9cc803ff3a8093ebc6f1f7e2388` ist gleich dem geprüften Head
+  `360458ec5b14ec9021d24810cdae1e6ab9544251`. GitHub-Status und gefetchter
+  Hauptbranch wurden abgeglichen; keine offenen PRs beim Einstieg.
+- **Abschluss Stufe 1:** Die übermittelte KI-basierte Gegenprüfung des genannten
+  Heads gegen `0fea3a59f194f39e3286936d84d1a7f464cab31d` bei PR-Basis
+  `46da82ec7bfe24614e0b3fc3203258535343d848` fand keine korrekturbedürftigen
+  Befunde. Alle drei P2 sind behoben. Übermittelt wurden 92 bestandene
+  Repository-Tests, elf bestandene Review-Gegenfälle und die reale Bindung
+  aller 47 Vorbereitungsdateien. Diese externen Nachweise wurden hier nicht
+  erneut ausgeführt. Die selbst abgeglichene
+  [CI 42041386008](https://github.com/craexxn/ringdown-sr/actions/runs/42041386008)
+  bestand mit allen fünf Jobs und 2.848 Pythonfällen; Checkout
+  `bf100abc56ccd5e03af8a28bd106260c814faa92` war baumgleich. Beide nativen
+  Schema-3-Kontrollen bestätigten den Bewertungsexport.
+- **Branch und Arbeitsstand:** `codex/assessment-structure-domain`, eigener
+  Worktree ab `e09ab286fc853fe2991f070c4d96d9f070b55d9d`; begrenzter Erkenner
+  und Einbindung beider Bewertungswege in
+  [PR #70](https://github.com/craexxn/ringdown-sr/pull/70) implementiert.
+  Implementierungs-/Anwendungsstand:
+  `3aceb638f9a648caab4019008cb5beeba336f1a2`. Finale Dokumentation ergänzt diese
+  Implementierung am bisherigen PR-Head
+  `15d8f13a269f1f1905ca10aebd59b134747682b7`. Die Nachbesserung des unten
+  genannten P2 ist in `0f3b9222d90b5995394bd36b5cef2bbe66937ce7` gesichert.
+  Finaler Übergabe-Head, CI-Checkout und Prüfergebnis werden in #70 geführt.
+  Die übrigen Worktrees und Originalausgaben bleiben erhalten.
+- **Vorbereitungsnachweise:** Alle 17 Nutzdatei-Hashes des Vorbereitungspakets
+  stimmen; alle 36 synthetischen Struktur-Fixtures erfüllen die unveränderte
+  Originalbaumvalidierung. Dies ist eine Integritäts-/Syntaxprüfung, keine
+  Prüfung eines neuen Erkenners. Die gesperrte Python-Installation ist bereit:
+  Python 3.12.14, gmpy2 2.2.2 und SymPy 1.14.0; vorhandene Julia-Binärdatei
+  meldet 1.13.1. Kein neuer nativer Integrationstest oder wissenschaftlicher Fit.
+- **Beschlossene Methoden:** Am 05.11.2026 sind Beweisregeln und Ressourcen
+  ausdrücklich bestätigt worden, anschließend das geschlossene Intervall vom
+  ersten bis zum letzten gespeicherten Trainingssample einschließlich beider
+  Enden. Der [Vertrag](supplemental_structure.md) hält die konkreten Regeln,
+  Zahlen, Alternativen und Aussagegrenzen fest. Für Stufe 2 ist keine dieser
+  Entscheidungen mehr offen; neue Parametermatches bleiben ausgeschlossen.
+- **Eigene technische Prüfnachweise vor der Nachbesserung:** Vollständige lokale
+  Suite: **2.921 Pythonfälle bestanden** in 315,63 s. Zuvor 368 fokussierte Fälle, anschließend
+  72 Kern-/Anbindungsfälle einschließlich 36 unveränderter vorbereiteter
+  Strukturbeispiele, unabhängiger symbolischer Identitätskontrollen,
+  Domain-/Rand-/Pol-/Ressourcengegenfälle und gerichteter Intervalle. Konsistent
+  neu gehashte Intervall-/Methodenänderungen, Formatdowngrade und späte Änderung
+  der Beweisrecords werden gesperrt. Alte gebundene Fassung-1-Snapshots werden
+  nachweislich retrospektiv ergänzt. Die reale prospektive Bindung aller 53
+  Vorbereitungsdateien bestand am sauberen Implementierungscommit. Ruff,
+  Format, Dokumentations-/Diff-Prüfung und gepinnte Python-/Julia-Umgebung
+  bestanden. Die [CI 42065464612](https://github.com/craexxn/ringdown-sr/actions/runs/42065464612)
+  bestand mit fünf Jobs und 2.921 Pythonfällen für den bisherigen PR-Head
+  `15d8f13a269f1f1905ca10aebd59b134747682b7`; dieser Nachweis gilt nicht für
+  die anschließende lokale Korrektur.
+- **Übermitteltes KI-basiertes Review:** Ein P2 am genannten PR-Head gegen
+  Basis `e09ab286fc853fe2991f070c4d96d9f070b55d9d`: Ein Pol der Normalform
+  konnte trotz ungeklärter Originaldomain einen negativen Fortsetzungsbefund
+  liefern. Übermittelt wurden 314 bestandene gezielte Repository-Tests und
+  vier reproduzierende Gegenfälle einschließlich beider Ränder und eines
+  vollständigen Exports. Die externe Reproduktionsdatei lag lokal nicht vor.
+- **Lokale Korrektur und eigene Nachweise:** Hebbarkeit und Nichthebbarkeit
+  setzen nun beide die vollständige Domainprüfung voraus; auch die globale
+  Fortsetzungsentscheidung prüft diese Voraussetzung ausdrücklich. Die
+  vier neu formulierten Gegenfälle reproduzierten den Fehler vor der Korrektur.
+  Danach bestanden alle **79 Struktur-/Anbindungsfälle**, darunter diese vier
+  sowie drei Kontrollen mit belegten Polen im Inneren und an beiden Rändern.
+  Weitere **306 bestehende Fälle** für Archivimport, prospektive Herkunftsprüfung,
+  Veröffentlichung und Widerruf bestanden (insgesamt **385**). Ruff und Format
+  der geänderten Python-Dateien sowie Dokumentations- und Diffprüfung bestanden.
+  Die vollständige Suite und die
+  nativen Kontrollen wurden für diese lokale Korrektur nicht erneut gestartet.
+  Ohne Domainnachweis bleiben Lückenart und Fortsetzung `unresolved`, auch
+  bei einem technisch erfolgreich abgeschlossenen Export.
+- **Abgeschlossene lesende Anwendung:**
+  [78 Originalauswahlen und 18 getrennte Gruppen](supplemental_structure_results_001.md)
+  aus allen vier verankerten Archiven. Originalidentitäten, Kandidaten,
+  historische Kennzahlen und Kurvennoten stimmen unverändert mit Stufe 1
+  überein. Eine separate exakte SymPy-Nachrechnung bestätigte alle 40 positiven
+  algebraischen Identitätsnachweise; dies ist keine eigenständige Domainprüfung
+  durch CAS-Kürzung. Ungeklärte Befunde bleiben sichtbar, darunter ein Fall
+  am Analyseschrittlimit. Kein Fit, keine neue wissenschaftliche Suche.
+- **Gezielter Abgleich nach der Korrektur:** Die vier Statusfelder für Identität,
+  Domain, Originalfamilie und Fortsetzung wurden lesend aus allen 78 gespeicherten
+  Originalbäumen mit dem korrigierten Kern erneut bestimmt; kein Status änderte
+  sich. Eingaberecords: SHA-256
+  `da38b8d6ee08937cfca9400edcc6fd9e03bf97a4cc8489e05dd880bf3e58ca35`.
+  Dies ist ein Statusabgleich, keine erneute Archivimportprüfung oder
+  Veröffentlichung; Originalausgaben und damalige Quellenbindung bleiben erhalten.
+- **Fortsetzung nach aufgehobener Pause:** Der CI-Sparumbau wurde ausdrücklich
+  verworfen; seine unvollständigen Änderungen bleiben ausschließlich im
+  isolierten lokalen Branch `codex/ci-draft-serial`. Er wurde weder gepusht
+  noch als PR eröffnet. PR #70 wird mit der bestehenden parallelen CI
+  fortgesetzt; keine Änderung an Workflow, Repository-Einstellungen oder
+  wissenschaftlichen Budgets durch diese Nachbesserung.
+- **Offen und nächster konkreter Schritt:** Nachbesserung und aktualisierte
+  Übergabe gebündelt pushen, die vollständige CI am finalen Head einschließlich
+  tatsächlichem Checkout/Dateibaum prüfen und den PR zur gezielten
+  Gegenprüfung des P2 übergeben. Die bisherigen 385 lokalen Tests gehören zur
+  Korrektur `0f3b922`; ein alter grüner Lauf ersetzt keine CI des neuen Heads.
+  Kein eigenständiger Merge.
+  Danach bleibt **Stufe 3: quantifizierte Zusatzterm-Diagnose** ausstehend.
+
+## Übernommen: Zusatzbewertung, Stufe 1 von 3
+
+Die folgenden Punkte dokumentieren die Umsetzung und damalige Übergabe von
+PR #69. Der abschließende Nachreview- und Übernahmestand steht oben.
 
 - **Leitfadenphase:** [Phase 1: Bewertung abschließen](ringdown_recovery_roadmap.md#1-bewertung-abschließen),
   darin Bewertungsstufe 1. Der versionierte Leitfaden wird als Dokumentation in

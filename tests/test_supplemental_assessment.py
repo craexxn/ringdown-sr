@@ -290,13 +290,14 @@ def test_policy_document_matches_confirmed_float64_contract():
 def software(tmp_path, monkeypatch):
     original_policy = sources.read_json(assessment.POLICY.read_bytes())
     paths = [
-        "data/supplemental_assessment_v1.json",
+        "data/supplemental_assessment_v2.json",
         "data/supplemental_series.json",
         "scripts/export_supplemental_assessment.py",
         "docs/supplemental_assessment.md",
         "uv.lock",
         "pyproject.toml",
         ".python-version",
+        *assessment.structure.FILES,
     ]
     for name in paths:
         path = tmp_path / name
@@ -304,6 +305,9 @@ def software(tmp_path, monkeypatch):
         path.write_bytes(b"synthetic software")
     policy = tmp_path / paths[0]
     policy.write_bytes(sources.json_bytes(original_policy))
+    (tmp_path / assessment.structure.FILES[0]).write_bytes(
+        sources.json_bytes(assessment.structure.POLICY)
+    )
     monkeypatch.setattr(assessment, "ROOT", tmp_path)
     monkeypatch.setattr(assessment, "POLICY", policy)
     monkeypatch.setattr(sources, "CATALOG", tmp_path / paths[1])
@@ -321,7 +325,7 @@ def software(tmp_path, monkeypatch):
     [
         lambda p: p.update(policy_id="unknown"),
         lambda p: p.update(schema="unknown"),
-        lambda p: p.update(stage=2),
+        lambda p: p.update(stage=1),
         lambda p: p.update(threshold_semantics="decimal_exact"),
         lambda p: p.update(grid_roles=["diagnostic", "training"]),
         lambda p: p.update(domain_interval=[0, 1]),
@@ -343,7 +347,7 @@ def test_sources_are_frozen_before_consumption_and_rechecked(software):
     consumed = Consumption(Deadline(60))
     provenance = assessment.freeze_software(consumed)
     assert provenance["source_sha256"][
-        "data/supplemental_assessment_v1.json"
+        "data/supplemental_assessment_v2.json"
     ] == sources.sha256(path.read_bytes())
     path.write_bytes(path.read_bytes() + b"\n")
     with pytest.raises(ValueError, match="Consumed file changed"):
