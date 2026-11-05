@@ -39,27 +39,141 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: technische CI parallelisieren
+## Aktuell: Zusatzbewertung, Stufe 1 von 3
 
-- **Basis und Branch:** `codex/parallel-technical-ci` in eigenem Worktree ab
-  main 8096ddb; Merge von #67 über GitHub bestätigt, keine offenen PRs beim
-  Einstieg. Vorhandene Branches, Arbeitskopien und Archive bleiben erhalten.
-- **Umfang:** frühe Pythonprüfungen, drei getrennte native Jobs, verbindlicher
-  Abschluss `technical-checks`; alle 30 bisherigen Schritte erhalten.
-  Historische Ref-Vorbereitung prüft acht Commitbindungen ohne HEAD-Wechsel;
-  der Abschluss sperrt fehlende Ergebnisse, Fehler, Abbrüche und unerwartete
-  Skips. [Aufteilung und Grenzen](ci.md) dokumentieren die Datenabhängigkeiten.
-- **Prüfung:** gezielte Scope-/Gate-/Historiengegenfälle und Befehlsinventar
-  lokal; vollständige technische CI und isolierte Schedulergegenfälle werden
-  mit Head, Basis, Checkout, Dateibaum und tatsächlichen Zeiten im eigenen PR
-  belegt. Vorbereitung für ein gezieltes KI-basiertes Review; keine automatisch
-  gestartete Reviewrunde und kein eigenständiger Merge.
-- **Offen:** wissenschaftlicher Kreuzvergleich weiterhin nur auf Manjaro.
-  Die gesonderte versionierte Ergebnisbewertung bleibt vorgemerkt; CSV/JSON
-  sind Prüfvergleiche, Entscheidungen müssen aus Originalformeln stammen.
-  Für den vollständigen 58-Auswahlen-Abgleich fehlen hier noch die Originalarchive
-  des lokalen Optimierer- und äußeren Staffellaufs. Cacheideen und Parallelisierung
-  wissenschaftlicher Suchen gehören nicht zur CI-Änderung. Keine zusätzlichen Agenten.
+- **Leitfadenphase:** [Phase 1: Bewertung abschließen](ringdown_recovery_roadmap.md#1-bewertung-abschließen),
+  darin Bewertungsstufe 1. Der versionierte Leitfaden wird als Dokumentation in
+  PR #69 aufgenommen. Er führt die künftigen Phasen und offenen Festlegungen;
+  dieser Abschnitt hält den tatsächlichen Arbeits- und Prüfstand fest.
+- **Basis und Branch:** `codex/assessment-curve-import` in eigenem Worktree ab
+  main `46da82ec7bfe24614e0b3fc3203258535343d848`; Übernahme von #68 über GitHub
+  bestätigt, keine offenen PRs beim Einstieg. Bestehende Arbeiten und Originale
+  bleiben erhalten. Die drei Stufen sind als aufeinanderfolgende eigene PRs
+  beauftragt; jeweils nur eine Stufe, Übergabe zum Review, kein eigenständiger Merge.
+- **Umfang Stufe 1:** [verifizierter Import und Kurvenskala](supplemental_assessment.md)
+  für vier Originalserien mit 78 geplanten Auswahlen, getrennte historische und neue
+  Felder, unveränderte Originalauswahl, sichere Veröffentlichung und Widerruf.
+  PR #69 wird vor dem Merge um die zukünftige Schema-3-Pipeline ergänzt;
+  der geprüfte Archivexport und seine Ergebnisse bleiben erhalten. Die Option
+  `--assessment-output` speichert Raster/Referenzen vor dem ersten Fit und
+  veröffentlicht die Bewertung der drei Originalauswahlen danach separat.
+  Neue Struktur-, Domain-, Fortsetzungs-, Restterm- und Parameterfelder bleiben
+  ausdrücklich `not_assessed`.
+- **Abgeschlossene Umsetzung / PR:** Stufe 1 ist in
+  [PR #69](https://github.com/craexxn/ringdown-sr/pull/69) implementiert; kein Merge.
+  Vertrags-/Implementierungscommit vor Anwendung:
+  `fee9418071834b1ea42692cb436ecdd8fb6d4fd3`; vollständiger Export mit
+  `efb2accd4a31ebf4206b40acaf261a3bf04b31ad` einschließlich Inventarprüfung.
+- **Methodenbeschluss:** inklusive bisherige Float64-Schwellen ohne Rundung oder
+  zusätzliche Toleranz am 05.11.2026 ausdrücklich bestätigt. Versionsvertrag,
+  Hexgrenzen, Statusschema und Korpus wurden vor Anwendung committed. Die
+  Vorbereitung ist Referenz, keine Ersatzquelle für fehlende Primärdaten.
+  Für zukünftige simulierte Läufe sind am 05.11.2026 ausdrücklich bestätigt:
+  sauberes Signal als Referenz auf beiden Rastern sowie sieben vorab gespeicherte
+  Zwischenpunkte pro Trainingsintervall, ohne Extrapolation. Die getrennte
+  Fassung `ringdown-sr-future-assessment-1` lässt die Archivfassung unverändert.
+- **Ergänzung nach KI-basiertem Review:** Der übermittelte Befund für
+  `3a064d46e36c5897860f62634926f8d1910b2304` gegen
+  `46da82ec7bfe24614e0b3fc3203258535343d848` meldete keine technischen Befunde in
+  den drei geprüften Bereichen, benannte aber die fehlende Zukunftsanbindung.
+  Seine 385 bestehenden und 21 zusätzlichen Prüffälle (einschließlich 2.401
+  Grenzkombinationen) sind externe Nachweise, hier nicht erneut ausgeführt.
+  Die Reviewumgebung hatte keine vollständigen Originalarchive; ihre Aussage
+  bestätigt daher nicht unabhängig die Primärdatenanwendung. Der Reviewbefund
+  gilt für den damaligen Head, nicht für die jetzt ergänzte Zukunftsanbindung.
+- **Nachreview und Korrektur:** Für Head
+  `0fea3a59f194f39e3286936d84d1a7f464cab31d`, Ergänzung gegenüber
+  `3a064d46e36c5897860f62634926f8d1910b2304`, wurden drei P2-Befunde übermittelt:
+  ungeprüfte tatsächliche Workerherkunft/Adapter, unvollständige Python-Quellenmenge
+  sowie fehlender Abgleich von Worker-Seed und Auswahlregel. Übermittelt wurden
+  159 bestandene bestehende Tests, sieben reproduzierende Gegenfälle und vier
+  bestandene zusätzliche Spätänderungsfälle. Die Review-Reproduktionsdateien
+  wurden nicht mitgeliefert; die Korrektur besitzt eigene Gegenprüfungen.
+  Die Herkunftsprüfung bindet nun die vollständige Quellenmenge aus dem
+  Vorbereitungscommit, tatsächliche Workerherkunft samt Projektdateien und
+  Adapterhashes einschließlich gespeicherter Julia-Kopien. Worker-Seed und
+  aufgezeichnete Auswahlregel werden ohne Rangbildung geprüft und erhalten.
+  **Selbst ausgeführt:** 92 gezielte Fälle bestanden, darunter 28 neue Fälle
+  für diese Befunde, beide Aufrufwege und ein unabhängiges Git-Inventarbeispiel.
+  Anschließend vollständige lokale Suite: **2.848 Pythonfälle bestanden**;
+  Ruff, Format, 77 Markdown-Dateien einschließlich lokaler Links,
+  Diff-Prüfung sowie Python-/Julia-Umgebungscheck ebenfalls bestanden.
+  Die [CI des früheren Heads](https://github.com/craexxn/ringdown-sr/actions/runs/42029784263)
+  mit 2.820 Pythonfällen und allen nativen Jobs war grün, deckt diese Korrektur
+  jedoch nicht ab. Der vollständige finale CI-Nachweis samt Head/Basis und
+  tatsächlichem Checkout wird vor Übergabe in PR #69 aktualisiert.
+- **Prüfung der bisherigen Ergänzung:** 32 neue Pythonfälle prüfen die vollständige
+  CLI-/Pipeline-Anbindung mit synthetischen Suchworkern, unabhängige Vektornormen,
+  unveränderte ursprüngliche Ergebnisse/Sucheingaben, vorab gespeicherte Daten,
+  Originaldefinitionslücken, Git-/Manifest-/Auswahlbindungen, Abbruch und späte
+  Quellenänderungen. Ruff, Format, lokale Dokumentationslinks und
+  Python-/Julia-Umgebungscheck bestanden. Die vollständige Python-Suite bestand
+  am Ergänzungscommit `6ac48b64e5f5b6e61519ed308fc11cc2609c1205` mit 2.818 Fällen.
+  Zwei anschließende Gegenfälle sichern den Ausschluss eines ungeprüften
+  Selbsthashs im Quellenmanifest und den CLI-Fehlerstatus bei Replayabweichung.
+  Die bestehenden zwei nativen
+  Schema-3-Kontrollläufe prüfen zusätzlich Snapshot, Originalauswahl und neue
+  Kurvenklassen; keine zusätzlichen Suchläufe oder veränderten Budgets.
+  Vollständiger finaler Head, Basis, Python-Gesamtergebnis, CI und tatsächlicher
+  Checkout werden in [PR #69](https://github.com/craexxn/ringdown-sr/pull/69)
+  als verbindlicher Übergabenachweis geführt. Der frühere
+  [CI-Erfolg 42018644218](https://github.com/craexxn/ringdown-sr/actions/runs/42018644218)
+  (2.788 Pythonfälle) gilt nur für den zuvor geprüften Archivstand.
+- **Prüfnachweise:** 17 Vorbereitungshashes und 29 referenzierte Quellenbindungen
+  geprüft. Lokal 2.787 Pythonfälle am Implementierungsstand bestanden, darunter
+  245 neue Bewertungsfälle und eine zusätzliche CI-Scope-Prüfung. Nach Ergänzung
+  des Inventargegenfalls nochmals alle 32 Veröffentlichungstests bestanden.
+  Importgegenfälle, unabhängige Grenz-/Normfälle,
+  späte Änderungen von Abschlussdateien, Signale und Widerrufsfehler bestanden;
+  ebenso Ruff, Format, Dokumentations-/Diff-Prüfung und Python-/Julia-Umgebungscheck.
+  Die vollständige externe technische CI wird in #69 mit vollständigem Head,
+  Basis und tatsächlichem Checkout belegt; Übergabe erst nach ihrem Abschluss.
+- **Abgeschlossene Anwendung:** [alle 78 Originalauswahlen](supplemental_assessment_results_001.md)
+  verifiziert und bewertet; separate exakte rationale Gegenprüfung bestätigt alle
+  Klassen. Originalarchive/-felder und historischer Serienbericht unverändert;
+  neue Klasse A stimmt in jedem Fall mit dem alten Kurvenkriterium überein.
+  Kein neuer Fit, keine Suche und keine pauschale native Gesamtnachrechnung.
+- **Primärdaten:** Alle vier verankerten Originalarchive liegen vor:
+  `duration-manjaro-004.tar.gz`, `local-optimizer-manjaro-001.tar.gz`,
+  `outer-ladder-manjaro-001.tar.gz` und `transfer-manjaro-001.tar.gz`.
+  Externe Hashes und vollständige Importe bestanden: 20/20/20/18 Auswahlen;
+  Korpusstatus `complete`, getrennte Serienfreigaben und ursprüngliche Nenner.
+  Keine Ersatzarchive, Tabellen als Bewertungsquelle oder neue Gesamterfolgsquote.
+- **Offene Entscheidungen:** Für Stufe 1 sind Grenzsemantik, Referenz bei Rauschen
+  und Zwischenpunktraster beschlossen; keine weitere offene Methodenentscheidung.
+  Vor Stufe 2 Intervallkonvention und Beweis-/Ressourcengrenzen klären; das
+  Intervall `[0,127/4096]` s bleibt ein Vorschlag. Vor Stufe 3 regelbasierte
+  Zerlegung und zertifizierte Schranken festlegen; keine unbeschlossene
+  Vernachlässigbarkeitsschwelle und kein neuer Fit.
+- **Nächster konkreter Schritt:** [PR #69](https://github.com/craexxn/ringdown-sr/pull/69)
+  mit vollständiger CI zur gezielten Gegenprüfung der drei korrigierten
+  P2-Befunde übergeben. Workerherkunft/Adapter, vollständiges Git-Inventar,
+  Worker-Seed und Auswahlregel sind die konkreten Schwerpunkte.
+  Diese Gegenprüfung und die Übernahmeentscheidung bleiben ausstehend.
+  Erst nach bestätigter Übernahme beginnt **Stufe 2: exakte Strukturprüfung,
+  Originaldefinitionsbereich und stetige Fortsetzung**, als eigener PR. Danach
+  folgt Stufe 3 mit quantifizierter Zusatzterm-Diagnose. Ein neuer fachlicher
+  Implementierungsauftrag ist für diese Folgestufen nicht erforderlich.
+  Keine zusätzlichen Agenten oder automatisch gestartete Reviewrunde.
+
+## Abgeschlossen: parallele technische CI
+
+[PR #68](https://github.com/craexxn/ringdown-sr/pull/68) ist als
+`46da82ec7bfe24614e0b3fc3203258535343d848` übernommen; der Dateibaum entspricht
+Head `99349bd719e5a72a03920bc5c413969181a3b8eb`.
+[CI 42006542480](https://github.com/craexxn/ringdown-sr/actions/runs/42006542480)
+bestand mit 2.541 Pythonfällen und sämtlichen nativen Prüfungen; tatsächlicher
+Checkout `6e6b8694648d4d46406b3982b88b32e301b32f90` war baumgleich.
+Alle 30 technischen Schritte und acht historische Commitbindungen bleiben
+erhalten; isolierte Schedulergegenfälle sind im PR dokumentiert.
+[Aufteilung und Grenzen](ci.md) bleiben unverändert gültig.
+Für den wissenschaftlichen Kreuzvergleich auf Manjaro liegt inzwischen ein
+übermittelter Nachrechnungsbefund vor, der beide Endfronten mit 7 beziehungsweise
+11 Kandidaten sowie die Originalauswahlen A/D bestätigt. Der
+[Leitfaden](ringdown_recovery_roadmap.md#ziel-und-ausgangspunkt) hält Herkunft,
+Grenzen und die ausstehende Bindung an Originalarchiv und versionierten
+Ergebnisbericht fest. Hier erfolgten keine zusätzliche wissenschaftliche Suche
+und keine erneute Primärdaten- oder native Nachrechnung dieses Befunds.
 
 ## Grundlage: zwei Seed-/Treiber-Gegenrichtungen implementiert
 

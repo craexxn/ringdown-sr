@@ -1,0 +1,1319 @@
+{
+  "format": "ringdown-sr-assessment-sources-1",
+  "series": {
+    "duration-manjaro-004": {
+      "archive_sha256": "c2d9e330770746030bab9467b682a6b595cac25aa132dbb4decd1c4b03472289",
+      "cells": [
+        {
+          "arm": "unrestricted",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261103
+          },
+          "condition": "unrestricted",
+          "directory": "cell-01",
+          "number": 1
+        },
+        {
+          "arm": "no_nested_trig",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261103
+          },
+          "condition": "no_nested_trig",
+          "directory": "cell-02",
+          "number": 2
+        },
+        {
+          "arm": "no_nested_trig",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 2000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261103
+          },
+          "condition": "no_nested_trig",
+          "directory": "cell-03",
+          "number": 3
+        },
+        {
+          "arm": "unrestricted",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 2000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261103
+          },
+          "condition": "unrestricted",
+          "directory": "cell-04",
+          "number": 4
+        },
+        {
+          "arm": "no_nested_trig",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261104
+          },
+          "condition": "no_nested_trig",
+          "directory": "cell-05",
+          "number": 5
+        },
+        {
+          "arm": "unrestricted",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 2000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261104
+          },
+          "condition": "unrestricted",
+          "directory": "cell-06",
+          "number": 6
+        },
+        {
+          "arm": "unrestricted",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261104
+          },
+          "condition": "unrestricted",
+          "directory": "cell-07",
+          "number": 7
+        },
+        {
+          "arm": "no_nested_trig",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 2000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261104
+          },
+          "condition": "no_nested_trig",
+          "directory": "cell-08",
+          "number": 8
+        },
+        {
+          "arm": "unrestricted",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 2000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261105
+          },
+          "condition": "unrestricted",
+          "directory": "cell-09",
+          "number": 9
+        },
+        {
+          "arm": "no_nested_trig",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 2000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261105
+          },
+          "condition": "no_nested_trig",
+          "directory": "cell-10",
+          "number": 10
+        },
+        {
+          "arm": "no_nested_trig",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261105
+          },
+          "condition": "no_nested_trig",
+          "directory": "cell-11",
+          "number": 11
+        },
+        {
+          "arm": "unrestricted",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261105
+          },
+          "condition": "unrestricted",
+          "directory": "cell-12",
+          "number": 12
+        },
+        {
+          "arm": "no_nested_trig",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 2000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261106
+          },
+          "condition": "no_nested_trig",
+          "directory": "cell-13",
+          "number": 13
+        },
+        {
+          "arm": "unrestricted",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261106
+          },
+          "condition": "unrestricted",
+          "directory": "cell-14",
+          "number": 14
+        },
+        {
+          "arm": "unrestricted",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 2000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261106
+          },
+          "condition": "unrestricted",
+          "directory": "cell-15",
+          "number": 15
+        },
+        {
+          "arm": "no_nested_trig",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261106
+          },
+          "condition": "no_nested_trig",
+          "directory": "cell-16",
+          "number": 16
+        },
+        {
+          "arm": "unrestricted",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261107
+          },
+          "condition": "unrestricted",
+          "directory": "cell-17",
+          "number": 17
+        },
+        {
+          "arm": "no_nested_trig",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261107
+          },
+          "condition": "no_nested_trig",
+          "directory": "cell-18",
+          "number": 18
+        },
+        {
+          "arm": "no_nested_trig",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 2000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261107
+          },
+          "condition": "no_nested_trig",
+          "directory": "cell-19",
+          "number": 19
+        },
+        {
+          "arm": "unrestricted",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 2000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261107
+          },
+          "condition": "unrestricted",
+          "directory": "cell-20",
+          "number": 20
+        }
+      ],
+      "data_shape": {
+        "diagnostic": 889,
+        "training": 128
+      },
+      "evidence_commit": "b9636ad92ecd57b24b142f39548a7a713d0934a0",
+      "evidence_document": "docs/search_duration_results_manjaro_004.md",
+      "execution_commit": "79ff670b825efd8ba0e999edb983aec6f7e804ae",
+      "format": "ringdown-sr-search-duration-4",
+      "local_profiles": {
+        "no_nested_trig": {
+          "optimizer_iterations": 100,
+          "optimizer_nrestarts": 2,
+          "should_simplify": false,
+          "use_frequency": true,
+          "use_frequency_in_tournament": true
+        },
+        "unrestricted": {
+          "optimizer_iterations": 100,
+          "optimizer_nrestarts": 2,
+          "should_simplify": false,
+          "use_frequency": true,
+          "use_frequency_in_tournament": true
+        }
+      },
+      "plan": {
+        "commit": "9bff8a29030026dcdc2de52640556a73a57fe2a4",
+        "sha256": "2a215b6f178c085cad6611070124e09e929f35917eba66723f4522c1fe81393c"
+      },
+      "plan_path": "docs/search_duration_prediction_plan.md",
+      "profile_format": "ringdown-sr-search-duration-profile-4",
+      "runtime_sources": {
+        "FreeOptimizerBudget.jl": "julia/src/FreeOptimizerBudget.jl",
+        "RepresentationProfiles.jl": "julia/src/RepresentationProfiles.jl",
+        "RingdownSRLoss.jl": "julia/src/RingdownSRLoss.jl",
+        "RingdownSRSearch.jl": "julia/src/RingdownSRSearch.jl",
+        "TrigonometricGrammar.jl": "julia/src/TrigonometricGrammar.jl",
+        "backend.py": "scripts/check_search_duration_backend.py",
+        "driver.py": "scripts/repeat_symbolic_arm.py",
+        "grammar_backend.py": "scripts/check_trigonometric_grammar_backend.py",
+        "grammar_worker.py": "scripts/run_trigonometric_grammar_worker.py",
+        "probe_symbolic_numerics.py": "scripts/probe_symbolic_numerics.py",
+        "worker.py": "scripts/run_search_duration_worker.py"
+      },
+      "signal_order": [
+        "anchor"
+      ],
+      "source_count": 72,
+      "source_set_sha256": "9c0dc95dced1e989dd3360c5e4a372ef42eff15146183ff3e717da7a345479d4"
+    },
+    "local-optimizer-manjaro-001": {
+      "archive_sha256": "1ab8c0aa91436c4b169c6c6efa8053e04c47ef57d07915f36ac476483276866d",
+      "cells": [
+        {
+          "arm": "local_100_2",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261120
+          },
+          "condition": "local_100_2",
+          "directory": "cell-01",
+          "grammar": "unrestricted",
+          "number": 1
+        },
+        {
+          "arm": "local_300_2",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261120
+          },
+          "condition": "local_300_2",
+          "directory": "cell-02",
+          "grammar": "unrestricted",
+          "number": 2
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261120
+          },
+          "condition": "local_300_5",
+          "directory": "cell-03",
+          "grammar": "unrestricted",
+          "number": 3
+        },
+        {
+          "arm": "local_100_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261120
+          },
+          "condition": "local_100_5",
+          "directory": "cell-04",
+          "grammar": "unrestricted",
+          "number": 4
+        },
+        {
+          "arm": "local_300_2",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261121
+          },
+          "condition": "local_300_2",
+          "directory": "cell-05",
+          "grammar": "unrestricted",
+          "number": 5
+        },
+        {
+          "arm": "local_100_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261121
+          },
+          "condition": "local_100_5",
+          "directory": "cell-06",
+          "grammar": "unrestricted",
+          "number": 6
+        },
+        {
+          "arm": "local_100_2",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261121
+          },
+          "condition": "local_100_2",
+          "directory": "cell-07",
+          "grammar": "unrestricted",
+          "number": 7
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261121
+          },
+          "condition": "local_300_5",
+          "directory": "cell-08",
+          "grammar": "unrestricted",
+          "number": 8
+        },
+        {
+          "arm": "local_100_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261122
+          },
+          "condition": "local_100_5",
+          "directory": "cell-09",
+          "grammar": "unrestricted",
+          "number": 9
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261122
+          },
+          "condition": "local_300_5",
+          "directory": "cell-10",
+          "grammar": "unrestricted",
+          "number": 10
+        },
+        {
+          "arm": "local_300_2",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261122
+          },
+          "condition": "local_300_2",
+          "directory": "cell-11",
+          "grammar": "unrestricted",
+          "number": 11
+        },
+        {
+          "arm": "local_100_2",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261122
+          },
+          "condition": "local_100_2",
+          "directory": "cell-12",
+          "grammar": "unrestricted",
+          "number": 12
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261123
+          },
+          "condition": "local_300_5",
+          "directory": "cell-13",
+          "grammar": "unrestricted",
+          "number": 13
+        },
+        {
+          "arm": "local_100_2",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261123
+          },
+          "condition": "local_100_2",
+          "directory": "cell-14",
+          "grammar": "unrestricted",
+          "number": 14
+        },
+        {
+          "arm": "local_100_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261123
+          },
+          "condition": "local_100_5",
+          "directory": "cell-15",
+          "grammar": "unrestricted",
+          "number": 15
+        },
+        {
+          "arm": "local_300_2",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261123
+          },
+          "condition": "local_300_2",
+          "directory": "cell-16",
+          "grammar": "unrestricted",
+          "number": 16
+        },
+        {
+          "arm": "local_100_2",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261124
+          },
+          "condition": "local_100_2",
+          "directory": "cell-17",
+          "grammar": "unrestricted",
+          "number": 17
+        },
+        {
+          "arm": "local_300_2",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261124
+          },
+          "condition": "local_300_2",
+          "directory": "cell-18",
+          "grammar": "unrestricted",
+          "number": 18
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261124
+          },
+          "condition": "local_300_5",
+          "directory": "cell-19",
+          "grammar": "unrestricted",
+          "number": 19
+        },
+        {
+          "arm": "local_100_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261124
+          },
+          "condition": "local_100_5",
+          "directory": "cell-20",
+          "grammar": "unrestricted",
+          "number": 20
+        }
+      ],
+      "data_shape": {
+        "diagnostic": 889,
+        "training": 128
+      },
+      "evidence_commit": "b9636ad92ecd57b24b142f39548a7a713d0934a0",
+      "evidence_document": "docs/local_optimizer_results_manjaro_001.md",
+      "execution_commit": "cf04476057b95c1517e1a303f4b48fbd30545a47",
+      "format": "ringdown-sr-local-optimizer-1",
+      "local_profiles": {
+        "local_100_2": {
+          "optimizer_iterations": 100,
+          "optimizer_nrestarts": 2,
+          "should_simplify": false,
+          "use_frequency": true,
+          "use_frequency_in_tournament": true
+        },
+        "local_100_5": {
+          "optimizer_iterations": 100,
+          "optimizer_nrestarts": 5,
+          "should_simplify": false,
+          "use_frequency": true,
+          "use_frequency_in_tournament": true
+        },
+        "local_300_2": {
+          "optimizer_iterations": 300,
+          "optimizer_nrestarts": 2,
+          "should_simplify": false,
+          "use_frequency": true,
+          "use_frequency_in_tournament": true
+        },
+        "local_300_5": {
+          "optimizer_iterations": 300,
+          "optimizer_nrestarts": 5,
+          "should_simplify": false,
+          "use_frequency": true,
+          "use_frequency_in_tournament": true
+        }
+      },
+      "plan": {
+        "commit": "e7b457bf8927cdd1b52c51bb3457b54d0c88f066",
+        "sha256": "793006863a739a973dd3ffcf82c6e665f1a77da7eefee4132555843230df7f47"
+      },
+      "plan_path": "docs/local_optimizer_plan.md",
+      "profile_format": "ringdown-sr-local-optimizer-profile-1",
+      "runtime_sources": {
+        "FreeOptimizerBudget.jl": "julia/src/FreeOptimizerBudget.jl",
+        "LocalOptimizerBudget.jl": "julia/src/LocalOptimizerBudget.jl",
+        "RepresentationProfiles.jl": "julia/src/RepresentationProfiles.jl",
+        "RingdownSRLoss.jl": "julia/src/RingdownSRLoss.jl",
+        "RingdownSRSearch.jl": "julia/src/RingdownSRSearch.jl",
+        "TrigonometricGrammar.jl": "julia/src/TrigonometricGrammar.jl",
+        "backend.py": "scripts/check_local_optimizer_backend.py",
+        "driver.py": "scripts/repeat_symbolic_arm.py",
+        "duration_worker.py": "scripts/run_search_duration_worker.py",
+        "grammar_backend.py": "scripts/check_trigonometric_grammar_backend.py",
+        "grammar_worker.py": "scripts/run_trigonometric_grammar_worker.py",
+        "probe_symbolic_numerics.py": "scripts/probe_symbolic_numerics.py",
+        "worker.py": "scripts/run_local_optimizer_worker.py"
+      },
+      "signal_order": [
+        "anchor"
+      ],
+      "source_count": 80,
+      "source_set_sha256": "7ab51060a41e11e1673f8e9000c82ce5083fa75e2f2277d49d884fda0fa35be1"
+    },
+    "outer-ladder-manjaro-001": {
+      "archive_sha256": "ac7e841b79042e216d6aacae2961ffb8395f298bbcc7ecc11f1092c90b3deb40",
+      "cells": [
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261201
+          },
+          "condition": "local_300_5",
+          "directory": "cell-01",
+          "grammar": "unrestricted",
+          "number": 1
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261201
+          },
+          "condition": "local_300_5",
+          "directory": "cell-02",
+          "grammar": "unrestricted",
+          "number": 2
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 5000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261201
+          },
+          "condition": "local_300_5",
+          "directory": "cell-03",
+          "grammar": "unrestricted",
+          "number": 3
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 2000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261201
+          },
+          "condition": "local_300_5",
+          "directory": "cell-04",
+          "grammar": "unrestricted",
+          "number": 4
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261202
+          },
+          "condition": "local_300_5",
+          "directory": "cell-05",
+          "grammar": "unrestricted",
+          "number": 5
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 2000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261202
+          },
+          "condition": "local_300_5",
+          "directory": "cell-06",
+          "grammar": "unrestricted",
+          "number": 6
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261202
+          },
+          "condition": "local_300_5",
+          "directory": "cell-07",
+          "grammar": "unrestricted",
+          "number": 7
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 5000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261202
+          },
+          "condition": "local_300_5",
+          "directory": "cell-08",
+          "grammar": "unrestricted",
+          "number": 8
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 2000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261203
+          },
+          "condition": "local_300_5",
+          "directory": "cell-09",
+          "grammar": "unrestricted",
+          "number": 9
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 5000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261203
+          },
+          "condition": "local_300_5",
+          "directory": "cell-10",
+          "grammar": "unrestricted",
+          "number": 10
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261203
+          },
+          "condition": "local_300_5",
+          "directory": "cell-11",
+          "grammar": "unrestricted",
+          "number": 11
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261203
+          },
+          "condition": "local_300_5",
+          "directory": "cell-12",
+          "grammar": "unrestricted",
+          "number": 12
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 5000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261204
+          },
+          "condition": "local_300_5",
+          "directory": "cell-13",
+          "grammar": "unrestricted",
+          "number": 13
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261204
+          },
+          "condition": "local_300_5",
+          "directory": "cell-14",
+          "grammar": "unrestricted",
+          "number": 14
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 2000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261204
+          },
+          "condition": "local_300_5",
+          "directory": "cell-15",
+          "grammar": "unrestricted",
+          "number": 15
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261204
+          },
+          "condition": "local_300_5",
+          "directory": "cell-16",
+          "grammar": "unrestricted",
+          "number": 16
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 200,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261205
+          },
+          "condition": "local_300_5",
+          "directory": "cell-17",
+          "grammar": "unrestricted",
+          "number": 17
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261205
+          },
+          "condition": "local_300_5",
+          "directory": "cell-18",
+          "grammar": "unrestricted",
+          "number": 18
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 5000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261205
+          },
+          "condition": "local_300_5",
+          "directory": "cell-19",
+          "grammar": "unrestricted",
+          "number": 19
+        },
+        {
+          "arm": "local_300_5",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 2000,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261205
+          },
+          "condition": "local_300_5",
+          "directory": "cell-20",
+          "grammar": "unrestricted",
+          "number": 20
+        }
+      ],
+      "data_shape": {
+        "diagnostic": 889,
+        "training": 128
+      },
+      "evidence_commit": "b9636ad92ecd57b24b142f39548a7a713d0934a0",
+      "evidence_document": "docs/outer_search_ladder_results_manjaro_001.md",
+      "execution_commit": "5215c5e1c93f220a3f7ea59b1c37580d2f2b5ea4",
+      "format": "ringdown-sr-outer-search-ladder-1",
+      "local_profiles": {
+        "local_300_5": {
+          "optimizer_iterations": 300,
+          "optimizer_nrestarts": 5,
+          "should_simplify": false,
+          "use_frequency": true,
+          "use_frequency_in_tournament": true
+        }
+      },
+      "plan": {
+        "commit": "e1ea601286042aadcc5b5291ae72d114c7846dbf",
+        "sha256": "95aca0069d6b8a6ad0305d5722c558e4bbea1c23e7f3b70630d2eb33e816fa35"
+      },
+      "plan_path": "docs/outer_search_ladder_plan.md",
+      "profile_format": "ringdown-sr-outer-search-ladder-profile-1",
+      "runtime_sources": {
+        "FreeOptimizerBudget.jl": "julia/src/FreeOptimizerBudget.jl",
+        "LocalOptimizerBudget.jl": "julia/src/LocalOptimizerBudget.jl",
+        "RepresentationProfiles.jl": "julia/src/RepresentationProfiles.jl",
+        "RingdownSRLoss.jl": "julia/src/RingdownSRLoss.jl",
+        "RingdownSRSearch.jl": "julia/src/RingdownSRSearch.jl",
+        "TrigonometricGrammar.jl": "julia/src/TrigonometricGrammar.jl",
+        "backend.py": "scripts/check_outer_search_ladder_backend.py",
+        "driver.py": "scripts/repeat_symbolic_arm.py",
+        "duration_worker.py": "scripts/run_search_duration_worker.py",
+        "grammar_backend.py": "scripts/check_trigonometric_grammar_backend.py",
+        "grammar_worker.py": "scripts/run_trigonometric_grammar_worker.py",
+        "probe_symbolic_numerics.py": "scripts/probe_symbolic_numerics.py",
+        "worker.py": "scripts/run_outer_search_ladder_worker.py"
+      },
+      "signal_order": [
+        "anchor"
+      ],
+      "source_count": 86,
+      "source_set_sha256": "e3df0f65d8e5295d71b515fb268708082b459cf70bb35306710ed2e6fc53a8e5"
+    },
+    "transfer-manjaro-001": {
+      "input_manifest_path": "data/transfer_check_inputs.json",
+      "archive_sha256": "e363fe1be629973a460fc6e2188bf680c21b2c5519d331bc7e257968dcaaa139",
+      "cells": [
+        {
+          "arm": "anchor",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261210
+          },
+          "condition": "local_300_5",
+          "directory": "cell-01",
+          "grammar": "unrestricted",
+          "number": 1,
+          "signal": "anchor"
+        },
+        {
+          "arm": "frequency",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261210
+          },
+          "condition": "local_300_5",
+          "directory": "cell-02",
+          "grammar": "unrestricted",
+          "number": 2,
+          "signal": "frequency"
+        },
+        {
+          "arm": "decay",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261210
+          },
+          "condition": "local_300_5",
+          "directory": "cell-03",
+          "grammar": "unrestricted",
+          "number": 3,
+          "signal": "decay"
+        },
+        {
+          "arm": "phase",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261210
+          },
+          "condition": "local_300_5",
+          "directory": "cell-04",
+          "grammar": "unrestricted",
+          "number": 4,
+          "signal": "phase"
+        },
+        {
+          "arm": "amplitude",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261210
+          },
+          "condition": "local_300_5",
+          "directory": "cell-05",
+          "grammar": "unrestricted",
+          "number": 5,
+          "signal": "amplitude"
+        },
+        {
+          "arm": "combined",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261210
+          },
+          "condition": "local_300_5",
+          "directory": "cell-06",
+          "grammar": "unrestricted",
+          "number": 6,
+          "signal": "combined"
+        },
+        {
+          "arm": "decay",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261211
+          },
+          "condition": "local_300_5",
+          "directory": "cell-07",
+          "grammar": "unrestricted",
+          "number": 7,
+          "signal": "decay"
+        },
+        {
+          "arm": "phase",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261211
+          },
+          "condition": "local_300_5",
+          "directory": "cell-08",
+          "grammar": "unrestricted",
+          "number": 8,
+          "signal": "phase"
+        },
+        {
+          "arm": "amplitude",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261211
+          },
+          "condition": "local_300_5",
+          "directory": "cell-09",
+          "grammar": "unrestricted",
+          "number": 9,
+          "signal": "amplitude"
+        },
+        {
+          "arm": "combined",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261211
+          },
+          "condition": "local_300_5",
+          "directory": "cell-10",
+          "grammar": "unrestricted",
+          "number": 10,
+          "signal": "combined"
+        },
+        {
+          "arm": "anchor",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261211
+          },
+          "condition": "local_300_5",
+          "directory": "cell-11",
+          "grammar": "unrestricted",
+          "number": 11,
+          "signal": "anchor"
+        },
+        {
+          "arm": "frequency",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261211
+          },
+          "condition": "local_300_5",
+          "directory": "cell-12",
+          "grammar": "unrestricted",
+          "number": 12,
+          "signal": "frequency"
+        },
+        {
+          "arm": "amplitude",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261212
+          },
+          "condition": "local_300_5",
+          "directory": "cell-13",
+          "grammar": "unrestricted",
+          "number": 13,
+          "signal": "amplitude"
+        },
+        {
+          "arm": "combined",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261212
+          },
+          "condition": "local_300_5",
+          "directory": "cell-14",
+          "grammar": "unrestricted",
+          "number": 14,
+          "signal": "combined"
+        },
+        {
+          "arm": "anchor",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261212
+          },
+          "condition": "local_300_5",
+          "directory": "cell-15",
+          "grammar": "unrestricted",
+          "number": 15,
+          "signal": "anchor"
+        },
+        {
+          "arm": "frequency",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261212
+          },
+          "condition": "local_300_5",
+          "directory": "cell-16",
+          "grammar": "unrestricted",
+          "number": 16,
+          "signal": "frequency"
+        },
+        {
+          "arm": "decay",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261212
+          },
+          "condition": "local_300_5",
+          "directory": "cell-17",
+          "grammar": "unrestricted",
+          "number": 17,
+          "signal": "decay"
+        },
+        {
+          "arm": "phase",
+          "budget": {
+            "ncycles_per_iteration": 50,
+            "niterations": 500,
+            "population_size": 32,
+            "populations": 2,
+            "seed": 20261212
+          },
+          "condition": "local_300_5",
+          "directory": "cell-18",
+          "grammar": "unrestricted",
+          "number": 18,
+          "signal": "phase"
+        }
+      ],
+      "data_shape": {
+        "diagnostic": 889,
+        "training": 128
+      },
+      "evidence_commit": "b9636ad92ecd57b24b142f39548a7a713d0934a0",
+      "evidence_document": "docs/transfer_check_results_manjaro_001.md",
+      "execution_commit": "bc4025d13b4954dee779341026d282430521686a",
+      "format": "ringdown-sr-transfer-check-1",
+      "local_profiles": {
+        "local_300_5": {
+          "optimizer_iterations": 300,
+          "optimizer_nrestarts": 5,
+          "should_simplify": false,
+          "use_frequency": true,
+          "use_frequency_in_tournament": true
+        }
+      },
+      "plan": {
+        "commit": "446afbfea8958f409693c2253f8d9d4950f24e45",
+        "sha256": "f29561b8151a2a4e17cd881a8c4576f406f0efd340309ac54fcbbde2faabb6f3"
+      },
+      "plan_path": "docs/transfer_check_plan.md",
+      "profile_format": "ringdown-sr-transfer-check-profile-1",
+      "runtime_sources": {
+        "FreeOptimizerBudget.jl": "julia/src/FreeOptimizerBudget.jl",
+        "LocalOptimizerBudget.jl": "julia/src/LocalOptimizerBudget.jl",
+        "RepresentationProfiles.jl": "julia/src/RepresentationProfiles.jl",
+        "RingdownSRLoss.jl": "julia/src/RingdownSRLoss.jl",
+        "RingdownSRSearch.jl": "julia/src/RingdownSRSearch.jl",
+        "TrigonometricGrammar.jl": "julia/src/TrigonometricGrammar.jl",
+        "backend.py": "scripts/check_transfer_check_backend.py",
+        "driver.py": "scripts/repeat_symbolic_arm.py",
+        "duration_worker.py": "scripts/run_search_duration_worker.py",
+        "grammar_backend.py": "scripts/check_trigonometric_grammar_backend.py",
+        "grammar_worker.py": "scripts/run_trigonometric_grammar_worker.py",
+        "probe_symbolic_numerics.py": "scripts/probe_symbolic_numerics.py",
+        "worker.py": "scripts/run_transfer_check_worker.py"
+      },
+      "signal_order": [
+        "anchor",
+        "frequency",
+        "decay",
+        "phase",
+        "amplitude",
+        "combined"
+      ],
+      "source_count": 94,
+      "source_set_sha256": "6c3893d9348931c3f6452c6ccb0d07d222154a0b43749c6a41aa20e9753bfb28"
+    }
+  }
+}

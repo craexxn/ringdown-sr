@@ -179,7 +179,12 @@ def _save_symbolic_plot(path: Path, arrays: dict) -> None:
 
 
 def run_symbolic_pilot(
-    config: SymbolicPilotConfig, original: bytes, source_filename: str, output_directory
+    config: SymbolicPilotConfig,
+    original: bytes,
+    source_filename: str,
+    output_directory,
+    *,
+    _assessment=None,
 ) -> PilotRun:
     """Persist schema 3, retaining classical references and all individual SR arms."""
     # Detect collisions before output reservation; the reference stage draws anew
@@ -203,11 +208,15 @@ def run_symbolic_pilot(
         },
         "artifact_sha256": {},
     }
+    if _assessment is not None:
+        metadata["supplemental_assessment"] = _assessment.install(output)
     _write_json(output / "metadata_initial.json", metadata)
     _write_json(output / "metadata.json", metadata)
     (output / "config.toml").write_bytes(original)
     (output / "reference_config.toml").write_bytes(reference_bytes)
     _write_json(output / "resolved_config.json", config.to_dict())
+    if _assessment is not None:
+        _assessment.bind_initial(output)
     result = {
         "schema_version": 3,
         "status": "running",

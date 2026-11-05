@@ -6,11 +6,22 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 ## Projektstatus
 
 Fortsetzungsstand: 05.11.2026; abgeglichener Hauptbranch:
-`8096ddb` ([Kreuzvergleich #67](https://github.com/craexxn/ringdown-sr/pull/67)).
-Die [technische CI](docs/ci.md) wird in einem eigenen Branch in frühe Prüfungen,
-drei parallele native Jobs und den verbindlichen Abschluss `technical-checks`
-aufgeteilt; bestehende Prüfbefehle und wissenschaftliche Budgets bleiben erhalten.
+`46da82e` ([parallele technische CI #68](https://github.com/craexxn/ringdown-sr/pull/68)).
+Die [technische CI](docs/ci.md) mit drei parallelen nativen Jobs ist übernommen.
+Aktuell ist [Stufe 1 der ergänzenden Ergebnisbewertung](docs/supplemental_assessment.md)
+in [PR #69](https://github.com/craexxn/ringdown-sr/pull/69) implementiert:
+verifizierter Originalimport und zusätzliche Kurvenklassen A/B/C/D, ergänzt um
+zukünftige Schema-3-Läufe mit `--assessment-output`. Die Bewertungsgrundlage wird
+vor der Suche gespeichert; bewertet wird die Originalauswahl gegen das saubere Signal.
+Die [lesende Anwendung auf alle 78 Originalauswahlen](docs/supplemental_assessment_results_001.md)
+ist abgeschlossen; alle vier verankerten Originalarchive liegen verifiziert vor.
+Die anschließenden Stufen (exakte Struktur/Domain/Fortsetzung und quantifizierte
+Zusatzterme) folgen jeweils erst nach bestätigter Übernahme des vorherigen PRs.
 Prüfstand und offene Arbeit stehen im [Fortsetzungsstand](docs/representation_implementation_status.md).
+Der [Leitfaden zur wiederholbaren Rekonstruktion](docs/ringdown_recovery_roadmap.md)
+ordnet Phasen, Begründungen und Entscheidungskriterien. Aktuell läuft dessen
+Phase 1, Bewertungsstufe 1; Strukturprüfung, Zusatzterm-Diagnose und Suchversuche
+stehen noch aus.
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit
 [PR #59](https://github.com/craexxn/ringdown-sr/pull/59) übernommen.
@@ -86,12 +97,14 @@ keine automatische Anschlussfreigabe. Auch 10.000 ist derzeit nicht begründet.
 Als nächster abgegrenzter Schritt ist ein
 [Seed-/Treiber-Kreuzvergleich](docs/seed_driver_crosscheck.md) implementiert:
 zwei feste Gegenrichtungen mit historischen Workerpfaden, vollständigem
-Frontvergleich und unverändertem 500/300/5-Budget. Wissenschaftlich noch
-nicht ausgeführt; er grenzt Seedabhängigkeit von Ausführungspfadunterschieden
-ein. Danach folgt die vorgemerkte Prüfung der vorhandenen
-Rauschpipeline auf identischen verrauschten Daten; anschließend kompaktes
-Pilotdesign und Pilotauswertung mit Hauptversuchsplan gemäß der in #61
-festgehaltenen Route. Die Seedabhängigkeit und eine praktikable Messregel
+Frontvergleich und unverändertem 500/300/5-Budget. Ein übermittelter
+Nachrechnungsbefund berichtet die Reproduktion beider vollständigen Endfronten;
+Primärdaten und ein versionierter Ergebnisbericht liegen hier noch nicht vor.
+Die Einordnung und Grenzen stehen im [Leitfaden](docs/ringdown_recovery_roadmap.md).
+Nach Abschluss der Zusatzbewertung folgen die dort beschriebenen, vorab
+festzulegenden Entwicklungskontrollen und die Prüfung des tatsächlichen
+späteren Laufwegs; anschließend Rauschpilot und Hauptversuchsplanung.
+Die Seedabhängigkeit und eine praktikable Messregel
 für Strukturstabilität müssen im Pilotdesign ausdrücklich berücksichtigt werden.
 Wissenschaftliche Ausführung bleibt auf Manjaro; Hauptstudie und
 wissenschaftliche Übertragbarkeit bleiben offen.

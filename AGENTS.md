@@ -18,6 +18,11 @@ der [Fortsetzungsstand in der README](README.md#projektstatus).
   Bei Statusänderungen deren Datum und betroffene Statusaussagen abgleichen;
   historische Prüf- und Ausführungsdaten bleiben erhalten. Eingefrorene
   Laufzeitpläne nicht zur Statuspflege verändern.
+- Jeder fachlich relevante PR nennt seine Phase im
+  [Leitfaden](docs/ringdown_recovery_roadmap.md) und aktualisiert den bestehenden
+  Fortsetzungsstand. Änderungen der Vorgehensweise begründen; bereits
+  eingefrorene Versuchsprotokolle bleiben erhalten. Vorschläge im Leitfaden
+  ersetzen keine noch ausstehenden Methodenentscheidungen oder Laufaufträge.
 
 ## Sprache
 

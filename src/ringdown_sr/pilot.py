@@ -209,7 +209,9 @@ def _save_plot(path: Path, arrays: dict) -> None:
     figure.savefig(path, dpi=150)
 
 
-def run_pilot(config_path: str | Path, output_directory: str | Path) -> PilotRun:
+def run_pilot(
+    config_path: str | Path, output_directory: str | Path, *, assessment_output=None
+) -> PilotRun:
     """Reserve a new directory and persist inputs, outcome, and provenance.
 
     Invalid configurations and existing destinations are rejected before
@@ -221,6 +223,14 @@ def run_pilot(config_path: str | Path, output_directory: str | Path) -> PilotRun
     config_path = Path(config_path)
     original = config_path.read_bytes()
     config = parse_config(original)
+    if assessment_output is not None:
+        from ringdown_sr.future_assessment import run_assessed_pilot
+
+        if not isinstance(config, SymbolicPilotConfig):
+            raise ValueError("Supplemental assessment requires a schema-3 pilot.")
+        return run_assessed_pilot(
+            config, original, config_path.name, output_directory, assessment_output
+        )
     if isinstance(config, SymbolicPilotConfig):
         from ringdown_sr.symbolic_pilot import run_symbolic_pilot
 

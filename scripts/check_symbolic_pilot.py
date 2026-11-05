@@ -186,6 +186,58 @@ def verify(directory: Path):
     print(f"Schema-3 audit passed: {directory}; alpha={alpha:g}.")
 
 
+def verify_assessment(source, output):
+    """Independently check the new grades on the existing tiny native controls."""
+    assert not (output / "ASSESSMENT_LOCKED").exists()
+    report = read(output / "assessment_report.json")
+    assert report["status"] == "completed"
+    for name, digest in read(output / "assessment_checksums.json").items():
+        assert hashlib.sha256((output / name).read_bytes()).hexdigest() == digest
+    records = read(output / "assessment_records.json")
+    assert len(records) == 3
+    with np.load(source / "assessment_inputs.npz", allow_pickle=False) as arrays:
+        for record in records:
+            name = record["source_identity"]["arm"]
+            front = read(source / "symbolic" / name / "result.json")
+            index = front["selected_index"]
+            assert index == record["source_identity"]["original_selected_index"]
+            assert front["candidates"][index] == record["original_candidate"]
+            values = []
+            for grid in ("training", "diagnostic"):
+                truth = arrays[grid + "_truth"]
+                try:
+                    prediction = evaluate_tree(
+                        front["candidates"][index]["tree"], arrays[grid + "_time_s"]
+                    )
+                except ValueError:
+                    assert record["curve_errors"][grid]["status"] != "available"
+                    break
+                difference = prediction - truth
+                rms = float(np.linalg.norm(difference) / np.linalg.norm(truth))
+                maximum = float(np.max(np.abs(difference)) / np.max(np.abs(truth)))
+                saved = record["curve_errors"][grid]
+                np.testing.assert_allclose(
+                    [saved["relative_rms"], saved["relative_max"]],
+                    [rms, maximum],
+                    rtol=1e-12,
+                    atol=0,
+                )
+                values.append((saved["relative_rms"], saved["relative_max"]))
+            expected = None
+            if len(values) == 2:
+                expected = "D"
+                for grade, rms, maximum in (
+                    ("A", 0.001, 0.01),
+                    ("B", 0.01, 0.02),
+                    ("C", 0.05, 0.1),
+                ):
+                    if all(r <= rms and m <= maximum for r, m in values):
+                        expected = grade
+                        break
+            assert record["supplemental"]["curve"]["grade"] == expected
+    print(f"Prospective assessment audit passed: {output}; three original selections.")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -234,13 +286,15 @@ def main():
                     content = content.replace(old, new)
             path = root / f"{kind}.toml"
             path.write_text(content)
-            outcome = run_pilot(path, root / kind)
+            assessment = root / (kind + "-assessment")
+            outcome = run_pilot(path, root / kind, assessment_output=assessment)
             if outcome.status != "success":
                 print((outcome.output_directory / "result.json").read_text())
                 for log in outcome.output_directory.rglob("worker.log"):
                     print(f"Worker log: {log}\n{log.read_text()}")
                 raise SystemExit(f"Schema-3 control failed: {outcome.output_directory}")
             verify(outcome.output_directory)
+            verify_assessment(outcome.output_directory, assessment)
 
 
 if __name__ == "__main__":
