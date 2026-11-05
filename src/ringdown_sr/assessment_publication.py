@@ -110,7 +110,10 @@ def reserve_output(path):
     return path
 
 
-def verify_bytes(output, expected):
+def verify_bytes(output, expected, *, locked=True):
+    names = set(expected) | ({LOCK} if locked else set())
+    if {path.name for path in output.iterdir()} != names:
+        raise ValueError("Assessment output inventory changed during publication.")
     for name, contents in expected.items():
         path = output / name
         if path.is_symlink() or path.read_bytes() != contents:
@@ -148,7 +151,7 @@ def publish(output, report, summary, payloads, consumed):
     verify_bytes(output, expected)
     (output / LOCK).unlink()
     consumed.check()
-    verify_bytes(output, expected)
+    verify_bytes(output, expected, locked=False)
     return report
 
 

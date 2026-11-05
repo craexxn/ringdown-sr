@@ -69,6 +69,24 @@ def test_mutation_while_writing_pending_report_revokes_release(
     locked(output)
 
 
+def test_unmanifested_file_added_during_publication_revokes_release(
+    tmp_path, monkeypatch
+):
+    output = tmp_path / "output"
+    write = Path.write_bytes
+
+    def insert(path, raw):
+        result = write(path, raw)
+        if path.name == publication.PENDING:
+            write(output / "unmanifested.json", b"{}")
+        return result
+
+    monkeypatch.setattr(Path, "write_bytes", insert)
+    with pytest.raises(ValueError, match="inventory changed"):
+        publication.export_transaction(output, build)
+    locked(output)
+
+
 @pytest.mark.parametrize(
     "name",
     [publication.SUMMARY, publication.MANIFEST, publication.PENDING, "records.json"],
