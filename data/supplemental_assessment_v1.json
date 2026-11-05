@@ -1,0 +1,28 @@
+{
+  "policy_id": "ringdown-sr-supplemental-assessment-1",
+  "schema": "ringdown-sr-supplemental-record-1",
+  "stage": 1,
+  "interpretation": "retrospective_selected_candidates_only",
+  "threshold_semantics": "binary64_inclusive_no_rounding_no_tolerance",
+  "thresholds": [
+    {"grade": "A", "relative_rms": 0.001, "relative_max": 0.01, "rms_hex": "0x1.0624dd2f1a9fcp-10", "max_hex": "0x1.47ae147ae147bp-7"},
+    {"grade": "B", "relative_rms": 0.01, "relative_max": 0.02, "rms_hex": "0x1.47ae147ae147bp-7", "max_hex": "0x1.47ae147ae147bp-6"},
+    {"grade": "C", "relative_rms": 0.05, "relative_max": 0.1, "rms_hex": "0x1.999999999999ap-5", "max_hex": "0x1.999999999999ap-4"}
+  ],
+  "grid_roles": ["training", "diagnostic"],
+  "normalization": {
+    "relative_rms": "norm(p-y,2)/norm(y,2) for each grid separately",
+    "relative_max": "max(abs(p-y))/max(abs(y)) for each grid separately",
+    "source": "unchanged archived original-tree diagnostics; no metric replacement"
+  },
+  "grade_statuses": ["assessed", "not_assessable"],
+  "grades": ["A", "B", "C", "D", null],
+  "invalid_metric": "not_assessable with null grade and reason; retained in planned denominator",
+  "domain_interval": null,
+  "proof_resource_limits": null,
+  "remainder_rules": null,
+  "later_stages": "not_assessed",
+  "series_catalog": "data/supplemental_series.json",
+  "planned_selections": 78,
+  "aggregation": "separate original conditions/budgets/signals; no pooled success rate"
+}

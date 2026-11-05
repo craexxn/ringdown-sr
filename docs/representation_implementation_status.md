@@ -39,27 +39,59 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: technische CI parallelisieren
+## Aktuell: Zusatzbewertung, Stufe 1 von 3
 
-- **Basis und Branch:** `codex/parallel-technical-ci` in eigenem Worktree ab
-  main 8096ddb; Merge von #67 über GitHub bestätigt, keine offenen PRs beim
-  Einstieg. Vorhandene Branches, Arbeitskopien und Archive bleiben erhalten.
-- **Umfang:** frühe Pythonprüfungen, drei getrennte native Jobs, verbindlicher
-  Abschluss `technical-checks`; alle 30 bisherigen Schritte erhalten.
-  Historische Ref-Vorbereitung prüft acht Commitbindungen ohne HEAD-Wechsel;
-  der Abschluss sperrt fehlende Ergebnisse, Fehler, Abbrüche und unerwartete
-  Skips. [Aufteilung und Grenzen](ci.md) dokumentieren die Datenabhängigkeiten.
-- **Prüfung:** gezielte Scope-/Gate-/Historiengegenfälle und Befehlsinventar
-  lokal; vollständige technische CI und isolierte Schedulergegenfälle werden
-  mit Head, Basis, Checkout, Dateibaum und tatsächlichen Zeiten im eigenen PR
-  belegt. Vorbereitung für ein gezieltes KI-basiertes Review; keine automatisch
-  gestartete Reviewrunde und kein eigenständiger Merge.
-- **Offen:** wissenschaftlicher Kreuzvergleich weiterhin nur auf Manjaro.
-  Die gesonderte versionierte Ergebnisbewertung bleibt vorgemerkt; CSV/JSON
-  sind Prüfvergleiche, Entscheidungen müssen aus Originalformeln stammen.
-  Für den vollständigen 58-Auswahlen-Abgleich fehlen hier noch die Originalarchive
-  des lokalen Optimierer- und äußeren Staffellaufs. Cacheideen und Parallelisierung
-  wissenschaftlicher Suchen gehören nicht zur CI-Änderung. Keine zusätzlichen Agenten.
+- **Basis und Branch:** `codex/assessment-curve-import` in eigenem Worktree ab
+  main `46da82ec7bfe24614e0b3fc3203258535343d848`; Übernahme von #68 über GitHub
+  bestätigt, keine offenen PRs beim Einstieg. Bestehende Arbeiten und Originale
+  bleiben erhalten. Die drei Stufen sind als aufeinanderfolgende eigene PRs
+  beauftragt; jeweils nur eine Stufe, Übergabe zum Review, kein eigenständiger Merge.
+- **Umfang Stufe 1:** [verifizierter Import und Kurvenskala](supplemental_assessment.md)
+  für vier Originalserien mit 78 geplanten Auswahlen, getrennte historische und neue
+  Felder, unveränderte Originalauswahl, sichere Veröffentlichung und Widerruf.
+  Neue Struktur-, Domain-, Fortsetzungs-, Restterm- und Parameterfelder bleiben
+  ausdrücklich `not_assessed`.
+- **Methodenbeschluss:** inklusive bisherige Float64-Schwellen ohne Rundung oder
+  zusätzliche Toleranz am 05.11.2026 ausdrücklich bestätigt. Versionsvertrag,
+  Hexgrenzen, Statusschema und Korpus werden vor Anwendung committed. Die
+  Vorbereitung ist Referenz, keine Ersatzquelle für fehlende Primärdaten.
+- **Prüfnachweise:** 17 Vorbereitungshashes und 29 referenzierte Quellenbindungen
+  geprüft. Lokal 2.787 Pythonfälle bestanden, darunter 245 neue Bewertungsfälle
+  und eine zusätzliche CI-Scope-Prüfung. Importgegenfälle, unabhängige Grenz-/Normfälle,
+  späte Änderungen von Abschlussdateien, Signale und Widerrufsfehler bestanden;
+  ebenso Ruff, Format, Dokumentations-/Diff-Prüfung und Python-/Julia-Umgebungscheck.
+  Vollständige technische CI und konkrete Anwendung werden im eigenen PR mit
+  vollständigem Head, Basis und tatsächlichem Checkout nachgetragen.
+- **Primärdaten:** Nur `transfer-manjaro-001.tar.gz` liegt hier im verankerten
+  Original vor. Es fehlen `duration-manjaro-004.tar.gz`,
+  `local-optimizer-manjaro-001.tar.gz` und `outer-ladder-manjaro-001.tar.gz`:
+  60 geplante Fälle bleiben ohne neue historische Bewertung. Es werden keine
+  Ersatzarchive oder Bewertungen aus gerundeten Tabellen erzeugt.
+- **Offene Entscheidungen:** Für Stufe 1 keine offene Grenzentscheidung mehr.
+  Vor Stufe 2 Intervallkonvention und Beweis-/Ressourcengrenzen klären; das
+  Intervall `[0,127/4096]` s bleibt ein Vorschlag. Vor Stufe 3 regelbasierte
+  Zerlegung und zertifizierte Schranken festlegen; keine unbeschlossene
+  Vernachlässigbarkeitsschwelle und kein neuer Fit.
+- **Nächster konkreter Schritt:** Stufe 1 mit Prüfnachweisen zum Review übergeben.
+  Erst nach bestätigter Übernahme beginnt **Stufe 2: exakte Strukturprüfung,
+  Originaldefinitionsbereich und stetige Fortsetzung**, als eigener PR. Danach
+  folgt Stufe 3 mit quantifizierter Zusatzterm-Diagnose. Ein neuer fachlicher
+  Implementierungsauftrag ist für diese Folgestufen nicht erforderlich.
+  Keine zusätzlichen Agenten oder automatisch gestartete Reviewrunde.
+
+## Abgeschlossen: parallele technische CI
+
+[PR #68](https://github.com/craexxn/ringdown-sr/pull/68) ist als
+`46da82ec7bfe24614e0b3fc3203258535343d848` übernommen; der Dateibaum entspricht
+Head `99349bd719e5a72a03920bc5c413969181a3b8eb`.
+[CI 42006542480](https://github.com/craexxn/ringdown-sr/actions/runs/42006542480)
+bestand mit 2.541 Pythonfällen und sämtlichen nativen Prüfungen; tatsächlicher
+Checkout `6e6b8694648d4d46406b3982b88b32e301b32f90` war baumgleich.
+Alle 30 technischen Schritte und acht historische Commitbindungen bleiben
+erhalten; isolierte Schedulergegenfälle sind im PR dokumentiert.
+[Aufteilung und Grenzen](ci.md) bleiben unverändert gültig.
+Der wissenschaftliche Kreuzvergleich ist weiterhin nur für Manjaro vorgesehen;
+hier liegen noch keine vollständigen Originalergebnisse daraus vor.
 
 ## Grundlage: zwei Seed-/Treiber-Gegenrichtungen implementiert
 

@@ -6,10 +6,12 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 ## Projektstatus
 
 Fortsetzungsstand: 05.11.2026; abgeglichener Hauptbranch:
-`8096ddb` ([Kreuzvergleich #67](https://github.com/craexxn/ringdown-sr/pull/67)).
-Die [technische CI](docs/ci.md) wird in einem eigenen Branch in frühe Prüfungen,
-drei parallele native Jobs und den verbindlichen Abschluss `technical-checks`
-aufgeteilt; bestehende Prüfbefehle und wissenschaftliche Budgets bleiben erhalten.
+`46da82e` ([parallele technische CI #68](https://github.com/craexxn/ringdown-sr/pull/68)).
+Die [technische CI](docs/ci.md) mit drei parallelen nativen Jobs ist übernommen.
+Aktuell wird [Stufe 1 der ergänzenden Ergebnisbewertung](docs/supplemental_assessment.md)
+umgesetzt: verifizierter Originalimport und zusätzliche Kurvenklassen A/B/C/D.
+Die anschließenden Stufen (exakte Struktur/Domain/Fortsetzung und quantifizierte
+Zusatzterme) folgen jeweils erst nach bestätigter Übernahme des vorherigen PRs.
 Prüfstand und offene Arbeit stehen im [Fortsetzungsstand](docs/representation_implementation_status.md).
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit

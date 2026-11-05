@@ -110,6 +110,10 @@ mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
 Laufzeitdokumente müssen ebenso ausdrücklich als Ausnahme erfasst werden.
 
+Auch `docs/supplemental_assessment.md` erhält die volle CI: Der lesende
+Bewertungsexport bindet diesen Versionsvertrag an seinen Softwarestand.
+Die bestehenden Prüfjobs und wissenschaftlichen Budgets bleiben erhalten.
+
 Der vollständige Pfad prüft zusätzlich die feste Konstantendiagnose mit
 `scripts/check_constant_diagnostic.py`: zehn reine Referenzkontrollen,
 unverändertes Optimiererverhalten mit/ohne Beobachtung an einem eigenen
