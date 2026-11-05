@@ -1,7 +1,13 @@
 """Guard the cheap CI path against skipped runtime changes and broken prose links."""
 
+import base64
+import hashlib
 import importlib.util
+import json
+import os
+import re
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -226,3 +232,305 @@ def test_documentation_command_checks_all_tracked_markdown(repository, capsys):
     (root / "README.md").write_text("[broken](absent.md)\n")
     with pytest.raises(ValueError, match="absent.md"):
         CI.check_documentation(root)
+
+
+def complete_needs(full="true"):
+    return {
+        "prepare": {"result": "success", "outputs": {"full": full}},
+        **{
+            name: {"result": "success" if full == "true" else "skipped", "outputs": {}}
+            for name in CI.NATIVE_JOBS
+        },
+    }
+
+
+@pytest.mark.parametrize("full", ["true", "false"])
+def test_gate_accepts_only_complete_technical_or_prose_paths(full):
+    CI.check_completion(complete_needs(full))
+
+
+@pytest.mark.parametrize("job", ["prepare", *CI.NATIVE_JOBS])
+@pytest.mark.parametrize("result", ["failure", "cancelled", "skipped", None, ""])
+def test_gate_blocks_every_failed_cancelled_skipped_or_missing_required_result(
+    job, result
+):
+    needs = complete_needs()
+    needs[job]["result"] = result
+    with pytest.raises(ValueError):
+        CI.check_completion(needs)
+
+
+@pytest.mark.parametrize("job", CI.NATIVE_JOBS)
+@pytest.mark.parametrize("result", ["success", "failure", "cancelled", None])
+def test_prose_gate_requires_all_three_explicit_skips(job, result):
+    needs = complete_needs("false")
+    needs[job]["result"] = result
+    with pytest.raises(ValueError):
+        CI.check_completion(needs)
+
+
+@pytest.mark.parametrize("scope", [None, "", "TRUE", "False", " true", True, False, 0])
+def test_successful_native_jobs_cannot_mask_invalid_scope(scope):
+    needs = complete_needs()
+    needs["prepare"]["outputs"]["full"] = scope
+    with pytest.raises(ValueError, match="scope"):
+        CI.check_completion(needs)
+
+
+@pytest.mark.parametrize("field", ["outputs", "result"])
+@pytest.mark.parametrize("job", ["prepare", *CI.NATIVE_JOBS])
+def test_missing_job_or_required_field_blocks_gate(job, field):
+    needs = complete_needs()
+    del needs[job]
+    with pytest.raises(ValueError):
+        CI.check_completion(needs)
+    needs = complete_needs()
+    if field == "outputs" and job != "prepare":
+        needs[job] = None
+    else:
+        del needs[job][field]
+    with pytest.raises(ValueError):
+        CI.check_completion(needs)
+
+
+@pytest.mark.parametrize("needs", [None, [], {}, {**complete_needs(), "extra": {}}])
+def test_gate_requires_exact_job_set(needs):
+    with pytest.raises(ValueError):
+        CI.check_completion(needs)
+
+
+@pytest.mark.parametrize("raw", ["{}", "{broken", "null", ""])
+def test_gate_cli_fails_closed_on_missing_or_malformed_json(raw):
+    result = subprocess.run(
+        [sys.executable, str(SCRIPT), "gate"],
+        env={**os.environ, "CI_NEEDS": raw},
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode != 0
+
+
+def test_scope_write_failure_is_not_swallowed(tmp_path, monkeypatch):
+    monkeypatch.setenv("GITHUB_EVENT_PATH", str(tmp_path / "missing.json"))
+    monkeypatch.setenv("GITHUB_OUTPUT", str(tmp_path))
+    monkeypatch.setattr("sys.argv", [str(SCRIPT), "scope"])
+    with pytest.raises(OSError):
+        CI.main()
+
+
+@pytest.mark.parametrize("path", sorted(CI.RUNTIME_DOCUMENTS))
+def test_every_runtime_document_selects_full_with_a_real_diff(repository, path):
+    root, base = repository
+    target = root / path
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("Runtime input.\n")
+    head = commit(root)
+    assert CI.full_check_required("pull_request", event(base, head), root)[0]
+
+
+@pytest.fixture
+def history_repository(repository, tmp_path, monkeypatch):
+    remote, initial = repository
+    git(remote, "switch", "-c", "frozen-plan")
+    plan = remote / "plan.md"
+    plan.write_text("Frozen plan.\n")
+    frozen = commit(remote)
+    git(remote, "update-ref", "refs/pull/7/head", frozen)
+    git(remote, "switch", "main")
+    root = tmp_path / "checkout"
+    git(
+        tmp_path,
+        "clone",
+        "--no-local",
+        "--single-branch",
+        "--branch",
+        "main",
+        str(remote),
+        str(root),
+    )
+    git(root, "checkout", "--detach", initial)
+    (root / "scripts").mkdir()
+    bindings = [
+        {
+            "required_commit": frozen,
+            "durable_remote_ref": "refs/pull/7/head",
+            "files_sha256": {"plan.md": hashlib.sha256(b"Frozen plan.\n").hexdigest()},
+        }
+    ]
+    (root / "scripts/ci_historical_refs.json").write_text(json.dumps(bindings))
+    real_run = subprocess.run
+    calls = []
+
+    def local_transport(args, **kwargs):
+        calls.append((args, kwargs))
+        if args[:2] == ["git", "fetch"]:
+            args = [
+                str(remote) if arg == "https://example.invalid/owner/repo.git" else arg
+                for arg in args
+            ]
+        return real_run(args, **kwargs)
+
+    monkeypatch.setattr(CI.subprocess, "run", local_transport)
+    return root, remote, initial, frozen, calls
+
+
+def test_history_fetch_recovers_squashed_plan_without_persisting_credentials(
+    history_repository,
+):
+    root, _, initial, frozen, calls = history_repository
+    assert (
+        subprocess.run(
+            ["git", "cat-file", "-e", frozen],
+            cwd=root,
+            capture_output=True,
+            check=False,
+        ).returncode
+        != 0
+    )
+    config = (root / ".git/config").read_bytes()
+    CI.prepare_history(
+        root, "https://example.invalid", "owner/repo", "test-only-secret"
+    )
+    assert git(root, "rev-parse", "HEAD") == initial
+    assert git(root, "show", f"{frozen}:plan.md") == "Frozen plan."
+    assert (root / ".git/config").read_bytes() == config
+    fetches = [(args, kw) for args, kw in calls if args[:2] == ["git", "fetch"]]
+    assert len(fetches) == 1
+    args, kwargs = fetches[0]
+    encoded = base64.b64encode(b"x-access-token:test-only-secret").decode()
+    assert kwargs["env"]["GIT_CONFIG_VALUE_0"] == f"AUTHORIZATION: basic {encoded}"
+    assert "CI_GITHUB_TOKEN" not in kwargs["env"]
+    assert all("test-only-secret" not in arg and encoded not in arg for arg in args)
+    assert all(
+        kw.get("env") is None for args, kw in calls if args[:2] != ["git", "fetch"]
+    )
+
+
+@pytest.mark.parametrize(
+    "fault",
+    [
+        "missing_ref",
+        "missing_commit",
+        "wrong_ancestry",
+        "changed_bytes",
+        "missing_file",
+    ],
+)
+def test_history_failures_stop_before_tests(history_repository, fault):
+    root, remote, initial, _, _ = history_repository
+    path = root / "scripts/ci_historical_refs.json"
+    data = json.loads(path.read_text())
+    if fault == "missing_ref":
+        git(remote, "update-ref", "-d", "refs/pull/7/head")
+    elif fault == "missing_commit":
+        data[0]["required_commit"] = "a" * 40
+    elif fault == "wrong_ancestry":
+        git(remote, "update-ref", "refs/pull/7/head", initial)
+    elif fault == "changed_bytes":
+        data[0]["files_sha256"]["plan.md"] = "0" * 64
+    else:
+        data[0]["files_sha256"]["missing.md"] = "0" * 64
+    path.write_text(json.dumps(data))
+    with pytest.raises(ValueError):
+        CI.prepare_history(
+            root, "https://example.invalid", "owner/repo", "test-only-secret"
+        )
+    assert git(root, "rev-parse", "HEAD") == initial
+
+
+def workflow_jobs():
+    text = (CI.ROOT / ".github/workflows/technical-checks.yml").read_text()
+    sections = re.split(
+        r"^  ([a-z-]+):\n", text.split("jobs:\n", 1)[1], flags=re.MULTILINE
+    )
+    return text, dict(zip(sections[1::2], sections[2::2], strict=True))
+
+
+def workflow_steps(job):
+    return re.findall(
+        r"^      - name: .*(?:\n(?!      - name: ).*)*", job, flags=re.MULTILINE
+    )
+
+
+def test_all_original_commands_options_error_wrappers_and_order_are_preserved():
+    inventory = json.loads(
+        (CI.ROOT / "tests/fixtures/ci_steps_before_parallel.json").read_text()
+    )
+    _, jobs = workflow_jobs()
+    found = {}
+    for name, job in jobs.items():
+        blocks = workflow_steps(job)
+        for raw in blocks:
+            label = raw.splitlines()[0].split("- name: ", 1)[1]
+            raw = re.sub(
+                r"^        if: steps.scope.outputs.full != 'false'\n",
+                "",
+                raw,
+                flags=re.MULTILINE,
+            )
+            raw = raw.replace("          ref: ${{ github.sha }}\n", "")
+            found.setdefault(label, []).append(
+                (name, hashlib.sha256(raw.strip().encode()).hexdigest())
+            )
+    for item in inventory["steps"]:
+        matches = found.pop(item["name"])
+        expected = [item["group"]]
+        if item["name"] == "Check out repository":
+            expected = list(jobs)
+        elif item["name"] in {"Install uv", "Install locked Python environment"}:
+            expected = ["prepare", *CI.NATIVE_JOBS]
+        elif item["group"] == "runtime-each-native":
+            expected = list(CI.NATIVE_JOBS)
+        assert matches == [(job, item["sha256"]) for job in expected]
+    assert set(found) == {
+        "Record tested commit and tree",
+        "Prepare historical Git references",
+        "Require complete CI coverage",
+        "Reject workflow cancellation",
+    }
+    for group in CI.NATIVE_JOBS:
+        ordered = [
+            item["name"] for item in inventory["steps"] if item["group"] == group
+        ]
+        actual = [
+            raw.splitlines()[0].split("- name: ", 1)[1]
+            for raw in workflow_steps(jobs[group])
+        ]
+        assert [name for name in actual if name in ordered] == ordered
+
+
+def test_workflow_requires_early_success_and_all_native_results_without_bypasses():
+    text, jobs = workflow_jobs()
+    assert list(jobs) == ["prepare", *CI.NATIVE_JOBS, "technical-checks"]
+    assert "continue-on-error" not in text and "matrix:" not in text
+    assert "contents: read" in text
+    assert (
+        "group: technical-checks-${{ github.ref }}\n  cancel-in-progress: true" in text
+    )
+    assert text.count("ref: ${{ github.sha }}") == 5
+    assert text.count("persist-credentials: false") == 5
+    assert text.count("fetch-depth: 0") == 5
+    assert text.count("timeout-minutes: 75") == 5
+    assert "OPENBLAS" not in text.split("jobs:", 1)[0]
+    assert "full: ${{ steps.scope.outputs.full }}" in jobs["prepare"]
+    assert jobs["prepare"].count("if: steps.scope.outputs.full != 'false'") == 6
+    assert jobs["prepare"].index("scripts/check_ci.py history") < jobs["prepare"].index(
+        "uv run --locked pytest"
+    )
+    for job in CI.NATIVE_JOBS:
+        assert (
+            "needs: prepare\n    if: needs.prepare.outputs.full != 'false'" in jobs[job]
+        )
+        assert jobs[job].count("if:") == 1
+        assert jobs[job].index("scripts/check_ci.py history") < jobs[job].index(
+            "scripts/check_environment.py"
+        )
+    gate = jobs["technical-checks"]
+    assert "needs: [prepare, native-a, native-b, native-c]\n    if: always()" in gate
+    assert "CI_NEEDS: ${{ toJSON(needs) }}" in gate
+    assert "if: cancelled()\n        run: exit 1" in gate
+    assert "if: ${{ !cancelled() }}" in gate
+    assert gate.index("Reject workflow cancellation") < gate.index(
+        "Require complete CI coverage"
+    )
+    assert "run: python3 scripts/check_ci.py gate" in gate

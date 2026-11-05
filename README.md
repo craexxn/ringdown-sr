@@ -6,7 +6,11 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 ## Projektstatus
 
 Fortsetzungsstand: 05.11.2026; abgeglichener Hauptbranch:
-`b9636ad` ([Transferbefund #66](https://github.com/craexxn/ringdown-sr/pull/66)).
+`8096ddb` ([Kreuzvergleich #67](https://github.com/craexxn/ringdown-sr/pull/67)).
+Die [technische CI](docs/ci.md) wird in einem eigenen Branch in frühe Prüfungen,
+drei parallele native Jobs und den verbindlichen Abschluss `technical-checks`
+aufgeteilt; bestehende Prüfbefehle und wissenschaftliche Budgets bleiben erhalten.
+Prüfstand und offene Arbeit stehen im [Fortsetzungsstand](docs/representation_implementation_status.md).
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit
 [PR #59](https://github.com/craexxn/ringdown-sr/pull/59) übernommen.
@@ -93,7 +97,8 @@ Wissenschaftliche Ausführung bleibt auf Manjaro; Hauptstudie und
 wissenschaftliche Übertragbarkeit bleiben offen.
 Die vorgemerkte kurze Bereinigungsbestandsaufnahme bleibt offen; funktionierenden
 Code und Originalergebnisse erhalten, anschließend nur konkrete kleine Änderungen.
-WSL2, Parallelisierung und größere Umstrukturierung bleiben zurückgestellt.
+WSL2, Parallelisierung wissenschaftlicher Läufe und größere Umstrukturierung
+bleiben zurückgestellt.
 
 [Ergebnis und Grenzen](docs/search_duration_results_manjaro_004.md),
 [Bedienung](docs/search_duration.md),

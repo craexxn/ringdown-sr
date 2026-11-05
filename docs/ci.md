@@ -2,15 +2,87 @@
 
 Der Workflow `Technical checks` startet bei Pull Requests einschließlich
 gestapelter Entwicklungsbranches, bei Pushes nach `main` und bei manuellem Aufruf. Der bestehende
-Jobname `technical-checks` bleibt erhalten. Die Auswahl geschieht innerhalb
-dieses Jobs; es gibt keinen Workflow-Pfadfilter, der den Statuscheck ganz
-ausfallen lässt.
+Jobname `technical-checks` bleibt als verbindlicher Abschluss erhalten.
+`prepare` ermittelt den Umfang und führt Dokumentations-, Ruff-, Format- und
+Python-Prüfungen aus. Erst nach dessen Erfolg starten drei native Jobs auf
+getrennten Ubuntu-24.04-Runnern. Es gibt keinen Workflow-Pfadfilter, der den
+Statuscheck ganz ausfallen lässt.
+
+## Parallele technische Prüfungen
+
+| Job | Prüfungen |
+| --- | --- |
+| `prepare` | Umfang, Dokumentation, bei vollem Umfang historische Referenzen, uv/Sync, Ruff, Format und pytest |
+| `native-a` | Julia-Starts, Verlustkern, Schema-3-Pilot, feste Konstantendiagnose, Verlust-/Vorhersagereplays, Suchbudget und sämtliche fünf Pilot-Folgeprüfungen |
+| `native-b` | Suchbeobachtung, freie PySR-Suche, Repräsentation, freier Optimierer und Grammatik |
+| `native-c` | lokaler Optimierer einschließlich nativem Guard, äußere Staffel, Transfer und historische Kreuzprüfung |
+| `technical-checks` | verbindliche Vollständigkeitsprüfung aller vier Vorgänger |
+
+Alle 30 bisherigen Schritte bleiben enthalten. Checkout läuft in fünf Jobs,
+uv/Sync in vier Jobs und der Python-/Julia-Umgebungscheck auf jedem nativen
+Runner. Die übrigen Fachprüfungen laufen jeweils genau einmal, innerhalb
+jedes Blocks in ihrer bisherigen Reihenfolge. Der ursprüngliche Befehlsstand
+von #67 dc7f4a2 ist als
+[Prüfinventar](../tests/fixtures/ci_steps_before_parallel.json) gebunden;
+Tests vergleichen Befehle einschließlich Argumenten, Launcher, env-Präfixen
+und Fehlerausgabe. Es gibt keine Matrix, neuen Caches oder Abhängigkeiten.
+Haswell-/Threadvorgaben bleiben ausschließlich an den bisherigen Befehlen.
+
+Der Schema-3-Pilot erzeugt seine Daten frisch in `native-a`. Beide festen
+Numerikproben, Parameterexport, Diagnoseexport/-vergleich und die beiden
+abschließenden freien Haswell-Suchen lesen diese Daten im selben Job.
+Die Haswell-Suchwiederholung liest den ursprünglichen Pilotarm, nicht den
+Output der Numerikprobe. Zwischen Jobs werden keine Ergebnisdateien übertragen.
+Aus/an/aus, 20–100–20, K–A–K und die übrigen Wiederholungsfolgen bleiben
+ungeteilte Aufrufe mit frischen Unterprozessen. Wissenschaftliche Suchbudgets
+und Originalarchive gehören nicht zu dieser CI-Umstellung.
+
+Jeder Job checkt ausdrücklich `${{ github.sha }}` aus und protokolliert Commit
+und Dateibaum. Bei PR-Ereignissen ist dies der getestete Mergecommit. Volle
+Historie und `persist-credentials: false` bleiben erhalten. Vor pytest und
+auf jedem nativen Runner werden zusätzlich die dauerhaften PR-Head-Refs
+55/61/63/65/67 abgerufen. Der lesende Actions-Token wird nur dem einzelnen
+Fetch über dessen Prozessumgebung übergeben; er wird weder protokolliert
+noch in Gitkonfiguration oder historische Worktrees geschrieben.
+[Historische Bindungen](../scripts/ci_historical_refs.json) prüfen acht
+Commits, ihre Abstammung und feste Dateihashes. Fehlende Refs/Commits oder
+abweichende Dateien stoppen vor den Tests; HEAD muss unverändert bleiben.
+Die bisherigen inhaltlichen Bindungsprüfungen der Programme bleiben bestehen.
+
+`technical-checks` nennt alle vier Vorgänger in `needs` und läuft mit
+`always()` auch nach Fehlern. Eine Standardbibliotheksprüfung liest die
+Ergebnisse als JSON aus einer Umgebungsvariablen; es wird kein Ergebnis als
+Shellcode ausgewertet. Nur diese beiden Fälle bestehen:
+
+- `prepare=success`, exakt `full=true`, alle drei nativen Jobs `success`.
+- `prepare=success`, exakt `full=false`, alle drei nativen Jobs `skipped`.
+
+Fehler, Abbrüche, fehlende Jobs/Ergebnisse, ungültige Scope-Ausgabe und
+unerwartete Skips sperren den Abschluss. Auch drei erfolgreiche native Jobs
+ersetzen keine gültige Scope-Ausgabe. Alle vollen Bedingungen lauten
+`full != 'false'`; fehlender Scope wählt niemals den Prosaweg. Ein normal
+erkannter unklarer Diff liefert dagegen regulär `full=true`. Ein tatsächlicher
+Scope-Prozessfehler lässt `prepare` scheitern. Workflowabbruch wird zusätzlich
+über `cancelled()` geprüft. Die bisherige Cancellation-Gruppe und
+`cancel-in-progress: true` bleiben erhalten; kein Pflichtschritt nutzt
+`continue-on-error`.
+
+Die bereitgestellte Zeitbasis
+[41988145093](https://github.com/craexxn/ringdown-sr/actions/runs/41988145093)
+betrug 39:48 Jobzeit beziehungsweise 41:23 von Run-Anlage bis Jobabschluss.
+Die Vorbereitung schätzt etwa 18–20 Minuten für die Aufteilung, ohne gesicherte
+Queue-/JIT-Kosten; dies ist keine Zusage. Drei frische Julia-Umgebungen erhöhen
+voraussichtlich die summierte Runnerzeit. Der Implementierungs-PR hält die
+tatsächlich gemessenen Jobzeiten, Schedulinggrenzen, Summe und geprüften
+Commit/Dateibaum fest. Einzelmessungen belegen keine stabile Beschleunigung;
+Jobzeiten sind keine Abrechnungsminuten.
 
 ## Schlanker Dokumentationspfad
 
 Wenn alle geänderten Dateien ausschließlich `README.md`, `AGENTS.md` oder
 Markdown-Dateien unter `docs/` sind, läuft nur die Vorbereitung mit Checkout
-und die Prüfung der Dokumentation. Die Prüfung verwendet die Python-
+und die Prüfung der Dokumentation sowie der Abschlussjob mit den drei
+erwarteten Skips. Zusätzliche historische Fetches entfallen. Die Prüfung verwendet die Python-
 Standardbibliothek des Ubuntu-Runners. Sie installiert weder die
 Projektumgebung noch Julia und startet keine Formelsuche.
 
@@ -110,11 +182,9 @@ Aufrufen, unbekannten oder erzwungenen Ereignissen, leerem Diff sowie
 fehlenden oder nicht vergleichbaren Commits wird vollständig geprüft.
 
 Die bisherigen Prüfbefehle, Versionspins, Rechte, Thread-/Haswell-Vorgaben
-und das Cacheverhalten bleiben erhalten. Der technische CI-Job erhält
-75 Minuten Gesamtzeit einschließlich der nativen Profilprüfungen sowie der
-lokalen Optimierer-, äußeren Budget- und neuen Transferintegration. Die neue
-Prüffolge ergänzt drei frische Prozesse einschließlich JIT; die zusätzliche
-Jobreserve verhindert, dass deshalb bestehende Prüfungen gekürzt werden.
+und das Cacheverhalten bleiben erhalten. Jeder Job behält zunächst die
+bisherige Reserve von 75 Minuten. Die parallele Aufteilung verkürzt keine
+Prüfung und verändert keine fachliche Laufgrenze.
 Die bisherigen Schritte bleiben erhalten;
 die zusätzliche Reserve erweitert keine wissenschaftliche Laufgrenze. Lauf
 [41425713993](https://github.com/craexxn/ringdown-sr/actions/runs/41425713993)

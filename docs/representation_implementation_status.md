@@ -1,6 +1,12 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 05.11.2026. Ergebnis-PR #66 ist als
+Stand: 05.11.2026. PR #67 ist als
+`8096ddb8bb6fd065eb1079c7902a2016334a6e6b` übernommen; sein Dateibaum entspricht
+dem korrigierten Head `dc7f4a29a7a26516e5ea0b65bd8bc819e4f6cd71`.
+Die vollständige [CI 41996715772](https://github.com/craexxn/ringdown-sr/actions/runs/41996715772)
+bestand mit 2.458 Pythonfällen und allen nativen Prüfungen; tatsächlicher
+Checkout `5adc2ea179aa69bec876b74a36043eb5da0d5b05` war baumgleich.
+Ergebnis-PR #66 ist als
 `b9636ad92ecd57b24b142f39548a7a713d0934a0` übernommen; sein Dateibaum entspricht
 dem Dokumentationshead `f7070889f9ace44d0359d9e9921fb655dea4cbac`.
 Transfer-PR #65 ist als
@@ -33,7 +39,29 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: zwei Seed-/Treiber-Gegenrichtungen implementieren
+## Aktuell: technische CI parallelisieren
+
+- **Basis und Branch:** `codex/parallel-technical-ci` in eigenem Worktree ab
+  main 8096ddb; Merge von #67 über GitHub bestätigt, keine offenen PRs beim
+  Einstieg. Vorhandene Branches, Arbeitskopien und Archive bleiben erhalten.
+- **Umfang:** frühe Pythonprüfungen, drei getrennte native Jobs, verbindlicher
+  Abschluss `technical-checks`; alle 30 bisherigen Schritte erhalten.
+  Historische Ref-Vorbereitung prüft acht Commitbindungen ohne HEAD-Wechsel;
+  der Abschluss sperrt fehlende Ergebnisse, Fehler, Abbrüche und unerwartete
+  Skips. [Aufteilung und Grenzen](ci.md) dokumentieren die Datenabhängigkeiten.
+- **Prüfung:** gezielte Scope-/Gate-/Historiengegenfälle und Befehlsinventar
+  lokal; vollständige technische CI und isolierte Schedulergegenfälle werden
+  mit Head, Basis, Checkout, Dateibaum und tatsächlichen Zeiten im eigenen PR
+  belegt. Vorbereitung für ein gezieltes KI-basiertes Review; keine automatisch
+  gestartete Reviewrunde und kein eigenständiger Merge.
+- **Offen:** wissenschaftlicher Kreuzvergleich weiterhin nur auf Manjaro.
+  Die gesonderte versionierte Ergebnisbewertung bleibt vorgemerkt; CSV/JSON
+  sind Prüfvergleiche, Entscheidungen müssen aus Originalformeln stammen.
+  Für den vollständigen 58-Auswahlen-Abgleich fehlen hier noch die Originalarchive
+  des lokalen Optimierer- und äußeren Staffellaufs. Cacheideen und Parallelisierung
+  wissenschaftlicher Suchen gehören nicht zur CI-Änderung. Keine zusätzlichen Agenten.
+
+## Grundlage: zwei Seed-/Treiber-Gegenrichtungen implementiert
 
 - **Arbeitsbranch:** `codex/seed-driver-crosscheck`,
   [PR #67](https://github.com/craexxn/ringdown-sr/pull/67), ab main b9636ad;
