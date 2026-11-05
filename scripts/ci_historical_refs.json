@@ -1,0 +1,60 @@
+[
+  {
+    "required_commit": "fee62058992c84a9930aa765233ebdc095c54cb1",
+    "durable_remote_ref": "refs/pull/55/head",
+    "files_sha256": {
+      "docs/search_duration_table_loss_note.md": "56c0807127ff208148df9057607c698218bf87b0cdcf73471b58add14485372c"
+    }
+  },
+  {
+    "required_commit": "e7b457bf8927cdd1b52c51bb3457b54d0c88f066",
+    "durable_remote_ref": "refs/pull/61/head",
+    "files_sha256": {
+      "docs/local_optimizer_plan.md": "793006863a739a973dd3ffcf82c6e665f1a77da7eefee4132555843230df7f47"
+    }
+  },
+  {
+    "required_commit": "e1ea601286042aadcc5b5291ae72d114c7846dbf",
+    "durable_remote_ref": "refs/pull/63/head",
+    "files_sha256": {
+      "docs/outer_search_ladder_plan.md": "95aca0069d6b8a6ad0305d5722c558e4bbea1c23e7f3b70630d2eb33e816fa35"
+    }
+  },
+  {
+    "required_commit": "446afbfea8958f409693c2253f8d9d4950f24e45",
+    "durable_remote_ref": "refs/pull/65/head",
+    "files_sha256": {
+      "docs/transfer_check_plan.md": "f29561b8151a2a4e17cd881a8c4576f406f0efd340309ac54fcbbde2faabb6f3",
+      "data/transfer_check_inputs.npz": "e4de71bb6aa5cb5e3afc72914466b997adb2ef6438bbe38d7baa421a85bd2628",
+      "data/transfer_check_inputs.json": "54f7ddb7b524640e20911ae3fe69334d3fd31d25d9c9fab69d132e1ade9d1773"
+    }
+  },
+  {
+    "required_commit": "be6fc1bd2339df5b429684dfce8e992073d88506",
+    "durable_remote_ref": "refs/pull/67/head",
+    "files_sha256": {
+      "docs/seed_driver_crosscheck_plan.md": "e6e2df830dd2e4254d60bd73a5b9e34678377c9bc1e6a2f81830592e4f85b15e"
+    }
+  },
+  {
+    "required_commit": "9bff8a29030026dcdc2de52640556a73a57fe2a4",
+    "durable_remote_ref": "refs/heads/main",
+    "files_sha256": {
+      "docs/search_duration_prediction_plan.md": "2a215b6f178c085cad6611070124e09e929f35917eba66723f4522c1fe81393c"
+    }
+  },
+  {
+    "required_commit": "5215c5e1c93f220a3f7ea59b1c37580d2f2b5ea4",
+    "durable_remote_ref": "refs/heads/main",
+    "files_sha256": {
+      "scripts/run_outer_search_ladder.py": "4edb38da91df41f5208cc7f04d1177791f5f5540780c44a93bb0b63a9c65e4bd"
+    }
+  },
+  {
+    "required_commit": "bc4025d13b4954dee779341026d282430521686a",
+    "durable_remote_ref": "refs/heads/main",
+    "files_sha256": {
+      "scripts/run_transfer_check.py": "52754986efafa4da389b494526ed8d25d343202e9b93c00f6867c31f20d1e3eb"
+    }
+  }
+]

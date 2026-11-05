@@ -1,6 +1,8 @@
-"""Select conservative CI coverage and check local Markdown without dependencies."""
+"""Select, prepare and require complete CI coverage without dependencies."""
 
 import argparse
+import base64
+import hashlib
 import json
 import os
 import re
@@ -32,6 +34,100 @@ LINK = re.compile(
     r"!?\[[^\]\n]*\]\(\s*(?:<([^>\n]+)>|([^\s)\n]+))(?:\s+[\"'][^\n]*?[\"'])?\s*\)"
 )
 REFERENCE = re.compile(r"^\s{0,3}\[([^\]]+)\]:\s*(?:<([^>\n]+)>|(\S+))")
+NATIVE_JOBS = ("native-a", "native-b", "native-c")
+
+
+def check_completion(needs, cancelled):
+    """Reject every result except the two explicitly complete coverage paths."""
+    if cancelled != "false":
+        raise ValueError("Workflow cancelled or cancellation status unavailable.")
+    if not isinstance(needs, dict) or set(needs) != {"prepare", *NATIVE_JOBS}:
+        raise ValueError("Missing or unexpected CI jobs.")
+    if any(not isinstance(job, dict) for job in needs.values()):
+        raise ValueError("Invalid CI job result.")
+    prepare = needs["prepare"]
+    if prepare.get("result") != "success":
+        raise ValueError("Early checks did not succeed.")
+    outputs = prepare.get("outputs")
+    full = outputs.get("full") if isinstance(outputs, dict) else None
+    if full not in ("true", "false"):
+        raise ValueError("Missing or invalid CI scope output.")
+    expected = "success" if full == "true" else "skipped"
+    for name in NATIVE_JOBS:
+        if needs[name].get("result") != expected:
+            raise ValueError(f"{name}: expected {expected} for full={full}.")
+    print(
+        "Complete technical CI passed."
+        if full == "true"
+        else "Documentation CI passed."
+    )
+
+
+def prepare_history(root, server, repository, token):
+    """Fetch durable PR refs with process-local credentials, without changing HEAD."""
+    parts = urlsplit(server)
+    if (
+        parts.scheme != "https"
+        or not parts.hostname
+        or parts.netloc != parts.hostname
+        or parts.path
+        or parts.query
+        or parts.fragment
+        or not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repository)
+        or not token
+    ):
+        raise ValueError("Missing or invalid authenticated repository coordinates.")
+    bindings = json.loads((root / "scripts/ci_historical_refs.json").read_text())
+
+    def git(*args, env=None):
+        # Never echo subprocess stderr: remote errors can contain credentials.
+        result = subprocess.run(
+            ["git", *args],
+            cwd=root,
+            env=env,
+            capture_output=True,
+            timeout=180,
+            check=False,
+        )
+        if result.returncode:
+            raise ValueError(
+                f"Historical Git {args[0]} failed (exit {result.returncode})."
+            )
+        return result.stdout
+
+    before = git("rev-parse", "HEAD")
+    refs = sorted(
+        {item["durable_remote_ref"] for item in bindings} - {"refs/heads/main"}
+    )
+    targets = {ref: ref.replace("refs/pull/", "refs/ci-history/") for ref in refs}
+    auth = base64.b64encode(f"x-access-token:{token}".encode()).decode()
+    env = dict(os.environ)
+    env.pop("CI_GITHUB_TOKEN", None)
+    env.update(
+        GIT_CONFIG_COUNT="1",
+        GIT_CONFIG_KEY_0=f"http.{server}/.extraheader",
+        GIT_CONFIG_VALUE_0=f"AUTHORIZATION: basic {auth}",
+        GIT_TERMINAL_PROMPT="0",
+    )
+    git(
+        "fetch",
+        "--no-tags",
+        "--no-recurse-submodules",
+        f"{server}/{repository}.git",
+        *(f"{ref}:{targets[ref]}" for ref in refs),
+        env=env,
+    )
+    for item in bindings:
+        commit = item["required_commit"]
+        git("cat-file", "-e", f"{commit}^{{commit}}")
+        ancestor_of = targets.get(item["durable_remote_ref"], before.decode().strip())
+        git("merge-base", "--is-ancestor", commit, ancestor_of)
+        for path, expected in item["files_sha256"].items():
+            if hashlib.sha256(git("show", f"{commit}:{path}")).hexdigest() != expected:
+                raise ValueError(f"Historical file mismatch: {commit}:{path}.")
+    if git("rev-parse", "HEAD") != before:
+        raise ValueError("Historical preparation changed the tested checkout.")
+    print(f"Historical references verified: {len(bindings)} commits; HEAD unchanged.")
 
 
 def documentation_only(paths):
@@ -172,8 +268,19 @@ def check_documentation(root):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("mode", choices=("scope", "docs"))
+    parser.add_argument("mode", choices=("scope", "docs", "history", "gate"))
     args = parser.parse_args()
+    if args.mode == "gate":
+        check_completion(json.loads(os.environ["CI_NEEDS"]), os.environ["CI_CANCELLED"])
+        return
+    if args.mode == "history":
+        prepare_history(
+            ROOT,
+            os.environ["GITHUB_SERVER_URL"],
+            os.environ["GITHUB_REPOSITORY"],
+            os.environ["CI_GITHUB_TOKEN"],
+        )
+        return
     if args.mode == "docs":
         check_documentation(ROOT)
         return

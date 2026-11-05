@@ -1,0 +1,156 @@
+{
+  "source_commit": "dc7f4a29a7a26516e5ea0b65bd8bc819e4f6cd71",
+  "source_workflow_sha256": "e8632ebd10c7f1a15b046d00fe7075225cdb9b0c1f278f8fc5e2a2961d39e655",
+  "steps": [
+    {
+      "name": "Check out repository",
+      "group": "prepare",
+      "sha256": "8cf2b4459463a1e5a1ed76645b6fd25b84e8545c1f9bc7a8c1bfdb677f44342b"
+    },
+    {
+      "name": "Select CI coverage",
+      "group": "prepare",
+      "sha256": "ba2d62748a76db592328e0ccd5544a62e3d4a538197191cc9afb8027a2770ea3"
+    },
+    {
+      "name": "Check documentation",
+      "group": "prepare",
+      "sha256": "138438bffd6cb9f3fd9c80291b661b659e7448eb9702ecc76a48163bb019cff7"
+    },
+    {
+      "name": "Install uv",
+      "group": "prepare",
+      "sha256": "c1d67c757cbc70b12f885b928dbe27cd6871bda91ef95765f6a0850221269ebe"
+    },
+    {
+      "name": "Install locked Python environment",
+      "group": "prepare",
+      "sha256": "aea11a76f5ba0e3e21c32c05a255a404e77f2ee1b03d52824fad1d0c975ae4b9"
+    },
+    {
+      "name": "Check Python code",
+      "group": "prepare",
+      "sha256": "7ba7dbe2facd36064e1fba7517ee55350d636b4729a738ddc9f3d4096ffd81fc"
+    },
+    {
+      "name": "Check formatting",
+      "group": "prepare",
+      "sha256": "2ad440db00705962dc4f07f84107d7ea28888b36686de49012d33f5a6822a37f"
+    },
+    {
+      "name": "Run unit tests",
+      "group": "prepare",
+      "sha256": "6a1f2a219e8512518902234cd2c70814dc622bddcab1bfea8f037d65c2ad114e"
+    },
+    {
+      "name": "Check Python and Julia environment",
+      "group": "runtime-each-native",
+      "sha256": "49ed348172bf5c84ea5a8b2740cba7b06904bf8cdc1c7e2be5e3beb737666dec"
+    },
+    {
+      "name": "Check repeated and concurrent Julia startup",
+      "group": "native-a",
+      "sha256": "06a97849f782ec68ec38e1cc3c9901efdfbec265211eb849bc49e02f45dce6d5"
+    },
+    {
+      "name": "Verify passive search observation and fresh off-on-off workers",
+      "group": "native-b",
+      "sha256": "14c9095954a1a57aae416295f661b89bb5724b8bed1ca48623363518f581e791"
+    },
+    {
+      "name": "Check Julia loss, constant optimization and Python replay",
+      "group": "native-a",
+      "sha256": "62139c4807ffe535815e09074472a2159385cd50d503cc745e679052c4d2fee7"
+    },
+    {
+      "name": "Check isolated free PySR searches and expression replay",
+      "group": "native-b",
+      "sha256": "47802b46a567733b0319eafcdba834f54d27cee9898a45a7529b16654d7ef6de"
+    },
+    {
+      "name": "Verify representation profiles, fixed references and tiny technical workers",
+      "group": "native-b",
+      "sha256": "e8b5eb73443320db90044a44c589248ed1105ba2df75ab31b221805d19033848"
+    },
+    {
+      "name": "Check paired schema-3 symbolic pilots and independent metrics",
+      "group": "native-a",
+      "sha256": "08dadef4e4e6a787642c3d22891993d0c347f912eecf9b23f37eb745d11f5fc9"
+    },
+    {
+      "name": "Verify free optimizer budgets, fixed references and tiny A-B-A workers",
+      "group": "native-b",
+      "sha256": "22131baa6ffde0ae80de1e14fde96da9896a8debad2ef5385f3e3a756536c815"
+    },
+    {
+      "name": "Check fixed-structure diagnostic controls and passive instrumentation",
+      "group": "native-a",
+      "sha256": "929f664796a687258ba452e3392580dc109c6d8a3893c259c4d687e21ed6f1aa"
+    },
+    {
+      "name": "Verify trig grammar, native counterexamples and tiny K-A-K workers",
+      "group": "native-b",
+      "sha256": "6df915e055f695c4d8f1141f6f03f20669b4085ee206848fe4f5dfd422873064"
+    },
+    {
+      "name": "Verify fixed near-zero losses and equivalent ringdown forms",
+      "group": "native-a",
+      "sha256": "92d8252ecdc35dcacec64aaa272f760cfb2684c6b5710b573f298604f3c463c8"
+    },
+    {
+      "name": "Verify bounded predictions and all fixed duration-003 trees",
+      "group": "native-a",
+      "sha256": "b96f50514d4eade63ff26a65d4539d8127a4c25a87193ef1aa94c3f4dcca71a2"
+    },
+    {
+      "name": "Verify search budgets with five isolated tiny workers",
+      "group": "native-a",
+      "sha256": "e07153896a9f3f4f7cd691fe2797e9539cdcf8bd263d870ab61548c9b112fb8d"
+    },
+    {
+      "name": "Verify local optimizer native guards and five tiny workers",
+      "group": "native-c",
+      "sha256": "53b10e23d47df10a7011ba50f9066bb466d16a0d6a2bf2dd710ae7c4cfa574dd"
+    },
+    {
+      "name": "Verify fixed 300-5 profile across five tiny outer-budget workers",
+      "group": "native-c",
+      "sha256": "8b3daf387c4c1d436bf8a7c71118e5b248cb3b6212e65baa2c3738b0b45e6aa6"
+    },
+    {
+      "name": "Verify signal input switching and fresh repeated control",
+      "group": "native-c",
+      "sha256": "7cab3a339905555f28ff8bb29b68d119bbcbb2e51a3e654d36af674b469ede13"
+    },
+    {
+      "name": "Compare two historical workers on the tiny fixed crossover control",
+      "group": "native-c",
+      "sha256": "7f6463dd4e5a4aaadf2a742681f084116dbdff6b164d0779bda08ae9e3f28b40"
+    },
+    {
+      "name": "Probe fixed trees and actual optimizer paths in fresh workers",
+      "group": "native-a",
+      "sha256": "ba497c95a78e744acca8bd4f82e7fe9b891a6b1720ab0ffc92e001a33a044321"
+    },
+    {
+      "name": "Verify common Haswell BLAS core in fresh fixed-tree workers",
+      "group": "native-a",
+      "sha256": "aff20700f54e4fc058aea7d5a7f777d7d39922c844722f6c15ffc7ef4cab6cf1"
+    },
+    {
+      "name": "Export parameters from the existing schema-3 controls",
+      "group": "native-a",
+      "sha256": "98cd05fc7d12fb9eb20bc70aa4749bdf6a9f05ba27fb2ce5a8726b9f6c239d36"
+    },
+    {
+      "name": "Check read-only diagnostic export and comparison",
+      "group": "native-a",
+      "sha256": "9f95f30d6ada46785c83c188addffce9dc44971e5e7eaec4b4762ceb9554f14d"
+    },
+    {
+      "name": "Verify common BLAS core before and after two actual free searches",
+      "group": "native-a",
+      "sha256": "18e3bf0e4d1c98be1422bf22163fd68568feb4a74ba8bf571552d63a0a458929"
+    }
+  ]
+}
