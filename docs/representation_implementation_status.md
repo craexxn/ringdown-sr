@@ -54,8 +54,8 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 - **Abgeschlossene Umsetzung / PR:** Stufe 1 ist in
   [PR #69](https://github.com/craexxn/ringdown-sr/pull/69) implementiert; kein Merge.
   Vertrags-/Implementierungscommit vor Anwendung:
-  `fee9418071834b1ea42692cb436ecdd8fb6d4fd3`; abschließender Export mit
-  `a7d615fda122ab59124987729527303090225a13` nach zusätzlicher Inventarprüfung.
+  `fee9418071834b1ea42692cb436ecdd8fb6d4fd3`; vollständiger Export mit
+  `efb2accd4a31ebf4206b40acaf261a3bf04b31ad` einschließlich Inventarprüfung.
 - **Methodenbeschluss:** inklusive bisherige Float64-Schwellen ohne Rundung oder
   zusätzliche Toleranz am 05.11.2026 ausdrücklich bestätigt. Versionsvertrag,
   Hexgrenzen, Statusschema und Korpus wurden vor Anwendung committed. Die
@@ -69,16 +69,17 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   ebenso Ruff, Format, Dokumentations-/Diff-Prüfung und Python-/Julia-Umgebungscheck.
   Die vollständige externe technische CI wird in #69 mit vollständigem Head,
   Basis und tatsächlichem Checkout belegt; Übergabe erst nach ihrem Abschluss.
-- **Abgeschlossene Anwendung:** [18 Transfer-Auswahlen](supplemental_assessment_transfer_001.md)
+- **Abgeschlossene Anwendung:** [alle 78 Originalauswahlen](supplemental_assessment_results_001.md)
   verifiziert und bewertet; separate exakte rationale Gegenprüfung bestätigt alle
   Klassen. Originalarchive/-felder und historischer Serienbericht unverändert;
   neue Klasse A stimmt in jedem Fall mit dem alten Kurvenkriterium überein.
   Kein neuer Fit, keine Suche und keine pauschale native Gesamtnachrechnung.
-- **Primärdaten:** Nur `transfer-manjaro-001.tar.gz` liegt hier im verankerten
-  Original vor. Es fehlen `duration-manjaro-004.tar.gz`,
-  `local-optimizer-manjaro-001.tar.gz` und `outer-ladder-manjaro-001.tar.gz`:
-  60 geplante Fälle bleiben ohne neue historische Bewertung. Es werden keine
-  Ersatzarchive oder Bewertungen aus gerundeten Tabellen erzeugt.
+- **Primärdaten:** Alle vier verankerten Originalarchive liegen vor:
+  `duration-manjaro-004.tar.gz`, `local-optimizer-manjaro-001.tar.gz`,
+  `outer-ladder-manjaro-001.tar.gz` und `transfer-manjaro-001.tar.gz`.
+  Externe Hashes und vollständige Importe bestanden: 20/20/20/18 Auswahlen;
+  Korpusstatus `complete`, getrennte Serienfreigaben und ursprüngliche Nenner.
+  Keine Ersatzarchive, Tabellen als Bewertungsquelle oder neue Gesamterfolgsquote.
 - **Offene Entscheidungen:** Für Stufe 1 keine offene Grenzentscheidung mehr.
   Vor Stufe 2 Intervallkonvention und Beweis-/Ressourcengrenzen klären; das
   Intervall `[0,127/4096]` s bleibt ein Vorschlag. Vor Stufe 3 regelbasierte

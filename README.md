@@ -11,8 +11,8 @@ Die [technische CI](docs/ci.md) mit drei parallelen nativen Jobs ist übernommen
 Aktuell ist [Stufe 1 der ergänzenden Ergebnisbewertung](docs/supplemental_assessment.md)
 in [PR #69](https://github.com/craexxn/ringdown-sr/pull/69) implementiert:
 verifizierter Originalimport und zusätzliche Kurvenklassen A/B/C/D.
-Die [lesende Anwendung auf 18 Transfer-Auswahlen](docs/supplemental_assessment_transfer_001.md)
-ist abgeschlossen; die Originalarchive der anderen drei Serien fehlen hier.
+Die [lesende Anwendung auf alle 78 Originalauswahlen](docs/supplemental_assessment_results_001.md)
+ist abgeschlossen; alle vier verankerten Originalarchive liegen verifiziert vor.
 Die anschließenden Stufen (exakte Struktur/Domain/Fortsetzung und quantifizierte
 Zusatzterme) folgen jeweils erst nach bestätigter Übernahme des vorherigen PRs.
 Prüfstand und offene Arbeit stehen im [Fortsetzungsstand](docs/representation_implementation_status.md).
