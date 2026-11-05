@@ -2,6 +2,7 @@ name: Technical checks
 
 on:
   pull_request:
+    types: [opened, reopened, synchronize, ready_for_review, converted_to_draft]
   push:
     branches: [main]
   workflow_dispatch:
@@ -25,6 +26,8 @@ jobs:
     timeout-minutes: 75
     outputs:
       full: ${{ steps.scope.outputs.full }}
+      mode: ${{ steps.scope.outputs.mode }}
+      comparison_known: ${{ steps.scope.outputs.comparison_known }}
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -77,7 +80,7 @@ jobs:
 
   native-a:
     needs: prepare
-    if: needs.prepare.outputs.full != 'false'
+    if: needs.prepare.outputs.mode == 'full'
     runs-on: ubuntu-24.04
     timeout-minutes: 75
     steps:
@@ -188,7 +191,7 @@ jobs:
           --require-openblas-core Haswell --output results/ci-free-search-haswell
   native-b:
     needs: prepare
-    if: needs.prepare.outputs.full != 'false'
+    if: needs.prepare.outputs.mode == 'full'
     runs-on: ubuntu-24.04
     timeout-minutes: 75
     steps:
@@ -265,7 +268,7 @@ jobs:
 
   native-c:
     needs: prepare
-    if: needs.prepare.outputs.full != 'false'
+    if: needs.prepare.outputs.mode == 'full'
     runs-on: ubuntu-24.04
     timeout-minutes: 75
     steps:
@@ -351,6 +354,7 @@ jobs:
           fi
 
   technical-checks:
+    name: ${{ github.event_name == 'workflow_dispatch' && 'manual-technical-checks' || 'technical-checks' }}
     needs: [prepare, native-a, native-b, native-c]
     if: always()
     runs-on: ubuntu-24.04

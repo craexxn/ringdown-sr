@@ -138,6 +138,19 @@ Kurz berichten:
 
 ## CI und Reviews
 
+- Implementierungs-PRs zunächst als Draft führen. Passende lokale Tests und
+  ein gezieltes KI-basiertes Review vor der abschließenden Ready-Vollprüfung
+  bündeln. Vor weiterer Entwicklung an einem bereiten PR wieder Draft wählen.
+- Draft-Code erhält Dokumentation, Ruff, Format und Python-Tests; der Abschluss
+  bleibt bis zur vollen Ready-Prüfung ausdrücklich ohne Erfolgsfreigabe.
+  Ein grünes `prepare` oder ein Review ohne Befund ersetzt keine vollständige CI.
+- Bei geändertem Zielbranch oder neuer Basis den PR mit der aktuellen Basis
+  abgleichen und neu von Draft auf Ready prüfen. Vor Merge Head, Base und
+  tatsächlich geprüften Mergecommit abgleichen; manuelle Läufe gelten nur für
+  ihren gewählten Ref. Nach Draft-Wechsel keinen alten Ready-Lauf neu starten.
+- Repository-Regeln nicht als wirksame Merge-Sperre voraussetzen; ihren
+  tatsächlichen Zustand prüfen. Ohne nachgewiesenen Schutz bleibt die
+  vollständige Prüfung eine verbindliche Arbeitsregel vor jedem Merge.
 - Reine Änderungen an `README.md`, `AGENTS.md` und Markdown unter `docs/`
   erhalten schlanke Format- und lokale Linkprüfungen. Dokumente, die zur
   Laufzeit konsumiert werden, benötigen weiterhin die volle CI; aktuell gilt
