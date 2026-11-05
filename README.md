@@ -18,6 +18,10 @@ ist abgeschlossen; alle vier verankerten Originalarchive liegen verifiziert vor.
 Die anschließenden Stufen (exakte Struktur/Domain/Fortsetzung und quantifizierte
 Zusatzterme) folgen jeweils erst nach bestätigter Übernahme des vorherigen PRs.
 Prüfstand und offene Arbeit stehen im [Fortsetzungsstand](docs/representation_implementation_status.md).
+Der [Leitfaden zur wiederholbaren Rekonstruktion](docs/ringdown_recovery_roadmap.md)
+ordnet Phasen, Begründungen und Entscheidungskriterien. Aktuell läuft dessen
+Phase 1, Bewertungsstufe 1; Strukturprüfung, Zusatzterm-Diagnose und Suchversuche
+stehen noch aus.
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit
 [PR #59](https://github.com/craexxn/ringdown-sr/pull/59) übernommen.
@@ -93,12 +97,14 @@ keine automatische Anschlussfreigabe. Auch 10.000 ist derzeit nicht begründet.
 Als nächster abgegrenzter Schritt ist ein
 [Seed-/Treiber-Kreuzvergleich](docs/seed_driver_crosscheck.md) implementiert:
 zwei feste Gegenrichtungen mit historischen Workerpfaden, vollständigem
-Frontvergleich und unverändertem 500/300/5-Budget. Wissenschaftlich noch
-nicht ausgeführt; er grenzt Seedabhängigkeit von Ausführungspfadunterschieden
-ein. Danach folgt die vorgemerkte Prüfung der vorhandenen
-Rauschpipeline auf identischen verrauschten Daten; anschließend kompaktes
-Pilotdesign und Pilotauswertung mit Hauptversuchsplan gemäß der in #61
-festgehaltenen Route. Die Seedabhängigkeit und eine praktikable Messregel
+Frontvergleich und unverändertem 500/300/5-Budget. Ein übermittelter
+Nachrechnungsbefund berichtet die Reproduktion beider vollständigen Endfronten;
+Primärdaten und ein versionierter Ergebnisbericht liegen hier noch nicht vor.
+Die Einordnung und Grenzen stehen im [Leitfaden](docs/ringdown_recovery_roadmap.md).
+Nach Abschluss der Zusatzbewertung folgen die dort beschriebenen, vorab
+festzulegenden Entwicklungskontrollen und die Prüfung des tatsächlichen
+späteren Laufwegs; anschließend Rauschpilot und Hauptversuchsplanung.
+Die Seedabhängigkeit und eine praktikable Messregel
 für Strukturstabilität müssen im Pilotdesign ausdrücklich berücksichtigt werden.
 Wissenschaftliche Ausführung bleibt auf Manjaro; Hauptstudie und
 wissenschaftliche Übertragbarkeit bleiben offen.

@@ -41,6 +41,10 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
 ## Aktuell: Zusatzbewertung, Stufe 1 von 3
 
+- **Leitfadenphase:** [Phase 1: Bewertung abschließen](ringdown_recovery_roadmap.md#1-bewertung-abschließen),
+  darin Bewertungsstufe 1. Der versionierte Leitfaden wird als Dokumentation in
+  PR #69 aufgenommen. Er führt die künftigen Phasen und offenen Festlegungen;
+  dieser Abschnitt hält den tatsächlichen Arbeits- und Prüfstand fest.
 - **Basis und Branch:** `codex/assessment-curve-import` in eigenem Worktree ab
   main `46da82ec7bfe24614e0b3fc3203258535343d848`; Übernahme von #68 über GitHub
   bestätigt, keine offenen PRs beim Einstieg. Bestehende Arbeiten und Originale
@@ -77,7 +81,28 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   Die Reviewumgebung hatte keine vollständigen Originalarchive; ihre Aussage
   bestätigt daher nicht unabhängig die Primärdatenanwendung. Der Reviewbefund
   gilt für den damaligen Head, nicht für die jetzt ergänzte Zukunftsanbindung.
-- **Prüfung der Ergänzung:** 32 neue Pythonfälle prüfen die vollständige
+- **Nachreview und Korrektur:** Für Head
+  `0fea3a59f194f39e3286936d84d1a7f464cab31d`, Ergänzung gegenüber
+  `3a064d46e36c5897860f62634926f8d1910b2304`, wurden drei P2-Befunde übermittelt:
+  ungeprüfte tatsächliche Workerherkunft/Adapter, unvollständige Python-Quellenmenge
+  sowie fehlender Abgleich von Worker-Seed und Auswahlregel. Übermittelt wurden
+  159 bestandene bestehende Tests, sieben reproduzierende Gegenfälle und vier
+  bestandene zusätzliche Spätänderungsfälle. Die Review-Reproduktionsdateien
+  wurden nicht mitgeliefert; die Korrektur besitzt eigene Gegenprüfungen.
+  Die Herkunftsprüfung bindet nun die vollständige Quellenmenge aus dem
+  Vorbereitungscommit, tatsächliche Workerherkunft samt Projektdateien und
+  Adapterhashes einschließlich gespeicherter Julia-Kopien. Worker-Seed und
+  aufgezeichnete Auswahlregel werden ohne Rangbildung geprüft und erhalten.
+  **Selbst ausgeführt:** 92 gezielte Fälle bestanden, darunter 28 neue Fälle
+  für diese Befunde, beide Aufrufwege und ein unabhängiges Git-Inventarbeispiel.
+  Anschließend vollständige lokale Suite: **2.848 Pythonfälle bestanden**;
+  Ruff, Format, 77 Markdown-Dateien einschließlich lokaler Links,
+  Diff-Prüfung sowie Python-/Julia-Umgebungscheck ebenfalls bestanden.
+  Die [CI des früheren Heads](https://github.com/craexxn/ringdown-sr/actions/runs/42029784263)
+  mit 2.820 Pythonfällen und allen nativen Jobs war grün, deckt diese Korrektur
+  jedoch nicht ab. Der vollständige finale CI-Nachweis samt Head/Basis und
+  tatsächlichem Checkout wird vor Übergabe in PR #69 aktualisiert.
+- **Prüfung der bisherigen Ergänzung:** 32 neue Pythonfälle prüfen die vollständige
   CLI-/Pipeline-Anbindung mit synthetischen Suchworkern, unabhängige Vektornormen,
   unveränderte ursprüngliche Ergebnisse/Sucheingaben, vorab gespeicherte Daten,
   Originaldefinitionslücken, Git-/Manifest-/Auswahlbindungen, Abbruch und späte
@@ -121,10 +146,10 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   Zerlegung und zertifizierte Schranken festlegen; keine unbeschlossene
   Vernachlässigbarkeitsschwelle und kein neuer Fit.
 - **Nächster konkreter Schritt:** [PR #69](https://github.com/craexxn/ringdown-sr/pull/69)
-  mit vollständiger CI zur gezielten Prüfung der ergänzten Zukunftsanbindung
-  übergeben. Schwerpunkt: Datenrollen, Bindung vor der Suche, unveränderte Auswahl,
-  Quellen-/Veröffentlichungssperren und Kompatibilität des Archivexports.
-  Diese Prüfung und die Übernahmeentscheidung bleiben ausstehend.
+  mit vollständiger CI zur gezielten Gegenprüfung der drei korrigierten
+  P2-Befunde übergeben. Workerherkunft/Adapter, vollständiges Git-Inventar,
+  Worker-Seed und Auswahlregel sind die konkreten Schwerpunkte.
+  Diese Gegenprüfung und die Übernahmeentscheidung bleiben ausstehend.
   Erst nach bestätigter Übernahme beginnt **Stufe 2: exakte Strukturprüfung,
   Originaldefinitionsbereich und stetige Fortsetzung**, als eigener PR. Danach
   folgt Stufe 3 mit quantifizierter Zusatzterm-Diagnose. Ein neuer fachlicher
@@ -142,8 +167,13 @@ Checkout `6e6b8694648d4d46406b3982b88b32e301b32f90` war baumgleich.
 Alle 30 technischen Schritte und acht historische Commitbindungen bleiben
 erhalten; isolierte Schedulergegenfälle sind im PR dokumentiert.
 [Aufteilung und Grenzen](ci.md) bleiben unverändert gültig.
-Der wissenschaftliche Kreuzvergleich ist weiterhin nur für Manjaro vorgesehen;
-hier liegen noch keine vollständigen Originalergebnisse daraus vor.
+Für den wissenschaftlichen Kreuzvergleich auf Manjaro liegt inzwischen ein
+übermittelter Nachrechnungsbefund vor, der beide Endfronten mit 7 beziehungsweise
+11 Kandidaten sowie die Originalauswahlen A/D bestätigt. Der
+[Leitfaden](ringdown_recovery_roadmap.md#ziel-und-ausgangspunkt) hält Herkunft,
+Grenzen und die ausstehende Bindung an Originalarchiv und versionierten
+Ergebnisbericht fest. Hier erfolgten keine zusätzliche wissenschaftliche Suche
+und keine erneute Primärdaten- oder native Nachrechnung dieses Befunds.
 
 ## Grundlage: zwei Seed-/Treiber-Gegenrichtungen implementiert
 

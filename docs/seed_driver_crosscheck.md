@@ -3,7 +3,15 @@
 Stand: 05.11.2026. [Implementierungs-PR #67](https://github.com/craexxn/ringdown-sr/pull/67)
 auf `codex/seed-driver-crosscheck`, ausgehend
 von main `b9636ad92ecd57b24b142f39548a7a713d0934a0` nach Ergebnis-PR #66.
-Die wissenschaftlichen Kreuzvergleichszellen wurden noch nicht ausgeführt.
+Am 05.11.2026 wurde ein Nachrechnungsbefund zu beiden wissenschaftlichen
+Kreuzzellen übermittelt: vollständige Endfronten mit 7 beziehungsweise
+11 Kandidaten reproduziert, Originalauswahlen A beziehungsweise D.
+Das vollständige Kreuzlaufarchiv, sein SHA-256 und ein versionierter
+Ergebnisbericht liegen diesem Implementierungsschritt nicht vor; die
+Primärdaten wurden hier nicht eigenständig nachgerechnet. Einordnung und
+Aussagegrenzen im [Leitfaden](ringdown_recovery_roadmap.md#ziel-und-ausgangspunkt).
+Die folgenden Befehle dokumentieren den vorgesehenen Laufweg und geben keine
+automatische Wiederholung frei.
 Der [vorab gebundene Plan](seed_driver_crosscheck_plan.md) wurde vor dem Code
 als Commit `be6fc1bd2339df5b429684dfce8e992073d88506` gespeichert;
 SHA-256 `e6e2df830dd2e4254d60bd73a5b9e34678377c9bc1e6a2f81830592e4f85b15e`.

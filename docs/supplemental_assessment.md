@@ -75,6 +75,26 @@ gespeicherten Rastern berechnet, ohne Vereinfachung, Kürzung oder Schließen vo
 Definitionslücken. Der Signalnachbau dient ausschließlich der Prüfung der
 vorhandenen Referenzbytes, niemals als Ersatz für fehlende Eingaben.
 
+Die vollständige Python-Quellenmenge wird aus dem Git-Baum des
+Vorbereitungscommits ermittelt, einschließlich Unterverzeichnissen. Aufgezeichnete
+Teilmengen oder zusätzliche Namen sind unzulässig, auch bei konsistent erneuerten
+Quellensatz- und Artefakthashes. Vorbereitung und Nachprüfung binden außerdem
+Launcher, Python-/Julia-Adapter sowie Python- und Julia-Projektdateien.
+Die Elternherkunft und die unmittelbar vor dem Fit erfasste
+`worker_provenance` müssen jeweils einen verfügbaren sauberen Git-Stand und
+dieselben vollständigen Quellen belegen. Eltern- und
+`worker_adapter_source_sha256` sowie die tatsächlich gespeicherten Julia-Kopien
+werden gegen die gebundenen Quellen geprüft.
+
+`result.json:rng.python_seed` muss als Integer mit dem konfigurierten Seed
+übereinstimmen; `selection` muss `minimum_training_loss_then_complexity` lauten.
+Diese Prüfungen übernehmen den vorhandenen Auswahlindex ohne erneute Rangbildung.
+Der Bericht bewahrt den verifizierten Originalseed, die aufgezeichnete RNG-Angabe
+und die Originalauswahlregel. Fehlende oder widersprüchliche Nachweise sperren die
+Bewertung. Ältere vorläufige Schema-3-Pakete ohne vollständige Vorbereitungsbindung
+werden nicht nachträglich aufgefüllt; der verankerte historische Archivexport
+bleibt davon getrennt und unverändert.
+
 `assessment_records.json` erhält je Arm den Originalkandidaten, die unveränderte
 Auswahl samt bisherigen Kennzahlen, die vier neuen Fehler, Kurvenklasse und
 ausdrücklich unbewertete Folgestufen. `original-result.json` ist eine bytegleiche

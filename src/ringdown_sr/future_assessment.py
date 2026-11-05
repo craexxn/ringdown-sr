@@ -31,6 +31,46 @@ SCHEMA = "ringdown-sr-future-record-1"
 INPUTS = "assessment_inputs.npz"
 CONTRACT = "assessment_contract.json"
 KEYS = {"training_time_s", "training_truth", "diagnostic_time_s", "diagnostic_truth"}
+ADAPTER_FILES = (
+    "scripts/run_python.py",
+    "scripts/run_symbolic_worker.py",
+    "julia/src/RingdownSRLoss.jl",
+    "julia/src/RingdownSRSearch.jl",
+)
+PROJECT_FILES = (
+    "pyproject.toml",
+    "uv.lock",
+    ".python-version",
+    "src/ringdown_sr/juliapkg.json",
+    "julia/Project.toml",
+    "julia/Manifest.toml",
+)
+CONTRACT_FILES = ("data/future_assessment_v1.json", "docs/supplemental_assessment.md")
+SELECTION = "minimum_training_loss_then_complexity"
+
+
+def python_source_names(commit):
+    """Obtain the complete Python inventory from Git, never from recorded subsets."""
+    entries = git("ls-tree", "-r", "-z", commit, "--", "src/ringdown_sr").split("\0")
+    names = set()
+    for entry in filter(None, entries):
+        header, name = entry.split("\t", 1)
+        if not name.endswith(".py"):
+            continue
+        sources.safe_name(name)
+        mode, kind, _ = header.split()
+        if mode not in {"100644", "100755"} or kind != "blob":
+            raise ValueError("Python sources must be regular Git blobs.")
+        names.add(name)
+    if not names:
+        raise ValueError("Missing preparation Python sources in Git.")
+    return names
+
+
+def preparation_source_names(commit):
+    return python_source_names(commit) | set(
+        CONTRACT_FILES + ADAPTER_FILES + PROJECT_FILES
+    )
 
 
 def freeze_software(consumed):
@@ -38,14 +78,7 @@ def freeze_software(consumed):
     if git("status", "--porcelain", "--untracked-files=all"):
         raise ValueError("Use a clean, committed assessment checkout.")
     commit = git("rev-parse", "HEAD")
-    paths = [
-        *sorted((ROOT / "src/ringdown_sr").glob("*.py")),
-        POLICY,
-        ROOT / "docs/supplemental_assessment.md",
-        ROOT / "uv.lock",
-        ROOT / "pyproject.toml",
-        ROOT / ".python-version",
-    ]
+    paths = [ROOT / name for name in sorted(preparation_source_names(commit))]
     hashes = {}
     for path in paths:
         consumed.clock.check()
@@ -292,15 +325,8 @@ def verify_origin(source, frozen):
     ):
         raise ValueError("Invalid preparation commit.")
     hashes = frozen["source_sha256"]
-    required = {
-        "data/future_assessment_v1.json",
-        "docs/supplemental_assessment.md",
-        "uv.lock",
-        "pyproject.toml",
-        ".python-version",
-    }
     if (
-        not required <= hashes.keys()
+        set(hashes) != preparation_source_names(commit)
         or hashes["data/future_assessment_v1.json"] != POLICY_SHA256
     ):
         raise ValueError("Incomplete preparation source binding.")
@@ -309,22 +335,41 @@ def verify_origin(source, frozen):
         sources.safe_name(name)
         if name.startswith("src/ringdown_sr/") and name.endswith(".py"):
             python[name.removeprefix("src/")] = digest
-        elif name not in required:
-            raise ValueError("Unexpected preparation source.")
         if sources.sha256(sources._git_file(commit, name)) != digest:
             raise ValueError("Preparation source differs from its Git commit.")
-    if not python:
-        raise ValueError("Missing preparation Python sources.")
-    for prefix in ("", "reference/", *(f"symbolic/{arm}/" for arm in ARMS)):
-        provenance = source.document(prefix + "metadata.json")["provenance"]
-        if (
-            provenance["git"]["commit"] != commit
-            or provenance["git"]["dirty"] is not False
-            or provenance["python_source_sha256"] != python
-            or provenance["python_source_set_sha256"]
-            != sources.sha256(sources.json_bytes(python))
+    adapters = {name: hashes[name] for name in ADAPTER_FILES}
+    project = {name: hashes[name] for name in PROJECT_FILES}
+
+    def verify_provenance(provenance):
+        sources._same(
+            provenance["git"],
+            {
+                "available": True,
+                "commit": commit,
+                "dirty": False,
+                "changes": [],
+            },
+            "Recorded execution and preparation Git states disagree.",
+        )
+        sources._same(
+            provenance["python_source_sha256"],
+            python,
+            "Recorded execution and preparation Python sources disagree.",
+        )
+        if provenance["python_source_set_sha256"] != sources.sha256(
+            sources.json_bytes(python)
         ):
-            raise ValueError("Recorded execution and preparation sources disagree.")
+            raise ValueError("Recorded Python source-set hash disagrees.")
+        sources._same(
+            provenance["project_file_sha256"],
+            project,
+            "Recorded execution and preparation project sources disagree.",
+        )
+
+    for prefix in ("", "reference/", *(f"symbolic/{arm}/" for arm in ARMS)):
+        metadata = source.document(prefix + "metadata.json")
+        provenance = metadata["provenance"]
+        verify_provenance(provenance)
         # Schema 2 records provenance in its final metadata only.
         if prefix != "reference/":
             sources._same(
@@ -332,6 +377,29 @@ def verify_origin(source, frozen):
                 source.document(prefix + "metadata_initial.json")["provenance"],
                 "Initial and final provenance disagree.",
             )
+        if prefix.startswith("symbolic/"):
+            verify_provenance(metadata["worker_provenance"])
+            for document, key in (
+                (metadata, "worker_adapter_source_sha256"),
+                (metadata, "adapter_source_sha256"),
+                (
+                    source.document(prefix + "metadata_initial.json"),
+                    "adapter_source_sha256",
+                ),
+            ):
+                sources._same(
+                    document[key],
+                    adapters,
+                    "Worker adapter sources disagree with preparation.",
+                )
+            for name in (
+                "julia/src/RingdownSRLoss.jl",
+                "julia/src/RingdownSRSearch.jl",
+            ):
+                if source.hashes.get(prefix + Path(name).name) != adapters[name]:
+                    raise ValueError(
+                        "Executed Julia adapter copy differs from preparation."
+                    )
 
 
 def endpoint(tree, times, truth):
@@ -362,6 +430,8 @@ def selected_record(source, name, summary, config, shared, arrays):
             "inputs.npz",
             "request.json",
             "result.json",
+            "RingdownSRLoss.jl",
+            "RingdownSRSearch.jl",
         }
         <= checksums.keys()
     ):
@@ -390,6 +460,13 @@ def selected_record(source, name, summary, config, shared, arrays):
     front = source.document(prefix + "result.json")
     if front["format"] != FORMAT or front["evaluation_scope"] != "fitted_samples_only":
         raise ValueError("Wrong worker format.")
+    if (
+        type(front["rng"]["python_seed"]) is not int
+        or front["rng"]["python_seed"] != config.symbolic_search.seed
+    ):
+        raise ValueError("Original worker seed differs from the configured seed.")
+    if front["selection"] != SELECTION:
+        raise ValueError("Original worker selection rule differs from the contract.")
     index = front["selected_index"]
     if type(index) is not int or not 0 <= index < len(front["candidates"]):
         raise ValueError("Invalid original selection index.")
@@ -401,7 +478,7 @@ def selected_record(source, name, summary, config, shared, arrays):
             "complexity": chosen["complexity"],
             "display_equation": chosen["display_equation"],
             "training_loss": chosen["loss"],
-            "selection": "minimum_training_loss_then_complexity",
+            "selection": SELECTION,
             "parameter_interpretation": "not_attempted",
         },
         "Original selection and worker disagree.",
@@ -437,7 +514,9 @@ def selected_record(source, name, summary, config, shared, arrays):
             "original_selected_index": index,
             "source_result_sha256": source.hashes[prefix + "result.json"],
             "source_candidate_sha256": sources.sha256(sources.json_bytes(chosen)),
-            "original_seed": config.symbolic_search.seed,
+            "original_seed": front["rng"]["python_seed"],
+            "original_rng": front["rng"],
+            "original_selection_rule": front["selection"],
         },
         "original_candidate": chosen,
         "unchanged_original": summary,

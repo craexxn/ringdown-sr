@@ -36,6 +36,8 @@ def rehash(root):
 
 @pytest.fixture
 def software(monkeypatch):
+    inventory = future.git("ls-tree", "-r", "-z", "HEAD", "--", "src/ringdown_sr")
+    monkeypatch.setattr(future, "git", lambda *args: inventory)
     provenance = pilot._provenance()
     provenance["git"].update(commit="1" * 40, dirty=False, changes=[])
     for module in (pilot, symbolic_pilot, covariance_pilot):
@@ -58,13 +60,9 @@ def software(monkeypatch):
                 },
                 **{
                     name: sha256((future.ROOT / name).read_bytes())
-                    for name in (
-                        "data/future_assessment_v1.json",
-                        "docs/supplemental_assessment.md",
-                        "uv.lock",
-                        "pyproject.toml",
-                        ".python-version",
-                    )
+                    for name in future.CONTRACT_FILES
+                    + future.ADAPTER_FILES
+                    + future.PROJECT_FILES
                 },
             },
             "policy": read_json(raw),
@@ -94,13 +92,36 @@ def worker(monkeypatch):
         record = read(path)
         record["phase"] = "success"
         record["provenance"] = pilot._provenance()
+        record["worker_provenance"] = pilot._provenance()
+        adapters = {
+            name: sha256((future.ROOT / name).read_bytes())
+            for name in future.ADAPTER_FILES
+        }
+        record["adapter_source_sha256"] = adapters
+        record["worker_adapter_source_sha256"] = adapters
         path.write_bytes(json_bytes(record))
         initial = run.output_directory / "metadata_initial.json"
-        initial.write_bytes(json_bytes({"provenance": record["provenance"]}))
+        initial.write_bytes(
+            json_bytes(
+                {"provenance": record["provenance"], "adapter_source_sha256": adapters}
+            )
+        )
+        for name in ("RingdownSRLoss.jl", "RingdownSRSearch.jl"):
+            (run.output_directory / name).write_bytes(
+                (future.ROOT / "julia/src" / name).read_bytes()
+            )
+        result_file = run.output_directory / "result.json"
+        result = read(result_file)
+        result.update(
+            rng={"python_seed": kwargs["budget"].seed}, selection=future.SELECTION
+        )
+        result_file.write_bytes(json_bytes(result))
         checks = run.output_directory / "checksums.json"
         record = read(checks)
         record["metadata.json"] = sha256(path.read_bytes())
         record["metadata_initial.json"] = sha256(initial.read_bytes())
+        for name in ("RingdownSRLoss.jl", "RingdownSRSearch.jl", "result.json"):
+            record[name] = sha256((run.output_directory / name).read_bytes())
         checks.write_bytes(json_bytes(record))
         return run
 
@@ -435,11 +456,9 @@ def test_software_and_policy_are_committed_before_use(tmp_path, monkeypatch, cha
     from ringdown_sr.assessment_publication import Consumption, Deadline
 
     names = [
-        "data/future_assessment_v1.json",
-        "docs/supplemental_assessment.md",
-        "uv.lock",
-        "pyproject.toml",
-        ".python-version",
+        *future.CONTRACT_FILES,
+        *future.ADAPTER_FILES,
+        *future.PROJECT_FILES,
         "src/ringdown_sr/example.py",
     ]
     raw_policy = future.POLICY.read_bytes()
@@ -453,7 +472,11 @@ def test_software_and_policy_are_committed_before_use(tmp_path, monkeypatch, cha
         future,
         "git",
         lambda *args: (
-            ("dirty" if change == "dirty" else "") if args[0] == "status" else "1" * 40
+            "100644 blob " + "2" * 40 + "\tsrc/ringdown_sr/example.py\0"
+            if args[0] == "ls-tree"
+            else ("dirty" if change == "dirty" else "")
+            if args[0] == "status"
+            else "1" * 40
         ),
     )
     monkeypatch.setattr(
