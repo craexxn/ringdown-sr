@@ -193,6 +193,25 @@ def test_shared_step_budget_does_not_restart_for_other_components():
     assert result["work"]["analysis_steps"] == 3
 
 
+def test_completed_component_survives_when_shared_budget_stops_the_next_bound():
+    # This budget reaches the first enclosure but not the second; a fresh
+    # per-component allowance would incorrectly certify both components.
+    tree = op("+", core(), core(-2, 3, "sin"))
+    result = diagnose(tree, limits=replace(LIMITS, steps=375))
+    assert result["status"] == "unresolved"
+    first, second = result["components"]
+    assert first["bound"]["status"] == "bound_proven"
+    assert _fraction(first["bound"]["upper"]) == 1
+    assert second["bound"]["status"] == "unresolved"
+    assert second["bound"]["reason"] == "analysis_step_limit"
+    assert second["bound"]["upper"] is None
+    for candidate in (first, second):
+        assert all(
+            value["status"] == "not_assessable"
+            for value in candidate["relative_contribution_bounds"].values()
+        )
+
+
 @pytest.mark.parametrize(
     "bad", [None, np.zeros(2), np.array([np.nan, 1.0]), np.array([True, False])]
 )

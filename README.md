@@ -29,7 +29,8 @@ Die [quantifizierte Zusatzterm-Diagnose](docs/supplemental_remainder.md)
 ist als Stufe 3 implementiert, lokal geprüft und
 [auf die 78 Originalauswahlen angewandt](docs/supplemental_remainder_results_001.md).
 Mehrere Grundterme werden separat diagnostiziert; adaptive Schranken bleiben
-begrenzt. Die eigene vollständige CI und der Review-PR folgen.
+begrenzt. [PR #72](https://github.com/craexxn/ringdown-sr/pull/72) enthält
+die Umsetzung und Prüfnachweise; vollständige CI und Review-Abnahme stehen aus.
 Suchversuche stehen aus.
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit

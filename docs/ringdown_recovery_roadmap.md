@@ -14,7 +14,8 @@ Bewertungsstufe 2 ist mit [PR #70](https://github.com/craexxn/ringdown-sr/pull/7
 [auf die Originalauswahlen angewandt](supplemental_remainder_results_001.md).
 Ihr [Resttermvertrag](supplemental_remainder.md) bindet die
 bestätigten Mehrfachdiagnosen und die begrenzte adaptive Intervallunterteilung.
-Die eigene vollständige technische CI und Review-Abnahme stehen noch aus.
+Die eigene vollständige technische CI und Review-Abnahme für
+[PR #72](https://github.com/craexxn/ringdown-sr/pull/72) stehen noch aus.
 
 Diese Datei hält die vereinbarte Vorgehensrichtung fest. Konkrete Seeds,
 Auswahlregeln, Budgets und noch offene methodische Einzelentscheidungen werden

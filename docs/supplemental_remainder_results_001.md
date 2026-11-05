@@ -185,7 +185,8 @@ Auslöschung, wachsende und singuläre Reste, beide Intervallränder, ungeklärt
 Originaldomain, adaptive vollständige Abdeckung, Budgetende, Referenznormen,
 ältere Snapshots, automatische/nachträgliche Ausgaben sowie Quellen- und
 Veröffentlichungsmanipulationen. Die vollständige native Stufe-3-CI und der
-separate PR-Review sind bei diesem Anwendungsnachweis noch ausstehend;
+separate Review von [PR #72](https://github.com/craexxn/ringdown-sr/pull/72)
+sind bei diesem Anwendungsnachweis noch ausstehend;
 ihren aktuellen Stand führt der [Fortsetzungsstand](representation_implementation_status.md).
 
 Eine separat geschriebene Nachrechnung ohne Aufruf des produktiven Erkenners

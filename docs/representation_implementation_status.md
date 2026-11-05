@@ -55,6 +55,7 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 - **Branch und Phase:** `codex/assessment-additional-terms`, eigener Worktree ab
   dem Stufe-2-main, danach normale Einbindung des übernommenen PR #71;
   Leitfadenphase 1, letzter eigener Bewertungs-PR.
+  [PR #72](https://github.com/craexxn/ringdown-sr/pull/72) als Draft angelegt.
   Der Umfang ergänzt historischen Import und zukünftige Schema-3-Ausgaben.
 - **Methodenbeschluss:** Alle regelbasiert erkannten Grundterme getrennt
   diagnostizieren, ohne bevorzugte Komponente. Adaptive exakte Halbierung bei
@@ -91,9 +92,23 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   bei 640 Bit bestätigen 41 Schranken, exakte Referenzrechnungen 82 getrennte
   Normierungen. Belege, Einzelfälle und Artefakthashes im
   [Ergebnisbericht](supplemental_remainder_results_001.md).
-- **Offen / nächster konkreter Schritt:** Kombinierten Stand mit dem
-  übernommenen CI-Workflow prüfen, eigenen Draft-PR erstellen, anschließend
-  einmalige volle technische CI und Übergabe zum Review. Für die beschlossene
+- **Kombinierter Abschlussstand:** Auf Mergecommit
+  `7a3729610673bb1aaa0e78c22b6fe698a041d923` bestanden **3.061 Pythonfälle
+  in 355,37 s**, Exitstatus 0, sowie Ruff, Format (238 Dateien),
+  Dokumentation (82 Markdown-Dateien) und reale Bindung aller 57 Quellen.
+  Die eigene gezielte KI-basierte Implementierungsprüfung deckte die
+  Herleitung aller Komponenten ohne Referenzauswahl, Originaldomain,
+  vollständige Intervallabdeckung, gemeinsame Budgets, gerichtete Normen,
+  ältere Snapshots und Veröffentlichung ab; kein korrekturbedürftiger Befund.
+  Eine ergänzte Gegenprüfung bestätigt zusätzlich die erhaltene erste
+  Schranke bei Budgetende während der zweiten Komponente: separat bestanden,
+  1 Test in 1,16 s. Suchworker, Stufe-2-Beweiser, Daten, Abhängigkeiten und
+  native Suchbudgets gegenüber main unverändert. Kein separater Zweitreview.
+- **Offen / nächster konkreter Schritt:** Finalen Draft-Stand bündeln,
+  einmalig auf Ready setzen und die vollständige serielle CI auswerten;
+  danach PR #72 mit gebundenem Head/Basis/Checkout zum Review übergeben.
+  Aktuelle CI-Nachweise werden im PR ergänzt, damit reine Statuspflege keine
+  weitere Vollprüfung auslöst. Für die beschlossene
   Stufe 3 sind keine Methodenentscheidungen mehr offen. Ihre CI-/Review-Abnahme
   und Übernahme stehen aus. Keine vierte Bewertungsstufe beauftragt;
   spätere Suchversuche benötigen ihren eigenen Laufauftrag.
