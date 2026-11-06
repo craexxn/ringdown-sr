@@ -5,8 +5,8 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 05.11.2026; abgeglichener Hauptbranch:
-`168e276` ([CI-Sparplan #71](https://github.com/craexxn/ringdown-sr/pull/71)).
+Fortsetzungsstand: 06.11.2026; abgeglichener Hauptbranch:
+`de33d52` ([Zusatzbewertung Stufe 3 #72](https://github.com/craexxn/ringdown-sr/pull/72)).
 Der [CI-Sparplan](docs/github_actions_savings_plan.md) ist mit
 [PR #71](https://github.com/craexxn/ringdown-sr/pull/71) übernommen:
 günstige Draft-Prüfungen, danach vollständige [serielle native CI](docs/ci.md)
@@ -19,7 +19,7 @@ vor der Suche gespeichert; bewertet wird die Originalauswahl gegen das saubere S
 Die [lesende Anwendung auf alle 78 Originalauswahlen](docs/supplemental_assessment_results_001.md)
 ist abgeschlossen; alle vier verankerten Originalarchive liegen verifiziert vor.
 Die exakte Struktur-/Domain-/Fortsetzungsprüfung ist ebenfalls übernommen.
-Die quantifizierten Zusatzterme folgen im letzten eigenen Bewertungs-PR.
+Damit sind alle drei beauftragten Bewertungsstufen übernommen.
 Prüfstand und offene Arbeit stehen im [Fortsetzungsstand](docs/representation_implementation_status.md).
 Der [Leitfaden zur wiederholbaren Rekonstruktion](docs/ringdown_recovery_roadmap.md)
 ordnet Phasen, Begründungen und Entscheidungskriterien. Aktuell läuft dessen
@@ -30,7 +30,9 @@ ist als Stufe 3 implementiert, lokal geprüft und
 [auf die 78 Originalauswahlen angewandt](docs/supplemental_remainder_results_001.md).
 Mehrere Grundterme werden separat diagnostiziert; adaptive Schranken bleiben
 begrenzt. [PR #72](https://github.com/craexxn/ringdown-sr/pull/72) enthält
-die Umsetzung und Prüfnachweise; vollständige CI und Review-Abnahme stehen aus.
+die übernommene Umsetzung, vollständige CI und den KI-Review ohne Befund.
+Als eigener technischer Folgeauftrag beginnt die
+[Laufzeitoptimierung von Export und Testvorbereitung](docs/assessment_performance.md).
 Suchversuche stehen aus.
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit

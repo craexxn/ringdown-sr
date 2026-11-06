@@ -1,6 +1,6 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 05.11.2026. PR #67 ist als
+Stand: 06.11.2026. PR #67 ist als
 `8096ddb8bb6fd065eb1079c7902a2016334a6e6b` übernommen; sein Dateibaum entspricht
 dem korrigierten Head `dc7f4a29a7a26516e5ea0b65bd8bc819e4f6cd71`.
 Die vollständige [CI 41996715772](https://github.com/craexxn/ringdown-sr/actions/runs/41996715772)
@@ -39,7 +39,45 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: Zusatzbewertung, Stufe 3 von 3
+## Aktuell: Laufzeitoptimierung nach Abschluss der drei Bewertungsstufen
+
+- **Auftrag und Basis:** Nach ausdrücklicher Freigabe PR #72 als
+  `de33d52aede3903a9745305b52f35c467e0d3b9f` übernommen. Dateibaum
+  `90b565904b5d06c8b4df296b1308f9d333029e12` entspricht dem Review-Head
+  `9d4268e162444c141f89cc2b855f8bae56021400` und tatsächlichen CI-Checkout
+  `9b4bad005477d6c3a7e0bb661a6b5a14c5fbab3a`.
+- **Abschluss Stufe 3:** Alle drei Jobs der
+  [CI 42101166272](https://github.com/craexxn/ringdown-sr/actions/runs/42101166272)
+  erfolgreich: 3.062 Pythonfälle in 325,43 s und sämtliche nativen Prüfblöcke.
+  Logs und Dateibaum hier abgeglichen. Das übermittelte separate KI-Review
+  meldet keine korrekturbedürftigen Befunde, 330 Repository-Tests und 23
+  zusätzliche Gegenprüfungen bestanden. Diese Reviewtests wurden hier nicht
+  erneut ausgeführt; die historische Anwendung wurde im separaten Review
+  ohne Originalarchive nur anhand des Ergebnisberichts geprüft.
+- **Branch und Phase:** `codex/assessment-performance`, eigener Worktree ab
+  genanntem main. Technischer Folgeauftrag zu Leitfadenphase 1, keine vierte
+  Bewertungsstufe. Keine zusätzlichen Agenten und keine wissenschaftliche Suche.
+- **Messung vor Änderung:** Historischer Export aller 78 Auswahlen unter
+  Profiler 10,274 s, davon Import 6,281 s; 413 Git-Dateiprozesse und 72
+  Archivlesevorgänge. Gespeicherter technischer Schema-3-Lauf 0,386 s und
+  116 Git-Dateiprozesse. Die 77 gezielten Integrationstests bestanden in
+  77,90 s, mit rund 1,1 s Vorbereitung je typischem Fehlerfall.
+- **Plan und Grenzen:** [Mess- und Optimierungsplan](assessment_performance.md).
+  Je Prüfzeitpunkt Archivzugriffe bündeln, unveränderliche Git-Dateien nur
+  exportlokal cachen, gemeinsame Bindungen/Fingerprints und Vorhersagen
+  wiederverwenden, Fehlerfixtures isoliert aus gültigen Testquellen kopieren.
+  Sämtliche Prüfzeitpunkte, Bewertungsregeln, Versionen, Beweisgrenzen und
+  Widerrufspfade erhalten. Keine offene fachliche Methodenentscheidung für
+  diese semantikerhaltende Optimierung.
+- **Nächster konkreter Schritt:** Eigenen Draft-PR eröffnen, begrenzte Änderungen
+  implementieren und gegen dieselben vollständigen Originalausgaben prüfen.
+  Danach Nachher-Messung, passende Tests, gebündelte Ready-CI und Reviewübergabe.
+  Suchversuche bleiben ein gesonderter, noch nicht beauftragter Schritt.
+
+## Übernommen: Zusatzbewertung, Stufe 3 von 3
+
+Die folgenden Angaben dokumentieren Entwicklung und damalige Übergabe;
+Abschluss und aktuelle Fortsetzung stehen oben.
 
 - **Übernahme und Basis:** Stufe 2 / [PR #70](https://github.com/craexxn/ringdown-sr/pull/70)
   ist als `7b7b9dfb9117b4202522cd620c90d0ec861ccc65` übernommen. Der Dateibaum
