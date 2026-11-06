@@ -45,6 +45,12 @@ Ausführungsschritt. Umsetzung und Nachweise stehen im
 [Ergebnisindex](docs/results_index.md) führt Zuordnung und offene Sicherung:
 gemeinsamer Archivordner plus zweite gesicherte Kopie, Releases optional.
 Konkrete Ablageorte und geprüfte Zweitkopien sind weiterhin unbestätigt.
+Die [Veröffentlichungsprüfung](docs/publication_review.md) und MIT-Lizenz werden
+zusammen mit dem Zeitbudgetvergleich in
+[PR #77](https://github.com/craexxn/ringdown-sr/pull/77) geführt, damit beide
+Arbeitspakete eine gemeinsame abschließende Vollprüfung erhalten. Das Repository bleibt
+bis zur gesonderten Freigabe privat; diese Vorbereitung ändert keine
+wissenschaftlichen Protokolle und startet keine Versuchsserie.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
@@ -457,7 +463,8 @@ Entwicklungswerkzeuge:
 
 ## Einrichtung auf einem weiteren Rechner
 
-Voraussetzungen: Git, uv und Zugriff auf das private GitHub-Repository.
+Voraussetzungen: Git, uv und Lesezugriff auf das GitHub-Repository.
+Solange es privat ist, ist eine berechtigte GitHub-Anmeldung erforderlich.
 Die folgenden Befehle sind für ein Linux- beziehungsweise WSL-Terminal.
 
 ```bash
@@ -469,6 +476,16 @@ uv sync --locked --dev --python 3.12.14
 
 Programme werden aus dem Projektordner mit `uv run` gestartet.
 Eine manuelle Aktivierung der virtuellen Umgebung ist nicht nötig.
+
+## Lizenz
+
+Der eigene Softwarecode und die zugehörige technische Dokumentation stehen
+unter der [MIT-Lizenz](LICENSE), Copyright 2026 Gregor Hubmann. Externe
+Abhängigkeiten und ausdrücklich anders gekennzeichnete Inhalte behalten ihre
+jeweiligen Lizenzen; sie werden durch die Projektlizenz nicht umlizenziert.
+Die separat verfasste Masterarbeit ist von dieser Lizenzierung nicht
+automatisch erfasst. Umfang und Grenzen der Prüfung stehen im
+[Veröffentlichungsbefund](docs/publication_review.md#lizenzentscheidung).
 
 ## Bestehenden Rechner aktualisieren
 

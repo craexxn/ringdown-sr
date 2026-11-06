@@ -120,6 +120,16 @@ Repository-Einstellungen werden mit diesem Auftrag nicht verändert.
 
 ## Kosten und Abnahme
 
+Für eine spätere öffentliche Sichtbarkeit gilt: Die hier verwendeten
+Standard-Runner `ubuntu-24.04` sind in öffentlichen Repositories kostenlos.
+Größere Runner bleiben kostenpflichtig; Speicher hat eigene Regeln gemäß
+[GitHub Actions billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions).
+Das ändert weder erforderliche Prüfungen noch den seriellen Ablauf. Der
+historische Sparplan und seine Messungen bleiben erhalten. Die Prüfung von
+Actions-Logs, Fork-Freigaben und tatsächlichem Branchschutz steht im
+[Veröffentlichungsbefund](publication_review.md). Dieser Dokumentationsnachtrag
+ändert keine Repository-Einstellung oder Workflow-Berechtigung.
+
 Der [Sparplan](github_actions_savings_plan.md) nennt historische Jobzeiten und
 rechnerische Einsparungen, keine gemessenen Kosten des neuen Ablaufs. Durch zwei
 entfallende allgemeine Umgebungsprüfungen werden neun bis elf Runner-Minuten je
@@ -135,6 +145,10 @@ Sind alle geänderten Dateien ausschließlich erlaubte Prosa (`README.md`,
 `AGENTS.md` oder Markdown unter `docs/`), installiert `prepare` weder die
 Projektumgebung noch Julia. Der native Job wird ausdrücklich übersprungen;
 Python aus der Runner-Standardinstallation prüft die Dokumentation.
+Eine neue Datei `LICENSE` im Repository-Wurzelverzeichnis fällt nach der
+unveränderten Klassifikation in den vollständigen Scope. Dieser Auftrag
+erweitert die Ausnahme nicht; sein Prüfstand wird entsprechend als
+vollständiger Scope geführt.
 
 Geprüft werden alle versionierten Markdown-Dateien: UTF-8, abschließender
 Zeilenumbruch, unerwünschte Leerzeichen und abgeschlossene Codeblöcke sowie
