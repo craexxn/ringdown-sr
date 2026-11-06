@@ -19,7 +19,8 @@ Stufe 3 ist am 06.11.2026 mit
 CI und KI-Review sind erfolgreich. Alle drei Bewertungsstufen sind abgeschlossen.
 Die [technische Laufzeitoptimierung](assessment_performance.md) ist als eigener
 Auftrag innerhalb Phase 1 in [PR #73](https://github.com/craexxn/ringdown-sr/pull/73)
-implementiert und wartet auf vollständige CI und separates Review.
+nach vollständiger CI, übermitteltem separatem KI-Review ohne Befund und
+ausdrücklicher Freigabe am 06.11.2026 übernommen.
 Bewertungsregeln und Prüfzeitpunkte bleiben erhalten.
 
 Diese Datei hält die vereinbarte Vorgehensrichtung fest. Konkrete Seeds,
@@ -30,6 +31,11 @@ bereits erfolgte Implementierung oder wissenschaftliche Ausführung.
 
 ## Rolle und Pflege
 
+- Die [Archivierungsrichtlinie](results_archiving.md) und der
+  [Ergebnisindex](results_index.md) ergänzen Phase 1 um die dauerhafte
+  Zuordnung vorhandener Versuche, Quellen und Bewertungen. Die Regelung ist
+  dokumentiert; Archivablage und zweite gesicherte Kopie bleiben separat
+  nachzuweisen. GitHub-Releases sind eine optionale zusätzliche Ablage.
 - Diese Datei ist die zentrale Quelle für Reihenfolge, Begründung und
   Entscheidungskriterien des weiteren Vorgehens.
 - [README](../README.md#projektstatus) bleibt der Einstieg;

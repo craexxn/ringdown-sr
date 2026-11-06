@@ -1,5 +1,17 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
+Aktueller Abgleich am 06.11.2026: main `e28889c4013d6d4eb1725ad44f3f2a1ef844cfdf`
+enthält PR #73. PR #74 auf `codex/results-archive-index` bindet diese Basis
+normal ein; die drei Dokumentationskonflikte werden unter Erhalt beider
+Aufträge aufgelöst. Code, Bewertungsverträge, Ergebnisindex und Archivregel
+bleiben gegenüber ihren jeweiligen geprüften Ständen unverändert. Die neue
+Dokumentationsprüfung und der tatsächliche CI-Checkout werden in PR #74
+festgehalten. Anschließend ausdrückliche Mergefreigabe abwarten. Die danach
+beauftragte Leitfadenanpassung und begrenzte Endfrontdiagnose bleiben ein
+eigenes Arbeitspaket; keine wissenschaftliche Suchausführung freigegeben.
+
+Historische Übernahmen und jeweilige damalige Prüfstände:
+
 Stand: 06.11.2026. PR #67 ist als
 `8096ddb8bb6fd065eb1079c7902a2016334a6e6b` übernommen; sein Dateibaum entspricht
 dem korrigierten Head `dc7f4a29a7a26516e5ea0b65bd8bc819e4f6cd71`.
@@ -39,7 +51,23 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: Laufzeitoptimierung nach Abschluss der drei Bewertungsstufen
+## Übernommen: Laufzeitoptimierung nach Abschluss der drei Bewertungsstufen
+
+Abschluss am 06.11.2026: PR #73 ist nach ausdrücklicher Freigabe als
+`e28889c4013d6d4eb1725ad44f3f2a1ef844cfdf` übernommen. Sein Dateibaum
+`97bdf1acb036fee76741725559149112b7c1805c` entspricht Head
+`7168ae02e5e58a72f27675f8b9bd4d110528ad8f` und tatsächlichem CI-Checkout
+`bd22ff0a233ec0bf76cbd5ea830fc1cdbcddb508`.
+Die [Ready-CI 42166537694](https://github.com/craexxn/ringdown-sr/actions/runs/42166537694)
+bestand vollständig: 3.076 Pythonfälle und sämtliche nativen Prüfblöcke.
+Das übermittelte separate KI-Review meldet keine korrekturbedürftigen Befunde,
+337 Repository-Tests und fünf zusätzliche Gegenprüfungen bestanden.
+Geprüft wurden insbesondere synthetische Importgleichheit, reale Bindung aller
+57 Quellen und späte Unterbrechungen. Das Nachweispaket fehlte dort; die
+78 historischen Auswahlen und ursprünglichen Laufzeitmessungen bleiben im
+separaten Review übermittelte Implementierungsnachweise. Keine Wiederholung
+dieser Tests bei der Statuspflege. Der folgende Abschnitt hält die Entwicklung
+und den damaligen Übergabestand fest; seine CI-/Review-Warteangaben sind erledigt.
 
 - **Auftrag und Basis:** Nach ausdrücklicher Freigabe PR #72 als
   `de33d52aede3903a9745305b52f35c467e0d3b9f` übernommen. Dateibaum
@@ -173,6 +201,62 @@ Abschluss und aktuelle Fortsetzung stehen oben.
   Stufe 3 sind keine Methodenentscheidungen mehr offen. Ihre CI-/Review-Abnahme
   und Übernahme stehen aus. Keine vierte Bewertungsstufe beauftragt;
   spätere Suchversuche benötigen ihren eigenen Laufauftrag.
+
+## Parallelauftrag: Ergebnisindex und dauerhafte Archivierung
+
+Stand: 06.11.2026; technisch zu Leitfadenphase 1. PR #72 ist inzwischen als
+`de33d52aede3903a9745305b52f35c467e0d3b9f` übernommen; damit sind alle drei
+Bewertungsstufen abgeschlossen. Der oben stehende Stufe-3-Abschnitt dokumentiert
+seine damalige Übergabe. Die Optimierung in
+[PR #73](https://github.com/craexxn/ringdown-sr/pull/73) ist inzwischen
+übernommen; Abschlussnachweise stehen oben.
+
+- **Branch und Basis:** `codex/results-archive-index`, eigener Worktree ab
+  `de33d52aede3903a9745305b52f35c467e0d3b9f`, nun mit main `e28889c` vereinigt.
+  Reiner Dokumentationsauftrag;
+  [PR #74](https://github.com/craexxn/ringdown-sr/pull/74) ist zur Prüfung offen;
+  die erste geprüfte Indexfassung liegt in
+  `e8694cb18418d27612dfa6fd486d5e5e2eccf192`. Die aktuelle Nachbesserung
+  vereinfacht die Ablage auf Grundlage des ausdrücklichen Beschlusses vom
+  06.11.2026: vorhandenen Archivordner und Backup nutzen, manuellen
+  Release-Aufwand vermeiden. GitHub wird zur optionalen zusätzlichen Ablage.
+- **Umgesetzt:** [Archivierungsrichtlinie](results_archiving.md) und
+  [Ergebnisindex](results_index.md), verlinkt aus README, Arbeitsregeln,
+  Reproduzierbarkeitsvermerk und Leitfaden. 21 Entwicklungs-/Kontrollserien,
+  12 frühere Portabilitätsläufe und fünf getrennte Bewertungsartefakte erfasst.
+  Tatsächliche, nur vorgesehene und fehlende Ausführungsstände bleiben getrennt.
+  Auch Abbrüche und negative Ergebnisse bleiben sichtbar. Vorhandene
+  Metadaten und der Serienkatalog bleiben die Detailquellen.
+- **Ablage beschlossen, Sicherung offen:** Gemeinsamer Archivordner plus zweite
+  gesicherte Kopie auf unabhängigem Datenträger oder im bestehenden Backup.
+  GitHub-Releases und Downloadlinks sind optional. Große Archive bleiben
+  außerhalb von Git, `results/` weiter lokal und ignoriert. Unveränderliche
+  Originaldateien/Hashes, getrennte Fassungen sowie Code- und Bewertungsbindung
+  bleiben erforderlich. Ablageorte und beide dauerhaften Kopien sind noch zu
+  bestätigen; diese Dokumentationsänderung behauptet keine ausgeführte Sicherung.
+- **Prüfnachweise:** Vier Originalarchive mit dem bestehenden Quellenkatalog
+  abgeglichen: tatsächliche Datei-SHA-256, gespeicherter sauberer Commit,
+  Berichtsformat und Laufstatus. Fünf Bewertungsarchive einschließlich
+  Ausgabemanifest, Bewertungscommit und Freigabe lesend geprüft. Historische
+  Berichte/Methodenquellen auf Commitrollen und Hashzuordnung geprüft;
+  weitere Originalarchivaudits oder neue SR-Versuche wurden nicht ausgeführt.
+  Dokumentations-/Linkprüfung für 84 Markdown-Dateien, zwölf zusätzliche
+  interne Anker, Konsistenz- und Diffprüfung bestanden auf dem ersten Stand.
+  Alle 25 verlinkten Commits waren dort über GitHub erreichbar. Für die
+  vereinfachte Ablage bestanden erneut die Dokumentationsprüfung für
+  84 Markdown-Dateien und 40 interne Anker. Die ursprünglichen
+  Archiv-, Hash-, Commit- und Bewertungszuordnungen sind unverändert;
+  59 Indexzeilen und sämtliche Inline-Kennungen wurden gegen den vorigen
+  PR-Head `cff8da4dec3faf0348ea38429b52d086de16a3b1` abgeglichen.
+  Der Diff bleibt reine Dokumentation; keine neue wissenschaftliche Auswertung.
+- **Offene Angaben:** Für 19 namentlich mit Hash belegte Originalarchive sind
+  dauerhafte Ablage und zweite Kopie unbestätigt; beim Kreuzversuch sind
+  Hash/Originalarchiv und tatsächlicher Orchestrierungscommit offen. Frühere Läufe teils nur über Terminalnachweise
+  belegt. Das ist kein abgeschlossener Archivierungsnachweis.
+- **Nächster konkreter Schritt:** Dokumentations-PR prüfen. Anschließend den
+  gemeinsamen Archivordner und die zweite Kopie benennen, Archive dort unverändert
+  sichern, beide Kopien gegen die SHA-256 prüfen und den Sicherungsstand im
+  Index bestätigen. Ein Release oder Downloadlink ist dafür nicht erforderlich.
 
 ## Übernommen: CI-Sparplan, Draft-Steuerung und serielle native Prüfung
 

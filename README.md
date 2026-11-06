@@ -6,7 +6,7 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 ## Projektstatus
 
 Fortsetzungsstand: 06.11.2026; abgeglichener Hauptbranch:
-`de33d52` ([Zusatzbewertung Stufe 3 #72](https://github.com/craexxn/ringdown-sr/pull/72)).
+`e28889c` ([technische Optimierung #73](https://github.com/craexxn/ringdown-sr/pull/73)).
 Der [CI-Sparplan](docs/github_actions_savings_plan.md) ist mit
 [PR #71](https://github.com/craexxn/ringdown-sr/pull/71) übernommen:
 günstige Draft-Prüfungen, danach vollständige [serielle native CI](docs/ci.md)
@@ -33,9 +33,11 @@ begrenzt. [PR #72](https://github.com/craexxn/ringdown-sr/pull/72) enthält
 die übernommene Umsetzung, vollständige CI und den KI-Review ohne Befund.
 Der technische Folgeauftrag
 [Laufzeitoptimierung von Export und Testvorbereitung](docs/assessment_performance.md)
-ist in [PR #73](https://github.com/craexxn/ringdown-sr/pull/73) implementiert.
-Ergebnisgleichheit und lokale Tests sind geprüft; vollständige CI und
-separates Review stehen vor der Übernahme aus.
+ist mit [PR #73](https://github.com/craexxn/ringdown-sr/pull/73) nach vollständiger
+CI, übermitteltem separatem KI-Review ohne Befund und ausdrücklicher Freigabe
+übernommen. Die [Archivierungsregelung](docs/results_archiving.md) und der
+[Ergebnisindex](docs/results_index.md) stehen in PR #74 zur abschließenden Prüfung;
+konkrete Ablageorte und zweite Sicherungskopien bleiben unbestätigt.
 Suchversuche stehen aus.
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit
@@ -354,6 +356,12 @@ Zufallszuständen, Softwareversionen, Codezustand und Prüfsummen.
 Bestehende Ordner werden abgelehnt; für eine Wiederholung einen neuen
 Namen wie `results/pilot-002` verwenden. Lokale Ausgaben unter `results/`
 werden nicht versioniert und müssen separat gesichert werden.
+Der [Ergebnisindex](docs/results_index.md) ordnet die dokumentierten Versuche
+ihren Ausführungsständen, Originalarchiven und Bewertungen zu. Die
+[Archivierungsrichtlinie](docs/results_archiving.md) regelt einen gemeinsamen
+Archivordner und eine zweite gesicherte Kopie. GitHub-Releases sind optional.
+Ablageorte und Sicherung sind noch zu bestätigen; die Richtlinie allein ist
+keine Sicherung.
 Der Kontrolllauf braucht kein Julia/PySR und legt keine Einstellungen
 oder Erfolgskriterien für die Hauptversuche fest.
 

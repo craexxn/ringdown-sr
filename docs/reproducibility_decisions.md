@@ -1,5 +1,10 @@
 # Wiederholbarkeit und wissenschaftliche Robustheit
 
+Die dauerhafte Zuordnung von Lauf, Originalarchiv, Code und Bewertung steht im
+[Ergebnisindex](results_index.md); die [Archivierungsrichtlinie](results_archiving.md)
+ergänzt diesen Entscheidungsvermerk. Bestehende Methodenentscheidungen und
+eingefrorene Versuchsprotokolle werden dadurch nicht geändert.
+
 Stand: 26.10.2026. Entscheidungsvermerk zur ausdrücklich festgehaltenen
 Frage: Müssen unterschiedliche Rechner exakt dieselben Ergebnisse liefern,
 und schränkt ein gemeinsamer BLAS-Kern die symbolische Regression ein?
