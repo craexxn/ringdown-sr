@@ -31,7 +31,8 @@ keine alternative A-Kurve in den 35 Nicht-A-Fronten. Gemäß
 1 × 2.000 und 4 × 500 bei festem lokalem Profil 300/5 implementiert.
 Das Protokoll ist eingefroren; Umsetzung, korrigierte Schutzregeln und vollständige
 technische CI sind mit PR #76 übernommen. Der
-[Manjaro-Lauf 001 wurde unterbrochen](docs/global_restart_results_manjaro_001.md);
+[Manjaro-Lauf 001 wurde in Zelle 20 unterbrochen](docs/global_restart_results_manjaro_001.md);
+19 fertige Zellen, Teilkosten und gesperrter Abschluss sind am Paket geprüft;
 für den getrennten Lauf 002 ist Fortschritt, noch kein Abschluss übermittelt.
 Parallel ist der [begrenzte Zeitbudgetvergleich](docs/iteration_time_budget.md)
 von 2.000 Iterationen mit 400 Sekunden Suchzeit implementiert. Sein Protokoll legt
@@ -58,7 +59,10 @@ zusammen mit dem Zeitbudgetvergleich in PR #77 übernommen. Das Repository bleib
 bis zur gesonderten Freigabe privat; diese Vorbereitung ändert keine
 wissenschaftlichen Protokolle und startet keine Versuchsserie.
 Der [Seed-/Treiber-Kreuzvergleich](docs/seed_driver_crosscheck_results_manjaro_001.md)
-ist jetzt am Originalarchiv lesend bestätigt. Noch fehlende Laufbelege und
+ist jetzt am Originalarchiv lesend bestätigt. Auch die
+[beiden frühen rauschfreien Serien](docs/early_control_archive_audit_001.md)
+sind anhand der nachgereichten Primärdateien bestätigt; keine Wiederholung nötig.
+Noch fehlende Laufbelege und
 Sicherungsangaben stehen priorisiert im
 [Ergebnisindex](docs/results_index.md#priorisierte-fehlende-belege).
 Offizieller Bearbeitungsbeginn: 12.10.2026.
@@ -201,7 +205,8 @@ Dieser Abschnitt ist der kurze Einstieg für neue Chats. Arbeits- und
   trotzdem 0/3 erfolgreiche Originalauswahlen unter beiden Budgets und kein
   Kurvenerfolg unter insgesamt 50 Frontkandidaten. Beim Seed 20261021 steigt
   der Maximalfehler. Sechs gepostete Formeln und ihre 30 Fehlerwerte wurden
-  unabhängig nachgerechnet; der vollständige Originalarchiv-Audit bleibt offen.
+  unabhängig nachgerechnet. Der [ergänzende Quellenaudit vom 06.11.2026](docs/early_control_archive_audit_001.md)
+  bestätigt inzwischen auch Herkunft, Originalauswahl und sämtliche Fronten.
   [Bedienung und Artefakte](docs/free_optimizer_budget.md).
 - **Suchbeobachtung und Verifikationskorrektur:** Der
   [eingefrorene Methodenplan](docs/search_trajectory_plan.md)

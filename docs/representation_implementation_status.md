@@ -22,9 +22,15 @@ Statuspflege Implementierung, Übernahme und wissenschaftliche Ausführung trenn
   Python-Elternverifikation bestanden, Fronten/Suchmerkmale gleich, Bericht
   und Zusammenfassung bytegleich regeneriert. Keine Suche, kein Fit, kein neuer
   nativer Replay. Ursprüngliche Resultate unverändert.
-- **Neu getrennt dokumentiert:** [Neustartlauf 001](global_restart_results_manjaro_001.md)
-  mit übermitteltem SIGINT-Abbruch, unbekanntem Zellstand und noch nicht
-  belegten Kosten; Lauf 002 inzwischen mit eigenem Start-/Fortschrittsbeleg
+- **Nachlieferungen geprüft:** [Frühe rauschfreie Serien](early_control_archive_audit_001.md)
+  mit 9/6 Zellen und 28/50 Frontkandidaten; vollständige Manifeste, tatsächliche
+  Herkunft und historische Python-Elternverifikation bestanden. Beide Berichte
+  und Zusammenfassungen bytegleich regeneriert; negative Kurvenbefunde bestätigt.
+- **Abbruch jetzt primärbelegt:** [Neustartlauf 001](global_restart_results_manjaro_001.md)
+  hat 19 fertige Zellen, Zelle 20 unterbrochen, 363 Vorbereitungsbindungen und
+  gesperrte Freigabe. 179 Kandidaten der fertigen Zellen mit historischem
+  Python-Verifikator bestätigt; kein Serienaggregat. Teilkosten bekannt,
+  Gesamtkosten und Kosten der abgebrochenen Zelle unbekannt. Lauf 002 mit eigenem Start-/Fortschrittsbeleg
   (1–2 fertig, 3 läuft, 4–20 geplant), ohne Abschluss. Technischer
   Manjaro-Vorlauf ebenfalls separat, Erfolg noch nicht übermittelt.
 - **Pflege:** Leitfaden, README, Laufweg und Index auf tatsächliche Merge-/CI-
@@ -32,21 +38,23 @@ Statuspflege Implementierung, Übernahme und wissenschaftliche Ausführung trenn
   Pläne, Implementierung und Konfigurationen bleiben bytegleich. Die ergänzte
   Pflegekette verwendet bestehende Detailquellen statt einer zweiten Chronik.
 - **Verbleibend:** priorisierte [fehlende Belege](results_index.md#priorisierte-fehlende-belege)
-  aus 001/002, technischem Vorlauf, zwei frühen wissenschaftlichen Serien sowie
-  älterer Wiederholbarkeit/Portabilität. Gemeinsame Archivablage und unabhängig
-  geprüfte zweite Kopien bleiben unbestätigt; fünf Originalarchive sind hier
-  Arbeitskopien. Historische Quellen außerhalb dauerhafter Refs weiter sichern.
-- **Prüfung dieser Dokumentation:** 93 Markdown-Dateien einschließlich lokaler
+  aus 002, technischem Vorlauf sowie älterer Wiederholbarkeit/Portabilität.
+  Gemeinsame Archivablage und unabhängig geprüfte zweite Kopien bleiben
+  unbestätigt; sechs historische TAR-Archive, zwei empfangene ZIP-Pakete und
+  die gesonderten Auditpakete sind hier Arbeitskopien. Historische Quellen außerhalb dauerhafter Refs weiter sichern.
+- **Prüfung dieser Dokumentation:** 94 Markdown-Dateien einschließlich lokaler
   Linkziele und Diffprüfung bestanden. Ausschließlich Dokumentationsumfang;
   bestehende wissenschaftliche Pläne und historische Ergebnisberichte
   unverändert. Keine zusätzliche Python-/Native-Gesamtsuite für reine Prosa.
   KI-basiertes Eigenreview der Quellenzuordnung, Statusaussagen und Grenzen;
   kein zusätzlicher Agent. Der PR führt Head/Basis und Dokumentations-CI.
-- **Nächster Schritt:** Dokumentations-PR prüfen und Übernahme separat freigeben;
-  eingehende Originalbelege gezielt lesend prüfen. Lauf 002 separat abschließen
+- **Nächster Schritt:** Nach Einspielen der Nachlieferungen und grüner
+  Dokumentations-CI den ausdrücklich zur Übernahme freigegebenen PR78 abschließen;
+  weitere eingehende Originalbelege gezielt lesend prüfen. Lauf 002 separat abschließen
   lassen und danach seinen tatsächlichen Abschluss/Abbruch prüfen. Kein neuer
-  Suchlauf, keine Versuchsplanänderung und kein Merge dieses Dokumentations-PRs
-  durch den Dokumentationsauftrag freigegeben.
+  Suchlauf und keine Versuchsplanänderung durch den Dokumentationsauftrag
+  freigegeben. Die separate Mergefreigabe gilt nach vollständiger Aktualisierung
+  und abschließender Prüfung.
 
 Die folgenden Abschnitte halten konkrete frühere Implementierungs- und
 Prüfstände fest. Ihre damaligen Ausblicke und offenen Punkte sind historisch;

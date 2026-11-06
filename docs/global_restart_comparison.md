@@ -6,7 +6,9 @@ Das [Protokoll](global_restart_comparison_plan.md) und die
 in `b00fc4a0a5a5a90e7d72f45d2b27788d1fd1585a` eingefroren. Umsetzung mit
 [PR #76](https://github.com/craexxn/ringdown-sr/pull/76) übernommen;
 technischer Prüfstand im [Fortsetzungsstand](representation_implementation_status.md).
-Für Manjaro ist [Lauf 001 als abgebrochen und 002 als laufend übermittelt](global_restart_results_manjaro_001.md).
+Für Manjaro ist [der Abbruch von Lauf 001 am Paket geprüft](global_restart_results_manjaro_001.md):
+19 Zellen fertig, Zelle 20 unterbrochen, Freigabe gesperrt. Für 002 liegt ein
+übermittelter Zwischenstand vor.
 Noch kein abgeschlossener wissenschaftlicher Vergleich, keine Erfolgsbehauptung.
 Die folgenden 001-Befehle dokumentieren den ursprünglichen Laufweg; den bereits
 verwendeten Ausgabeordner nicht löschen oder erneut verwenden. Jeder gesondert

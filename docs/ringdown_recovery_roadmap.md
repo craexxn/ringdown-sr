@@ -40,9 +40,13 @@ gewähltem `fresh_all` bleibt unverändert, ebenso PR76 und seine Originaldaten.
 
 Dokumentationsabgleich vom 06.11.2026 zu Phase 1 und 3: Der
 [Seed-/Treiber-Kreuzvergleich](seed_driver_crosscheck_results_manjaro_001.md)
-ist nun am Originalarchiv verifiziert. Für den globalen Neustartvergleich ist
-der [Abbruch von 001 und laufende Zwischenstand von 002](global_restart_results_manjaro_001.md)
-übermittelt; daraus folgt noch kein wissenschaftlicher Vergleichsbefund.
+ist nun am Originalarchiv verifiziert. Die
+[beiden frühen rauschfreien Serien](early_control_archive_audit_001.md) sind
+ebenfalls an den nachgereichten Primärdateien bestätigt. Beim globalen Vergleich
+ist [Abbruch 001](global_restart_results_manjaro_001.md) mit 19 fertigen Zellen,
+unterbrochener Zelle 20, Teilkosten und gesperrter Freigabe geprüft; für 002
+liegt weiterhin nur ein übermittelter Zwischenstand vor. Daraus folgt noch kein
+wissenschaftlicher Vergleichsbefund.
 Fehlende Primärbelege und Sicherungen werden im
 [Ergebnisindex](results_index.md#priorisierte-fehlende-belege) priorisiert.
 Dies ist Quellen- und Statuspflege, keine Änderung der Versuchspläne.
