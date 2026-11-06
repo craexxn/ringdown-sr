@@ -191,7 +191,9 @@ def failure_kind(error, metadata):
     return None
 
 
-def verify_failed_worker(output, arrays, prepared, context, kind):
+def verify_failed_worker(
+    output, arrays, prepared, context, kind, *, condition="local_300_5"
+):
     control, _driver, support, _probe = context
     worker = output / "worker"
     read = lambda name: support.read_json((worker / name).read_bytes())
@@ -265,7 +267,7 @@ def verify_failed_worker(output, arrays, prepared, context, kind):
             )
     if read("profile.json") != {
         "format": control.PROFILE_FORMAT,
-        "condition": "local_300_5",
+        "condition": condition,
     }:
         raise ValueError("Failed worker profile changed.")
 
