@@ -151,12 +151,19 @@ Dies ist eine begrenzte Prüfung, kein vollständiger Markdown-Parser.
 `docs/search_duration_table_loss_note.md`
 `docs/search_duration_simplification_plan.md`
 `docs/search_duration_prediction_plan.md`, `docs/local_optimizer_plan.md`
-`docs/outer_search_ladder_plan.md`, `docs/transfer_check_plan.md` und
-`docs/seed_driver_crosscheck_plan.md`
+`docs/outer_search_ladder_plan.md`, `docs/transfer_check_plan.md`,
+`docs/seed_driver_crosscheck_plan.md` und `docs/global_restart_comparison_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
 Laufzeitdokumente müssen ebenso ausdrücklich als Ausnahme erfasst werden.
+
+Der Neustartvergleich ergänzt im bestehenden nativen Job
+`scripts/check_global_restarts.py`: drei frische technische Worker auf acht
+Punkten `y=1+t`, äußere Budgets 2/3/2, danach lesende Prüfung gespeicherter
+nativer Nachweise mit Python-/MPFR-Nachrechnung. Bestehende Prüfblöcke bleiben
+unverändert. Der wissenschaftliche
+20-Aufruf-Laufweg wird nicht in Actions ausgeführt.
 
 Auch `docs/supplemental_assessment.md` erhält die volle CI: Der lesende
 Bewertungsexport bindet diesen Versionsvertrag an seinen Softwarestand.

@@ -282,6 +282,18 @@ jobs:
             exit 1
           fi
 
+      - name: Verify restart comparison on three tiny technical workers
+        run: |
+          if ! env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/check_global_restarts.py \
+            --output results/ci-global-restarts; then
+            if [ -d results/ci-global-restarts ]; then
+              find results/ci-global-restarts -type f -name '*.log' -print -exec tail -n 100 {} \;
+            fi
+            exit 1
+          fi
+
   technical-checks:
     name: ${{ github.event_name == 'workflow_dispatch' && 'manual-technical-checks' || 'technical-checks' }}
     needs: [prepare, native]

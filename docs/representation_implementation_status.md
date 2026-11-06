@@ -1,6 +1,6 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Aktueller Abgleich am 06.11.2026: main `16d2f40506e6dae6534f02d76f1cf2f0dfde5dd2`
+Abgleich nach PR #74 am 06.11.2026: main `16d2f40506e6dae6534f02d76f1cf2f0dfde5dd2`
 enthält die ausdrücklich freigegebenen PRs #73 und #74. PR #74 wurde nach
 normaler Basiseinbindung auf Head `75823a33f63fdcaac9a3afaa1f76113e88429d2f`
 geprüft; sein Dateibaum `c3b24e575cd45a869004b7900a1fb4038820492d` entspricht
@@ -10,7 +10,80 @@ erfolgreich: 85 Markdown-Dateien, `mode=docs`, beide erforderlichen Jobs grün,
 native Prüfungen planmäßig übersprungen. Index und Archivregel blieben bei der
 Konfliktauflösung bytegleich; Code/Verträge entsprachen main nach PR #73.
 
-## Aktuell: Leitfaden und begrenzte Endfrontdiagnose
+## Aktuell: begrenzter Suchvergleich, Leitfadenphase 3
+
+PR #75 ist nach ausdrücklichem Mergeauftrag als
+`2f9fff00c24a72f644dc42816b6a05aa87e392f0` übernommen. Head
+`6815625d55f3e1285e24ec41798521fca9226f0d`, Basis `16d2f40`, tatsächlicher
+CI-Checkout `cd3fb28a8297865a5707aeb0c2eba3b706baeff8`: Dateibaum jeweils
+`b2e18c5a45f7e9c57084c1f2f23bce305851f7f9`.
+[Dokumentations-CI 42181071072](https://github.com/craexxn/ringdown-sr/actions/runs/42181071072)
+bestand vollständig im Dokumentationsmodus mit 86 Markdown-Dateien.
+
+- **Branch/Basis:** `codex/global-restart-comparison`, neuer main `2f9fff0`
+  normal eingebunden. [PR #76](https://github.com/craexxn/ringdown-sr/pull/76)
+  auf main; nach externem KI-basiertem Review erneut in Draft korrigiert,
+  aktueller Ready-CI-/Reviewstand im verlinkten PR. Keine wissenschaftliche Serie
+  ausgeführt.
+- **Vorab festgeschrieben:** [Protokoll](global_restart_comparison_plan.md) und
+  Seed-/Rasterkonfiguration in `b00fc4a0a5a5a90e7d72f45d2b27788d1fd1585a`, vor
+  Implementierung. 20 frische Aufrufe; 16-Aufruf-Wiederverwendung nicht gewählt,
+  weil die konkrete künftige Ausführungsumgebung noch nicht abgeglichen ist.
+  Alle Seeds, 1.024 unabhängige Punkte, Auswahl-/Ausfall-/Kosten- und
+  Anschlussregeln sind gebunden. Frische 2.000 sind keine Fortsetzung.
+- **Umsetzung:** vorhandener unveränderter Staffelworker und Einzelzellenadapter,
+  Vorbereitung aller Zellen vor dem ersten Fit, getrennte Originalausgaben und
+  eine verlustbasierte Paketauswahl, lesende Prüfung nativer Nachweise mit
+  Python-/MPFR-Nachrechnung und bestehende
+  widerrufbare Bewertungsveröffentlichung. Laufweg und erwartete Artefakte unter
+  [Bedienung](global_restart_comparison.md). Historische Verträge unverändert.
+- **Prüfstand während Entwicklung:** auf `85cf9de87bb4f4269a8924d62bff419e0c016112`
+  3.089 Pythonfälle in 325,71 s bestanden; drei echte technische Worker mit
+  2/3/2 und identischer Wiederholungsfront sowie lesende Verifikation aller drei
+  Zellen bestanden. Keine wissenschaftliche Suche. Technischer Umgebungscheck
+  erfolgreich. Die Cloud-Pythonbibliothek erforderte
+  einen expliziten vorhandenen `JULIA_PYTHONCALL_LIB`-Pfad; keine Änderung der
+  Projektpins oder des Launchers. Ein gezieltes KI-basiertes Eigenreview von
+  PR #76 auf diesem Head gegen main `2f9fff00c24a72f644dc42816b6a05aa87e392f0`
+  prüfte Vorbereitung, Auswahl, Ausfälle, Kosten und Veröffentlichungsgrenzen.
+  Befunde: Vollständigkeit der Vorbereitungsliste und Bindung fehlgeschlagener
+  Zellen im Verifikator nachschärfen; Beschreibung gespeicherter nativer
+  Nachweise präzisieren. Entsprechende Korrekturen und Gegenfälle ergänzt.
+  Kein separates unabhängiges Review und keine zusätzlichen Agenten.
+- **Korrekturprüfung:** auf `804c012475b878b0b3bccdadf453daffadb1d003` alle
+  20 gezielten Gegenfälle bestanden; Ruff, Format und 88 Markdown-Dateien
+  bestanden. Technischer Lauf `global-restarts-technical-002`: drei native
+  Worker 2/3/2, identische Wiederholungsfront, lesende Verifikation aller drei
+  Zellen mit `search_calls=0` bestanden. Wiederholung wegen geänderter
+  Fehler-/Verifikationspfade; keine wissenschaftliche Ausführung. Eingefrorene
+  Plan-/Konfigurationshashes unverändert. Aktuelle vollständige Ready-CI und
+  deren tatsächlicher Checkout/Dateibaum werden im PR nachgewiesen.
+- **Externer Reviewbefund und Korrektur, 06.11.2026:** übermitteltes KI-basiertes
+  Review von Head `875f2bea95a917dbd3694ac6f7a738edbae38c74` gegen Basis
+  `2f9fff00c24a72f644dc42816b6a05aa87e392f0`: zwei P2-Befunde zur Einstufung von
+  Wächterfehlern/Unterbrechungen als Fitfehler und zur fehlenden Bindung der
+  tatsächlichen Worker-Herkunft bei Ausfällen. Beide selbst reproduziert;
+  neue Gegenfälle scheiterten vor der Korrektur. Nun explizit begrenzte
+  numerische/Ressourcenfehler, bestätigter Fehlerrückgabecode, phasenabhängig
+  erforderliche Worker-Herkunft und Adapterhashes; auch ein Timeout darf einen
+  aufgezeichneten Integritätsfehler oder Interrupt nicht verdecken.
+  Lesende Verifikation verwendet dieselben Schutzprüfungen. Historische Worker,
+  eingefrorenes Protokoll und Auswahl-/Bewertungsregeln bleiben unverändert.
+  Selbst ausgeführt: 341 gezielte Pythonfälle bestanden; nach zusätzlichen
+  Gesamtabschluss-Gegenfällen alle 59 Neustarttests bestanden, einschließlich
+  gesperrter Freigabe bei allen vier Reviewgegenfällen. Ruff, Format und
+  Dokumentationsprüfung bestanden. Gezieltes KI-basiertes Eigenreview der
+  Korrektur ohne weitere korrekturbedürftige Befunde; kein zusätzlicher Agent.
+  Die frühere vollständige CI `42185348695` gilt ausschließlich für den alten
+  Head; die korrigierte Fassung benötigt eine neue vollständige Ready-CI.
+- **Nächster Schritt:** nach vollständiger Ready-CI und Review eine ausdrückliche
+  Mergefreigabe für PR #76; danach ist der dokumentierte Manjaro-Aufruf der
+  separate wissenschaftliche Ausführungsschritt. Kein automatischer Merge/Lauf.
+- **Sicherung:** alle vier bereitgestellten Originalarchive geprüft, dauerhaft
+  dokumentierte Ablage und geprüfte Zweitkopien weiterhin offen. Der separate
+  historische Kreuzversuch bleibt ohne hier bestätigtes Originalarchiv.
+
+## Abgeschlossen: Leitfaden und begrenzte Endfrontdiagnose
 
 - **Branch und Basis:** `codex/recovery-roadmap-front-diagnosis`, aktueller main
   `16d2f40` normal eingebunden. Bestehende Worktrees und Arbeiten bleiben erhalten.

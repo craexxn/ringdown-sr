@@ -1,0 +1,17 @@
+{
+  "format": "ringdown-sr-global-restart-protocol-1",
+  "worker_commit": "5215c5e1c93f220a3f7ea59b1c37580d2f2b5ea4",
+  "blocks": [
+    [20261201, 20261221, 20261222, 20261223],
+    [20261210, 20261231, 20261232, 20261233],
+    [20261211, 20261241, 20261242, 20261243],
+    [20261212, 20261251, 20261252, 20261253]
+  ],
+  "reference_iterations": 500,
+  "long_iterations": 2000,
+  "worker_seconds": 1800,
+  "total_seconds": 43200,
+  "grid_seed": 2026110601,
+  "grid_points": 1024,
+  "grid_attempts": 100
+}

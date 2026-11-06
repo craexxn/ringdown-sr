@@ -5,9 +5,10 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 06.11.2026; abgeglichener main `16d2f40` nach ausdrücklich
+Fortsetzungsstand: 06.11.2026; abgeglichener main `2f9fff0` nach ausdrücklich
 freigegebener Übernahme von [PR #73](https://github.com/craexxn/ringdown-sr/pull/73)
-und [PR #74](https://github.com/craexxn/ringdown-sr/pull/74).
+und [PR #74](https://github.com/craexxn/ringdown-sr/pull/74), anschließend
+[PR #75](https://github.com/craexxn/ringdown-sr/pull/75).
 Alle drei Bewertungsstufen sind implementiert, geprüft, übernommen und auf
 78 Originalauswahlen angewandt: [Kurvenklassen](docs/supplemental_assessment_results_001.md),
 [Originalfamilie und Domain](docs/supplemental_structure_results_001.md),
@@ -21,9 +22,13 @@ zwei Fortsetzungen und drei ungeklärten Familienbefunde unter 43 A-Kurven sind
 eine Beschreibung des Bestands, keine gepoolte Erfolgsquote. Neue Parameter-
 übereinstimmungen bleiben `not_assessed`.
 
-Der [zentrale Leitfaden](docs/ringdown_recovery_roadmap.md) führt nun Phase 2:
-[begrenzte Endfrontdiagnose](docs/endfront_diagnostic_001.md), danach Vorbereitung
-von 1 × 500, 1 × 2.000 und 4 × 500 bei festem lokalem Profil 300/5.
+Die [begrenzte Endfrontdiagnose](docs/endfront_diagnostic_001.md) ist abgeschlossen:
+keine alternative A-Kurve in den 35 Nicht-A-Fronten. Gemäß
+[Leitfadenphase 3](docs/ringdown_recovery_roadmap.md) wird nun der
+[Suchvergleich](docs/global_restart_comparison.md) von 1 × 500, frischen
+1 × 2.000 und 4 × 500 bei festem lokalem Profil 300/5 vorbereitet.
+Das Protokoll ist eingefroren; Umsetzung und aktueller technischer Prüfstand
+werden in PR #76 geführt.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
 Ausführungsschritt. Umsetzung und Nachweise stehen im
