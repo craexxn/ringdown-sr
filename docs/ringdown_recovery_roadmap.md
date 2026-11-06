@@ -7,7 +7,7 @@ Phasen und Kriterien bleiben erhalten; tatsächlicher Prüf- und Übernahmestand
 im [Fortsetzungsstand](representation_implementation_status.md).
 
 Version 2, Planungsstand: 06.11.2026, nach Übernahme von PR #73 und #74.
-Konkretisierung am selben Tag nach PR #75: Phase 2 abgeschlossen;
+Historische Konkretisierung am selben Tag nach PR #75: Phase 2 abgeschlossen;
 [Protokoll](global_restart_comparison_plan.md) für Phase 3 vor Implementierung
 eingefroren, [Laufweg](global_restart_comparison.md) in technischer Prüfung.
 20 frische Suchaufrufe, vollständige Seeds und unabhängiges Zusatzraster sind
@@ -28,14 +28,28 @@ Der PR76-Versuch bleibt ein separater wissenschaftlicher Manjaro-Lauf.
 
 Umsetzungsabgleich vom 06.11.2026: PR #76 ist nach korrigierten Schutzregeln,
 gezieltem KI-Nachreview und vollständiger CI als `b547bb3` übernommen.
-Der getrennte [Zeitbudgetlaufweg](iteration_time_budget.md) wird mit der
-Veröffentlichungsvorbereitung in PR #77 abgeschlossen. Die Quellenprüfung zeigt
+Der getrennte [Zeitbudgetlaufweg](iteration_time_budget.md) ist mit der
+Veröffentlichungsvorbereitung nach vollständiger CI und separatem KI-Review
+in PR #77 übernommen (`823732f`). Die Quellenprüfung zeigt
 eine konkrete Wiederverwendungslücke: Das bisherige PR76-Format zeichnet die
 tatsächlichen Julia-/GC-Threads und native CPU-Affinität nicht vollständig auf.
 Serielle Suche und BLAS=1 ersetzen diesen Nachweis nicht. Der Import entscheidet
 deshalb konservativ anhand der Originalbelege; ein ungeeigneter Kontrollarm
 startet keinen automatischen Ersatzlauf. Das eingefrorene Design mit ausdrücklich
 gewähltem `fresh_all` bleibt unverändert, ebenso PR76 und seine Originaldaten.
+
+Dokumentationsabgleich vom 06.11.2026 zu Phase 1 und 3: Der
+[Seed-/Treiber-Kreuzvergleich](seed_driver_crosscheck_results_manjaro_001.md)
+ist nun am Originalarchiv verifiziert. Die
+[beiden frühen rauschfreien Serien](early_control_archive_audit_001.md) sind
+ebenfalls an den nachgereichten Primärdateien bestätigt. Beim globalen Vergleich
+ist [Abbruch 001](global_restart_results_manjaro_001.md) mit 19 fertigen Zellen,
+unterbrochener Zelle 20, Teilkosten und gesperrter Freigabe geprüft; für 002
+liegt weiterhin nur ein übermittelter Zwischenstand vor. Daraus folgt noch kein
+wissenschaftlicher Vergleichsbefund.
+Fehlende Primärbelege und Sicherungen werden im
+[Ergebnisindex](results_index.md#priorisierte-fehlende-belege) priorisiert.
+Dies ist Quellen- und Statuspflege, keine Änderung der Versuchspläne.
 
 Die Planungsänderung vom 06.11.2026 zieht das unregelmäßige Zusatzraster in die
 Entwicklungsphase vor, präzisiert frische Einzelsuchen gegenüber Fortsetzung
@@ -77,6 +91,28 @@ bereits erfolgte Implementierung oder wissenschaftliche Ausführung.
 - Vor jedem neuen Arbeitspaket aktuellen Repository- und PR-Stand prüfen.
   PR-Nummern sind Verweise auf tatsächliche PRs, keine reservierten Arbeitspakete.
 
+Pflegepräzisierung vom 06.11.2026: Nach jedem fachlichen Entscheid oder Versuch
+die vorhandenen Quellen zu einer prüfbaren Kette verbinden:
+
+1. Ausgangsproblem, datierte Entscheidung mit Begründung/Alternativen und Status
+   im zuständigen Leitfaden- oder Methodenabschnitt festhalten: vorgeschlagen,
+   beschlossen, implementiert, ausgeführt oder geprüft.
+2. Auf eingefrorenen Plan samt Commit/Hash und vorhandene Konfiguration verweisen;
+   Datenrollen, Seeds, Profil, Budget, Auswahl und Kriterien dort erhalten.
+3. Im Ergebnisbericht tatsächlichen Ausführungsstand und Umgebung belegen,
+   vollständige, fehlgeschlagene, abgebrochene und nicht ausgeführte Fälle sowie
+   bekannten Aufwand nennen. Befehlsvorschläge und Schätzungen sind keine Messung.
+4. Befunde, Gegenbefunde, Prüfumfang und Aussagegrenzen mit den unveränderten
+   Originalen verbinden; technische Prüfung, wissenschaftliche Ausführung und
+   retrospektive Bewertung trennen. Zulässige Konsequenz und offene Frage nennen.
+5. Im vorhandenen Index Archivhash, Auffindbarkeit und tatsächliche Sicherung
+   nachführen; README/Fortsetzungsstand knapp abgleichen. Keine zweite Chronik
+   oder manuelle Kopie aller Manifestfelder anlegen.
+
+Frühere Hauptstudienüberlegungen wie 2.048 äußere Iterationen bleiben historisch;
+sie sind keine endgültige Budgetfestlegung. Das endgültige Profil und der
+Kostenabgleich sind vor den späteren Hauptversuchen separat festzulegen.
+
 ## Ziel und Ausgangspunkt
 
 Ziel ist eine wiederholt erfolgreiche freie Rekonstruktion der Ringdown-Familie
@@ -90,24 +126,13 @@ Damit wird eine interpretierbare Grundlage für die Untersuchung von Rauschen,
 Hintergrunddatenmenge und Kovarianzgewichtung geschaffen. Ein Fit mit bereits
 vorgegebener Ringdown-Struktur bleibt ein privilegiertes Kontrollverfahren.
 
-Ein am 05.11.2026 übermittelter Nachrechnungsbefund zum
-[Seed-/Treiber-Kreuzvergleich](seed_driver_crosscheck.md) berichtet:
-
-| Seed | Kreuzlauf und Übereinstimmung | Originalauswahl |
-|---|---|---|
-| 20261201 | Transfertreiber reproduziert alle 7 Kandidaten des Staffeltreibers | A, praktisch punktgenau; Ringdown-Struktur nachgewiesen, Parameter passend |
-| 20261210 | Staffeltreiber reproduziert alle 11 Kandidaten des Transfertreibers | D; relativer RMS 7,30 %, Maximum 6,84 %; bisher nicht erkannt, Parameter nicht bewertet |
-
-Die Fehlerwerte verwenden jeweils das schlechtere der beiden Raster. Laut
-übermitteltem Befund stimmen Originalreihenfolge, Formeln, Vorhersagen, Residuen,
-Verlustbits, Auswahlindex, effektive Optionen und Zielfunktionsaufrufzahlen überein.
-Berichtet wurden Archivhash-, Prüfsummen- und Quellenprüfung sowie unabhängige
-Python-Nachrechnung; kein zusätzlicher nativer Julia-Replay. Das Originalarchiv,
-sein SHA-256 und ein versionierter Ergebnisbericht liegen diesem PR nicht vor.
-Diese Angaben sind **übermittelte Nachweise**, keine hier erneut ausgeführte
-Primärdatenprüfung. Ein konkreter Beleglink bleibt nachzutragen. Die im Entwurf
-enthaltene Aussage, keiner der elf Kandidaten erreiche A/B/C, wird ohne die
-Einzelkandidatenwerte hier nicht als geprüfter Befund übernommen.
+Der am 05.11.2026 zunächst übermittelte Befund zum
+[Seed-/Treiber-Kreuzvergleich](seed_driver_crosscheck_results_manjaro_001.md)
+ist seit der lesenden Originalarchivprüfung vom 06.11.2026 im beschriebenen
+Umfang bestätigt: Seed 20261201 reproduziert unter dem Transferworker die
+Staffelfront mit sieben Kandidaten und A-Auswahl; Seed 20261210 unter dem
+Staffelworker die Transferfront mit elf Kandidaten und D-Auswahl. Tatsächlicher
+Orchestrierungscommit, Archivhash, Prüfungen und Kosten stehen im Ergebnisbericht.
 
 Für diese zwei gezielt gewählten Seeds am rauschfreien Ankersignal unter dem
 gemeinsamen Einzelzelladapter folgt das gespeicherte Ergebnis dem Seed. Das

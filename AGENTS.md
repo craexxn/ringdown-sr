@@ -79,6 +79,11 @@ der [Fortsetzungsstand in der README](README.md#projektstatus).
   Belege mit Version/Commit sowie Aussagegrenzen und offene Fragen.
   Ideen, beschlossene Vorgaben, Implementierung und Ausführung unterscheiden.
   Externe Fachquellen konkret zitieren; fehlenden Quellenzugriff offenlegen.
+- Nach jedem Versuch auch Ausfälle, Abbrüche, nicht ausgeführte Fälle und
+  tatsächlich bekannte Kosten nachführen; unbekannte Werte nicht schätzen.
+  Ein vorgeschlagener Befehl oder Neustart belegt keine Ausführung. Die
+  [Pflegekette im Leitfaden](docs/ringdown_recovery_roadmap.md#rolle-und-pflege)
+  verbindet vorhandene Pläne, Berichte und Index ohne zweite Metadatenpflege.
 
 ## Prüfungen
 

@@ -13,7 +13,9 @@ Upload oder Downloadlink verhindert den Abschluss der lokalen Archivierung nicht
 
 Für die neuen Laufwege [globale Neustarts](global_restart_comparison.md) und
 [Iterations-/Zeitbudget](iteration_time_budget.md) liegt hier noch kein
-wissenschaftliches Originalarchiv vor. Nach der jeweiligen Ausführung sind
+vollständiges wissenschaftliches Abschlussarchiv vor. Für den globalen Vergleich
+ist [Abbruch 001](global_restart_results_manjaro_001.md) am nachgereichten ZIP
+geprüft; für 002 liegt ein übermittelter Zwischenstand vor. Nach der jeweiligen Ausführung sind
 tatsächlicher Commit, Abschluss/Teilstand, Archiv-SHA-256 und beide gesicherten
 Ablageorte nachzutragen. Beim Zeitbudgetvergleich gehört auch die benachbarte
 `-call.json`-Datei mit der vollständigen Aufrufmessung ins Originalarchiv.
@@ -51,14 +53,18 @@ können nach geprüftem Rückdownload ergänzt werden; hierfür besteht keine Pf
 - Berichtscommits ergeben sich aus der Git-Historie der verlinkten Datei.
   Ausführungs-, Dokumentations- und Bewertungscommit werden nicht ausgetauscht.
   Ein baumgleicher Merge oder der heutige `main` ist kein Ersatz für die
-  aufgezeichnete Commit-ID. Alle 25 hier verlinkten Commits waren am
+  aufgezeichnete Commit-ID. Die bei Anlage des Index verlinkten 25 Commits waren am
   06.11.2026 über die GitHub-API erreichbar; das ersetzt keine dauerhafte
   Ref-Sicherung für Stände außerhalb der main-Historie.
 - Die vier zuletzt abgeschlossenen Serien sind bereits maschinenlesbar in
   [supplemental_series.json](../data/supplemental_series.json) gebunden. Diese
   Werte wurden samt vier lokalen Originalarchiven erneut abgeglichen. Bei
   älteren Serien werden die Nachweise der vorhandenen Berichte übernommen;
-  damit ist kein erneuter Originalarchivaudit behauptet.
+  damit ist kein pauschaler erneuter Originalarchivaudit behauptet. Am
+  06.11.2026 gezielt nachgeprüft wurden der
+  [Seed-/Treiber-Kreuzvergleich](seed_driver_crosscheck_results_manjaro_001.md),
+  die [beiden frühen rauschfreien Serien](early_control_archive_audit_001.md) und
+  der [abgebrochene Neustartlauf 001](global_restart_results_manjaro_001.md).
 
 ## Entwicklungsversuche und numerische Kontrollserien
 
@@ -67,10 +73,10 @@ Die Lauf-ID verbindet diese Übersicht mit genau der gleichnamigen Zeile in
 
 | Lauf-ID / Fragestellung | Tatsächlicher Ausführungsstand | Laufstatus | Originalbewertung / Ergänzung | Ergebnisbeleg |
 | --- | --- | --- | --- | --- |
-| `noiseless-control-001` — Rauschfreie freie Suche bei drei äußeren Budgets | Nicht belegt; nur vorgegeben: [`bc80b4f07773ffb6d57a927ef3daaee34f9a7817`](https://github.com/craexxn/ringdown-sr/commit/bc80b4f07773ffb6d57a927ef3daaee34f9a7817) | Abgeschlossen laut Auszügen; 9 Zellen, kein Kurvenerfolg | Originalregeln gemäß [Plan](noiseless_control_plan.md); tatsächliche Formatbindung offen | [Bericht](noiseless_control_results_manjaro_001.md) |
+| `noiseless-control-001` — Rauschfreie freie Suche bei drei äußeren Budgets | [`bc80b4f07773ffb6d57a927ef3daaee34f9a7817`](https://github.com/craexxn/ringdown-sr/commit/bc80b4f07773ffb6d57a927ef3daaee34f9a7817) | Abgeschlossen; 9 Zellen und 28 Kandidaten lesend bestätigt, kein Kurvenerfolg | `ringdown-sr-noiseless-control-1`; damalige Originalregeln | [Historischer Bericht](noiseless_control_results_manjaro_001.md), [Quellenaudit](early_control_archive_audit_001.md) |
 | `representation-manjaro-001` — Zeitkoordinate und Komplexitätshäufigkeitsschalter | [`4057caaffd9c4de5791ded14431c6e289db75b73`](https://github.com/craexxn/ringdown-sr/commit/4057caaffd9c4de5791ded14431c6e289db75b73) | Abgeschlossen; 9 Zellen, kein Kurvenerfolg | `ringdown-sr-representation-control-1` | [Bericht](representation_control_results_manjaro_001.md) |
 | `constant-manjaro-001` — Lokales Optimiererbudget bei festem Ringdown-Baum | [`0a70f19e16e173aedf2e071a5f5b09d045ecbf69`](https://github.com/craexxn/ringdown-sr/commit/0a70f19e16e173aedf2e071a5f5b09d045ecbf69) | Abgeschlossen; 48 Backendaufrufe | `ringdown-sr-constant-diagnostic-1` | [Bericht](constant_diagnostic_results_manjaro_001.md) |
-| `free-budget-manjaro-001` — Freie Suche mit lokal 20/2 gegenüber 100/2 | Nicht belegt; nur vorgegeben: [`8bdc8dbc498be6e8527fa2a857293bf74b42f81f`](https://github.com/craexxn/ringdown-sr/commit/8bdc8dbc498be6e8527fa2a857293bf74b42f81f) | Abgeschlossen laut Auszügen; 6 Zellen, kein Kurvenerfolg | Originalregeln gemäß [Plan](free_optimizer_budget_plan.md); Archivbindung offen | [Bericht](free_optimizer_budget_results_manjaro_001.md) |
+| `free-budget-manjaro-001` — Freie Suche mit lokal 20/2 gegenüber 100/2 | [`8bdc8dbc498be6e8527fa2a857293bf74b42f81f`](https://github.com/craexxn/ringdown-sr/commit/8bdc8dbc498be6e8527fa2a857293bf74b42f81f) | Abgeschlossen; 6 Zellen und 50 Kandidaten lesend bestätigt, kein Kurvenerfolg | `ringdown-sr-free-optimizer-budget-1`; damalige Originalregeln | [Historischer Bericht](free_optimizer_budget_results_manjaro_001.md), [Quellenaudit](early_control_archive_audit_001.md) |
 | `trajectory-manjaro-001` — Beobachtete Zwischenbäume und Verlustreplay | [`41ccdd27aaa4ade56b509493089241d6695b9757`](https://github.com/craexxn/ringdown-sr/commit/41ccdd27aaa4ade56b509493089241d6695b9757); [Herkunftsfixture](../tests/fixtures/search_trajectory_replay_cases.json) | Abgebrochen: 2 Zellen fertig, Zelle 3 fehlgeschlagen, 4–6 nicht ausgeführt | `ringdown-sr-search-trajectory-1` | [Bericht](representation_implementation_status.md) |
 | `trajectory-manjaro-002` — Frische Suchbeobachtung mit getrennter Replayprüfung | [`f3c0cb49ff9213b651ad4cb4ce766958f0b1e2d1`](https://github.com/craexxn/ringdown-sr/commit/f3c0cb49ff9213b651ad4cb4ce766958f0b1e2d1) | Abgeschlossen; 6 Zellen, kein Kurvenerfolg | `ringdown-sr-search-trajectory-2` | [Bericht](search_trajectory_results_manjaro_002.md) |
 | `grammar-manjaro-001` — Direkte und entfernte trigonometrische Verschachtelung | [`23a21131e6fafcdc748e47098c018a1158f1629b`](https://github.com/craexxn/ringdown-sr/commit/23a21131e6fafcdc748e47098c018a1158f1629b) | Abgeschlossen; 6 Zellen, beide Bedingungen 0/3 | `ringdown-sr-trigonometric-grammar-1` | [Bericht](trigonometric_grammar_results_manjaro_001.md) |
@@ -81,7 +87,9 @@ Die Lauf-ID verbindet diese Übersicht mit genau der gleichnamigen Zeile in
 | `local-optimizer-manjaro-001` — Lokale Iterations- und Neustartbudgets | [`cf04476057b95c1517e1a303f4b48fbd30545a47`](https://github.com/craexxn/ringdown-sr/commit/cf04476057b95c1517e1a303f4b48fbd30545a47) | Abgeschlossen; 20 Zellen | `ringdown-sr-local-optimizer-1`; zusätzlich [R1–R3](#nachträgliche-bewertungen) | [Bericht](local_optimizer_results_manjaro_001.md) |
 | `outer-ladder-manjaro-001` — Äußere Staffel 200/500/2.000/5.000 bei lokal 300/5 | [`5215c5e1c93f220a3f7ea59b1c37580d2f2b5ea4`](https://github.com/craexxn/ringdown-sr/commit/5215c5e1c93f220a3f7ea59b1c37580d2f2b5ea4) | Abgeschlossen; 20 Zellen | `ringdown-sr-outer-search-ladder-1`; zusätzlich [R1–R3](#nachträgliche-bewertungen) | [Bericht](outer_search_ladder_results_manjaro_001.md) |
 | `transfer-manjaro-001` — Übertragung des Profils 500/300/5 auf sechs Signale | [`bc4025d13b4954dee779341026d282430521686a`](https://github.com/craexxn/ringdown-sr/commit/bc4025d13b4954dee779341026d282430521686a) | Abgeschlossen; 18 Zellen | `ringdown-sr-transfer-check-1`; zusätzlich [R1–R3](#nachträgliche-bewertungen) | [Bericht](transfer_check_results_manjaro_001.md) |
-| `seed-driver-crosscheck-manjaro-001` — Folgt das Ergebnis dem Seed oder historischen Treiber? | Adapter-/Orchestrierungscommit nicht belegt; historische Worker: [`5215c5e1c93f220a3f7ea59b1c37580d2f2b5ea4`](https://github.com/craexxn/ringdown-sr/commit/5215c5e1c93f220a3f7ea59b1c37580d2f2b5ea4) und [`bc4025d13b4954dee779341026d282430521686a`](https://github.com/craexxn/ringdown-sr/commit/bc4025d13b4954dee779341026d282430521686a) | Beide Kreuzläufe als reproduziert übermittelt; Primärprüfung offen | Übermittelter Frontvergleich/A–D-Befund; kein Import in R1–R3 | [Bericht](seed_driver_crosscheck.md) |
+| `seed-driver-crosscheck-manjaro-001` — Folgt das Ergebnis dem Seed oder historischen Treiber? | Orchestrierung [`8096ddb8bb6fd065eb1079c7902a2016334a6e6b`](https://github.com/craexxn/ringdown-sr/commit/8096ddb8bb6fd065eb1079c7902a2016334a6e6b); historische Worker im Bericht | Abgeschlossen; zwei Zellen, 18 Kandidaten lesend bestätigt | `ringdown-sr-seed-driver-crosscheck-1`; getrennte A–D-Einordnung, kein Import in R1–R3 | [Bericht](seed_driver_crosscheck_results_manjaro_001.md) |
+| `global-restarts-manjaro-001` — Globale Neustarts gegenüber längerer Einzelsuche | Orchestrierung [`b547bb3b1753235960cc0654f8cebd747fc1b2f3`](https://github.com/craexxn/ringdown-sr/commit/b547bb3b1753235960cc0654f8cebd747fc1b2f3); historischer Worker `5215c5e` | 19 Zellen fertig, Zelle 20 unterbrochen; Teilkosten und gesperrter Abschluss geprüft | Kein freigegebener Serienvergleich | [Abbruchbericht](global_restart_results_manjaro_001.md) |
+| `global-restarts-manjaro-002` — Getrennte vollständige Wiederholung | Nicht archivbelegt; tatsächliche Herkunft nachzureichen | Zwischenstand übermittelt: Zellen 1–2 fertig, 3 läuft, 4–20 geplant; kein Abschluss | Noch keine freigegebene Serienauswertung | [Zwischenstand](global_restart_results_manjaro_001.md#status-und-kosten) |
 | `sr-repeatability-wsl2-threads1-001` — Wiederholbarkeit freier Fronten bei Poollimit 1 | Vollständige Ausführungs-/Treiberzuordnung im Bericht nicht ausgewiesen | Vergleichsergebnisse dokumentiert; vollständige Abschlussmetadaten nachtragen | Frontvergleich gemäß Bericht; keine Zusatzbewertung | [Bericht](symbolic_core_results.md) |
 | `sr-core-control-wsl2-001` — Feste numerische Kontrollen mit/ohne Haswell | [`6ed493d2e8fb3a845dd921bd99a620feb8b8850a`](https://github.com/craexxn/ringdown-sr/commit/6ed493d2e8fb3a845dd921bd99a620feb8b8850a); externer Treiber [`ac41251c180a9302aace512d8a100186a2636fe9`](https://github.com/craexxn/ringdown-sr/commit/ac41251c180a9302aace512d8a100186a2636fe9) | Abgeschlossen laut geprüftem Archivvergleich | Numerischer Vergleich gemäß [Befund](fixed_numerics_probe.md#übermittelter-haswell-vergleich-vom-26102026); keine Zusatzbewertung | [Bericht](fixed_numerics_probe.md) |
 | `sr-free-haswell-wsl2-001` — Freie SR-Suche mit bestätigtem Haswell-Kern | [`6ed493d2e8fb3a845dd921bd99a620feb8b8850a`](https://github.com/craexxn/ringdown-sr/commit/6ed493d2e8fb3a845dd921bd99a620feb8b8850a); externer Treiber [`6b3d156a9daecabc4f42d5b940b065a8dda5bc19`](https://github.com/craexxn/ringdown-sr/commit/6b3d156a9daecabc4f42d5b940b065a8dda5bc19) | Abgeschlossen; zwei freie Wiederholungen je Gerät | Geordneter Front-/Bitvergleich gemäß Bericht; keine Zusatzbewertung | [Bericht](symbolic_core_results.md) |
@@ -89,10 +97,8 @@ Die Lauf-ID verbindet diese Übersicht mit genau der gleichnamigen Zeile in
 | `sr-core-control-manjaro-001` — Feste numerische Kontrollen mit/ohne Haswell | [`6ed493d2e8fb3a845dd921bd99a620feb8b8850a`](https://github.com/craexxn/ringdown-sr/commit/6ed493d2e8fb3a845dd921bd99a620feb8b8850a); externer Treiber [`ac41251c180a9302aace512d8a100186a2636fe9`](https://github.com/craexxn/ringdown-sr/commit/ac41251c180a9302aace512d8a100186a2636fe9) | Abgeschlossen laut geprüftem Archivvergleich | Numerischer Vergleich gemäß [Befund](fixed_numerics_probe.md#übermittelter-haswell-vergleich-vom-26102026); keine Zusatzbewertung | [Bericht](fixed_numerics_probe.md) |
 | `sr-free-haswell-manjaro-001` — Freie SR-Suche mit bestätigtem Haswell-Kern | [`6ed493d2e8fb3a845dd921bd99a620feb8b8850a`](https://github.com/craexxn/ringdown-sr/commit/6ed493d2e8fb3a845dd921bd99a620feb8b8850a); externer Treiber [`6b3d156a9daecabc4f42d5b940b065a8dda5bc19`](https://github.com/craexxn/ringdown-sr/commit/6b3d156a9daecabc4f42d5b940b065a8dda5bc19) | Abgeschlossen; zwei freie Wiederholungen je Gerät | Geordneter Front-/Bitvergleich gemäß Bericht; keine Zusatzbewertung | [Bericht](symbolic_core_results.md) |
 
-Beim Kreuzvergleich sind ID und Dateiname nur aus dem dokumentierten Laufweg
-bekannt. Die Zuordnung zum übermittelten Befund muss anhand seines Originalarchivs
-bestätigt werden; die historischen Workercommits belegen nicht den ausgeführten
-Orchestrierungsstand. Bei `trajectory-manjaro-001` stammt der Ausführungscommit
+Beim Kreuzvergleich sind ID, Dateiname und Orchestrierungsstand nun aus dem
+Originalarchiv bestätigt. Bei `trajectory-manjaro-001` stammt der Ausführungscommit
 zusätzlich aus der archivgebundenen Herkunftsfixture; der spätere Format-2-Commit
 wird nicht rückwirkend zugeordnet.
 
@@ -100,16 +106,18 @@ wird nicht rückwirkend zugeordnet.
 
 Ablagehinweis und Sicherungsstand werden hier gepflegt. Bei einer optionalen
 Onlinekopie kann ein geprüfter Downloadlink hinzukommen. Die Hashes bezeichnen
-die komprimierten Originaldateien, nicht GitHubs Quellcodearchive oder
-ein inneres Manifest. Die vier aktuell verfügbaren Originalarchive wurden am
-06.11.2026 selbst gehasht; Herkunft der übrigen Hashes steht je Zeile.
+die jeweiligen komprimierten Dateien, nicht GitHubs Quellcodearchive oder
+ein inneres Manifest. Sechs historische TAR-Archive und zwei nachgereichte
+ZIP-Pakete wurden am 06.11.2026 selbst gehasht. Die ZIP-Hashes bezeichnen die
+jetzt empfangenen Pakete, ohne eine frühere Verpackung zu behaupten; Herkunft
+der übrigen Hashes steht je Zeile.
 
 | Lauf-ID | Originalarchiv | SHA-256 / Belegstatus | Ablagehinweis / optionaler Download | Sicherungsstand |
 | --- | --- | --- | --- | --- |
-| `noiseless-control-001` | Nicht belegt | **Fehlt**; Nur Terminalauszüge; Archivname und Hash fehlen | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `noiseless-control-001` | `noiseless-control-001.zip` | `03a759608c41913d3e18715dd344ef9e26860b75ebc3fae50191343dae92300b`; empfangenes Paket, Inhalt und Herkunft am 06.11.2026 selbst geprüft; früherer Verpackungshash nicht belegt | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `representation-manjaro-001` | `representation-manjaro-001.tar.gz` | `a5b0cdae4262a7f759c72fbe1e7e9c142d817fbffa088107953250da861050db`; Bericht: Originalarchiv geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `constant-manjaro-001` | `constant-manjaro-001.tar.gz` | `346459d953468c81975670577b92aa155a1eaec884cebd462fe61e1ab23d492b`; Bericht: Originalarchiv geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
-| `free-budget-manjaro-001` | `free-budget-manjaro-001.tar.gz` | `77fb34ff6ee139c1f2e0fbbb6acd81d7c1623cd6e8090056f641961e887ad33f`; Hash nur übermittelt; vollständiger Archivaudit offen | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `free-budget-manjaro-001` | `free-budget-manjaro-001.tar.gz` | `77fb34ff6ee139c1f2e0fbbb6acd81d7c1623cd6e8090056f641961e887ad33f`; Originalhash, vollständige Manifeste, Herkunft und Fronten am 06.11.2026 selbst geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `trajectory-manjaro-001` | `trajectory-manjaro-001-incomplete.tar.gz` | `08676ddc21c1820110ae425a68de3c5b954c8bef2022b816ca274c307041c873`; Bericht: Originalarchiv geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `trajectory-manjaro-002` | `trajectory-manjaro-002.tar.gz` | `99999285f6d7a8c50c54280cc36b526e704af01b07a1ccf95f2227e5e8597f55`; Bericht: Originalarchiv geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `grammar-manjaro-001` | `grammar-manjaro-001.tar.gz` | `8d7fc8b09ed9c5091acef5237f5512ddb9fb014598e72ee3d9d4e435f33e3915`; Bericht: Originalarchiv geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
@@ -120,7 +128,9 @@ ein inneres Manifest. Die vier aktuell verfügbaren Originalarchive wurden am
 | `local-optimizer-manjaro-001` | `local-optimizer-manjaro-001.tar.gz` | `1ab8c0aa91436c4b169c6c6efa8053e04c47ef57d07915f36ac476483276866d`; Dateibytes und aufgezeichnete Herkunft am 06.11.2026 erneut gegen Quellenkatalog geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `outer-ladder-manjaro-001` | `outer-ladder-manjaro-001.tar.gz` | `ac7e841b79042e216d6aacae2961ffb8395f298bbcc7ecc11f1092c90b3deb40`; Dateibytes und aufgezeichnete Herkunft am 06.11.2026 erneut gegen Quellenkatalog geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `transfer-manjaro-001` | `transfer-manjaro-001.tar.gz` | `e363fe1be629973a460fc6e2188bf680c21b2c5519d331bc7e257968dcaaa139`; Dateibytes und aufgezeichnete Herkunft am 06.11.2026 erneut gegen Quellenkatalog geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
-| `seed-driver-crosscheck-manjaro-001` | `seed-driver-crosscheck-manjaro-001.tar.gz` (vorgesehener Name) | **Fehlt**; Name/ID nur gemäß vorgesehenem Laufweg; Archiv, Hash und eigener Ergebnisbericht fehlen | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `seed-driver-crosscheck-manjaro-001` | `seed-driver-crosscheck-manjaro-001.tar.gz` | `c38f857ccee231ae647bbbcf5186cce275b494c6c54a1092773e7d7ccce11926`; Dateibytes, Manifeste, Herkunft und beide Kreuzzellen am 06.11.2026 selbst geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `global-restarts-manjaro-001` | `global-restarts-manjaro-001.zip` | `73f27a15af2c2102ab5e56d49ad13ece9bb13bbff700a6d6f26a808958a8ca14`; empfangenes Abbruchpaket, Bindungen, Einzelbelege und Sperre am 06.11.2026 selbst geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `global-restarts-manjaro-002` | Noch kein Abschlussarchiv belegt | **Fehlt**; laufenden Versuch nicht zum Archivieren unterbrechen | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `sr-repeatability-wsl2-threads1-001` | `sr-repeatability-wsl2-threads1-001.tar.gz` | `7f63a075c2a95226d320fa6a6a204481c6038fd3ca6c837f9bcbb7f371bf63d7`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `sr-core-control-wsl2-001` | `sr-core-control-wsl2-001.tar.gz` | `5826725c95499b498f9bc6c0a9935c4cbf7d97f2f63d14b81aad05c85813d114`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `sr-free-haswell-wsl2-001` | `sr-free-haswell-wsl2-001.tar.gz` | `1442cbea82b6b80c6de9533ceb5bc2a620e1fb3500ee1524529c36c1f5c98ee3`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
@@ -202,7 +212,7 @@ historische Audithilfen wie `constant-audit-001.tar.gz` sind im
 und ihre aktuelle Verfügbarkeit sind hier nicht belegt. Sie ersetzen ebenfalls
 kein Originalarchiv.
 
-## Noch zu erledigen
+## Zusatzdiagnosen und offene Sicherung
 
 ### Zusätzliche begrenzte Endfrontdiagnose
 
@@ -221,17 +231,29 @@ Die beiden vorherigen unvollständigen technischen Auditversuche blieben
 gesperrt; sie sind keine zusätzliche Bewertung. Die erfolgreiche Diagnose
 und das Reviewpaket sind getrennt von allen Originalen aufbewahrt.
 
+### Quellenaudit der drei nachgereichten Pakete
+
+Am 06.11.2026 wurden die [beiden frühen Serien](early_control_archive_audit_001.md)
+und der [Neustart-Abbruch 001](global_restart_results_manjaro_001.md) lesend
+geprüft. Das gesonderte Paket `received-evidence-audit-001.tar.gz`, SHA-256
+`f8951618a08a1f9c5cc666981678b1e9f50dc3efd7586cb40e4d6c30806aacb6`, enthält
+die drei unveränderten empfangenen Dateien, Auditskripte, Dateimanifeste,
+Prüfergebnisse und regenerierte frühe Berichte. Sein eigenes Manifest und der
+Rücklesevergleich bestehen. Es liegt nur als lokale Arbeitskopie vor; dauerhafte
+Ablage und zweite Kopie bleiben offen. Es ersetzt weder die Originale noch eine
+positive Abschlussfreigabe für den abgebrochenen Neustartvergleich.
+
 ### Offene Sicherungsschritte
 
-- Die 19 namentlich und mit Hash belegten Originalarchive aus „Originalarchive“
-  im gemeinsamen Archivordner und einer zweiten gesicherten Kopie erhalten.
-  Bei älteren Dateien die tatsächlichen Bytes zuerst mit dem
-  dokumentierten Hash vergleichen; `free-budget-manjaro-001.tar.gz` ist bislang
-  nur durch einen übermittelten Hash belegt.
-- Das Kreuzversuchsarchiv samt tatsächlichem Namen, Hash und vollständigem
-  Ausführungsstand nachreichen; den vorgesehenen Dateinamen nicht als bereits
-  verifiziert behandeln. Für `noiseless-control-001` und die früheren
-  Portabilitätsläufe zunächst Originalpakete und fehlende Herkunft klären.
+- Die namentlich und mit Hash belegten Archive und empfangenen ZIP-Pakete aus
+  „Originalarchive“ im gemeinsamen Archivordner und einer zweiten gesicherten
+  Kopie erhalten. Bei noch nicht selbst geprüften älteren Dateien die
+  tatsächlichen Bytes zuerst mit dem dokumentierten Hash vergleichen.
+- Für die noch fehlenden Primärbelege die Priorisierung unten verwenden.
+  Das Kreuzversuchsarchiv muss nicht erneut bereitgestellt werden. Sein
+  gesonderter lesender Audit `seed-driver-crosscheck-audit-002.tar.gz`, SHA-256
+  `ba1339952222b650c9bbdfccafcc8a559f3dbe09b818d8bfd1ab9bdd79844c05`, liegt
+  ebenfalls nur als Arbeitskopie vor; gemeinsame Ablage und zweite Kopie offen.
 - Die fünf getrennten Bewertungsarchive ebenfalls mit zweiter Kopie erhalten.
   Fehlende Quellenrefs dauerhaft sichern, besonders ursprüngliche
   PR-Heads/Werkzeug- und Bewertungscommits außerhalb der main-Historie.
@@ -239,6 +261,27 @@ und das Reviewpaket sind getrennt von allen Originalen aufbewahrt.
   SHA-256 prüfen. Bis zur Bestätigung bleibt der Sicherungsstand offen.
   GitHub-Uploads und Downloadlinks sind optionale Ergänzungen.
 
-Bitte die vorhandenen .tar.gz-Originalarchive unverändert im gemeinsamen
-Archivordner und einer zweiten gesicherten Kopie aufbewahren, die SHA-256-Werte
-abgleichen und die Ablagehinweise sowie den Sicherungsstand im Index ergänzen.
+### Priorisierte fehlende Belege
+
+Abgleich am 06.11.2026 auf main `823732f`: Repository, lokale Worktrees,
+bereitgestellte Anhänge und vorhandene Auditablagen geprüft; ergänzend die
+zugänglichen Übergaben aus „zzz5_Implementierungspipeline“ und
+„1_Schreibarbeit“ lesend abgeglichen. Kein Zugriff auf die privaten Geräteablagen
+oder Backups. Die vier großen Originalserien, der Kreuzvergleich, beide frühen
+rauschfreien Serien und Neustart-Abbruch 001 sind inzwischen vorhanden und
+gezielt geprüft; diese Dateien werden nicht erneut angefordert.
+Lokale technische Fixtures sind keine Manjaro-Originalserien. Die historischen
+R1–R3-Prüfnachweise werden übernommen, ihre Audits nicht pauschal wiederholt.
+
+| Priorität / Bezug | Benötigter Beleg | Zweck und betroffene Aussage |
+| --- | --- | --- |
+| 1 — `global-restarts-manjaro-002` | Nach Ende Originalarchiv oder unveränderter Ergebnisordner samt getrenntem Verify-Export, soweit erfolgreich vorhanden; tatsächlichen Dateinamen und Hash nennen. | Aktueller Vergleich: vollständiger Abschluss oder Abbruch, alle 20 Fälle und Kosten. Laufenden Versuch nicht dafür verändern oder unterbrechen. |
+| 1 — `global-restarts-technical-001` auf Manjaro | Abschlussausgabe und vorhandener Prüfbericht einschließlich lesender Verifikation mit Herkunft; nur bei Unklarheit der ganze unveränderte technische Ordner. | Technischen lokalen Erfolg belegen; Startmeldung allein genügt nicht. Keine wissenschaftliche Ergebnisbehauptung und keine neue CI-Archivpflicht. |
+| 1 — Archivablage und Zweitkopien | Verständliche Bezeichnungen beider Speicherziele, Liste tatsächlich vorhandener Dateien und Ergebnisse der SHA-256-Prüfung beider Kopien mit Prüfdatum. Bei Backup lesenden Wiederherstellungscheck angeben. | Dauerhafte Sicherung; Metadaten genügen, keine erneute Übertragung bereits vorhandener Archive erforderlich. |
+| 3 — `sr-repeatability-wsl2-threads1-001`, `sr-repeatability-manjaro-threads1-001` | Zunächst ursprüngliche Berichts-/Herkunftsmetadaten mit vollständigen Ausführungs-/Werkzeugcommits und Abschlussstatus; zugehörige Originalarchive bei fehlenden internen Belegen. Namen/Hashes stehen oben. | Ältere technische Wiederholbarkeitsdokumentation vervollständigen; keine zusätzliche Leistungsstudie. |
+| 3 — frühe Portabilitätsläufe | Für die zwölf oben einzeln aufgeführten Geräte-/Lauf-IDs tatsächliche Archivnamen/Hashes bzw. unveränderte Ergebnisordner; besonders die vier AR(1)-Schema-1-Läufe mit fehlender Git-Herkunft. | Ältere technische Übertragungsnachweise, kein Engpass der aktuellen Neustartauswertung. Zuerst vorhandene Metadaten zuordnen; keine Wiederholung der Läufe. |
+
+Nachlieferungen gezielt gegen vorhandene Quellen prüfen. Fehlende historische
+Metadaten nicht aus heutigem Code ergänzen; neu gepackte Ordner sind nicht das
+frühere Originalarchiv. Entscheidungen und Originalberichte bleiben erhalten;
+neue Prüfungen werden mit Datum und Umfang separat ergänzt.

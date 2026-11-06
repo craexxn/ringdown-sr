@@ -1,5 +1,66 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
+## Aktuell: Versuchsbelege und Dokumentation vervollständigen
+
+Abgleich vom 06.11.2026, Leitfadenphase 1 mit Durchführungspflege zu Phase 3:
+Remote-main ist nach ausdrücklich freigegebenem PR77-Merge
+`823732fbdc734ad11477f91074c3386a411e19de`. Dokumentationsbranch
+`codex/experiment-evidence-docs` baut darauf auf; bestehende Worktrees erhalten.
+PR77 blieb während seines Reviews unverändert. Bei der abschließenden
+Statuspflege Implementierung, Übernahme und wissenschaftliche Ausführung trennen.
+
+- **Bereits ausreichend zugeordnet:** die vier großen Originalserien,
+  deren unveränderte ursprüngliche Bewertungen, die drei getrennten
+  retrospektiven R1–R3-Anwendungen und die begrenzte Endfrontdiagnose. Die
+  Berichte nennen Quellen, Methoden, negative Befunde und Aussagegrenzen;
+  kein erneuter Gesamtaudit dieser Bestände in diesem Dokumentationsauftrag.
+- **Neu geschlossen:** Der [Kreuzvergleichsbericht](seed_driver_crosscheck_results_manjaro_001.md)
+  bindet das nachgereichte Originalarchiv an den tatsächlichen
+  Orchestrierungscommit `8096ddb`, seine historischen Worker und das Protokoll.
+  1.142 Dateien, 1.141 Abschlussmanifest-Einträge, 280 Commit-/Quelldateibindungen
+  und beide frischen Kreuzzellen mit 18 Kandidaten lesend geprüft. Historische
+  Python-Elternverifikation bestanden, Fronten/Suchmerkmale gleich, Bericht
+  und Zusammenfassung bytegleich regeneriert. Keine Suche, kein Fit, kein neuer
+  nativer Replay. Ursprüngliche Resultate unverändert.
+- **Nachlieferungen geprüft:** [Frühe rauschfreie Serien](early_control_archive_audit_001.md)
+  mit 9/6 Zellen und 28/50 Frontkandidaten; vollständige Manifeste, tatsächliche
+  Herkunft und historische Python-Elternverifikation bestanden. Beide Berichte
+  und Zusammenfassungen bytegleich regeneriert; negative Kurvenbefunde bestätigt.
+- **Abbruch jetzt primärbelegt:** [Neustartlauf 001](global_restart_results_manjaro_001.md)
+  hat 19 fertige Zellen, Zelle 20 unterbrochen, 363 Vorbereitungsbindungen und
+  gesperrte Freigabe. 179 Kandidaten der fertigen Zellen mit historischem
+  Python-Verifikator bestätigt; kein Serienaggregat. Teilkosten bekannt,
+  Gesamtkosten und Kosten der abgebrochenen Zelle unbekannt. Lauf 002 mit eigenem Start-/Fortschrittsbeleg
+  (1–2 fertig, 3 läuft, 4–20 geplant), ohne Abschluss. Technischer
+  Manjaro-Vorlauf ebenfalls separat, Erfolg noch nicht übermittelt.
+- **Pflege:** Leitfaden, README, Laufweg und Index auf tatsächliche Merge-/CI-
+  und Ausführungsstände abgestimmt. Historische Berichte, R1–R3, eingefrorene
+  Pläne, Implementierung und Konfigurationen bleiben bytegleich. Die ergänzte
+  Pflegekette verwendet bestehende Detailquellen statt einer zweiten Chronik.
+- **Verbleibend:** priorisierte [fehlende Belege](results_index.md#priorisierte-fehlende-belege)
+  aus 002, technischem Vorlauf sowie älterer Wiederholbarkeit/Portabilität.
+  Gemeinsame Archivablage und unabhängig geprüfte zweite Kopien bleiben
+  unbestätigt; sechs historische TAR-Archive, zwei empfangene ZIP-Pakete und
+  die gesonderten Auditpakete sind hier Arbeitskopien. Historische Quellen außerhalb dauerhafter Refs weiter sichern.
+- **Prüfung dieser Dokumentation:** 94 Markdown-Dateien einschließlich lokaler
+  Linkziele und Diffprüfung bestanden. Ausschließlich Dokumentationsumfang;
+  bestehende wissenschaftliche Pläne und historische Ergebnisberichte
+  unverändert. Keine zusätzliche Python-/Native-Gesamtsuite für reine Prosa.
+  KI-basiertes Eigenreview der Quellenzuordnung, Statusaussagen und Grenzen;
+  kein zusätzlicher Agent. Der PR führt Head/Basis und Dokumentations-CI.
+- **Nächster Schritt:** Nach Einspielen der Nachlieferungen und grüner
+  Dokumentations-CI den ausdrücklich zur Übernahme freigegebenen PR78 abschließen;
+  weitere eingehende Originalbelege gezielt lesend prüfen. Lauf 002 separat abschließen
+  lassen und danach seinen tatsächlichen Abschluss/Abbruch prüfen. Kein neuer
+  Suchlauf und keine Versuchsplanänderung durch den Dokumentationsauftrag
+  freigegeben. Die separate Mergefreigabe gilt nach vollständiger Aktualisierung
+  und abschließender Prüfung.
+
+Die folgenden Abschnitte halten konkrete frühere Implementierungs- und
+Prüfstände fest. Ihre damaligen Ausblicke und offenen Punkte sind historisch;
+der aktuelle nächste Arbeitsschritt steht oben. Insbesondere ist ein damals
+fehlendes Archiv nicht weiterhin fehlend, wenn seine Nachlieferung oben belegt ist.
+
 ## Historischer Abgleich vor Übernahme von PR #75
 
 Abgleich am 06.11.2026: main `16d2f40506e6dae6534f02d76f1cf2f0dfde5dd2`
@@ -12,13 +73,24 @@ erfolgreich: 85 Markdown-Dateien, `mode=docs`, beide erforderlichen Jobs grün,
 native Prüfungen planmäßig übersprungen. Index und Archivregel blieben bei der
 Konfliktauflösung bytegleich; Code/Verträge entsprachen main nach PR #73.
 
-## Aktuell: Zeitbudgetvergleich abschließen, PR76 übernommen
+## Übernommen: Zeitbudgetvergleich und PR76
 
-- **Branch/Basis:** `codex/iteration-time-budget`, eigener Worktree; main nach
+- **Entwicklungsbranch/Basis:** `codex/iteration-time-budget`, eigener Worktree; main nach
   ausdrücklich freigegebenem PR76-Merge `b547bb3b1753235960cc0654f8cebd747fc1b2f3`
-  normal eingebunden. PR #77 zielt auf main; gebündelte lokale Prüfungen und
-  Veröffentlichungsvorbereitung sind abgeschlossen. Der vollständige
-  Ready-CI-Stand wird im PR geführt; kein Auftrag zum Merge von PR #77.
+  normal eingebunden. PR #77 nach separatem KI-Review und vollständiger CI
+  ausdrücklich freigegeben und als `823732fbdc734ad11477f91074c3386a411e19de`
+  übernommen; gebündelte Veröffentlichungsvorbereitung ebenfalls enthalten.
+- **PR77-Abnahme:** Head `a5bde840a8834cdb05b8cca4ee37e7fb13aceeaa`, Basis
+  `b547bb3b1753235960cc0654f8cebd747fc1b2f3` vor Merge erneut abgeglichen.
+  [CI 42208699044](https://github.com/craexxn/ringdown-sr/actions/runs/42208699044)
+  vollständig erfolgreich: 3.188 Pythonfälle, alle nativen Blöcke und Abschluss.
+  Logs aller drei Jobs selbst geprüft: Checkout
+  `c42a168406a1b797a2ecddb901f73153ca8b7a23`, Baum
+  `0db89e0a9c5a4a81035289aff3cbb12521db0213`, identisch zum Head und Merge.
+  Das separate übermittelte KI-Review meldet keine korrekturbedürftigen Befunde
+  im geprüften Umfang, 349 gezielte Repositoryfälle und 13 zusätzliche
+  Gegenprüfungen. Diese Tests bleiben übermittelte Nachweise; native Prüfungen
+  dort anhand CI geprüft, Veröffentlichungs-/Historienaudit nicht reproduziert.
 - **PR76-Abnahme:** Head `66ec4238f39edbbc2a71bb4e984571e41531e7ab`, Basis `2f9fff0`.
   [CI 42196112043](https://github.com/craexxn/ringdown-sr/actions/runs/42196112043)
   vollständig erfolgreich: 3.137 Pythonfälle, alle nativen Blöcke und Abschluss.
@@ -33,7 +105,8 @@ Konfliktauflösung bytegleich; Code/Verträge entsprachen main nach PR #73.
   vor Sichtung wissenschaftlicher PR76-Ergebnisse; solche Ergebnisse liegen
   hier weiterhin nicht vor. Alle vier I wiederverwenden oder alle vier frisch,
   keine qualitätsabhängige Teilübernahme. Kontrollarm mangels Originalarchiv
-  unbestätigt. PR76 bleibt separat auszuführen.
+  unbestätigt. PR76 bleibt eine separat auszuführende Serie; ihr inzwischen
+  übermittelter Ausführungsstand steht im aktuellen Abschnitt oben.
 - **Selbst geprüft:** Timerquellen von PySR 2.6.0/SymbolicRegression 2.5.1:
   Uhrstart nach Aufwärmzyklen, kooperative Prüfung am Schleifenende, Überschreitung
   möglich. Historische Fitzeit 2.001,72272/5 = 400,344544 Sekunden;
@@ -74,10 +147,11 @@ Konfliktauflösung bytegleich; Code/Verträge entsprachen main nach PR #73.
   Das vorhandene Format belegt tatsächliche native CPU-/Julia-/GC-Threadbindung
   nicht vollständig. Ohne Originalbelege keine Wiederverwendungsfreigabe und
   keine nachträgliche Ergänzung vermeintlicher historischer Messungen.
-- **Nächster Schritt:** Gemeinsame vollständige Ready-CI von
-  [PR #77](https://github.com/craexxn/ringdown-sr/pull/77) abwarten und tatsächlichen
-  Checkout/Dateibaum prüfen. Wissenschaftlicher Zeitbudgetlauf erst separat nach
-  Übernahme und ausdrücklicher Moduswahl auf Manjaro; keine solche Serie in Cloud/CI.
+- **Technischer Abschluss erreicht:** Ready-CI und Checkout/Dateibaum von
+  [PR #77](https://github.com/craexxn/ringdown-sr/pull/77) sind geprüft, Merge
+  ausdrücklich freigegeben und erfolgt. Wissenschaftlicher Zeitbudgetlauf bleibt
+  ein separater Schritt nach ausdrücklicher Moduswahl auf Manjaro; keine solche
+  Serie in Cloud/CI. Keine Kontrollwiederverwendung ohne geeignete Originalbelege.
 
 ## Ergänzung in PR #77: Veröffentlichung vorbereiten
 
