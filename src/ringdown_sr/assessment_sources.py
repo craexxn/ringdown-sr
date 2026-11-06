@@ -8,8 +8,6 @@ import stat
 import subprocess
 import tarfile
 import zipfile
-from contextlib import contextmanager
-from contextvars import ContextVar
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from types import MappingProxyType
@@ -26,7 +24,6 @@ MAX_ARCHIVE = 64 * 1024**2
 MAX_MEMBER = 64 * 1024**2
 MAX_TOTAL = 256 * 1024**2
 MAX_MEMBERS = 10000
-_GIT_FILES = ContextVar("assessment_git_files", default=None)
 
 
 def json_bytes(value):
@@ -138,33 +135,36 @@ def archive_files(contents, prefix, check=lambda: None):
     return files
 
 
-@contextmanager
-def git_file_cache():
-    """Keep immutable Git blobs only for the current export, including failures."""
-    token = _GIT_FILES.set({})
-    try:
-        yield
-    finally:
-        _GIT_FILES.reset(token)
+class GitFileCache:
+    """An explicitly owned blob cache; no process-global state survives an export."""
+
+    def __init__(self):
+        self.files = {}
+
+    def clear(self):
+        self.files.clear()
+
+    def __call__(self, commit, name):
+        safe_name(name)
+        immutable = (
+            type(commit) is str
+            and len(commit) == 40
+            and all(c in "0123456789abcdef" for c in commit)
+        )
+        key = (ROOT.resolve(), commit, name) if immutable else None
+        if immutable and key in self.files:
+            return self.files[key]
+        raw = _git_file(commit, name)
+        if immutable:
+            self.files[key] = raw
+        return raw
 
 
 def _git_file(commit, name):
     safe_name(name)
-    cache = _GIT_FILES.get()
-    immutable = (
-        type(commit) is str
-        and len(commit) == 40
-        and all(c in "0123456789abcdef" for c in commit)
-    )
-    key = (ROOT.resolve(), commit, name) if immutable else None
-    if cache is not None and key in cache:
-        return cache[key]
-    raw = subprocess.check_output(
+    return subprocess.check_output(
         ["git", "show", f"{commit}:{name}"], cwd=ROOT, timeout=30
     )
-    if cache is not None and immutable:
-        cache[key] = raw
-    return raw
 
 
 def _same(first, second, reason):
@@ -197,7 +197,8 @@ def fingerprint(array):
     }
 
 
-def _arrays(files, report, spec):
+def _arrays(files, report, spec, git_file=None):
+    git_file = _git_file if git_file is None else git_file
     arrays = {
         **_npz(files["training.npz"], ("time_s", "observed")),
         **_npz(files["diagnostic.npz"], ("diagnostic_time_s", "diagnostic_truth")),
@@ -228,7 +229,7 @@ def _arrays(files, report, spec):
     )
     if spec.get("input_manifest_path"):
         manifest = read_json(
-            _git_file(spec["execution_commit"], spec["input_manifest_path"])
+            git_file(spec["execution_commit"], spec["input_manifest_path"])
         )
         _same(report["input_manifest"], manifest, "Wrong frozen input manifest.")
         _same(
@@ -247,7 +248,7 @@ def _arrays(files, report, spec):
     return arrays
 
 
-def _sources(files, report, spec, check):
+def _sources(files, report, spec, check, git_file):
     sources = report["source_sha256"]
     if (
         len(sources) != spec["source_count"]
@@ -256,10 +257,10 @@ def _sources(files, report, spec, check):
         raise ValueError("Wrong complete historical source set.")
     for name, digest in sources.items():
         check()
-        if sha256(_git_file(spec["execution_commit"], name)) != digest:
+        if sha256(git_file(spec["execution_commit"], name)) != digest:
             raise ValueError("Historical source disagrees with trusted Git: " + name)
     if (
-        sha256(_git_file(spec["plan"]["commit"], spec["plan_path"]))
+        sha256(git_file(spec["plan"]["commit"], spec["plan_path"]))
         != spec["plan"]["sha256"]
     ):
         raise ValueError("Historical plan binding failed.")
@@ -304,7 +305,7 @@ def _sources(files, report, spec, check):
     }:
         raise ValueError("Incomplete project-file provenance.")
     for name, digest in provenance["project_file_sha256"].items():
-        if sha256(_git_file(spec["execution_commit"], name)) != digest:
+        if sha256(git_file(spec["execution_commit"], name)) != digest:
             raise ValueError("Wrong project-file provenance.")
     return provenance
 
@@ -531,7 +532,10 @@ class VerifiedSeries:
             raise ValueError("Original archive changed after consumption.")
 
 
-def read_verified_series(path, series_id, *, check=lambda: None, contents=None):
+def read_verified_series(
+    path, series_id, *, check=lambda: None, contents=None, git_file=None
+):
+    git_file = _git_file if git_file is None else git_file
     spec = contracts()[series_id]
     path = Path(path).absolute()
     raw = bounded_read(path) if contents is None else contents
@@ -560,8 +564,8 @@ def read_verified_series(path, series_id, *, check=lambda: None, contents=None):
         frozen,
         "Incomplete or changed original consumption anchors.",
     )
-    provenance = _sources(files, report, spec, check)
-    arrays = _arrays(files, report, spec)
+    provenance = _sources(files, report, spec, check, git_file)
+    arrays = _arrays(files, report, spec, git_file)
     common = {
         "provenance": json_bytes(provenance),
         "sources": json_bytes(report["source_sha256"]),

@@ -124,7 +124,7 @@ def freeze_software(consumed):
         consumed.clock.check()
         raw = path.read_bytes()
         name = path.relative_to(ROOT).as_posix()
-        if raw != sources._git_file(commit, name):
+        if raw != consumed.git_file(commit, name):
             raise ValueError("Assessment source differs from its commit: " + name)
         consumed.add(path, raw)
         hashes[name] = sources.sha256(raw)
@@ -203,6 +203,7 @@ class PreparedAssessment:
     def __init__(self, config):
         self.consumed = Consumption(Deadline(300))
         software = freeze_software(self.consumed)
+        self.consumed.git_file.clear()
         arrays = planned_arrays(config)
         buffer = io.BytesIO()
         np.savez(buffer, **arrays)
@@ -283,6 +284,7 @@ class Source:
 
     def __init__(self, root, consumed):
         self.root = root
+        self.git_file = consumed.git_file
         self.source = _Source(root)
         if "metadata.json" in self.source.manifest:
             raise ValueError(
@@ -354,7 +356,7 @@ def verify_snapshot(source, software):
             raise ValueError(
                 "Legacy assessment requires the approved earlier implementation."
             )
-        raw = sources._git_file(
+        raw = source.git_file(
             contract["software"]["software_commit"], STAGE_CONTRACTS[stage][0]
         )
         if sources.sha256(raw) != STAGE_POLICY_HASHES[stage]:
@@ -413,12 +415,12 @@ def verify_origin(source, frozen):
         sources.safe_name(name)
         if name.startswith("src/ringdown_sr/") and name.endswith(".py"):
             python[name.removeprefix("src/")] = digest
-        if sources.sha256(sources._git_file(commit, name)) != digest:
+        if sources.sha256(source.git_file(commit, name)) != digest:
             raise ValueError("Preparation source differs from its Git commit.")
     if stage >= 2:
-        structure.check_policy(sources._git_file(commit, structure.FILES[0]))
+        structure.check_policy(source.git_file(commit, structure.FILES[0]))
     if stage == 3:
-        remainder.check_policy(sources._git_file(commit, remainder.FILES[0]))
+        remainder.check_policy(source.git_file(commit, remainder.FILES[0]))
     adapters = {name: hashes[name] for name in ADAPTER_FILES}
     project = {name: hashes[name] for name in PROJECT_FILES}
     expected_git = sources.json_bytes(

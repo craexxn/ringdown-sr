@@ -51,14 +51,12 @@ def git_source(tmp_path, monkeypatch):
     return root, commit, git, calls
 
 
-def test_git_cache_is_export_local_and_cleared_after_success_or_failure(
-    git_source, tmp_path
-):
+def test_git_cache_is_not_shared_after_success_or_failure(git_source, tmp_path):
     _, commit, _, calls = git_source
 
     def build(consumed, fail=False):
-        assert sources._git_file(commit, "source.txt") == b"first"
-        assert sources._git_file(commit, "source.txt") == b"first"
+        assert consumed.git_file(commit, "source.txt") == b"first"
+        assert consumed.git_file(commit, "source.txt") == b"first"
         if fail:
             raise ValueError("synthetic build failure")
         return {"groups": []}, "summary\n", {}
@@ -76,22 +74,22 @@ def test_git_cache_is_export_local_and_cleared_after_success_or_failure(
 
 def test_moving_refs_are_fresh_while_full_commits_and_names_remain_separate(git_source):
     root, first, git, calls = git_source
-    with sources.git_file_cache():
-        assert sources._git_file("HEAD", "source.txt") == b"first"
-        assert sources._git_file(first, "source.txt") == b"first"
-        (root / "source.txt").write_bytes(b"second")
-        (root / "other.txt").write_bytes(b"other")
-        git("add", ".")
-        git("commit", "-qm", "second")
-        second = git("rev-parse", "HEAD")
-        assert sources._git_file("HEAD", "source.txt") == b"second"
-        assert sources._git_file(first, "source.txt") == b"first"
-        assert sources._git_file(second, "source.txt") == b"second"
-        assert sources._git_file(second, "other.txt") == b"other"
-        assert len(calls) == 5
-        with pytest.raises(ValueError, match="Unsafe archive path"):
-            sources._git_file(first, "../source.txt")
-        assert len(calls) == 5
+    cached = sources.GitFileCache()
+    assert cached("HEAD", "source.txt") == b"first"
+    assert cached(first, "source.txt") == b"first"
+    (root / "source.txt").write_bytes(b"second")
+    (root / "other.txt").write_bytes(b"other")
+    git("add", ".")
+    git("commit", "-qm", "second")
+    second = git("rev-parse", "HEAD")
+    assert cached("HEAD", "source.txt") == b"second"
+    assert cached(first, "source.txt") == b"first"
+    assert cached(second, "source.txt") == b"second"
+    assert cached(second, "other.txt") == b"other"
+    assert len(calls) == 5
+    with pytest.raises(ValueError, match="Unsafe archive path"):
+        cached(first, "../source.txt")
+    assert len(calls) == 5
 
 
 def test_failed_git_reads_are_not_cached(git_source, monkeypatch):
@@ -107,11 +105,11 @@ def test_failed_git_reads_are_not_cached(git_source, monkeypatch):
         return output(args, **kwargs)
 
     monkeypatch.setattr(subprocess, "check_output", fail_once)
-    with sources.git_file_cache():
-        with pytest.raises(subprocess.CalledProcessError):
-            sources._git_file(commit, "source.txt")
-        assert sources._git_file(commit, "source.txt") == b"first"
-        assert sources._git_file(commit, "source.txt") == b"first"
+    cached = sources.GitFileCache()
+    with pytest.raises(subprocess.CalledProcessError):
+        cached(commit, "source.txt")
+    assert cached(commit, "source.txt") == b"first"
+    assert cached(commit, "source.txt") == b"first"
     assert attempts == 2
 
 

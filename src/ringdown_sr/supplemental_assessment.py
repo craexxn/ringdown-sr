@@ -193,7 +193,7 @@ def freeze_software(consumed):
         consumed.clock.check()
         raw = path.read_bytes()
         name = str(path.relative_to(ROOT))
-        if raw != sources._git_file(commit, name):
+        if raw != consumed.git_file(commit, name):
             raise ValueError("Assessment software differs from its commit: " + name)
         consumed.add(path, raw)
         hashes[name] = sources.sha256(raw)
@@ -327,7 +327,11 @@ def build_assessment(archives, consumed):
                 raw = sources.bounded_read(path)
                 consumed.add_archive(path, raw)
                 verified = sources.read_verified_series(
-                    path, name, check=consumed.clock.check, contents=raw
+                    path,
+                    name,
+                    check=consumed.clock.check,
+                    contents=raw,
+                    git_file=consumed.git_file,
                 )
                 originals = [sources.read_json(raw) for raw in verified.records]
                 payloads[name + "-historical-report.json"] = verified.files[

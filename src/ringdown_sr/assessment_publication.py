@@ -58,6 +58,7 @@ class Consumption:
         self.clock = clock
         self.files = {}
         self.archives = set()
+        self.git_file = sources.GitFileCache()
         self.callbacks = []
 
     def add(self, path, contents):
@@ -74,7 +75,7 @@ class Consumption:
         self.archives.add(path)
 
         def unchanged():
-            if sources.bounded_read(path) != self.files[path]:
+            if sources.bounded_read(path) != contents:
                 raise ValueError("Original archive changed after consumption.")
 
         # Keep the later, strict read after previously registered checks (HEAD).
@@ -246,7 +247,7 @@ def export_transaction(output, build, *, seconds=300):
     owned, revoked = None, False
     try:
         # Do not reserve an output when an existing alarm prevents cancellation control.
-        with clock.active(), sources.git_file_cache():
+        with clock.active():
             owned = reserve_output(output)
             try:
                 report, summary, payloads = build(consumed)
