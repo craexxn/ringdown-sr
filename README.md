@@ -27,7 +27,8 @@ keine alternative A-Kurve in den 35 Nicht-A-Fronten. Gemäß
 [Leitfadenphase 3](docs/ringdown_recovery_roadmap.md) wird nun der
 [Suchvergleich](docs/global_restart_comparison.md) von 1 × 500, frischen
 1 × 2.000 und 4 × 500 bei festem lokalem Profil 300/5 vorbereitet.
-Das Protokoll ist eingefroren, die Umsetzung in PR #76 noch in technischer Prüfung.
+Das Protokoll ist eingefroren; Umsetzung und aktueller technischer Prüfstand
+werden in PR #76 geführt.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
 Ausführungsschritt. Umsetzung und Nachweise stehen im

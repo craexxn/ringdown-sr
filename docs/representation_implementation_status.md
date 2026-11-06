@@ -22,7 +22,8 @@ bestand vollständig im Dokumentationsmodus mit 86 Markdown-Dateien.
 
 - **Branch/Basis:** `codex/global-restart-comparison`, neuer main `2f9fff0`
   normal eingebunden. [PR #76](https://github.com/craexxn/ringdown-sr/pull/76)
-  als Draft auf main; keine wissenschaftliche Serie ausgeführt.
+  auf main; Draft-Entwicklung abgeschlossen, aktueller Ready-CI-/Reviewstand im
+  verlinkten PR. Keine wissenschaftliche Serie ausgeführt.
 - **Vorab festgeschrieben:** [Protokoll](global_restart_comparison_plan.md) und
   Seed-/Rasterkonfiguration in `b00fc4a0a5a5a90e7d72f45d2b27788d1fd1585a`, vor
   Implementierung. 20 frische Aufrufe; 16-Aufruf-Wiederverwendung nicht gewählt,
@@ -48,9 +49,17 @@ bestand vollständig im Dokumentationsmodus mit 86 Markdown-Dateien.
   Zellen im Verifikator nachschärfen; Beschreibung gespeicherter nativer
   Nachweise präzisieren. Entsprechende Korrekturen und Gegenfälle ergänzt.
   Kein separates unabhängiges Review und keine zusätzlichen Agenten.
-- **Nächster Schritt:** korrigierte Fehlerpfade und technische Integration prüfen,
-  anschließend Ready-Vollprüfung. Keine vollständige technische Freigabe vor
-  deren Abschluss. Wissenschaftliche Ausführung bleibt separat.
+- **Korrekturprüfung:** auf `804c012475b878b0b3bccdadf453daffadb1d003` alle
+  20 gezielten Gegenfälle bestanden; Ruff, Format und 88 Markdown-Dateien
+  bestanden. Technischer Lauf `global-restarts-technical-002`: drei native
+  Worker 2/3/2, identische Wiederholungsfront, lesende Verifikation aller drei
+  Zellen mit `search_calls=0` bestanden. Wiederholung wegen geänderter
+  Fehler-/Verifikationspfade; keine wissenschaftliche Ausführung. Eingefrorene
+  Plan-/Konfigurationshashes unverändert. Aktuelle vollständige Ready-CI und
+  deren tatsächlicher Checkout/Dateibaum werden im PR nachgewiesen.
+- **Nächster Schritt:** nach vollständiger Ready-CI und Review eine ausdrückliche
+  Mergefreigabe für PR #76; danach ist der dokumentierte Manjaro-Aufruf der
+  separate wissenschaftliche Ausführungsschritt. Kein automatischer Merge/Lauf.
 - **Sicherung:** alle vier bereitgestellten Originalarchive geprüft, dauerhaft
   dokumentierte Ablage und geprüfte Zweitkopien weiterhin offen. Der separate
   historische Kreuzversuch bleibt ohne hier bestätigtes Originalarchiv.
