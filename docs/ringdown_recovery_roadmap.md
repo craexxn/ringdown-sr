@@ -19,6 +19,24 @@ aus PR #73 und die [Archivregel](results_archiving.md) mit
 [Ergebnisindex](results_index.md) aus PR #74 sind ebenfalls übernommen.
 Sicherungskopien bleiben separat nachzuweisen.
 
+Planergänzung vom 06.11.2026 während der erneuten PR76-Prüfung: der
+[begrenzte Budgetvergleich](iteration_time_budget_plan.md) ergänzt Phase 3 um
+2.000 Iterationen gegenüber 400 Sekunden im nativen Suchfenster. Vier gepaarte
+Seeds, vorab festgelegte Wiederverwendung des gesamten PR76-Kontrollarms oder
+vollständig frischer Ersatzmodus; keine zusätzliche offene Optimierungsschleife.
+Der PR76-Versuch bleibt ein separater wissenschaftlicher Manjaro-Lauf.
+
+Umsetzungsabgleich vom 06.11.2026: PR #76 ist nach korrigierten Schutzregeln,
+gezieltem KI-Nachreview und vollständiger CI als `b547bb3` übernommen.
+Der getrennte [Zeitbudgetlaufweg](iteration_time_budget.md) wird mit der
+Veröffentlichungsvorbereitung in PR #77 abgeschlossen. Die Quellenprüfung zeigt
+eine konkrete Wiederverwendungslücke: Das bisherige PR76-Format zeichnet die
+tatsächlichen Julia-/GC-Threads und native CPU-Affinität nicht vollständig auf.
+Serielle Suche und BLAS=1 ersetzen diesen Nachweis nicht. Der Import entscheidet
+deshalb konservativ anhand der Originalbelege; ein ungeeigneter Kontrollarm
+startet keinen automatischen Ersatzlauf. Das eingefrorene Design mit ausdrücklich
+gewähltem `fresh_all` bleibt unverändert, ebenso PR76 und seine Originaldaten.
+
 Die Planungsänderung vom 06.11.2026 zieht das unregelmäßige Zusatzraster in die
 Entwicklungsphase vor, präzisiert frische Einzelsuchen gegenüber Fortsetzung
 und trennt Gesamtkosten von neuem Aufwand. Zuerst erfolgt die
@@ -35,6 +53,10 @@ bereits erfolgte Implementierung oder wissenschaftliche Ausführung.
 
 ## Rolle und Pflege
 
+- Die [Veröffentlichungsprüfung](publication_review.md) ergänzt die
+  organisatorische Quellen- und Archivpflege aus Phase 1. Lizenzierung und
+  Repository-Sichtbarkeit ändern weder die wissenschaftlichen Kriterien noch
+  die Reihenfolge der Suchversuche; eine öffentliche Umstellung bleibt separat.
 - Die [Archivierungsrichtlinie](results_archiving.md) und der
   [Ergebnisindex](results_index.md) ergänzen Phase 1 um die dauerhafte
   Zuordnung vorhandener Versuche, Quellen und Bewertungen. Die Regelung ist
@@ -245,6 +267,34 @@ aktuell zusätzlicher Aufwand wird separat ausgewiesen. Ein Neustartvorteil
 bleibt eine Hypothese, kein aus Literatur oder bisherigen Befunden abgeleitetes
 Ergebnis. Wird ein konkreter technischer Fehler oder vorrangiger Engpass
 nachgewiesen, wird dieser vor dem wissenschaftlichen Vergleich behandelt.
+
+### Ergänzender begrenzter Halteregelvergleich
+
+Am 06.11.2026 beschlossen: zusätzlich 2.000 äußere Iterationen gegen
+400 Sekunden Backend-Suchzeit bei identischem 300/5-Profil vergleichen.
+Die Zeit stammt aus ungefähr 400,34 Sekunden historischer mittlerer Fitzeit;
+interne Suchzeit und Fit-/Workerzeit sind unterschiedliche Abschnitte, daher
+keine exakte Kostenangleichung. Die Reserve 1.000.000 darf keine unbemerkte
+Größenaufwärmung oder sonstige Änderung der Suchdynamik bewirken.
+Timersemantik, Gegenprüfung und Interpretation stehen im
+[eingefrorenen Protokoll](iteration_time_budget_plan.md).
+
+Die vier PR76-Seeds bleiben gepaart. Vor Kenntnis ihrer wissenschaftlichen
+Ergebnisse wird Wiederverwendung aller vier 2.000er-Kontrollen als Standard
+festgelegt: vier neue Zeitläufe, vorher vollständige technische/methodische
+Eignungsprüfung einschließlich Umgebung und Kosten. Fehlt dieser Nachweis,
+ist ausschließlich der explizit gewählte Ersatzmodus mit allen vier Kontrollen
+frisch zulässig: acht neue Suchen. Keine Mischgruppe oder ergebnisabhängige
+Auswahl. Die Modusentscheidung wird vor dem ersten neuen Fit gebunden.
+
+Mehr A bei höchstens gleichem gemessenem Workeraufwand ist ein Entwicklungssignal;
+mehr A mit Mehrkosten ein Qualitätsgewinn mit Mehrkosten. Gleichstand belegt
+keinen Kurvengewinn, weniger A eine Verschlechterung dieser Entwicklungsfälle.
+Paare, Strukturänderungen, offene Beweise und unbekannte Kosten bleiben sichtbar.
+Keine allgemeine Erfolgsquote, automatische Budgetstaffel oder neue offene
+Suchintervention. PR76 wird separat ausgeführt und nicht ersetzt. Anschließend
+bleiben bewusste Profilübernahme, gegebenenfalls Zeitnormalisierung als zweite
+Intervention, unabhängige Bestätigung und Rauschpilot in der bestehenden Ordnung.
 
 ### Unregelmäßiges Zusatzraster bereits in der Entwicklung
 

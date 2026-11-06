@@ -1,5 +1,13 @@
 [
   {
+    "required_commit": "1aeedcce6a0f6c5683b2c4176161e14ed83ffa6d",
+    "durable_remote_ref": "refs/pull/77/head",
+    "files_sha256": {
+      "docs/iteration_time_budget_plan.md": "24d7486cf097fc89a329fbae452f132ca5f661f49a969830e62b79f88edaedab",
+      "data/iteration_time_protocol.json": "a7081e34a317c8ac4c839b4671e6e00a11f012682ed6d4d710f5a09edf879396"
+    }
+  },
+  {
     "required_commit": "fee62058992c84a9930aa765233ebdc095c54cb1",
     "durable_remote_ref": "refs/pull/55/head",
     "files_sha256": {

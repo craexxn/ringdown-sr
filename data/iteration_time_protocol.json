@@ -1,0 +1,24 @@
+{
+  "format": "ringdown-sr-iteration-time-protocol-1",
+  "seeds": [20261201, 20261210, 20261211, 20261212],
+  "iterations": 2000,
+  "search_seconds": 400.0,
+  "iteration_reserve": 1000000,
+  "worker_seconds": 1800,
+  "total_seconds": 7200,
+  "default_mode": "reuse_pr76",
+  "fallback_mode": "fresh_all",
+  "reuse_cells": [2, 7, 12, 17],
+  "fresh_orders": [["I", "Z"], ["Z", "I"], ["I", "Z"], ["Z", "I"]],
+  "pr76_protocol_commit": "b00fc4a0a5a5a90e7d72f45d2b27788d1fd1585a",
+  "historical_worker_commit": "5215c5e1c93f220a3f7ea59b1c37580d2f2b5ea4",
+  "grid_seed": 2026110601,
+  "grid_points": 1024,
+  "warmup_maxsize_by": 0.0,
+  "reviewed_backend_sources": {
+    "pysr/sr.py": "0a7e10fb0e74c4c4c5d98dc06b9be2716c5d62d3c6cea3a469b4eff9ab839bb5",
+    "SymbolicRegression/src/SymbolicRegression.jl": "bc80d97bd5a4ec5f93a5627dd9f91a9d992f7fca2c77ce3795a8b1fca1bcfeea",
+    "SymbolicRegression/src/SearchUtils.jl": "06d1ba163ed540c307dfe075ba8dbe6a7e84b71122cf1f68fee59f9f7f9a1f25",
+    "SymbolicRegression/src/Options.jl": "acc1551bd8493dd083c077d32140165a951e95e484c2704ed2e2b549433d3742"
+  }
+}

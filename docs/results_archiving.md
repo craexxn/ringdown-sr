@@ -106,8 +106,13 @@ es ist kein zusätzlicher Kalenderturnus oder neues Sicherungssystem vorgeschrie
 Über **GitHub → Releases → Release erstellen oder bearbeiten → Dateien anhängen**
 können Archive zusätzlich bereitgestellt werden. Ein Sammel-Release darf weitere
 eindeutig benannte Dateien aufnehmen; bestehende Dateien und Tags bleiben
-unverändert. Releases erben die Repository-Sichtbarkeit. Für die vorgesehene
-private Zusatzablage das private Repository verwenden; keine Sichtbarkeit ändern.
+unverändert. Releases erben die Repository-Sichtbarkeit: Nach einer Umstellung
+auf öffentlich sind auch vorhandene veröffentlichte Releases und ihre Anhänge
+öffentlich zugänglich. Eine private Zusatzablage benötigt dann ein separates
+privates Ziel oder das bestehende Backup. Vor einer öffentlichen Bereitstellung
+den konkreten Archivinhalt einschließlich Metadaten prüfen; keine automatischen
+Uploads aus der Sichtbarkeitsänderung ableiten. Die
+[Veröffentlichungsprüfung](publication_review.md) hält den geprüften Umfang fest.
 
 Nach einem Upload den Rückdownload gegen SHA-256 prüfen und erst dann den echten
 Downloadlink samt geprüftem Uploadstatus ergänzen. Ein Release-Tag bezeichnet

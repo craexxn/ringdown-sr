@@ -120,6 +120,16 @@ Repository-Einstellungen werden mit diesem Auftrag nicht verändert.
 
 ## Kosten und Abnahme
 
+Für eine spätere öffentliche Sichtbarkeit gilt: Die hier verwendeten
+Standard-Runner `ubuntu-24.04` sind in öffentlichen Repositories kostenlos.
+Größere Runner bleiben kostenpflichtig; Speicher hat eigene Regeln gemäß
+[GitHub Actions billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions).
+Das ändert weder erforderliche Prüfungen noch den seriellen Ablauf. Der
+historische Sparplan und seine Messungen bleiben erhalten. Die Prüfung von
+Actions-Logs, Fork-Freigaben und tatsächlichem Branchschutz steht im
+[Veröffentlichungsbefund](publication_review.md). Dieser Dokumentationsnachtrag
+ändert keine Repository-Einstellung oder Workflow-Berechtigung.
+
 Der [Sparplan](github_actions_savings_plan.md) nennt historische Jobzeiten und
 rechnerische Einsparungen, keine gemessenen Kosten des neuen Ablaufs. Durch zwei
 entfallende allgemeine Umgebungsprüfungen werden neun bis elf Runner-Minuten je
@@ -135,6 +145,10 @@ Sind alle geänderten Dateien ausschließlich erlaubte Prosa (`README.md`,
 `AGENTS.md` oder Markdown unter `docs/`), installiert `prepare` weder die
 Projektumgebung noch Julia. Der native Job wird ausdrücklich übersprungen;
 Python aus der Runner-Standardinstallation prüft die Dokumentation.
+Eine neue Datei `LICENSE` im Repository-Wurzelverzeichnis fällt nach der
+unveränderten Klassifikation in den vollständigen Scope. Dieser Auftrag
+erweitert die Ausnahme nicht; sein Prüfstand wird entsprechend als
+vollständiger Scope geführt.
 
 Geprüft werden alle versionierten Markdown-Dateien: UTF-8, abschließender
 Zeilenumbruch, unerwünschte Leerzeichen und abgeschlossene Codeblöcke sowie
@@ -152,7 +166,8 @@ Dies ist eine begrenzte Prüfung, kein vollständiger Markdown-Parser.
 `docs/search_duration_simplification_plan.md`
 `docs/search_duration_prediction_plan.md`, `docs/local_optimizer_plan.md`
 `docs/outer_search_ladder_plan.md`, `docs/transfer_check_plan.md`,
-`docs/seed_driver_crosscheck_plan.md` und `docs/global_restart_comparison_plan.md`
+`docs/seed_driver_crosscheck_plan.md`, `docs/global_restart_comparison_plan.md`
+und `docs/iteration_time_budget_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -164,6 +179,15 @@ Punkten `y=1+t`, äußere Budgets 2/3/2, danach lesende Prüfung gespeicherter
 nativer Nachweise mit Python-/MPFR-Nachrechnung. Bestehende Prüfblöcke bleiben
 unverändert. Der wissenschaftliche
 20-Aufruf-Laufweg wird nicht in Actions ausgeführt.
+
+Der Zeitbudgetvergleich ergänzt denselben seriellen Job um
+`scripts/check_time_budget_dynamics.py` (drei frische technische Präfixe bis
+zu vier festen Populationsschritten) und `scripts/check_iteration_time.py`
+(vier Worker auf acht Punkten: Iterationsende, 0,01-Sekunden-Zeitende,
+Reserveende und wiederholte Iterationskontrolle, danach lesende Verifikation).
+Die tatsächlich begrenzte CPU-Affinität und Julia-/GC-/BLAS-Threads werden
+geprüft. Bestehende Prüfblöcke bleiben bestehen; keine wissenschaftliche
+400-Sekunden-Serie in GitHub Actions.
 
 Auch `docs/supplemental_assessment.md` erhält die volle CI: Der lesende
 Bewertungsexport bindet diesen Versionsvertrag an seinen Softwarestand.

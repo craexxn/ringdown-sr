@@ -11,6 +11,15 @@ hier noch nicht bestätigt. Lokal verfügbare Arbeitskopien werden nicht als
 bereits geprüfte Sicherung gezählt. GitHub-Releases sind optional; ein fehlender
 Upload oder Downloadlink verhindert den Abschluss der lokalen Archivierung nicht.
 
+Für die neuen Laufwege [globale Neustarts](global_restart_comparison.md) und
+[Iterations-/Zeitbudget](iteration_time_budget.md) liegt hier noch kein
+wissenschaftliches Originalarchiv vor. Nach der jeweiligen Ausführung sind
+tatsächlicher Commit, Abschluss/Teilstand, Archiv-SHA-256 und beide gesicherten
+Ablageorte nachzutragen. Beim Zeitbudgetvergleich gehört auch die benachbarte
+`-call.json`-Datei mit der vollständigen Aufrufmessung ins Originalarchiv.
+Technische Fixtures und ein implementierter Laufweg sind keine wissenschaftliche
+Ausführung und kein Sicherungsnachweis.
+
 ## Archivablage
 
 Die gemeinsamen Ablagehinweise werden einmal hier gepflegt. Die Dateinamen in

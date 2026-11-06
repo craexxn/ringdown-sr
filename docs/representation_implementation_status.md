@@ -1,6 +1,8 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Abgleich nach PR #74 am 06.11.2026: main `16d2f40506e6dae6534f02d76f1cf2f0dfde5dd2`
+## Historischer Abgleich vor Übernahme von PR #75
+
+Abgleich am 06.11.2026: main `16d2f40506e6dae6534f02d76f1cf2f0dfde5dd2`
 enthält die ausdrücklich freigegebenen PRs #73 und #74. PR #74 wurde nach
 normaler Basiseinbindung auf Head `75823a33f63fdcaac9a3afaa1f76113e88429d2f`
 geprüft; sein Dateibaum `c3b24e575cd45a869004b7900a1fb4038820492d` entspricht
@@ -10,7 +12,100 @@ erfolgreich: 85 Markdown-Dateien, `mode=docs`, beide erforderlichen Jobs grün,
 native Prüfungen planmäßig übersprungen. Index und Archivregel blieben bei der
 Konfliktauflösung bytegleich; Code/Verträge entsprachen main nach PR #73.
 
-## Aktuell: begrenzter Suchvergleich, Leitfadenphase 3
+## Aktuell: Zeitbudgetvergleich abschließen, PR76 übernommen
+
+- **Branch/Basis:** `codex/iteration-time-budget`, eigener Worktree; main nach
+  ausdrücklich freigegebenem PR76-Merge `b547bb3b1753235960cc0654f8cebd747fc1b2f3`
+  normal eingebunden. PR #77 zielt auf main; gebündelte lokale Prüfungen und
+  Veröffentlichungsvorbereitung sind abgeschlossen. Der vollständige
+  Ready-CI-Stand wird im PR geführt; kein Auftrag zum Merge von PR #77.
+- **PR76-Abnahme:** Head `66ec4238f39edbbc2a71bb4e984571e41531e7ab`, Basis `2f9fff0`.
+  [CI 42196112043](https://github.com/craexxn/ringdown-sr/actions/runs/42196112043)
+  vollständig erfolgreich: 3.137 Pythonfälle, alle nativen Blöcke und Abschluss.
+  Joblogs aller drei Jobs selbst geprüft: Checkout
+  `4dad7d828d2593e027681db7d2f672660ef9673f`, Dateibaum
+  `d472aff4ca67c6696865a1575366a57fc1085297`, identisch zum Head und Merge.
+  Das übermittelte gezielte KI-Nachreview bestätigt beide P2-Korrekturen mit
+  154 Repositoryfällen und 21 zusätzlichen Gegenprüfungen; diese Prüfungen
+  bleiben übermittelte Nachweise, keine hier erneut ausgeführte Nachreviewserie.
+- **Vorabfestlegung:** [Zeitbudgetprotokoll](iteration_time_budget_plan.md) und
+  [Konfiguration](../data/iteration_time_protocol.json) vor Implementierung und
+  vor Sichtung wissenschaftlicher PR76-Ergebnisse; solche Ergebnisse liegen
+  hier weiterhin nicht vor. Alle vier I wiederverwenden oder alle vier frisch,
+  keine qualitätsabhängige Teilübernahme. Kontrollarm mangels Originalarchiv
+  unbestätigt. PR76 bleibt separat auszuführen.
+- **Selbst geprüft:** Timerquellen von PySR 2.6.0/SymbolicRegression 2.5.1:
+  Uhrstart nach Aufwärmzyklen, kooperative Prüfung am Schleifenende, Überschreitung
+  möglich. Historische Fitzeit 2.001,72272/5 = 400,344544 Sekunden;
+  keine Gleichsetzung mit interner Suchzeit oder Gesamtkosten. Bei effektivem
+  `warmup_maxsize_by=0.0` entfällt die iterationsabhängige Größenaufwärmung;
+  native Präfixgegenprüfung mit ausdrücklich gebundenen Julia-/GC-Threads
+  und CPU-Modell-/Affinitätsbelegen bestanden.
+- **Implementiert:** Eigener Zeitworker und native Profil-/Timerprüfung,
+  vollständiger 8-/4-Aufrufplan, konservativer Kontrollimport, getrennte reale
+  Kosten und Stopgründe, unveränderte Bewertungen und lesende Verifikation.
+  [Manjaro-Laufweg](iteration_time_budget.md) mit konkreten Befehlen und Artefakten.
+  Historische Worker, Bewertungsverträge und beide eingefrorenen Protokolle bleiben
+  unverändert. Keine wissenschaftlichen PR76-Ergebnisse zur Bewertung geöffnet.
+- **Selbst geprüft:** Implementierungsstand
+  `71118e7a9a6c5972ef0a5467af5dd2c936eb4239` gegen main
+  `b547bb3b1753235960cc0654f8cebd747fc1b2f3`: vollständige Python-Suite mit
+  **3.188 Fällen** in 307,14 s bestanden; darin 317 gezielte Fälle für Budget,
+  Kontrollimport, Ausfälle, Kosten, späten Widerruf und CI. Ruff, Format
+  (265 Dateien), Dokumentationsprüfung (91 Markdown-Dateien) und Diffprüfung
+  bestanden. Die Hashes sämtlicher bisherigen CI-Prüfkommandos bleiben erhalten.
+  Drei frische native Präfixe stimmen über vier Populationsschritte einschließlich
+  Populationen, Hall of Fame und Callbackzählern überein. Neun native
+  Ein-Prüfpunkt-Gegenfälle bestehen: je Profil unveränderte Uhr akzeptiert,
+  Vorwärts-/Rückwärtssprung abgelehnt. Vier weitere technische Worker auf acht
+  Punkten `y=1+t` bestehen: Iterationsende, reguläres Zeitende, Reserveende,
+  identische wiederholte Iterationsfront. Gesamtaufrufmessung und anschließende
+  lesende Verifikation aller vier Zellen mit `search_calls=0` bestanden.
+- **Gezieltes KI-Eigenreview:** Vorbereitung, Herkunft, Ausfallgrenzen,
+  Kontrollübernahme, Timersemantik, Kosten, Auswahl und Veröffentlichungsabschluss
+  am genannten Implementierungsstand geprüft. Es fand zunächst eine Lücke in der
+  Uhrsprungprüfung vor der ersten nativen Zeitprüfung. Beide Zeitrichtungen wurden
+  als Gegenfälle reproduziert und durch einen gemeinsamen Messbeginn vor Eintritt
+  in die Hauptschleife korrigiert; lesende Verifikation rechnet die Differenz nach.
+  Nach Korrektur und den genannten Gegenprüfungen keine weiteren
+  korrekturbedürftigen Befunde im geprüften Umfang. Kein zusätzlicher Agent;
+  dies ist keine unabhängige wissenschaftliche Bestätigung.
+- **Offene Quellenlücke:** Wissenschaftliches PR76-Archiv liegt hier noch nicht vor.
+  Das vorhandene Format belegt tatsächliche native CPU-/Julia-/GC-Threadbindung
+  nicht vollständig. Ohne Originalbelege keine Wiederverwendungsfreigabe und
+  keine nachträgliche Ergänzung vermeintlicher historischer Messungen.
+- **Nächster Schritt:** Gemeinsame vollständige Ready-CI von
+  [PR #77](https://github.com/craexxn/ringdown-sr/pull/77) abwarten und tatsächlichen
+  Checkout/Dateibaum prüfen. Wissenschaftlicher Zeitbudgetlauf erst separat nach
+  Übernahme und ausdrücklicher Moduswahl auf Manjaro; keine solche Serie in Cloud/CI.
+
+## Ergänzung in PR #77: Veröffentlichung vorbereiten
+
+Stand: 06.11.2026; die Veröffentlichungsvorbereitung wird auf ausdrücklichen
+Bündelungsauftrag in `codex/iteration-time-budget` ergänzt. Integrationsbasis
+ist `1aeedcce6a0f6c5683b2c4176161e14ed83ffa6d`; das dort eingefrorene
+Zeitbudgetprotokoll und seine Konfiguration bleiben bytegleich.
+
+- Organisatorischer Folgeauftrag zur Quellen-/Archivpflege in Leitfadenphase 1:
+  Git-Historie und GitHub-Oberflächen lesend auf Veröffentlichungsbedarf prüfen,
+  kleine Dokumentationskorrekturen und die ausdrücklich gewählte MIT-Lizenz
+  mit Copyright 2026 Gregor Hubmann vorbereiten.
+- Konkrete Fundstellen, Snapshot, Grenzen und offene Einstellungen stehen im
+  [Veröffentlichungsbefund](publication_review.md). Rohdaten der Prüfung liegen
+  außerhalb des Repositories; keine vertraulichen Fundwerte werden kopiert.
+- Diese Ergänzung ändert keinen wissenschaftlichen Code, keine Eingabedaten,
+  eingefrorenen Pläne, Bewertungsverträge oder Originalergebnisse. Keine Suche,
+  Historienbereinigung, Sichtbarkeitsänderung oder eigenständige Übernahme.
+- Die neue Root-Datei `LICENSE` verlangt nach unveränderter CI-Klassifikation
+  die vollständige Abschlussprüfung. Sie wird mit der Zeitbudgetimplementierung
+  in PR #77 gebündelt; Draft-Prüfungen allein sind keine technische Freigabe.
+  Prüfnachweise mit Bezugsstand und tatsächlichem Checkout werden im PR geführt.
+
+## Historischer Entwicklungsstand: globale Neustarts, Leitfadenphase 3
+
+Die folgenden Angaben dokumentieren die Entwicklung vor der PR76-Abnahme.
+Die abgeschlossene CI, das Nachreview und die Übernahme stehen im aktuellen
+Abschnitt oben; frühere nächste Schritte sind damit erledigt.
 
 PR #75 ist nach ausdrücklichem Mergeauftrag als
 `2f9fff00c24a72f644dc42816b6a05aa87e392f0` übernommen. Head
