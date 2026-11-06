@@ -36,10 +36,15 @@ def inspect(mode, condition, seed):
     backend.diagnose_candidate = partial(diagnose_candidate, extended_structure=True)
     jl = backend.native_runtime()
     hashes = control.checked_backend_sources(jl)
+    runtime = control.checked_runtime(jl)
     result = backend.inspect(mode)
-    if control.checked_backend_sources(jl) != hashes:
+    if (
+        control.checked_backend_sources(jl) != hashes
+        or control.checked_runtime(jl) != runtime
+    ):
         raise ValueError("Native backend sources changed during preparation.")
     result["reviewed_backend_sources"] = hashes
+    result["budget_runtime"] = runtime
     return result
 
 

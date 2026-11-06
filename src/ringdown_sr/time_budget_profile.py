@@ -2,6 +2,7 @@
 
 import copy
 import json
+import os
 from pathlib import Path
 
 from . import outer_search_ladder as prior
@@ -25,6 +26,11 @@ LIMITS = {
     "time": 400.0,
     "technical_timeout": 0.01,
     "technical_reserve": 400.0,
+}
+JULIA_THREADS = {
+    "JULIA_NUM_THREADS": "1,0",
+    "PYTHON_JULIACALL_THREADS": "1,0",
+    "JULIA_NUM_GC_THREADS": "1",
 }
 CONDITIONS = ("iterations", "time")
 SEEDS = (20261201, 20261210, 20261211, 20261212)
@@ -60,6 +66,33 @@ def checked_backend_sources(jl):
     if hashes != configuration()["reviewed_backend_sources"]:
         raise ValueError("Pinned timer/backend source differs from the reviewed bytes.")
     return hashes
+
+
+def checked_runtime(jl):
+    # PySR otherwise defaults Julia to auto and enables concurrent GC. Serial
+    # equation_search and BLAS limits alone do not bind these runtime threads.
+    if any(os.environ.get(key) != value for key, value in JULIA_THREADS.items()):
+        raise ValueError("Explicit Julia and GC thread limits must precede import.")
+    native = jl.seval("""(;
+        cpu_name=string(Sys.CPU_NAME), cpu_threads=Sys.CPU_THREADS,
+        word_size=Sys.WORD_SIZE, julia_threads=Threads.nthreads(:default),
+        interactive_threads=Threads.nthreads(:interactive), gc_threads=Threads.ngcthreads(),
+        blas_threads=LinearAlgebra.BLAS.get_num_threads())""")
+    record = {str(key): getattr(native, str(key)) for key in jl.keys(native)}
+    record.update(
+        affinity=sorted(os.sched_getaffinity(0)), thread_environment=dict(JULIA_THREADS)
+    )
+    if (
+        record["julia_threads"] != 1
+        or record["interactive_threads"] != 0
+        or record["gc_threads"] != 1
+        or record["blas_threads"] != 1
+        or len(record["affinity"]) != 1
+    ):
+        raise ValueError(
+            "Effective native threads or CPU affinity violate the budget profile."
+        )
+    return record
 
 
 def source_hashes():
@@ -165,7 +198,7 @@ def expected_grammar_cases():
 
 def verify_manifest(directory, runtime):
     module = load_module(
-        ROOT / "src/ringdown_sr/trigonometric_grammar.py", "time_manifest"
+        ROOT / "src/ringdown_sr/trigonometric_grammar.py", "ringdown_sr._time_manifest"
     )
     module.FORMAT, module.source_hashes, module.RUNTIME = FORMAT, source_hashes, RUNTIME
     return module.verify_manifest(directory, runtime)

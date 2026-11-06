@@ -23,6 +23,7 @@ def worker(kind, output):
     if len(os.sched_getaffinity(0)) != 1:
         raise ValueError("Prefix probes require one allowed CPU.")
     hashes = profile.checked_backend_sources(jl)
+    runtime = profile.checked_runtime(jl)
     for name in (
         "RingdownSRLoss",
         "RingdownSRSearch",
@@ -93,6 +94,7 @@ def worker(kind, output):
             "profile": kind,
             "parameters": parameters,
             "backend_sources": hashes,
+            "runtime": runtime,
             "events": events,
             "clock": record,
         },
@@ -103,6 +105,7 @@ def run(output):
     output = output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     os.sched_setaffinity(0, {min(os.sched_getaffinity(0))})
+    os.environ.update(profile.JULIA_THREADS)
     records = []
     for kind in ("legacy", "iterations", "time"):
         destination = output / kind

@@ -43,12 +43,14 @@ def run(directory):
     original_replay = symbolic._verify_loss_replay
     original_prediction = symbolic._verify_prediction_replay
     module = original_backend = guard = None
+    initial_runtime = None
 
     def snapshot(phase, *, julia_used):
-        nonlocal module, original_backend, guard
+        nonlocal module, original_backend, guard, initial_runtime
         from juliacall import Main as jl
 
         control.checked_backend_sources(jl)
+        actual_runtime = control.checked_runtime(jl)
         if phase == "before_fit":
             if guard is not None:
                 raise ValueError("Repeated time-budget fit boundary.")
@@ -57,9 +59,12 @@ def run(directory):
             guard = control.SearchInvocationGuard(original_backend, budget.niterations)
             module.SymbolicRegression = guard
             jl.SearchBudgetClock.configure()
+            initial_runtime = actual_runtime
         elif phase == "after_search":
             if guard is None or module.SymbolicRegression is not guard:
                 raise ValueError("Missing time-budget invocation guard.")
+            if actual_runtime != initial_runtime:
+                raise ValueError("Native runtime changed during the search.")
             _write_json(directory / "search_invocation.json", guard.record())
             record = jl.SearchBudgetClock.record()
             _write_json(
@@ -67,6 +72,7 @@ def run(directory):
                 {
                     "format": control.FORMAT,
                     "affinity": sorted(os.sched_getaffinity(0)),
+                    "budget_runtime": actual_runtime,
                     **{str(key): getattr(record, str(key)) for key in jl.keys(record)},
                 },
             )
