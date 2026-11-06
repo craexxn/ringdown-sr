@@ -1,6 +1,6 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Aktueller Abgleich am 06.11.2026: main `16d2f40506e6dae6534f02d76f1cf2f0dfde5dd2`
+Abgleich nach PR #74 am 06.11.2026: main `16d2f40506e6dae6534f02d76f1cf2f0dfde5dd2`
 enthält die ausdrücklich freigegebenen PRs #73 und #74. PR #74 wurde nach
 normaler Basiseinbindung auf Head `75823a33f63fdcaac9a3afaa1f76113e88429d2f`
 geprüft; sein Dateibaum `c3b24e575cd45a869004b7900a1fb4038820492d` entspricht
@@ -17,7 +17,8 @@ PR #75 ist nach ausdrücklichem Mergeauftrag als
 `6815625d55f3e1285e24ec41798521fca9226f0d`, Basis `16d2f40`, tatsächlicher
 CI-Checkout `cd3fb28a8297865a5707aeb0c2eba3b706baeff8`: Dateibaum jeweils
 `b2e18c5a45f7e9c57084c1f2f23bce305851f7f9`.
-[Dokumentations-CI 42181071072](https://github.com/craexxn/ringdown-sr/actions/runs/42181071072)+bestand vollständig im Dokumentationsmodus mit 86 Markdown-Dateien.
+[Dokumentations-CI 42181071072](https://github.com/craexxn/ringdown-sr/actions/runs/42181071072)
+bestand vollständig im Dokumentationsmodus mit 86 Markdown-Dateien.
 
 - **Branch/Basis:** `codex/global-restart-comparison`, neuer main `2f9fff0`
   normal eingebunden. [PR #76](https://github.com/craexxn/ringdown-sr/pull/76)
