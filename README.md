@@ -5,12 +5,13 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 06.11.2026; abgeglichener main `823732f` nach ausdrücklich
+Fortsetzungsstand: 06.11.2026; abgeglichener main `4df7eca` nach ausdrücklich
 freigegebener Übernahme von [PR #73](https://github.com/craexxn/ringdown-sr/pull/73)
 und [PR #74](https://github.com/craexxn/ringdown-sr/pull/74), anschließend
 [PR #75](https://github.com/craexxn/ringdown-sr/pull/75) und
 [PR #76](https://github.com/craexxn/ringdown-sr/pull/76) und
-[PR #77](https://github.com/craexxn/ringdown-sr/pull/77).
+[PR #77](https://github.com/craexxn/ringdown-sr/pull/77) sowie der
+Archivdokumentation in [PR #78](https://github.com/craexxn/ringdown-sr/pull/78).
 Alle drei Bewertungsstufen sind implementiert, geprüft, übernommen und auf
 78 Originalauswahlen angewandt: [Kurvenklassen](docs/supplemental_assessment_results_001.md),
 [Originalfamilie und Domain](docs/supplemental_structure_results_001.md),
@@ -33,16 +34,25 @@ Das Protokoll ist eingefroren; Umsetzung, korrigierte Schutzregeln und vollstän
 technische CI sind mit PR #76 übernommen. Der
 [Manjaro-Lauf 001 wurde in Zelle 20 unterbrochen](docs/global_restart_results_manjaro_001.md);
 19 fertige Zellen, Teilkosten und gesperrter Abschluss sind am Paket geprüft;
-für den getrennten Lauf 002 ist Fortschritt, noch kein Abschluss übermittelt.
+der getrennte [Lauf 002 ist vollständig lesend bestätigt](docs/global_restart_results_manjaro_002.md):
+20 Suchen, Referenz 1/4 A, lange Suchen 4/4 A mit 3/4 Familiennachweisen,
+Neustartpakete 4/4 A mit 4/4 Familiennachweisen. Die vorab festgelegte Regel
+bevorzugt die Pakete wegen weniger Verlustaufrufen bei gleicher A-Zahl; ihre
+Workerzeit ist jedoch höher. Gezielte Entwicklungsfälle, kein allgemeiner
+Erfolgs- oder Laufzeitnachweis und noch keine unabhängige Bestätigung.
 Parallel ist der [begrenzte Zeitbudgetvergleich](docs/iteration_time_budget.md)
 von 2.000 Iterationen mit 400 Sekunden Suchzeit implementiert. Sein Protokoll legt
 vor Sichtung wissenschaftlicher PR76-Ergebnisse die vollständige Kontrollübernahme
 oder einen vollständig frischen Ersatzmodus fest. Lokal bestehen 3.188 Pythonfälle
 und sieben kleine native Suchprüfungen; PR #77 ist nach vollständiger grüner CI
-und separatem KI-Review übernommen. Die Wiederverwendung ist
-unbestätigt: tatsächliche historische Julia-/GC-Threadbelege fehlen im bisherigen
-PR76-Format. Ohne diese Belege bleibt nur der ausdrücklich gewählte frische
-Ersatzmodus mit acht Suchen; keine automatische Umschaltung.
+und separatem KI-Review übernommen. Die lesende Eignungsprüfung von Lauf 002
+lehnt die Kontrollwiederverwendung wegen fehlender tatsächlicher CPU-/Julia-/GC-
+Threadbelege ab. Der [Zeitbudgetlauf 001](docs/iteration_time_results_manjaro_001.md)
+ist inzwischen im Modus `fresh_all` mit acht frischen Suchen lesend bestätigt:
+I erreicht 4/4 A, Z 3/4 A; beide 3/4 A mit Familiennachweis. Z benötigt insgesamt
+12,51 % weniger Workerzeit, verliert aber einen A-Erfolg. Deshalb keine
+Übernahmeempfehlung für 400 Sekunden. Nächster Schritt ist die bewusste
+Profilübernahme und das vorab festgelegte unabhängige Bestätigungsprotokoll.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
 Ausführungsschritt. Umsetzung und Nachweise stehen im

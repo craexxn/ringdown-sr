@@ -1,6 +1,63 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Versuchsbelege und Dokumentation vervollständigen
+## Aktuell: Neustart- und Zeitbudgetvergleich ausgewertet
+
+Abgleich vom 06.11.2026, Leitfadenphase 3: Remote-main ist nach ausdrücklich
+freigegebenem PR78-Merge `4df7ecaaaed0a6d235f7db104c6982bdfcabf048`.
+Eigener Dokumentationsbranch `codex/global-restart-results-002`; bestehende
+Worktrees erhalten. PR #79 bündelt beide Ergebnisdokumentationen und wurde vor
+der Ergänzung des Zeitbefunds wieder auf Draft gesetzt. Implementierung,
+wissenschaftliche Ausführung, Quellenprüfung und Profilentscheidung bleiben getrennt.
+
+- **Primärbeleg:** [Lauf 002](global_restart_results_manjaro_002.md) ist mit allen
+  20 Zellen abgeschlossen. Empfangener Archivhash entspricht der separat
+  übermittelten SHA-256. 972 Dateien einschließlich getrenntem Verify-Export,
+  965 Rohmanifest-Einträge, 363 Vorbereitungsbindungen, 66 Orchestrierungsquellen
+  und 154 verschiedene Git-Commit-/Dateibindungen geprüft. Tatsächlicher
+  Ausführungsstand `b547bb3`, unveränderter historischer Worker `5215c5e`.
+- **Eigene Nachrechnung:** Alle 20 Zellen und 190 Kandidaten mit historischen
+  Python-/MPFR-Regeln bestätigt; Originalauswahl, Paketwahl, Kurven-/Familien-/
+  Restbefunde, Kosten und Kontraste unverändert. Die drei neu erzeugten
+  Verify-Dateien sind bytegleich zum mitgelieferten Export. Kein Fit, keine neue
+  Suche und kein nativer Replay. Der ursprüngliche CLI-Versuch scheiterte an
+  der fehlenden Julia-Installation vor der Zellprüfung und bleibt gesperrt.
+  Der erfolgreiche Audit ersetzt nur deren Launcher durch reine Python-
+  Verify-Aufrufe; unveränderte Prüffunktionen und Quellenbindungen bleiben aktiv.
+- **Befund:** Referenz 1/4 A, lange Suchen 4/4 A, Pakete 4/4 A. A plus gültige
+  Originalfamilie: 1/4, 3/4, 4/4; der vierte lange A-Fall bleibt formal ungeklärt.
+  Die eingefrorene Anschlussregel bevorzugt Pakete wegen 8,24 % weniger
+  Verlustaufrufen als lange Suchen bei gleicher A-Zahl. Workerzeit zugleich
+  14,14 % höher; keine allgemeine Überlegenheit oder Beschleunigung behaupten.
+  Lauf 001 und seine Abbruchkosten bleiben separat erhalten.
+- **Zeitbudgetbefund:** [Lauf 001](iteration_time_results_manjaro_001.md) im vorab
+  begründeten Modus `fresh_all` auf `4df7eca` abgeschlossen: acht frische Suchen,
+  76 Kandidaten. 469 Dateien, 461 Rohmanifest-Einträge, 163 Vorbereitungsbindungen,
+  88 Orchestrierungsquellen und 128 Git-Commit-/Dateibindungen geprüft. Eigene
+  Python-/MPFR-Verifikation mit ausschließlich angepasstem Verify-Start bestanden;
+  drei Verify-Dateien bytegleich. Timer, tatsächliche Threadbindung und benachbarte
+  Aufrufmessung bestätigt; keine Suche und kein nativer Replay. I 4/4 A, Z 3/4 A,
+  beide 3/4 A plus Familie. Z verliert einen A-Erfolg; 12,51 % weniger Workerzeit
+  begründen deshalb keine Empfehlung für 400 Sekunden. Rund 66,5 Minuten
+  gemessener Aufrufaufwand, genaue Messgrenzen im Bericht.
+- **Nächster Schritt:** Viererpakete bleiben der Kandidat für bewusste
+  Profilübernahme und vorab festgelegte unabhängige Bestätigung, anschließend
+  Rauschpilot. Profil im allgemeinen Laufweg sowie unberührte Bestätigungsfälle,
+  Ausfall-/Kostenregeln und praktische Grenze vor neuer Ausführung festlegen.
+  Keine Wiederholung von Zeitbudgetlauf 001 und keine offene Budgetoptimierung.
+  Technische Manjaro-Vorprüfungen bleiben separat noch nicht belegt.
+- **Dokumentation und Prüfung:** Ergebnisbericht, README, Leitfaden, beide
+  Laufwege und Index abgeglichen. 96 Markdown-Dateien mit lokalen Linkzielen
+  und Diffprüfung bestanden. KI-basiertes Eigenreview der Quellenzuordnung,
+  Kostenbereiche und Anschlussregel; kein zusätzlicher Agent. Code, Tests,
+  Konfigurationen, eingefrorene Protokolle und frühere Ergebnisberichte bleiben
+  bytegleich. Der PR führt Head, Basis und die zugehörige Dokumentations-CI.
+- **Offen:** Dokumentationsänderung noch separat zu übernehmen; technische
+  Manjaro-Abschlussbelege, ältere nachrangige Quellenlücken sowie gemeinsame
+  Archivablage und unabhängig geprüfte Zweitkopien gemäß [Index](results_index.md).
+  Beide neuen Originale und ihre gesonderten Audits liegen als Arbeitskopien vor. Keine
+  wissenschaftliche Ausführung oder eigenständige Übernahme durch diesen Audit.
+
+## Historischer Dokumentationsstand aus PR78
 
 Abgleich vom 06.11.2026, Leitfadenphase 1 mit Durchführungspflege zu Phase 3:
 Remote-main ist nach ausdrücklich freigegebenem PR77-Merge
