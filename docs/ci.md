@@ -166,7 +166,8 @@ Dies ist eine begrenzte Prüfung, kein vollständiger Markdown-Parser.
 `docs/search_duration_simplification_plan.md`
 `docs/search_duration_prediction_plan.md`, `docs/local_optimizer_plan.md`
 `docs/outer_search_ladder_plan.md`, `docs/transfer_check_plan.md`,
-`docs/seed_driver_crosscheck_plan.md` und `docs/global_restart_comparison_plan.md`
+`docs/seed_driver_crosscheck_plan.md`, `docs/global_restart_comparison_plan.md`
+und `docs/iteration_time_budget_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -178,6 +179,15 @@ Punkten `y=1+t`, äußere Budgets 2/3/2, danach lesende Prüfung gespeicherter
 nativer Nachweise mit Python-/MPFR-Nachrechnung. Bestehende Prüfblöcke bleiben
 unverändert. Der wissenschaftliche
 20-Aufruf-Laufweg wird nicht in Actions ausgeführt.
+
+Der Zeitbudgetvergleich ergänzt denselben seriellen Job um
+`scripts/check_time_budget_dynamics.py` (drei frische technische Präfixe bis
+zu vier festen Populationsschritten) und `scripts/check_iteration_time.py`
+(vier Worker auf acht Punkten: Iterationsende, 0,01-Sekunden-Zeitende,
+Reserveende und wiederholte Iterationskontrolle, danach lesende Verifikation).
+Die tatsächlich begrenzte CPU-Affinität und Julia-/GC-/BLAS-Threads werden
+geprüft. Bestehende Prüfblöcke bleiben bestehen; keine wissenschaftliche
+400-Sekunden-Serie in GitHub Actions.
 
 Auch `docs/supplemental_assessment.md` erhält die volle CI: Der lesende
 Bewertungsexport bindet diesen Versionsvertrag an seinen Softwarestand.

@@ -106,6 +106,18 @@ def validate_runtime(record):
         or not record["cpu_name"]
         or type(record["cpu_threads"]) is not int
         or record["cpu_threads"] < 1
+        or any(
+            type(record[key]) is not int
+            for key in (
+                "word_size",
+                "julia_threads",
+                "interactive_threads",
+                "gc_threads",
+                "blas_threads",
+            )
+        )
+        or type(record["affinity"]) is not list
+        or any(type(cpu) is not int or cpu < 0 for cpu in record["affinity"])
         or record["word_size"] != 64
         or record["thread_environment"] != JULIA_THREADS
     ):

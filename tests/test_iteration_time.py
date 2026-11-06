@@ -217,3 +217,92 @@ def test_failed_costs_use_actual_status_measurement_and_keep_missing_fit_cpu(tmp
     assert cell["costs"]["fit_wall_seconds"] is None
     assert cell["costs"]["cpu_user_seconds"] is None
     assert cell["A"] is False and cell["stop"] == "fit_error"
+
+
+@pytest.mark.parametrize("fault", [None, "late_source", "closing_interrupt"])
+def test_whole_call_measurement_and_postpublication_revocation(
+    monkeypatch, tmp_path, fault
+):
+    output = tmp_path / "run"
+    original = tmp_path / "source"
+    original.write_bytes(b"original")
+
+    def execute(destination, *, closing, **options):
+        destination.mkdir()
+        consumed = publication.Consumption(publication.Deadline(30))
+        consumed.add(original, b"original")
+        closing.append(consumed)
+        _write_json(destination / "run_state.json", {"status": "completed"})
+        (destination / "completion").mkdir()
+        report = {"status": "completed", "comparison": {"A": 4}}
+        _write_json(destination / "completion" / publication.REPORT, report)
+        _write_json(destination / "completion" / publication.MANIFEST, {})
+        return report
+
+    monkeypatch.setattr(comparison, "_run", execute)
+    write = comparison._write_json
+
+    def altered(path, value):
+        write(path, value)
+        if path.name.endswith("-call.json") and fault == "late_source":
+            original.write_bytes(b"changed after publication")
+
+    monkeypatch.setattr(comparison, "_write_json", altered)
+    if fault == "closing_interrupt":
+        close = comparison.ExitStack.close
+        triggered = False
+
+        def interrupted(stack):
+            nonlocal triggered
+            close(stack)
+            if not triggered:
+                triggered = True
+                raise InterruptedError("late closing interruption")
+
+        monkeypatch.setattr(comparison.ExitStack, "close", interrupted)
+    if fault is None:
+        comparison.run(output)
+        record = comparison.load_json(tmp_path, "run-call.json")
+        assert record["wall_seconds"] > 0
+        assert record["cpu_user_seconds"] >= 0
+        assert record["source_report_sha256"] == comparison.sources.sha256(
+            (output / "completion" / publication.REPORT).read_bytes()
+        )
+    else:
+        with pytest.raises((ValueError, InterruptedError)):
+            comparison.run(output)
+        assert (output / "completion" / publication.LOCK).exists()
+        assert "comparison" not in comparison.load_json(
+            output / "completion", publication.REPORT
+        )
+        assert comparison.load_json(output, "run_state.json")["status"] == "aborted"
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("julia_threads", True),
+        ("gc_threads", 2),
+        ("interactive_threads", 1),
+        ("affinity", [0, 1]),
+        ("affinity", [True]),
+        ("affinity", [-1]),
+        ("thread_environment", {}),
+    ],
+)
+def test_actual_runtime_evidence_rejects_missing_or_noninteger_limits(field, value):
+    record = {
+        "cpu_name": "fixture",
+        "cpu_threads": 4,
+        "word_size": 64,
+        "julia_threads": 1,
+        "interactive_threads": 0,
+        "gc_threads": 1,
+        "blas_threads": 1,
+        "affinity": [0],
+        "thread_environment": dict(profile.JULIA_THREADS),
+    }
+    profile.validate_runtime(record)
+    record[field] = value
+    with pytest.raises(ValueError):
+        profile.validate_runtime(record)

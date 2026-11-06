@@ -3,10 +3,12 @@
 import io
 import math
 import os
+import resource
+import signal
 import subprocess
 import tempfile
 import time
-from contextlib import contextmanager, nullcontext
+from contextlib import ExitStack, contextmanager, nullcontext
 from pathlib import Path
 
 import numpy as np
@@ -367,7 +369,68 @@ def imported_cells(source, arrays, irregular, technical):
     ]
 
 
-def run(
+def run(output, **options):
+    """Measure the complete run through publication; retain closing safeguards."""
+    started = time.monotonic()
+    before = [
+        resource.getrusage(kind)
+        for kind in (resource.RUSAGE_SELF, resource.RUSAGE_CHILDREN)
+    ]
+    output = Path(output).absolute()
+    timing_path = publication.validate_output(
+        output.with_name(output.name + "-call.json")
+    )
+    closing, completed = [], False
+    with ExitStack() as stack:
+
+        def interrupt(signum, frame):
+            raise InterruptedError(
+                "Comparison call interrupted by signal " + str(signum)
+            )
+
+        for sig in (signal.SIGINT, signal.SIGTERM):
+            previous = signal.signal(sig, interrupt)
+            stack.callback(signal.signal, sig, previous)
+        try:
+            report = _run(output, closing=closing, **options)
+            completed = True
+            elapsed = time.monotonic() - started
+            after = [
+                resource.getrusage(kind)
+                for kind in (resource.RUSAGE_SELF, resource.RUSAGE_CHILDREN)
+            ]
+            record = {
+                "format": FORMAT + "-call-timing",
+                "status": "completed",
+                "scope": "run_entry_through_publication_return_excluding_final_timing_write_and_rechecks",
+                "wall_seconds": elapsed,
+                "cpu_user_seconds": sum(
+                    a.ru_utime - b.ru_utime for a, b in zip(after, before, strict=True)
+                ),
+                "cpu_system_seconds": sum(
+                    a.ru_stime - b.ru_stime for a, b in zip(after, before, strict=True)
+                ),
+                "source_report_sha256": sources.sha256(
+                    (output / "completion" / publication.REPORT).read_bytes()
+                ),
+            }
+            _write_json(timing_path, record)
+            closing[0].add(timing_path, timing_path.read_bytes())
+            closing[0].check()
+            if time.monotonic() - started > profile.LIMIT_SECONDS:
+                raise TimeoutError("Whole comparison call exceeded two hours.")
+            stack.close()
+            return report
+        except BaseException as error:
+            if completed:
+                publication.revoke(output / "completion", error, closing[0].clock)
+                state = load_json(output, "run_state.json")
+                state.update(status="aborted", error=f"{type(error).__name__}: {error}")
+                _write_json(output / "run_state.json", state)
+            raise
+
+
+def _run(
     output,
     *,
     mode="reuse_pr76",
@@ -375,6 +438,7 @@ def run(
     archive=None,
     archive_sha256=None,
     technical=False,
+    closing,
 ):
     plans = bridge.cells(mode, technical)
     if not isinstance(reason, str) or not reason.strip():
@@ -399,6 +463,7 @@ def run(
     _write_json(output / "run_state.json", state)
 
     def build(consumed):
+        closing.append(consumed)
         software = freeze_software(consumed)
         arrays = (
             profile.load_module(
@@ -596,7 +661,7 @@ def run(
             "new_costs": cost_totals([c for c in cells if not c["reused"]]),
             "algorithm_costs": cost_totals(cells),
             "control_eligibility": finding,
-            "total_wall_seconds": time.monotonic() - consumed.clock.started,
+            "prepublication_wall_seconds": time.monotonic() - consumed.clock.started,
             "physical_parameter_match": "not_assessed",
             "finished_at_utc": _utc_now(),
         }
@@ -658,6 +723,38 @@ def verify(source, output, *, archive=None, archive_sha256=None):
             or original["scope"] not in {"technical", "scientific"}
         ):
             raise ValueError("No completed iteration/time comparison.")
+        call_path = source.with_name(source.name + "-call.json")
+        call_bytes = call_path.read_bytes()
+        call = sources.read_json(call_bytes)
+        if (
+            set(call)
+            != {
+                "format",
+                "status",
+                "scope",
+                "wall_seconds",
+                "cpu_user_seconds",
+                "cpu_system_seconds",
+                "source_report_sha256",
+            }
+            or call["format"] != FORMAT + "-call-timing"
+            or call["status"] != "completed"
+            or call["scope"]
+            != "run_entry_through_publication_return_excluding_final_timing_write_and_rechecks"
+            or call["source_report_sha256"]
+            != sources.sha256((completion / publication.REPORT).read_bytes())
+            or any(
+                type(call[k]) not in (float, int)
+                or not math.isfinite(call[k])
+                or call[k] < 0
+                for k in ("wall_seconds", "cpu_user_seconds", "cpu_system_seconds")
+            )
+            or not original["prepublication_wall_seconds"]
+            <= call["wall_seconds"]
+            <= profile.LIMIT_SECONDS
+        ):
+            raise ValueError("Invalid whole-call timing evidence.")
+        consumed.add(call_path, call_bytes)
         prepared = load_json(source, "preparation.json")
         if prepared["software"] != software or original["software"] != software:
             raise ValueError(
@@ -732,11 +829,27 @@ def verify(source, output, *, archive=None, archive_sha256=None):
                 ):
                     raise ValueError("Original diagnostic points were not preserved.")
                 old_cells = imported_cells(control_source, arrays, irregular, technical)
+            environment = runtime = None
             for plan in plans:
                 number = plan["number"]
                 request = source / f"request-{number:02d}.json"
                 if load_json(source, request.name)["cell"] != plan:
                     raise ValueError("Cell assigned to the wrong slot.")
+                options = load_json(source / f"cell-{number:02d}", "options.json")
+                current = cross.environment_key(options["initial"]["environment"])
+                current_runtime = options["budget_runtime"]
+                if environment is not None and (
+                    environment != current or runtime != current_runtime
+                ):
+                    raise ValueError(
+                        "Prepared numerical environments or hardware differ."
+                    )
+                environment, runtime = current, current_runtime
+                if mode == "reuse_pr76" and any(
+                    c["environment"] != environment or c["budget_runtime"] != runtime
+                    for c in finding["controls"]
+                ):
+                    raise ValueError("Reused control environment/runtime differs.")
                 call_bridge(
                     "verify",
                     source / f"cell-{number:02d}",
@@ -772,6 +885,8 @@ def verify(source, output, *, archive=None, archive_sha256=None):
                 "scope": original["scope"],
                 "verified_cells": len(actual),
                 "search_calls": 0,
+                "whole_call_timing": call,
+                "whole_call_timing_sha256": sources.sha256(call_bytes),
                 "source_report_sha256": sources.sha256(
                     (completion / publication.REPORT).read_bytes()
                 ),

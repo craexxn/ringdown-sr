@@ -26,6 +26,17 @@ Seeds, vorab festgelegte Wiederverwendung des gesamten PR76-Kontrollarms oder
 vollständig frischer Ersatzmodus; keine zusätzliche offene Optimierungsschleife.
 Der PR76-Versuch bleibt ein separater wissenschaftlicher Manjaro-Lauf.
 
+Umsetzungsabgleich vom 06.11.2026: PR #76 ist nach korrigierten Schutzregeln,
+gezieltem KI-Nachreview und vollständiger CI als `b547bb3` übernommen.
+Der getrennte [Zeitbudgetlaufweg](iteration_time_budget.md) wird mit der
+Veröffentlichungsvorbereitung in PR #77 abgeschlossen. Die Quellenprüfung zeigt
+eine konkrete Wiederverwendungslücke: Das bisherige PR76-Format zeichnet die
+tatsächlichen Julia-/GC-Threads und native CPU-Affinität nicht vollständig auf.
+Serielle Suche und BLAS=1 ersetzen diesen Nachweis nicht. Der Import entscheidet
+deshalb konservativ anhand der Originalbelege; ein ungeeigneter Kontrollarm
+startet keinen automatischen Ersatzlauf. Das eingefrorene Design mit ausdrücklich
+gewähltem `fresh_all` bleibt unverändert, ebenso PR76 und seine Originaldaten.
+
 Die Planungsänderung vom 06.11.2026 zieht das unregelmäßige Zusatzraster in die
 Entwicklungsphase vor, präzisiert frische Einzelsuchen gegenüber Fortsetzung
 und trennt Gesamtkosten von neuem Aufwand. Zuerst erfolgt die

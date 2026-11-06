@@ -5,10 +5,11 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 06.11.2026; abgeglichener main `2f9fff0` nach ausdrücklich
+Fortsetzungsstand: 06.11.2026; abgeglichener main `b547bb3` nach ausdrücklich
 freigegebener Übernahme von [PR #73](https://github.com/craexxn/ringdown-sr/pull/73)
 und [PR #74](https://github.com/craexxn/ringdown-sr/pull/74), anschließend
-[PR #75](https://github.com/craexxn/ringdown-sr/pull/75).
+[PR #75](https://github.com/craexxn/ringdown-sr/pull/75) und
+[PR #76](https://github.com/craexxn/ringdown-sr/pull/76).
 Alle drei Bewertungsstufen sind implementiert, geprüft, übernommen und auf
 78 Originalauswahlen angewandt: [Kurvenklassen](docs/supplemental_assessment_results_001.md),
 [Originalfamilie und Domain](docs/supplemental_structure_results_001.md),
@@ -27,13 +28,16 @@ keine alternative A-Kurve in den 35 Nicht-A-Fronten. Gemäß
 [Leitfadenphase 3](docs/ringdown_recovery_roadmap.md) wird nun der
 [Suchvergleich](docs/global_restart_comparison.md) von 1 × 500, frischen
 1 × 2.000 und 4 × 500 bei festem lokalem Profil 300/5 vorbereitet.
-Das Protokoll ist eingefroren; Umsetzung und aktueller technischer Prüfstand
-werden in PR #76 geführt.
-Parallel wird der [begrenzte Zeitbudgetvergleich](docs/iteration_time_budget_plan.md)
-von 2.000 Iterationen mit 400 Sekunden Suchzeit vorbereitet. Sein Protokoll legt
+Das Protokoll ist eingefroren; Umsetzung, korrigierte Schutzregeln und vollständige
+technische CI sind mit PR #76 übernommen. Der Manjaro-Lauf bleibt separat.
+Parallel ist der [begrenzte Zeitbudgetvergleich](docs/iteration_time_budget.md)
+von 2.000 Iterationen mit 400 Sekunden Suchzeit implementiert. Sein Protokoll legt
 vor Sichtung wissenschaftlicher PR76-Ergebnisse die vollständige Kontrollübernahme
-oder einen vollständig frischen Ersatzmodus fest. Umsetzung und Prüfung stehen
-noch aus; PR76 bleibt ein separater wissenschaftlicher Lauf.
+oder einen vollständig frischen Ersatzmodus fest. Technische Prüfungen und
+gemeinsame Ready-CI werden in PR #77 abgeschlossen. Die Wiederverwendung ist
+unbestätigt: tatsächliche historische Julia-/GC-Threadbelege fehlen im bisherigen
+PR76-Format. Ohne diese Belege bleibt nur der ausdrücklich gewählte frische
+Ersatzmodus mit acht Suchen; keine automatische Umschaltung.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
 Ausführungsschritt. Umsetzung und Nachweise stehen im

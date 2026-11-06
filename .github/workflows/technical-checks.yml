@@ -294,6 +294,26 @@ jobs:
             exit 1
           fi
 
+      - name: Compare stopping-profile dynamics on three fixed technical prefixes
+        run: |
+          if ! env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/check_time_budget_dynamics.py \
+            --output results/ci-time-budget-prefix; then
+            find results/ci-time-budget-prefix -type f -name '*.log' -print -exec tail -n 100 {} \;
+            exit 1
+          fi
+
+      - name: Verify iteration and time stopping on four tiny technical workers
+        run: |
+          if ! env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/check_iteration_time.py \
+            --output results/ci-iteration-time; then
+            find results/ci-iteration-time -type f -name '*.log' -print -exec tail -n 100 {} \;
+            exit 1
+          fi
+
   technical-checks:
     name: ${{ github.event_name == 'workflow_dispatch' && 'manual-technical-checks' || 'technical-checks' }}
     needs: [prepare, native]

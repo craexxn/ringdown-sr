@@ -12,13 +12,21 @@ erfolgreich: 85 Markdown-Dateien, `mode=docs`, beide erforderlichen Jobs grün,
 native Prüfungen planmäßig übersprungen. Index und Archivregel blieben bei der
 Konfliktauflösung bytegleich; Code/Verträge entsprachen main nach PR #73.
 
-## Aktuell: Zeitbudgetvergleich vorbereiten, PR76-Korrektur prüfen
+## Aktuell: Zeitbudgetvergleich abschließen, PR76 übernommen
 
-- **Branch/Basis:** `codex/iteration-time-budget`, eigener Worktree, auf PR76
-  `66ec4238f39edbbc2a71bb4e984571e41531e7ab`; main unverändert `2f9fff0`.
-  PR76 ist offen, seine Reviewkorrektur erhält eine neue vollständige CI.
-  Kein eigenständiger Merge. Vor Abschluss den tatsächlichen Übernahmestand
-  erneut abgleichen und die aktuelle main-Basis normal einbinden.
+- **Branch/Basis:** `codex/iteration-time-budget`, eigener Worktree; main nach
+  ausdrücklich freigegebenem PR76-Merge `b547bb3b1753235960cc0654f8cebd747fc1b2f3`
+  normal eingebunden. PR #77 zielt auf main und bleibt bis zum Abschluss der
+  gebündelten lokalen Prüfungen Draft; kein Auftrag zum Merge von PR #77.
+- **PR76-Abnahme:** Head `66ec4238f39edbbc2a71bb4e984571e41531e7ab`, Basis `2f9fff0`.
+  [CI 42196112043](https://github.com/craexxn/ringdown-sr/actions/runs/42196112043)
+  vollständig erfolgreich: 3.137 Pythonfälle, alle nativen Blöcke und Abschluss.
+  Joblogs aller drei Jobs selbst geprüft: Checkout
+  `4dad7d828d2593e027681db7d2f672660ef9673f`, Dateibaum
+  `d472aff4ca67c6696865a1575366a57fc1085297`, identisch zum Head und Merge.
+  Das übermittelte gezielte KI-Nachreview bestätigt beide P2-Korrekturen mit
+  154 Repositoryfällen und 21 zusätzlichen Gegenprüfungen; diese Prüfungen
+  bleiben übermittelte Nachweise, keine hier erneut ausgeführte Nachreviewserie.
 - **Vorabfestlegung:** [Zeitbudgetprotokoll](iteration_time_budget_plan.md) und
   [Konfiguration](../data/iteration_time_protocol.json) vor Implementierung und
   vor Sichtung wissenschaftlicher PR76-Ergebnisse; solche Ergebnisse liegen
@@ -30,11 +38,32 @@ Konfliktauflösung bytegleich; Code/Verträge entsprachen main nach PR #73.
   möglich. Historische Fitzeit 2.001,72272/5 = 400,344544 Sekunden;
   keine Gleichsetzung mit interner Suchzeit oder Gesamtkosten. Bei effektivem
   `warmup_maxsize_by=0.0` entfällt die iterationsabhängige Größenaufwärmung;
-  technische Gegenprüfung der übrigen Suchdynamik steht noch aus.
-- **Nächster Schritt:** Im bestehenden Draft
-  [PR #77](https://github.com/craexxn/ringdown-sr/pull/77) getrennten Zeitlaufweg
-  und Kontrollimport implementieren, kleine technische Gegenfälle prüfen und
-  danach beide Arbeitspakete gemeinsam vollständig prüfen.
+  erste native Präfixgegenprüfung bestanden; erneute Prüfung mit ausdrücklich
+  gebundenen Julia-/GC-Threads ist Teil des Abschlusses.
+- **Implementiert:** Eigener Zeitworker und native Profil-/Timerprüfung,
+  vollständiger 8-/4-Aufrufplan, konservativer Kontrollimport, getrennte reale
+  Kosten und Stopgründe, unveränderte Bewertungen und lesende Verifikation.
+  [Manjaro-Laufweg](iteration_time_budget.md) mit konkreten Befehlen und Artefakten.
+  Historische Worker, Bewertungsverträge und beide eingefrorenen Protokolle bleiben
+  unverändert. Keine wissenschaftlichen PR76-Ergebnisse zur Bewertung geöffnet.
+- **Selbst geprüft:** Auf `12d9db8c164d06c72e482e5f568380e4f68dc6ac` bestehen
+  97 gezielte Pythonfälle sowie vier reale technische Worker auf acht Punkten
+  `y=1+t`: Iterationsende, reguläres Zeitende, Reserveende und identische
+  wiederholte Iterationsfront; anschließende lesende Verifikation bestanden.
+  Ergänzte Gesamtaufrufmessung und abschließender Prüfstand werden im PR geführt.
+  Nach Ergänzung der vollständigen Aufrufmessung, spätem Widerruf und CI-Blöcken
+  bestehen 315 gezielte Pythonfälle, Ruff, Formatprüfung (265 Dateien) und
+  Dokumentationsprüfung (91 Markdown-Dateien). Die CI-Inventarprüfung wurde um
+  genau die beiden neuen technischen Blöcke ergänzt; die gespeicherten Hashes
+  sämtlicher bisherigen Prüfkommandos bleiben unverändert.
+- **Offene Quellenlücke:** Wissenschaftliches PR76-Archiv liegt hier noch nicht vor.
+  Das vorhandene Format belegt tatsächliche native CPU-/Julia-/GC-Threadbindung
+  nicht vollständig. Ohne Originalbelege keine Wiederverwendungsfreigabe und
+  keine nachträgliche Ergänzung vermeintlicher historischer Messungen.
+- **Nächster Schritt:** Im bestehenden
+  [PR #77](https://github.com/craexxn/ringdown-sr/pull/77) gebündelte lokale Prüfungen
+  und gezieltes KI-basiertes Implementierungsreview abschließen; danach einmal
+  gemeinsam mit der abgeschlossenen Veröffentlichungsvorbereitung Ready-CI starten.
   Kein wissenschaftlicher Suchlauf in Cloud/CI.
 
 ## Ergänzung in PR #77: Veröffentlichung vorbereiten
