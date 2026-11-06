@@ -44,9 +44,9 @@ ist nun am Originalarchiv verifiziert. Die
 [beiden frühen rauschfreien Serien](early_control_archive_audit_001.md) sind
 ebenfalls an den nachgereichten Primärdateien bestätigt. Beim globalen Vergleich
 ist [Abbruch 001](global_restart_results_manjaro_001.md) mit 19 fertigen Zellen,
-unterbrochener Zelle 20, Teilkosten und gesperrter Freigabe geprüft; für 002
-liegt weiterhin nur ein übermittelter Zwischenstand vor. Daraus folgt noch kein
-wissenschaftlicher Vergleichsbefund.
+unterbrochener Zelle 20, Teilkosten und gesperrter Freigabe geprüft.
+Der getrennte [Lauf 002](global_restart_results_manjaro_002.md) ist nun vollständig
+lesend bestätigt; seine Einordnung folgt im Phase-3-Abschnitt unten.
 Fehlende Primärbelege und Sicherungen werden im
 [Ergebnisindex](results_index.md#priorisierte-fehlende-belege) priorisiert.
 Dies ist Quellen- und Statuspflege, keine Änderung der Versuchspläne.
@@ -292,6 +292,30 @@ aktuell zusätzlicher Aufwand wird separat ausgewiesen. Ein Neustartvorteil
 bleibt eine Hypothese, kein aus Literatur oder bisherigen Befunden abgeleitetes
 Ergebnis. Wird ein konkreter technischer Fehler oder vorrangiger Engpass
 nachgewiesen, wird dieser vor dem wissenschaftlichen Vergleich behandelt.
+
+### Ergebnis und Anschlussentscheidung vom 06.11.2026
+
+Der [abgeschlossene Lauf 002](global_restart_results_manjaro_002.md) mit 20 frischen
+Suchen erreicht 1/4 A bei der Referenz und jeweils 4/4 bei langen Suchen und
+Neustartpaketen. A plus gültige Originalfamilie: 1/4, 3/4, 4/4; ein langer
+A-Fall bleibt formal ungeklärt, ohne Definitionslücke. Die A-Zahl ist gegenüber
+der Referenz verbessert, zwischen den beiden verbesserten Armen gleich.
+Die eingefrorene Regel bevorzugt daher die Pakete anhand der vollständig
+aufgezeichneten Verlustaufrufe: 8,24 % weniger als lange Suchen. Ihre summierte
+Workerzeit ist allerdings 14,14 % höher. Keine allgemeine Erfolgswahrscheinlichkeit,
+kein Laufzeitvorteil und keine automatische Profilumstellung ableiten.
+
+Die bewusste Profilübernahme und unabhängige Bestätigung sind damit der
+vorgesehene Anschluss. Vorher den bereits separat eingefrorenen begrenzten
+Halteregelvergleich aus PR77 abschließen; sein Ausführungsstart ist hier noch
+nicht belegt. Für diesen Vergleich bestätigt die technische Eignungsprüfung
+von 002 die fehlende historische CPU-/Julia-/GC-Threadbindung aller vier
+Kontrollen. Die vorbereitete ausdrückliche Wahl `fresh_all` mit acht Suchen bleibt
+unverändert und wird nicht anhand der jetzt bekannten Kurvenqualität getroffen.
+Zeitnormalisierung bleibt nur die bereits bedingt vorgesehene zweite Intervention;
+dieser Befund begründet keine weitere offene Suchoptimierung. Vor dem Rauschpilot
+Profil im allgemeinen Laufweg bewusst übernehmen und an unberührten Fällen
+bestätigen; die Gewichtung muss Struktur- und Konstantensuche gemeinsam bestimmen.
 
 ### Ergänzender begrenzter Halteregelvergleich
 

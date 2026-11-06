@@ -11,13 +11,13 @@ hier noch nicht bestätigt. Lokal verfügbare Arbeitskopien werden nicht als
 bereits geprüfte Sicherung gezählt. GitHub-Releases sind optional; ein fehlender
 Upload oder Downloadlink verhindert den Abschluss der lokalen Archivierung nicht.
 
-Für die neuen Laufwege [globale Neustarts](global_restart_comparison.md) und
-[Iterations-/Zeitbudget](iteration_time_budget.md) liegt hier noch kein
-vollständiges wissenschaftliches Abschlussarchiv vor. Für den globalen Vergleich
-ist [Abbruch 001](global_restart_results_manjaro_001.md) am nachgereichten ZIP
-geprüft; für 002 liegt ein übermittelter Zwischenstand vor. Nach der jeweiligen Ausführung sind
-tatsächlicher Commit, Abschluss/Teilstand, Archiv-SHA-256 und beide gesicherten
-Ablageorte nachzutragen. Beim Zeitbudgetvergleich gehört auch die benachbarte
+Für den [globalen Neustartvergleich](global_restart_comparison.md) sind
+[Abbruch 001](global_restart_results_manjaro_001.md) und der vollständig
+abgeschlossene [Lauf 002](global_restart_results_manjaro_002.md) an den gelieferten
+Paketen geprüft. Für den [Iterations-/Zeitbudgetvergleich](iteration_time_budget.md)
+liegt noch kein Ausführungsbeleg vor. Nach seiner Ausführung sind tatsächlicher
+Commit, Abschluss/Teilstand, Archiv-SHA-256 und beide gesicherten Ablageorte
+nachzutragen. Beim Zeitbudgetvergleich gehört auch die benachbarte
 `-call.json`-Datei mit der vollständigen Aufrufmessung ins Originalarchiv.
 Technische Fixtures und ein implementierter Laufweg sind keine wissenschaftliche
 Ausführung und kein Sicherungsnachweis.
@@ -56,7 +56,7 @@ können nach geprüftem Rückdownload ergänzt werden; hierfür besteht keine Pf
   aufgezeichnete Commit-ID. Die bei Anlage des Index verlinkten 25 Commits waren am
   06.11.2026 über die GitHub-API erreichbar; das ersetzt keine dauerhafte
   Ref-Sicherung für Stände außerhalb der main-Historie.
-- Die vier zuletzt abgeschlossenen Serien sind bereits maschinenlesbar in
+- Die vier großen Ausgangsserien sind bereits maschinenlesbar in
   [supplemental_series.json](../data/supplemental_series.json) gebunden. Diese
   Werte wurden samt vier lokalen Originalarchiven erneut abgeglichen. Bei
   älteren Serien werden die Nachweise der vorhandenen Berichte übernommen;
@@ -89,7 +89,7 @@ Die Lauf-ID verbindet diese Übersicht mit genau der gleichnamigen Zeile in
 | `transfer-manjaro-001` — Übertragung des Profils 500/300/5 auf sechs Signale | [`bc4025d13b4954dee779341026d282430521686a`](https://github.com/craexxn/ringdown-sr/commit/bc4025d13b4954dee779341026d282430521686a) | Abgeschlossen; 18 Zellen | `ringdown-sr-transfer-check-1`; zusätzlich [R1–R3](#nachträgliche-bewertungen) | [Bericht](transfer_check_results_manjaro_001.md) |
 | `seed-driver-crosscheck-manjaro-001` — Folgt das Ergebnis dem Seed oder historischen Treiber? | Orchestrierung [`8096ddb8bb6fd065eb1079c7902a2016334a6e6b`](https://github.com/craexxn/ringdown-sr/commit/8096ddb8bb6fd065eb1079c7902a2016334a6e6b); historische Worker im Bericht | Abgeschlossen; zwei Zellen, 18 Kandidaten lesend bestätigt | `ringdown-sr-seed-driver-crosscheck-1`; getrennte A–D-Einordnung, kein Import in R1–R3 | [Bericht](seed_driver_crosscheck_results_manjaro_001.md) |
 | `global-restarts-manjaro-001` — Globale Neustarts gegenüber längerer Einzelsuche | Orchestrierung [`b547bb3b1753235960cc0654f8cebd747fc1b2f3`](https://github.com/craexxn/ringdown-sr/commit/b547bb3b1753235960cc0654f8cebd747fc1b2f3); historischer Worker `5215c5e` | 19 Zellen fertig, Zelle 20 unterbrochen; Teilkosten und gesperrter Abschluss geprüft | Kein freigegebener Serienvergleich | [Abbruchbericht](global_restart_results_manjaro_001.md) |
-| `global-restarts-manjaro-002` — Getrennte vollständige Wiederholung | Nicht archivbelegt; tatsächliche Herkunft nachzureichen | Zwischenstand übermittelt: Zellen 1–2 fertig, 3 läuft, 4–20 geplant; kein Abschluss | Noch keine freigegebene Serienauswertung | [Zwischenstand](global_restart_results_manjaro_001.md#status-und-kosten) |
+| `global-restarts-manjaro-002` — Getrennte vollständige Wiederholung | Orchestrierung [`b547bb3b1753235960cc0654f8cebd747fc1b2f3`](https://github.com/craexxn/ringdown-sr/commit/b547bb3b1753235960cc0654f8cebd747fc1b2f3); historischer Worker `5215c5e` | Abgeschlossen; 20 Zellen, 190 Kandidaten, Original und Verify-Export lesend bestätigt | `ringdown-sr-global-restart-comparison-1`; A: Referenz 1/4, lang 4/4, Pakete 4/4; Familie und Kosten getrennt | [Ergebnisbericht](global_restart_results_manjaro_002.md) |
 | `sr-repeatability-wsl2-threads1-001` — Wiederholbarkeit freier Fronten bei Poollimit 1 | Vollständige Ausführungs-/Treiberzuordnung im Bericht nicht ausgewiesen | Vergleichsergebnisse dokumentiert; vollständige Abschlussmetadaten nachtragen | Frontvergleich gemäß Bericht; keine Zusatzbewertung | [Bericht](symbolic_core_results.md) |
 | `sr-core-control-wsl2-001` — Feste numerische Kontrollen mit/ohne Haswell | [`6ed493d2e8fb3a845dd921bd99a620feb8b8850a`](https://github.com/craexxn/ringdown-sr/commit/6ed493d2e8fb3a845dd921bd99a620feb8b8850a); externer Treiber [`ac41251c180a9302aace512d8a100186a2636fe9`](https://github.com/craexxn/ringdown-sr/commit/ac41251c180a9302aace512d8a100186a2636fe9) | Abgeschlossen laut geprüftem Archivvergleich | Numerischer Vergleich gemäß [Befund](fixed_numerics_probe.md#übermittelter-haswell-vergleich-vom-26102026); keine Zusatzbewertung | [Bericht](fixed_numerics_probe.md) |
 | `sr-free-haswell-wsl2-001` — Freie SR-Suche mit bestätigtem Haswell-Kern | [`6ed493d2e8fb3a845dd921bd99a620feb8b8850a`](https://github.com/craexxn/ringdown-sr/commit/6ed493d2e8fb3a845dd921bd99a620feb8b8850a); externer Treiber [`6b3d156a9daecabc4f42d5b940b065a8dda5bc19`](https://github.com/craexxn/ringdown-sr/commit/6b3d156a9daecabc4f42d5b940b065a8dda5bc19) | Abgeschlossen; zwei freie Wiederholungen je Gerät | Geordneter Front-/Bitvergleich gemäß Bericht; keine Zusatzbewertung | [Bericht](symbolic_core_results.md) |
@@ -107,7 +107,7 @@ wird nicht rückwirkend zugeordnet.
 Ablagehinweis und Sicherungsstand werden hier gepflegt. Bei einer optionalen
 Onlinekopie kann ein geprüfter Downloadlink hinzukommen. Die Hashes bezeichnen
 die jeweiligen komprimierten Dateien, nicht GitHubs Quellcodearchive oder
-ein inneres Manifest. Sechs historische TAR-Archive und zwei nachgereichte
+ein inneres Manifest. Sieben TAR-Archive und zwei nachgereichte
 ZIP-Pakete wurden am 06.11.2026 selbst gehasht. Die ZIP-Hashes bezeichnen die
 jetzt empfangenen Pakete, ohne eine frühere Verpackung zu behaupten; Herkunft
 der übrigen Hashes steht je Zeile.
@@ -130,7 +130,7 @@ der übrigen Hashes steht je Zeile.
 | `transfer-manjaro-001` | `transfer-manjaro-001.tar.gz` | `e363fe1be629973a460fc6e2188bf680c21b2c5519d331bc7e257968dcaaa139`; Dateibytes und aufgezeichnete Herkunft am 06.11.2026 erneut gegen Quellenkatalog geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `seed-driver-crosscheck-manjaro-001` | `seed-driver-crosscheck-manjaro-001.tar.gz` | `c38f857ccee231ae647bbbcf5186cce275b494c6c54a1092773e7d7ccce11926`; Dateibytes, Manifeste, Herkunft und beide Kreuzzellen am 06.11.2026 selbst geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `global-restarts-manjaro-001` | `global-restarts-manjaro-001.zip` | `73f27a15af2c2102ab5e56d49ad13ece9bb13bbff700a6d6f26a808958a8ca14`; empfangenes Abbruchpaket, Bindungen, Einzelbelege und Sperre am 06.11.2026 selbst geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
-| `global-restarts-manjaro-002` | Noch kein Abschlussarchiv belegt | **Fehlt**; laufenden Versuch nicht zum Archivieren unterbrechen | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `global-restarts-manjaro-002` | `global-restarts-manjaro-002.tar.gz` | `115147b81234ab3abafcfe3de7f20ad2a7a31097eff8b455ec24d098fbc357d5`; separat übermittelte SHA-256 und alle Original-/Verify-Bindungen am 06.11.2026 selbst geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `sr-repeatability-wsl2-threads1-001` | `sr-repeatability-wsl2-threads1-001.tar.gz` | `7f63a075c2a95226d320fa6a6a204481c6038fd3ca6c837f9bcbb7f371bf63d7`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `sr-core-control-wsl2-001` | `sr-core-control-wsl2-001.tar.gz` | `5826725c95499b498f9bc6c0a9935c4cbf7d97f2f63d14b81aad05c85813d114`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `sr-free-haswell-wsl2-001` | `sr-free-haswell-wsl2-001.tar.gz` | `1442cbea82b6b80c6de9533ceb5bc2a620e1fb3500ee1524529c36c1f5c98ee3`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
@@ -243,6 +243,20 @@ Rücklesevergleich bestehen. Es liegt nur als lokale Arbeitskopie vor; dauerhaft
 Ablage und zweite Kopie bleiben offen. Es ersetzt weder die Originale noch eine
 positive Abschlussfreigabe für den abgebrochenen Neustartvergleich.
 
+### Lesende Verifikation von Neustartlauf 002
+
+Der [Ergebnisbericht](global_restart_results_manjaro_002.md) bindet das vollständige
+Original und seinen mitgelieferten Verify-Export. Getrennter Audit:
+`global-restarts-manjaro-002-audit.tar.gz`, SHA-256
+`e88404e068dcdba03798f4cc6fc1562a4a37e7c25847691004f7f0dbc14a5c3d`.
+Enthalten sind das unveränderte Originalarchiv, Quellen-/Dateiabgleich,
+Auditskripte, die dokumentierte reine Python-Startanpassung, der gesperrte erste
+CLI-Versuch, erfolgreiche eigene Verifikation und technische Kontroll-Eignung.
+Alle drei Verify-Dateien sind bytegleich zum mitgelieferten Export; Auditmanifest
+und Rücklesevergleich bestanden. Der Audit ersetzt keine unabhängige
+wissenschaftliche Bestätigung. Original und Audit liegen hier als Arbeitskopien;
+gemeinsame Archivablage und unabhängig geprüfte zweite Kopien bleiben offen.
+
 ### Offene Sicherungsschritte
 
 - Die namentlich und mit Hash belegten Archive und empfangenen ZIP-Pakete aus
@@ -263,19 +277,18 @@ positive Abschlussfreigabe für den abgebrochenen Neustartvergleich.
 
 ### Priorisierte fehlende Belege
 
-Abgleich am 06.11.2026 auf main `823732f`: Repository, lokale Worktrees,
+Abgleich am 06.11.2026 auf main `4df7eca`: Repository, lokale Worktrees,
 bereitgestellte Anhänge und vorhandene Auditablagen geprüft; ergänzend die
 zugänglichen Übergaben aus „zzz5_Implementierungspipeline“ und
 „1_Schreibarbeit“ lesend abgeglichen. Kein Zugriff auf die privaten Geräteablagen
 oder Backups. Die vier großen Originalserien, der Kreuzvergleich, beide frühen
-rauschfreien Serien und Neustart-Abbruch 001 sind inzwischen vorhanden und
+rauschfreien Serien sowie Neustart-Abbruch 001 und Abschluss 002 sind vorhanden und
 gezielt geprüft; diese Dateien werden nicht erneut angefordert.
 Lokale technische Fixtures sind keine Manjaro-Originalserien. Die historischen
 R1–R3-Prüfnachweise werden übernommen, ihre Audits nicht pauschal wiederholt.
 
 | Priorität / Bezug | Benötigter Beleg | Zweck und betroffene Aussage |
 | --- | --- | --- |
-| 1 — `global-restarts-manjaro-002` | Nach Ende Originalarchiv oder unveränderter Ergebnisordner samt getrenntem Verify-Export, soweit erfolgreich vorhanden; tatsächlichen Dateinamen und Hash nennen. | Aktueller Vergleich: vollständiger Abschluss oder Abbruch, alle 20 Fälle und Kosten. Laufenden Versuch nicht dafür verändern oder unterbrechen. |
 | 1 — `global-restarts-technical-001` auf Manjaro | Abschlussausgabe und vorhandener Prüfbericht einschließlich lesender Verifikation mit Herkunft; nur bei Unklarheit der ganze unveränderte technische Ordner. | Technischen lokalen Erfolg belegen; Startmeldung allein genügt nicht. Keine wissenschaftliche Ergebnisbehauptung und keine neue CI-Archivpflicht. |
 | 1 — Archivablage und Zweitkopien | Verständliche Bezeichnungen beider Speicherziele, Liste tatsächlich vorhandener Dateien und Ergebnisse der SHA-256-Prüfung beider Kopien mit Prüfdatum. Bei Backup lesenden Wiederherstellungscheck angeben. | Dauerhafte Sicherung; Metadaten genügen, keine erneute Übertragung bereits vorhandener Archive erforderlich. |
 | 3 — `sr-repeatability-wsl2-threads1-001`, `sr-repeatability-manjaro-threads1-001` | Zunächst ursprüngliche Berichts-/Herkunftsmetadaten mit vollständigen Ausführungs-/Werkzeugcommits und Abschlussstatus; zugehörige Originalarchive bei fehlenden internen Belegen. Namen/Hashes stehen oben. | Ältere technische Wiederholbarkeitsdokumentation vervollständigen; keine zusätzliche Leistungsstudie. |
