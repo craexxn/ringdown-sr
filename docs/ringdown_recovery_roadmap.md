@@ -17,8 +17,10 @@ bestätigten Mehrfachdiagnosen und die begrenzte adaptive Intervallunterteilung.
 Stufe 3 ist am 06.11.2026 mit
 [PR #72](https://github.com/craexxn/ringdown-sr/pull/72) übernommen; vollständige
 CI und KI-Review sind erfolgreich. Alle drei Bewertungsstufen sind abgeschlossen.
-Die [technische Laufzeitoptimierung](assessment_performance.md) folgt als eigener
-Auftrag innerhalb Phase 1; Bewertungsregeln und Prüfzeitpunkte bleiben erhalten.
+Die [technische Laufzeitoptimierung](assessment_performance.md) ist als eigener
+Auftrag innerhalb Phase 1 in [PR #73](https://github.com/craexxn/ringdown-sr/pull/73)
+implementiert und wartet auf vollständige CI und separates Review.
+Bewertungsregeln und Prüfzeitpunkte bleiben erhalten.
 
 Diese Datei hält die vereinbarte Vorgehensrichtung fest. Konkrete Seeds,
 Auswahlregeln, Budgets und noch offene methodische Einzelentscheidungen werden

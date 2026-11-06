@@ -54,25 +54,48 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   zusätzliche Gegenprüfungen bestanden. Diese Reviewtests wurden hier nicht
   erneut ausgeführt; die historische Anwendung wurde im separaten Review
   ohne Originalarchive nur anhand des Ergebnisberichts geprüft.
-- **Branch und Phase:** `codex/assessment-performance`, eigener Worktree ab
+- **Branch, PR und Phase:** `codex/assessment-performance`,
+  [PR #73](https://github.com/craexxn/ringdown-sr/pull/73), eigener Worktree ab
   genanntem main. Technischer Folgeauftrag zu Leitfadenphase 1, keine vierte
   Bewertungsstufe. Keine zusätzlichen Agenten und keine wissenschaftliche Suche.
-- **Messung vor Änderung:** Historischer Export aller 78 Auswahlen unter
-  Profiler 10,274 s, davon Import 6,281 s; 413 Git-Dateiprozesse und 72
-  Archivlesevorgänge. Gespeicherter technischer Schema-3-Lauf 0,386 s und
-  116 Git-Dateiprozesse. Die 77 gezielten Integrationstests bestanden in
-  77,90 s, mit rund 1,1 s Vorbereitung je typischem Fehlerfall.
-- **Plan und Grenzen:** [Mess- und Optimierungsplan](assessment_performance.md).
-  Je Prüfzeitpunkt Archivzugriffe bündeln, unveränderliche Git-Dateien nur
-  exportlokal cachen, gemeinsame Bindungen/Fingerprints und Vorhersagen
-  wiederverwenden, Fehlerfixtures isoliert aus gültigen Testquellen kopieren.
-  Sämtliche Prüfzeitpunkte, Bewertungsregeln, Versionen, Beweisgrenzen und
-  Widerrufspfade erhalten. Keine offene fachliche Methodenentscheidung für
-  diese semantikerhaltende Optimierung.
-- **Nächster konkreter Schritt:** Eigenen Draft-PR eröffnen, begrenzte Änderungen
-  implementieren und gegen dieselben vollständigen Originalausgaben prüfen.
-  Danach Nachher-Messung, passende Tests, gebündelte Ready-CI und Reviewübergabe.
-  Suchversuche bleiben ein gesonderter, noch nicht beauftragter Schritt.
+- **Implementierung:** Archivbytes je Prüfzeitpunkt gemeinsam lesen; die spätere
+  strikte Archivprüfung bleibt hinter den bisherigen Quellenprüfungen.
+  Unveränderliche Git-Dateien ausdrücklich pro `Consumption` cachen, keine
+  beweglichen Refs oder Fehler speichern. Gemeinsame kanonische Bindungen,
+  geprüfte Fingerprints und Trainingsvorhersagen wiederverwenden. Reine
+  Fehlerfixtures erhalten private Kopien einer vollständig erzeugten Vorlage.
+  Automatische Ausführung und vollständige Integration bleiben separat geprüft.
+- **Messung und Aussagegrenze:** Gleiche 77 Tests 33,79 statt 77,90 s (rund 57 %
+  kürzer). Historische Archivlesevorgänge 72 → 38, Git-Dateiprozesse 413 → 388.
+  Die profilierten Exporte belegen keinen Zeitgewinn; der letzte historische
+  Export benötigte 11,633 statt 10,274 s, der Schema-3-Export 0,472 statt
+  0,386 s. Einzelmessungen erlauben keine garantierte Laufzeit-/CI-Einsparung.
+  [Vollständiger Messnachweis und Abnahme](assessment_performance.md).
+- **Ergebnisgleichheit:** Code `dde3b07f3a59df78f9baeb449811ca3af5ba08dc`
+  gegen Basis `de33d52`: alle vier Originalarchive erneut verifiziert,
+  78 Einzelsätze/18 Gruppen und drei Schema-3-Einzelsätze/3 Gruppen unverändert.
+  Einzelsätze, Zusammenfassungen und Originalberichte bytegleich; vollständige
+  Berichte nur mit erwartetem Exportcommit/Quellhash-Unterschied. Beide
+  Ausgabemanifeste unabhängig nachgehasht. Nachweispaket mit Originalarchiven,
+  Vorher-/Nachher-Ausgaben, Profilen, Vergleichsprogrammen und Testlogs zur
+  Reviewübergabe vorbereitet.
+- **Prüfnachweise:** 337 gezielte Fälle bestanden, darunter 14 neue Fälle für
+  Cachegrenzen, Symlinks, Größenänderungen, sämtliche Freigabezeitpunkte,
+  letzte Archivprüfung nach HEAD und identische Vorhersagen. Gesamtsuite:
+  3.076 Pythonfälle in 291,25 s am genannten Codestand. Ruff, Format-,
+  Dokumentations- und Diffprüfung bestanden.
+  KI-basierte Eigenprüfung von Quellenbindung, Cachelebensdauer, letzter
+  Archivprüfung, Vorhersagewiederverwendung und Fixture-Isolation ohne offenen
+  Befund. Separates Review und vollständige native Ready-CI stehen noch aus;
+  die Eigenprüfung ersetzt beide nicht.
+- **Grenzen und offene Entscheidungen:** Sämtliche Prüfzeitpunkte,
+  Bewertungsregeln, Versionen, Beweisgrenzen und Widerrufspfade erhalten.
+  Keine offene fachliche Methodenentscheidung für diesen technischen Auftrag.
+  Die drei Bewertungsstufen sind abgeschlossen; keine weitere Bewertungsstufe
+  ausstehend. Suchversuche bleiben ein gesonderter, noch nicht beauftragter Schritt.
+- **Nächster konkreter Schritt:** Vollständige Ready-CI für den gebündelten
+  PR-Head abwarten und tatsächlichen Checkout/Dateibaum prüfen; danach
+  separates KI-basiertes Review. Kein eigenständiger Merge.
 
 ## Übernommen: Zusatzbewertung, Stufe 3 von 3
 

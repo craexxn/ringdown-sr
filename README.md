@@ -31,8 +31,11 @@ ist als Stufe 3 implementiert, lokal geprüft und
 Mehrere Grundterme werden separat diagnostiziert; adaptive Schranken bleiben
 begrenzt. [PR #72](https://github.com/craexxn/ringdown-sr/pull/72) enthält
 die übernommene Umsetzung, vollständige CI und den KI-Review ohne Befund.
-Als eigener technischer Folgeauftrag beginnt die
-[Laufzeitoptimierung von Export und Testvorbereitung](docs/assessment_performance.md).
+Der technische Folgeauftrag
+[Laufzeitoptimierung von Export und Testvorbereitung](docs/assessment_performance.md)
+ist in [PR #73](https://github.com/craexxn/ringdown-sr/pull/73) implementiert.
+Ergebnisgleichheit und lokale Tests sind geprüft; vollständige CI und
+separates Review stehen vor der Übernahme aus.
 Suchversuche stehen aus.
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit
