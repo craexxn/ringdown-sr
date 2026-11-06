@@ -1,6 +1,6 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 05.11.2026. PR #67 ist als
+Stand: 06.11.2026. PR #67 ist als
 `8096ddb8bb6fd065eb1079c7902a2016334a6e6b` übernommen; sein Dateibaum entspricht
 dem korrigierten Head `dc7f4a29a7a26516e5ea0b65bd8bc819e4f6cd71`.
 Die vollständige [CI 41996715772](https://github.com/craexxn/ringdown-sr/actions/runs/41996715772)
@@ -39,7 +39,7 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: Zusatzbewertung, Stufe 3 von 3
+## Übernommen: Zusatzbewertung, Stufe 3 von 3
 
 - **Übernahme und Basis:** Stufe 2 / [PR #70](https://github.com/craexxn/ringdown-sr/pull/70)
   ist als `7b7b9dfb9117b4202522cd620c90d0ec861ccc65` übernommen. Der Dateibaum
@@ -112,6 +112,49 @@ Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
   Stufe 3 sind keine Methodenentscheidungen mehr offen. Ihre CI-/Review-Abnahme
   und Übernahme stehen aus. Keine vierte Bewertungsstufe beauftragt;
   spätere Suchversuche benötigen ihren eigenen Laufauftrag.
+
+## Parallelauftrag: Ergebnisindex und dauerhafte Archivierung
+
+Stand: 06.11.2026; technisch zu Leitfadenphase 1. PR #72 ist inzwischen als
+`de33d52aede3903a9745305b52f35c467e0d3b9f` übernommen; damit sind alle drei
+Bewertungsstufen abgeschlossen. Der oben stehende Stufe-3-Abschnitt dokumentiert
+seine damalige Übergabe. Die Optimierung in
+[PR #73](https://github.com/craexxn/ringdown-sr/pull/73) bleibt ein separater
+paralleler Auftrag; CI/Review und ihre weitere Bearbeitung gehören dorthin.
+
+- **Branch und Basis:** `codex/results-archive-index`, eigener Worktree ab
+  `de33d52aede3903a9745305b52f35c467e0d3b9f`. Reiner Dokumentationsauftrag;
+  PR-Link und endgültiger Head folgen in der Übergabe.
+- **Umgesetzt:** [Archivierungsrichtlinie](results_archiving.md) und
+  [Ergebnisindex](results_index.md), verlinkt aus README, Arbeitsregeln,
+  Reproduzierbarkeitsvermerk und Leitfaden. 21 Entwicklungs-/Kontrollserien,
+  12 frühere Portabilitätsläufe und fünf getrennte Bewertungsartefakte erfasst.
+  Tatsächliche, nur vorgesehene und fehlende Ausführungsstände bleiben getrennt.
+  Auch Abbrüche und negative Ergebnisse bleiben sichtbar. Vorhandene
+  Metadaten und der Serienkatalog bleiben die Detailquellen.
+- **Ablage beschlossen, Sicherung offen:** Originalarchive als Dateien privater
+  GitHub-Releases; keine großen Archive in Git, `results/` weiter lokal und
+  ignoriert. Unveränderliche Namen/Hashes, getrennte Fassungen und zusätzliche
+  externe Kopie. Release-Liste am 06.11.2026 leer, Repository privat;
+  Uploadlinks und externe Sicherungsbestätigung fehlen. Kein Upload und keine
+  Sichtbarkeitsänderung durch diesen Auftrag.
+- **Prüfnachweise:** Vier Originalarchive mit dem bestehenden Quellenkatalog
+  abgeglichen: tatsächliche Datei-SHA-256, gespeicherter sauberer Commit,
+  Berichtsformat und Laufstatus. Fünf Bewertungsarchive einschließlich
+  Ausgabemanifest, Bewertungscommit und Freigabe lesend geprüft. Historische
+  Berichte/Methodenquellen auf Commitrollen und Hashzuordnung geprüft;
+  weitere Originalarchivaudits oder neue SR-Versuche wurden nicht ausgeführt.
+  Dokumentations-/Linkprüfung für 84 Markdown-Dateien, zwölf zusätzliche
+  interne Anker, Konsistenz- und Diffprüfung bestanden. Alle 25 verlinkten
+  Commits sind über GitHub erreichbar; der Diff ist reine Dokumentation.
+- **Offene Angaben:** 19 namentlich mit Hash belegte Originalarchive ohne
+  Release-Download; beim Kreuzversuch Hash/Originalarchiv und tatsächlicher
+  Orchestrierungscommit offen. Frühere Läufe teils nur über Terminalnachweise
+  belegt. Das ist kein abgeschlossener Archivierungsnachweis.
+- **Nächster konkreter Schritt:** Dokumentations-PR prüfen. Anschließend die
+  Originalarchive durch die Projektverantwortung hochladen, Rückdownloads
+  gegen die SHA-256 prüfen, Downloadlinks im Index ergänzen und externe Kopie
+  bestätigen. Keine neue Methodenentscheidung oder Versuchsausführung enthalten.
 
 ## Übernommen: CI-Sparplan, Draft-Steuerung und serielle native Prüfung
 

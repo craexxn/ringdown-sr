@@ -14,8 +14,9 @@ Bewertungsstufe 2 ist mit [PR #70](https://github.com/craexxn/ringdown-sr/pull/7
 [auf die Originalauswahlen angewandt](supplemental_remainder_results_001.md).
 Ihr [Resttermvertrag](supplemental_remainder.md) bindet die
 bestätigten Mehrfachdiagnosen und die begrenzte adaptive Intervallunterteilung.
-Die eigene vollständige technische CI und Review-Abnahme für
-[PR #72](https://github.com/craexxn/ringdown-sr/pull/72) stehen noch aus.
+Stufe 3 ist am 06.11.2026 mit
+[PR #72](https://github.com/craexxn/ringdown-sr/pull/72) übernommen; vollständige
+CI und KI-Review sind erfolgreich. Alle drei Bewertungsstufen sind abgeschlossen.
 
 Diese Datei hält die vereinbarte Vorgehensrichtung fest. Konkrete Seeds,
 Auswahlregeln, Budgets und noch offene methodische Einzelentscheidungen werden
@@ -25,6 +26,10 @@ bereits erfolgte Implementierung oder wissenschaftliche Ausführung.
 
 ## Rolle und Pflege
 
+- Die [Archivierungsrichtlinie](results_archiving.md) und der
+  [Ergebnisindex](results_index.md) ergänzen Phase 1 um die dauerhafte
+  Zuordnung vorhandener Versuche, Quellen und Bewertungen. Die Regelung ist
+  dokumentiert; Uploads und externe Sicherung bleiben separat nachzuweisen.
 - Diese Datei ist die zentrale Quelle für Reihenfolge, Begründung und
   Entscheidungskriterien des weiteren Vorgehens.
 - [README](../README.md#projektstatus) bleibt der Einstieg;
