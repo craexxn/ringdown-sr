@@ -49,6 +49,7 @@ def test_only_allowed_prose_can_skip_the_technical_suite(paths):
         "docs/outer_search_ladder_plan.md",
         "docs/transfer_check_plan.md",
         "docs/seed_driver_crosscheck_plan.md",
+        "docs/global_restart_comparison_plan.md",
         "data/transfer_check_inputs.npz",
         "data/transfer_check_inputs.json",
         "docs/reference.npz",
@@ -697,6 +698,7 @@ def test_all_original_commands_options_error_wrappers_and_order_are_preserved():
         "Prepare historical Git references",
         "Require complete CI coverage",
         "Reject workflow cancellation",
+        "Verify restart comparison on three tiny technical workers",
     }
     ordered = []
     for group in ("native-a", "native-b", "native-c"):

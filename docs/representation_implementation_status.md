@@ -10,7 +10,42 @@ erfolgreich: 85 Markdown-Dateien, `mode=docs`, beide erforderlichen Jobs grün,
 native Prüfungen planmäßig übersprungen. Index und Archivregel blieben bei der
 Konfliktauflösung bytegleich; Code/Verträge entsprachen main nach PR #73.
 
-## Aktuell: Leitfaden und begrenzte Endfrontdiagnose
+## Aktuell: begrenzter Suchvergleich, Leitfadenphase 3
+
+PR #75 ist nach ausdrücklichem Mergeauftrag als
+`2f9fff00c24a72f644dc42816b6a05aa87e392f0` übernommen. Head
+`6815625d55f3e1285e24ec41798521fca9226f0d`, Basis `16d2f40`, tatsächlicher
+CI-Checkout `cd3fb28a8297865a5707aeb0c2eba3b706baeff8`: Dateibaum jeweils
+`b2e18c5a45f7e9c57084c1f2f23bce305851f7f9`.
+[Dokumentations-CI 42181071072](https://github.com/craexxn/ringdown-sr/actions/runs/42181071072)+bestand vollständig im Dokumentationsmodus mit 86 Markdown-Dateien.
+
+- **Branch/Basis:** `codex/global-restart-comparison`, neuer main `2f9fff0`
+  normal eingebunden. [PR #76](https://github.com/craexxn/ringdown-sr/pull/76)
+  als Draft auf main; keine wissenschaftliche Serie ausgeführt.
+- **Vorab festgeschrieben:** [Protokoll](global_restart_comparison_plan.md) und
+  Seed-/Rasterkonfiguration in `b00fc4a0a5a5a90e7d72f45d2b27788d1fd1585a`, vor
+  Implementierung. 20 frische Aufrufe; 16-Aufruf-Wiederverwendung nicht gewählt,
+  weil die konkrete künftige Ausführungsumgebung noch nicht abgeglichen ist.
+  Alle Seeds, 1.024 unabhängige Punkte, Auswahl-/Ausfall-/Kosten- und
+  Anschlussregeln sind gebunden. Frische 2.000 sind keine Fortsetzung.
+- **Umsetzung:** vorhandener unveränderter Staffelworker und Einzelzellenadapter,
+  Vorbereitung aller Zellen vor dem ersten Fit, getrennte Originalausgaben und
+  eine verlustbasierte Paketauswahl, lesende native Verifikation und bestehende
+  widerrufbare Bewertungsveröffentlichung. Laufweg und erwartete Artefakte unter
+  [Bedienung](global_restart_comparison.md). Historische Verträge unverändert.
+- **Prüfstand während Entwicklung:** 218 gezielte Python-/CI-Regelfälle bestanden;
+  technischer Umgebungscheck erfolgreich. Die Cloud-Pythonbibliothek erforderte
+  einen expliziten vorhandenen `JULIA_PYTHONCALL_LIB`-Pfad; keine Änderung der
+  Projektpins oder des Launchers. Native Integration und vollständige Ready-CI
+  stehen noch aus; keine vollständige technische Freigabe behauptet.
+- **Nächster Schritt:** technische Integration auf acht Punkten mit 2/3/2,
+  gebündelte vollständige Pythonprüfung, gezieltes KI-basiertes Review und
+  anschließend Ready-Vollprüfung. Wissenschaftliche Ausführung bleibt separat.
+- **Sicherung:** alle vier bereitgestellten Originalarchive geprüft, dauerhaft
+  dokumentierte Ablage und geprüfte Zweitkopien weiterhin offen. Der separate
+  historische Kreuzversuch bleibt ohne hier bestätigtes Originalarchiv.
+
+## Abgeschlossen: Leitfaden und begrenzte Endfrontdiagnose
 
 - **Branch und Basis:** `codex/recovery-roadmap-front-diagnosis`, aktueller main
   `16d2f40` normal eingebunden. Bestehende Worktrees und Arbeiten bleiben erhalten.

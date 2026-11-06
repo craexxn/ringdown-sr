@@ -7,6 +7,11 @@ Phasen und Kriterien bleiben erhalten; tatsächlicher Prüf- und Übernahmestand
 im [Fortsetzungsstand](representation_implementation_status.md).
 
 Version 2, Planungsstand: 06.11.2026, nach Übernahme von PR #73 und #74.
+Konkretisierung am selben Tag nach PR #75: Phase 2 abgeschlossen;
+[Protokoll](global_restart_comparison_plan.md) für Phase 3 vor Implementierung
+eingefroren, [Laufweg](global_restart_comparison.md) in technischer Prüfung.
+20 frische Suchaufrufe, vollständige Seeds und unabhängiges Zusatzraster sind
+festgelegt. Keine wissenschaftliche Ausführung durch diese Planfortschreibung.
 Version 1 wurde mit PR #69 eingeführt. Alle drei Bewertungsstufen sind mit
 PR #69, #70 und #72 implementiert, technisch geprüft, übernommen und lesend
 auf die 78 Originalauswahlen angewandt. Die [technische Optimierung](assessment_performance.md)
