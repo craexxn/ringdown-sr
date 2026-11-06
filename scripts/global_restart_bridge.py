@@ -10,6 +10,7 @@ from pathlib import Path
 
 import numpy as np
 
+from ringdown_sr import symbolic
 from ringdown_sr.noiseless_control import fingerprint
 from ringdown_sr.pilot import _json_bytes, _provenance, _sha256, _write_json
 from ringdown_sr.search_duration import load_module
@@ -81,7 +82,9 @@ def checked_request(path, inputs, action, legacy, support):
     if request.get("scope") not in ("technical", "scientific"):
         raise ValueError("Unknown restart scope.")
     technical = request["scope"] == "technical"
-    if request.get("cell") not in cells(technical):
+    if _json_bytes(request.get("cell")) not in [
+        _json_bytes(c) for c in cells(technical)
+    ]:
         raise ValueError("Unplanned restart cell.")
     expected = request_for(request["cell"], request.get("inputs"), technical)
     if _json_bytes(request) != _json_bytes(expected):
@@ -137,6 +140,12 @@ def verify_prepared(output, request_path, inputs, request, legacy, context):
         path = output / name
         if path.is_symlink() or _sha256(path.read_bytes()) != digest:
             raise ValueError("Prepared historical artifact changed: " + name)
+    required = {"runtime/" + name for name in control.RUNTIME} | {
+        "options.json",
+        "references.json",
+    }
+    if set(prepared["files"]) != required:
+        raise ValueError("Prepared file inventory is incomplete.")
     legacy.verify_preflight(
         support.read_json((output / "options.json").read_bytes()),
         support.read_json((output / "references.json").read_bytes()),
@@ -148,13 +157,67 @@ def verify_prepared(output, request_path, inputs, request, legacy, context):
     return prepared
 
 
+def failure_kind(error, metadata):
+    if isinstance(error, subprocess.TimeoutExpired):
+        return "worker_timeout"
+    if str(error) != "Historical worker failed; inspect worker/worker.log.":
+        return None
+    if metadata.get("failed_during") == "fit":
+        return "fit_error"
+    if metadata.get("failed_during") == "replay" and metadata.get("error") in {
+        "ValueError: No admissible candidates were exported.",
+        "ValueError: Candidate losses must be finite and nonnegative.",
+        "ValueError: Replay losses must be finite nonnegative scalars.",
+        "ValueError: The loss exceeds the finite float64 range.",
+    }:
+        return "unusable_native_loss"
+    return None
+
+
+def verify_failed_worker(output, arrays, prepared, context, kind):
+    control, _driver, support, _probe = context
+    worker = output / "worker"
+    read = lambda name: support.read_json((worker / name).read_bytes())
+    status, metadata = read("status.json"), read("metadata.json")
+    if status["status"] != "failed" or (output / "verified.json").exists():
+        raise ValueError("Failed worker carries success evidence.")
+    if kind == "worker_timeout":
+        if not status.get("error", "").startswith("TimeoutExpired:"):
+            raise ValueError("Missing timeout evidence.")
+    elif kind != failure_kind(
+        RuntimeError("Historical worker failed; inspect worker/worker.log."), metadata
+    ):
+        raise ValueError("Unconfirmed or misclassified worker failure.")
+    if kind not in {"worker_timeout", "fit_error", "unusable_native_loss"}:
+        raise ValueError("Unknown worker failure category.")
+    if read("request.json") != {
+        "format": symbolic.FORMAT,
+        "budget": prepared["cell"]["budget"],
+    }:
+        raise ValueError("Failed worker budget changed.")
+    with np.load(worker / "inputs.npz", allow_pickle=False) as saved:
+        if set(saved.files) != {"time_s", "observed"} or any(
+            fingerprint(saved[key]) != fingerprint(arrays[key]) for key in saved.files
+        ):
+            raise ValueError("Failed worker input roles or bits changed.")
+    manifest = control.verify_manifest(worker, output / "runtime")
+    if (
+        manifest["sources"] != prepared["sources"]
+        or metadata["provenance"] != prepared["initial"]["provenance"]
+    ):
+        raise ValueError("Failed worker source provenance changed.")
+    if read("profile.json") != {
+        "format": control.PROFILE_FORMAT,
+        "condition": "local_300_5",
+    }:
+        raise ValueError("Failed worker profile changed.")
+
+
 def verify_result(output, request, arrays, prepared, legacy, context):
     _control, driver, support, probe = context
     old = support.read_json((output / "outcome.json").read_bytes())
     if old["status"] == "worker_failed":
-        status = support.read_json((output / "worker/status.json").read_bytes())
-        if status["status"] != "failed" or (output / "verified.json").exists():
-            raise ValueError("Failed worker carries success evidence.")
+        verify_failed_worker(output, arrays, prepared, context, old["failure_kind"])
         return old
     if old["status"] != "completed":
         raise ValueError("Unfinished restart worker.")
@@ -242,15 +305,13 @@ def main():
                     metadata = support.read_json(
                         (worker / "metadata.json").read_bytes()
                     )
-                    ordinary = isinstance(error, subprocess.TimeoutExpired) or (
-                        str(error)
-                        == "Historical worker failed; inspect worker/worker.log."
-                        and metadata.get("failed_during") == "fit"
-                    )
-                    if not ordinary or status["status"] != "failed":
+                    kind = failure_kind(error, metadata)
+                    if kind is None or status["status"] != "failed":
                         raise
+                    verify_failed_worker(args.output, arrays, prepared, context, kind)
                     outcome = {
                         "status": "worker_failed",
+                        "failure_kind": kind,
                         "error": f"{type(error).__name__}: {error}",
                     }
                 outcome["adapter_run_wall_seconds"] = time.monotonic() - started

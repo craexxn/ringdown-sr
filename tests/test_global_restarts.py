@@ -2,8 +2,10 @@
 
 import copy
 import random
+import subprocess
 from contextlib import contextmanager
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -271,3 +273,160 @@ def test_ci_adds_only_the_tiny_control_and_preserves_runtime_plan_coverage():
     assert "exit 1" in step and "OPENBLAS_CORETYPE=Haswell" in step
     script = (restarts.ROOT / "scripts/check_global_restarts.py").read_text()
     assert "technical=True" in script and "verify(" in script
+
+
+@pytest.mark.parametrize("value", [-1, True, float("inf"), float("nan"), 1.5])
+def test_invalid_costs_cannot_become_a_cheaper_algorithm(value):
+    cells = fixture_cells()
+    cells[0]["costs"]["callback_calls_during_fit"] = value
+    with pytest.raises(ValueError, match="Invalid recorded cost"):
+        restarts.comparison(cells)
+
+
+def test_failed_worker_still_binds_training_inputs_budget_and_profile(tmp_path):
+    bridge = restarts.bridge
+    worker = tmp_path / "worker"
+    worker.mkdir()
+    arrays = {"time_s": np.array([0.0, 1.0]), "observed": np.array([1.0, 2.0])}
+    provenance = {"git": {"commit": "historical"}}
+    prepared = {
+        "cell": {"budget": {"seed": 73}},
+        "sources": {"source": "sha"},
+        "initial": {"provenance": provenance},
+    }
+    documents = {
+        "status.json": {"status": "failed", "returncode": 1},
+        "metadata.json": {
+            "phase": "failed",
+            "failed_during": "fit",
+            "provenance": provenance,
+        },
+        "request.json": {"format": bridge.symbolic.FORMAT, "budget": {"seed": 73}},
+        "profile.json": {"format": "profile", "condition": "local_300_5"},
+    }
+    for name, value in documents.items():
+        restarts._write_json(worker / name, value)
+    np.savez(worker / "inputs.npz", **arrays)
+    control = SimpleNamespace(
+        PROFILE_FORMAT="profile",
+        verify_manifest=lambda *args: {"sources": prepared["sources"]},
+    )
+    support = SimpleNamespace(read_json=restarts.sources.read_json)
+    context = (control, None, support, None)
+    bridge.verify_failed_worker(tmp_path, arrays, prepared, context, "fit_error")
+    np.savez(worker / "inputs.npz", **{**arrays, "observed": arrays["observed"] + 0.01})
+    with pytest.raises(ValueError, match="input roles or bits"):
+        bridge.verify_failed_worker(tmp_path, arrays, prepared, context, "fit_error")
+    np.savez(worker / "inputs.npz", **arrays)
+    documents["request.json"]["budget"]["seed"] = 74
+    restarts._write_json(worker / "request.json", documents["request.json"])
+    with pytest.raises(ValueError, match="budget"):
+        bridge.verify_failed_worker(tmp_path, arrays, prepared, context, "fit_error")
+
+
+def test_nonfinite_or_empty_outputs_consume_a_slot_but_integrity_errors_abort():
+    error = RuntimeError("Historical worker failed; inspect worker/worker.log.")
+    classify = restarts.bridge.failure_kind
+    assert (
+        classify(
+            error,
+            {
+                "failed_during": "replay",
+                "error": "ValueError: Replay losses must be finite nonnegative scalars.",
+            },
+        )
+        == "unusable_native_loss"
+    )
+    assert (
+        classify(
+            error,
+            {
+                "failed_during": "replay",
+                "error": "ValueError: No admissible candidates were exported.",
+            },
+        )
+        == "unusable_native_loss"
+    )
+    assert (
+        classify(
+            error,
+            {
+                "failed_during": "replay",
+                "error": "ValueError: Changed prediction evidence.",
+            },
+        )
+        is None
+    )
+    assert classify(ValueError("Bad source"), {"failed_during": "fit"}) is None
+    assert classify(subprocess.TimeoutExpired(["worker"], 1800), {}) == "worker_timeout"
+
+
+@pytest.mark.parametrize("missing", ["irregular.npz", "cell-01/options.json"])
+def test_readonly_verifier_rejects_incomplete_presearch_binding_before_replay(
+    monkeypatch, tmp_path, missing
+):
+    root = tmp_path / "source"
+    completion = root / "completion"
+    completion.mkdir(parents=True)
+    plans = restarts.bridge.cells(technical=True)
+    software = {"source_sha256": {}, "software_commit": "fixture", "runtime": {}}
+    prepared = {
+        "software": software,
+        "plans": plans,
+        "protocol": restarts.bridge.PLAN_HASHES,
+        "protocol_commit": restarts.bridge.PLAN_COMMIT,
+    }
+    files = {
+        "anchor.npz": b"unused",
+        "irregular.npz": b"unused",
+        "preparation.json": restarts.sources.json_bytes(prepared),
+    }
+    for plan in plans:
+        number = plan["number"]
+        prefix = f"cell-{number:02d}/"
+        files[prefix + "prepared.json"] = restarts.sources.json_bytes(
+            {"files": {"options.json": "sha"}}
+        )
+        files[prefix + "options.json"] = b"unused"
+        files[f"request-{number:02d}.json"] = b"unused"
+        files[f"cell-{number:02d}-prepare.log"] = b"unused"
+    bound = {
+        name: restarts.sources.sha256(raw)
+        for name, raw in files.items()
+        if name != missing
+    }
+    files["prepared_bindings.json"] = restarts.sources.json_bytes(bound)
+    for name, raw in files.items():
+        destination = root / name
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(raw)
+    report = {
+        "format": restarts.FORMAT,
+        "status": "completed",
+        "scope": "technical",
+        "software": software,
+    }
+    payloads = {
+        publication.REPORT: restarts.sources.json_bytes(report),
+        publication.SUMMARY: b"fixture",
+        "raw_checksums.json": restarts.sources.json_bytes(
+            {n: restarts.sources.sha256(r) for n, r in files.items()}
+        ),
+    }
+    for name, raw in payloads.items():
+        (completion / name).write_bytes(raw)
+    restarts._write_json(
+        completion / publication.MANIFEST,
+        {n: restarts.sources.sha256(r) for n, r in payloads.items()},
+    )
+    monkeypatch.setattr(restarts, "freeze_software", lambda consumed: software)
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("Invalid input reached the historical bridge")
+
+    monkeypatch.setattr(restarts, "call_bridge", forbidden)
+    before = restarts.raw_files(root)
+    with pytest.raises(ValueError, match="Pre-search bindings"):
+        restarts.verify(root, tmp_path / "verification")
+    assert restarts.raw_files(root) == before
+    assert (tmp_path / "verification" / publication.LOCK).exists()

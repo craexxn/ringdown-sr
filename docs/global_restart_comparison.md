@@ -83,8 +83,10 @@ env OPENBLAS_CORETYPE=Haswell \
 ```
 
 Der getrennte Export prüft Rohinventar, Vorbereitung, eingefrorene Punkte,
-Originalauswahl, Quellenbindungen, historische native Replays und alle aktuellen
-Bewertungen. Er startet keine Suche und verändert das Originalverzeichnis nicht.
+Originalauswahl, Quellenbindungen, gespeicherte native Nachweise und alle aktuellen
+Bewertungen. Vorhersagen und Verlustnachweise werden mit den vorhandenen
+Python-/MPFR-Regeln nachgerechnet; es entstehen keine neuen nativen Vorhersagen.
+Er startet keine Suche und verändert das Originalverzeichnis nicht.
 Die gebundenen Quellbytes müssen mit dem Ausführungsstand übereinstimmen;
 bei später geänderter Software den gespeicherten Ausführungscommit in einem
 separaten sauberen Worktree verwenden. Verifikation hat eine eigene Sperrdatei,

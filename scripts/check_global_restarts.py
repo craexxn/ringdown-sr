@@ -11,4 +11,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     run(args.output, technical=True)
     verify(args.output, args.output.with_name(args.output.name + "-verification"))
-    print("Three technical restart calls and read-only native verification passed.")
+    print(
+        "Three native technical calls and read-only Python/evidence verification passed."
+    )

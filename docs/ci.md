@@ -160,8 +160,9 @@ Laufzeitdokumente müssen ebenso ausdrücklich als Ausnahme erfasst werden.
 
 Der Neustartvergleich ergänzt im bestehenden nativen Job
 `scripts/check_global_restarts.py`: drei frische technische Worker auf acht
-Punkten `y=1+t`, äußere Budgets 2/3/2, danach ausschließlich lesende native
-Verifikation. Bestehende Prüfblöcke bleiben unverändert. Der wissenschaftliche
+Punkten `y=1+t`, äußere Budgets 2/3/2, danach lesende Prüfung gespeicherter
+nativer Nachweise mit Python-/MPFR-Nachrechnung. Bestehende Prüfblöcke bleiben
+unverändert. Der wissenschaftliche
 20-Aufruf-Laufweg wird nicht in Actions ausgeführt.
 
 Auch `docs/supplemental_assessment.md` erhält die volle CI: Der lesende

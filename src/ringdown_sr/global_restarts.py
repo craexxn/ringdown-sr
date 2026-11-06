@@ -231,6 +231,16 @@ def costs(members):
         "callback_calls_during_fit",
         "adapter_call_wall_seconds",
     )
+    for member in members:
+        for field in fields:
+            value = member["costs"][field]
+            if value is not None and (
+                type(value) not in (int, float)
+                or not math.isfinite(value)
+                or value < 0
+                or (field == "callback_calls_during_fit" and type(value) is not int)
+            ):
+                raise ValueError("Invalid recorded cost: " + field)
     return {
         field: sum(m["costs"][field] for m in members)
         if all(m["costs"][field] is not None for m in members)
@@ -640,11 +650,12 @@ def run(output, *, technical=False):
 
 
 def verify(source, output):
-    """Read every original byte and rerun native replays, with no fitting call."""
+    """Check stored native evidence and recompute Python proofs without fitting."""
     source = Path(source).absolute()
     output = Path(output).absolute()
     if (
-        source == output
+        source != source.resolve()
+        or source == output
         or output.is_relative_to(source)
         or source.is_relative_to(output)
     ):
@@ -656,6 +667,12 @@ def verify(source, output):
             raise ValueError("Source completion is locked.")
         completion = source / "completion"
         manifest = sources.read_json((completion / publication.MANIFEST).read_bytes())
+        if set(manifest) != {
+            publication.REPORT,
+            publication.SUMMARY,
+            "raw_checksums.json",
+        }:
+            raise ValueError("Incomplete comparison completion manifest.")
         for name, digest in manifest.items():
             if len(sources.safe_name(name).parts) != 1:
                 raise ValueError("Invalid completion manifest name.")
@@ -691,6 +708,7 @@ def verify(source, output):
         if (
             prepared["software"]["source_sha256"] != software["source_sha256"]
             or original["software"] != prepared["software"]
+            or prepared["software"]["runtime"] != software["runtime"]
         ):
             raise ValueError("Executed and verifying sources differ.")
         for name, digest in prepared["software"]["source_sha256"].items():
@@ -710,7 +728,22 @@ def verify(source, output):
         ):
             raise ValueError("Executed protocol differs.")
         bound = sources.read_json(files["prepared_bindings.json"])
-        if any(expected.get(n) != digest for n, digest in bound.items()):
+        required = {"anchor.npz", "irregular.npz", "preparation.json"}
+        for plan in plans:
+            number = plan["number"]
+            prefix = f"cell-{number:02d}/"
+            prepared_cell = sources.read_json(files[prefix + "prepared.json"])
+            required.update(prefix + name for name in prepared_cell["files"])
+            required.update(
+                {
+                    prefix + "prepared.json",
+                    f"request-{number:02d}.json",
+                    f"cell-{number:02d}-prepare.log",
+                }
+            )
+        if set(bound) != required or any(
+            expected.get(n) != digest for n, digest in bound.items()
+        ):
             raise ValueError("Pre-search bindings differ.")
         with np.load(io.BytesIO(files["anchor.npz"]), allow_pickle=False) as saved:
             arrays = {key: saved[key].copy() for key in saved.files}
@@ -732,7 +765,7 @@ def verify(source, output):
             for plan in plans:
                 number = plan["number"]
                 request = sources.read_json(files[f"request-{number:02d}.json"])
-                if request["cell"] != plan:
+                if sources.json_bytes(request["cell"]) != sources.json_bytes(plan):
                     raise ValueError("Cell request assigned to the wrong slot.")
                 call_bridge(
                     checkout,
@@ -749,6 +782,15 @@ def verify(source, output):
             raise ValueError("Independent assessments or cost totals differ.")
         if not technical and comparison(actual) != original["comparison"]:
             raise ValueError("Original restart comparison differs.")
+        if (
+            original["real_new_search_calls"] != len(plans)
+            or original["historical_costs"] != 0
+            or original["actual_costs"] != costs(actual)
+            or original["physical_parameter_match"] != "not_assessed"
+        ):
+            raise ValueError(
+                "Recorded total costs, call count or parameter status differ."
+            )
         result = {
             "format": FORMAT + "-verification",
             "scope": original["scope"],

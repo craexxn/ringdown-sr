@@ -31,17 +31,26 @@ bestand vollständig im Dokumentationsmodus mit 86 Markdown-Dateien.
   Anschlussregeln sind gebunden. Frische 2.000 sind keine Fortsetzung.
 - **Umsetzung:** vorhandener unveränderter Staffelworker und Einzelzellenadapter,
   Vorbereitung aller Zellen vor dem ersten Fit, getrennte Originalausgaben und
-  eine verlustbasierte Paketauswahl, lesende native Verifikation und bestehende
+  eine verlustbasierte Paketauswahl, lesende Prüfung nativer Nachweise mit
+  Python-/MPFR-Nachrechnung und bestehende
   widerrufbare Bewertungsveröffentlichung. Laufweg und erwartete Artefakte unter
   [Bedienung](global_restart_comparison.md). Historische Verträge unverändert.
-- **Prüfstand während Entwicklung:** 218 gezielte Python-/CI-Regelfälle bestanden;
-  technischer Umgebungscheck erfolgreich. Die Cloud-Pythonbibliothek erforderte
+- **Prüfstand während Entwicklung:** auf `85cf9de87bb4f4269a8924d62bff419e0c016112`
+  3.089 Pythonfälle in 325,71 s bestanden; drei echte technische Worker mit
+  2/3/2 und identischer Wiederholungsfront sowie lesende Verifikation aller drei
+  Zellen bestanden. Keine wissenschaftliche Suche. Technischer Umgebungscheck
+  erfolgreich. Die Cloud-Pythonbibliothek erforderte
   einen expliziten vorhandenen `JULIA_PYTHONCALL_LIB`-Pfad; keine Änderung der
-  Projektpins oder des Launchers. Native Integration und vollständige Ready-CI
-  stehen noch aus; keine vollständige technische Freigabe behauptet.
-- **Nächster Schritt:** technische Integration auf acht Punkten mit 2/3/2,
-  gebündelte vollständige Pythonprüfung, gezieltes KI-basiertes Review und
-  anschließend Ready-Vollprüfung. Wissenschaftliche Ausführung bleibt separat.
+  Projektpins oder des Launchers. Ein gezieltes KI-basiertes Eigenreview von
+  PR #76 auf diesem Head gegen main `2f9fff00c24a72f644dc42816b6a05aa87e392f0`
+  prüfte Vorbereitung, Auswahl, Ausfälle, Kosten und Veröffentlichungsgrenzen.
+  Befunde: Vollständigkeit der Vorbereitungsliste und Bindung fehlgeschlagener
+  Zellen im Verifikator nachschärfen; Beschreibung gespeicherter nativer
+  Nachweise präzisieren. Entsprechende Korrekturen und Gegenfälle ergänzt.
+  Kein separates unabhängiges Review und keine zusätzlichen Agenten.
+- **Nächster Schritt:** korrigierte Fehlerpfade und technische Integration prüfen,
+  anschließend Ready-Vollprüfung. Keine vollständige technische Freigabe vor
+  deren Abschluss. Wissenschaftliche Ausführung bleibt separat.
 - **Sicherung:** alle vier bereitgestellten Originalarchive geprüft, dauerhaft
   dokumentierte Ablage und geprüfte Zweitkopien weiterhin offen. Der separate
   historische Kreuzversuch bleibt ohne hier bestätigtes Originalarchiv.
