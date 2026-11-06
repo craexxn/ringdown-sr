@@ -182,10 +182,19 @@ def test_bridge_command_loads_new_adapter_and_stops_group_on_cancellation(
 
 
 @pytest.mark.parametrize(
-    "where", ["before_first_search", "after_lock_removal", "cleanup"]
+    "where",
+    [
+        "before_first_search",
+        "after_lock_removal",
+        "cleanup",
+        "guard_failure",
+        "worker_interrupt",
+        "worker_provenance",
+        "worker_adapter_source_sha256",
+    ],
 )
 def test_run_transaction_revokes_changed_sources_and_late_interruptions(
-    monkeypatch, tmp_path, where
+    monkeypatch, tmp_path, where, failed_worker
 ):
     output = tmp_path / "run"
     watched = tmp_path / "bound-source"
@@ -212,6 +221,28 @@ def test_run_transaction_revokes_changed_sources_and_late_interruptions(
             )
         else:
             events.append("search")
+            if where in {
+                "guard_failure",
+                "worker_interrupt",
+                "worker_provenance",
+                "worker_adapter_source_sha256",
+            }:
+                root, arrays, prepared, context, documents = failed_worker
+                metadata = documents["metadata.json"]
+                if where == "guard_failure":
+                    metadata["error"] = (
+                        "ValueError: Unexpected actual equation_search invocation."
+                    )
+                elif where == "worker_interrupt":
+                    metadata["error"] = "KeyboardInterrupt: "
+                else:
+                    metadata[where] = {"wrong": "source"}
+                restarts._write_json(root / "worker/metadata.json", metadata)
+                restarts._write_json(
+                    root / "outcome.json",
+                    {"status": "worker_failed", "failure_kind": "fit_error"},
+                )
+                restarts.bridge.verify_result(root, {}, arrays, prepared, None, context)
             restarts._write_json(
                 destination / "outcome.json", {"status": "worker_failed"}
             )
@@ -248,7 +279,13 @@ def test_run_transaction_revokes_changed_sources_and_late_interruptions(
             != "completed"
         )
     assert not (completion / publication.MANIFEST).exists()
-    assert len(events) == (0 if where == "before_first_search" else 20)
+    assert len(events) == (
+        0
+        if where == "before_first_search"
+        else 20
+        if where in {"after_lock_removal", "cleanup"}
+        else 1
+    )
     state = restarts.sources.read_json((output / "run_state.json").read_bytes())
     assert len(state["cells"]) == 20 and state["status"] == "aborted"
 
@@ -283,7 +320,8 @@ def test_invalid_costs_cannot_become_a_cheaper_algorithm(value):
         restarts.comparison(cells)
 
 
-def test_failed_worker_still_binds_training_inputs_budget_and_profile(tmp_path):
+@pytest.fixture
+def failed_worker(tmp_path):
     bridge = restarts.bridge
     worker = tmp_path / "worker"
     worker.mkdir()
@@ -292,14 +330,27 @@ def test_failed_worker_still_binds_training_inputs_budget_and_profile(tmp_path):
     prepared = {
         "cell": {"budget": {"seed": 73}},
         "sources": {"source": "sha"},
-        "initial": {"provenance": provenance},
+        "initial": {
+            "provenance": provenance,
+            "adapter_source_sha256": {"adapter": "original"},
+        },
     }
     documents = {
         "status.json": {"status": "failed", "returncode": 1},
         "metadata.json": {
             "phase": "failed",
             "failed_during": "fit",
+            "error": "FloatingPointError: numerical search failure",
             "provenance": provenance,
+            "worker_provenance": provenance,
+            "adapter_source_sha256": prepared["initial"]["adapter_source_sha256"],
+            "worker_adapter_source_sha256": prepared["initial"][
+                "adapter_source_sha256"
+            ],
+        },
+        "metadata_initial.json": {
+            "phase": "before_worker_start",
+            **prepared["initial"],
         },
         "request.json": {"format": bridge.symbolic.FORMAT, "budget": {"seed": 73}},
         "profile.json": {"format": "profile", "condition": "local_300_5"},
@@ -313,6 +364,13 @@ def test_failed_worker_still_binds_training_inputs_budget_and_profile(tmp_path):
     )
     support = SimpleNamespace(read_json=restarts.sources.read_json)
     context = (control, None, support, None)
+    return tmp_path, arrays, prepared, context, documents
+
+
+def test_failed_worker_still_binds_training_inputs_budget_and_profile(failed_worker):
+    tmp_path, arrays, prepared, context, documents = failed_worker
+    bridge = restarts.bridge
+    worker = tmp_path / "worker"
     bridge.verify_failed_worker(tmp_path, arrays, prepared, context, "fit_error")
     np.savez(worker / "inputs.npz", **{**arrays, "observed": arrays["observed"] + 0.01})
     with pytest.raises(ValueError, match="input roles or bits"):
@@ -322,6 +380,131 @@ def test_failed_worker_still_binds_training_inputs_budget_and_profile(tmp_path):
     restarts._write_json(worker / "request.json", documents["request.json"])
     with pytest.raises(ValueError, match="budget"):
         bridge.verify_failed_worker(tmp_path, arrays, prepared, context, "fit_error")
+
+
+@pytest.mark.parametrize("failure", ["guard", "interrupt", "signal", "numerical"])
+def test_actual_worker_failure_capture_does_not_launder_guard_or_interrupt(
+    monkeypatch, failed_worker, failure
+):
+    root, arrays, prepared, context, documents = failed_worker
+    bridge = restarts.bridge
+    from ringdown_sr.search_duration import SearchInvocationGuard
+
+    def fail(directory, metadata, started):
+        metadata.update(copy.deepcopy(documents["metadata.json"]))
+        metadata.update(phase="fit")
+        if failure == "guard":
+            SearchInvocationGuard(None, 2)._jl_call_nogil(niterations=3)
+        if failure == "interrupt":
+            raise KeyboardInterrupt
+        if failure == "signal":
+            raise InterruptedError("worker interrupted")
+        raise FloatingPointError("numerical search failure")
+
+    monkeypatch.setenv("PYTHON_JULIACALL_PROJECT", str(bridge.symbolic.ROOT / "julia"))
+    monkeypatch.setattr(bridge.symbolic, "_worker_search", fail)
+    with pytest.raises(
+        (ValueError, KeyboardInterrupt, InterruptedError, FloatingPointError)
+    ):
+        bridge.symbolic.worker(root / "worker")
+    metadata = restarts.sources.read_json((root / "worker/metadata.json").read_bytes())
+    error = RuntimeError("Historical worker failed; inspect worker/worker.log.")
+    if failure == "numerical":
+        assert bridge.failure_kind(error, metadata) == "fit_error"
+        bridge.verify_failed_worker(root, arrays, prepared, context, "fit_error")
+    else:
+        assert bridge.failure_kind(error, metadata) is None
+        with pytest.raises(ValueError, match="failure"):
+            bridge.verify_failed_worker(root, arrays, prepared, context, "fit_error")
+        restarts._write_json(
+            root / "outcome.json",
+            {"status": "worker_failed", "failure_kind": "fit_error"},
+        )
+        with pytest.raises(ValueError, match="failure"):
+            bridge.verify_result(root, {}, arrays, prepared, None, context)
+
+
+@pytest.mark.parametrize("field", ["worker_provenance", "worker_adapter_source_sha256"])
+@pytest.mark.parametrize(
+    "phase", ["fit", "replay", "worker_start", "before_worker_start"]
+)
+@pytest.mark.parametrize("mutation", ["changed", "missing"])
+def test_failed_worker_checks_phase_specific_origin(
+    failed_worker, field, phase, mutation
+):
+    root, arrays, prepared, context, documents = failed_worker
+    bridge = restarts.bridge
+    metadata = documents["metadata.json"]
+    metadata.update(phase=phase)
+    metadata.pop("error")
+    metadata.pop("failed_during")
+    if mutation == "changed":
+        metadata[field] = {"wrong": "source"}
+    else:
+        metadata.pop(field)
+    restarts._write_json(root / "worker/metadata.json", metadata)
+    restarts._write_json(
+        root / "worker/status.json",
+        {"status": "failed", "error": "TimeoutExpired: worker budget expired"},
+    )
+    if mutation == "missing" and phase in {"worker_start", "before_worker_start"}:
+        bridge.verify_failed_worker(root, arrays, prepared, context, "worker_timeout")
+    else:
+        with pytest.raises(ValueError, match="provenance"):
+            bridge.verify_failed_worker(
+                root, arrays, prepared, context, "worker_timeout"
+            )
+
+
+def test_timeout_cannot_mask_a_captured_worker_interrupt(failed_worker):
+    root, arrays, prepared, context, documents = failed_worker
+    metadata = documents["metadata.json"]
+    metadata["error"] = "KeyboardInterrupt: "
+    restarts._write_json(root / "worker/metadata.json", metadata)
+    restarts._write_json(
+        root / "worker/status.json",
+        {"status": "failed", "error": "TimeoutExpired: worker budget expired"},
+    )
+    with pytest.raises(ValueError, match="failure"):
+        restarts.bridge.verify_failed_worker(
+            root, arrays, prepared, context, "worker_timeout"
+        )
+
+
+@pytest.mark.parametrize("code", [-2, -15, 0, True, None])
+def test_ordinary_failure_requires_a_confirmed_non_signal_exit(failed_worker, code):
+    root, arrays, prepared, context, _documents = failed_worker
+    restarts._write_json(
+        root / "worker/status.json", {"status": "failed", "returncode": code}
+    )
+    with pytest.raises(ValueError, match="exit"):
+        restarts.bridge.verify_failed_worker(
+            root, arrays, prepared, context, "fit_error"
+        )
+
+
+@pytest.mark.parametrize(
+    "error",
+    [
+        "ValueError: Unexpected actual equation_search invocation.",
+        "RuntimeError: backend raised an unclassified error",
+        "KeyboardInterrupt: ",
+        "InterruptedError: signal 15",
+        "SystemExit: 1",
+        "JuliaError: InterruptException:",
+        "JuliaError: TaskFailedException\n nested task error: InterruptException:",
+        "JuliaError: ArgumentError: changed native options",
+        None,
+    ],
+)
+def test_unknown_and_wrapped_interrupts_are_not_ordinary_fit_errors(error):
+    assert (
+        restarts.bridge.failure_kind(
+            RuntimeError("Historical worker failed; inspect worker/worker.log."),
+            {"failed_during": "fit", "error": error},
+        )
+        is None
+    )
 
 
 def test_nonfinite_or_empty_outputs_consume_a_slot_but_integrity_errors_abort():

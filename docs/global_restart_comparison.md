@@ -72,6 +72,18 @@ Gewöhnliche Fitfehler zählen zum geplanten Umfang; unbekannte Kosten bleiben
 unbekannt. Integritätsfehler, Signal oder Gesamtfrist sperren die Freigabe.
 Teilausgaben bewahren und Ursache prüfen; keinen Erfolgsmarker von Hand setzen.
 
+Die Fehlerklassifikation akzeptiert ausschließlich erkennbare numerische oder
+Ressourcenfehler (Python: `FloatingPointError`, `OverflowError`,
+`ZeroDivisionError`, `MemoryError`; direkt gemeldete native Julia-Fehler:
+`DomainError`, `OverflowError`, `OutOfMemoryError`, `InexactError`). Unbekannte
+Fitfehler werden konservativ als Gesamtabbruch behandelt; die Phase `fit` allein
+ist kein Beleg für einen gewöhnlichen Suchausfall. Aufrufwächter, Unterbrechungen
+und Signalbeendigungen dürfen keine vollständige Auswertung freigeben. Bei
+Ausfällen werden Eltern- und tatsächlich aufgezeichnete Worker-Herkunft sowie
+Adapterquellen an die Vorbereitung gebunden. Ab Fitbeginn sind beide Workerbelege
+erforderlich; bei früherem Sicherheitsabbruch darf noch nicht erzeugte Evidenz
+fehlen, vorhandene Widersprüche bleiben in jeder Phase unzulässig.
+
 ## Anschließend ausschließlich lesend verifizieren
 
 ```bash

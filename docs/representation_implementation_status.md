@@ -22,8 +22,9 @@ bestand vollständig im Dokumentationsmodus mit 86 Markdown-Dateien.
 
 - **Branch/Basis:** `codex/global-restart-comparison`, neuer main `2f9fff0`
   normal eingebunden. [PR #76](https://github.com/craexxn/ringdown-sr/pull/76)
-  auf main; Draft-Entwicklung abgeschlossen, aktueller Ready-CI-/Reviewstand im
-  verlinkten PR. Keine wissenschaftliche Serie ausgeführt.
+  auf main; nach externem KI-basiertem Review erneut in Draft korrigiert,
+  aktueller Ready-CI-/Reviewstand im verlinkten PR. Keine wissenschaftliche Serie
+  ausgeführt.
 - **Vorab festgeschrieben:** [Protokoll](global_restart_comparison_plan.md) und
   Seed-/Rasterkonfiguration in `b00fc4a0a5a5a90e7d72f45d2b27788d1fd1585a`, vor
   Implementierung. 20 frische Aufrufe; 16-Aufruf-Wiederverwendung nicht gewählt,
@@ -57,6 +58,24 @@ bestand vollständig im Dokumentationsmodus mit 86 Markdown-Dateien.
   Fehler-/Verifikationspfade; keine wissenschaftliche Ausführung. Eingefrorene
   Plan-/Konfigurationshashes unverändert. Aktuelle vollständige Ready-CI und
   deren tatsächlicher Checkout/Dateibaum werden im PR nachgewiesen.
+- **Externer Reviewbefund und Korrektur, 06.11.2026:** übermitteltes KI-basiertes
+  Review von Head `875f2bea95a917dbd3694ac6f7a738edbae38c74` gegen Basis
+  `2f9fff00c24a72f644dc42816b6a05aa87e392f0`: zwei P2-Befunde zur Einstufung von
+  Wächterfehlern/Unterbrechungen als Fitfehler und zur fehlenden Bindung der
+  tatsächlichen Worker-Herkunft bei Ausfällen. Beide selbst reproduziert;
+  neue Gegenfälle scheiterten vor der Korrektur. Nun explizit begrenzte
+  numerische/Ressourcenfehler, bestätigter Fehlerrückgabecode, phasenabhängig
+  erforderliche Worker-Herkunft und Adapterhashes; auch ein Timeout darf einen
+  aufgezeichneten Integritätsfehler oder Interrupt nicht verdecken.
+  Lesende Verifikation verwendet dieselben Schutzprüfungen. Historische Worker,
+  eingefrorenes Protokoll und Auswahl-/Bewertungsregeln bleiben unverändert.
+  Selbst ausgeführt: 341 gezielte Pythonfälle bestanden; nach zusätzlichen
+  Gesamtabschluss-Gegenfällen alle 59 Neustarttests bestanden, einschließlich
+  gesperrter Freigabe bei allen vier Reviewgegenfällen. Ruff, Format und
+  Dokumentationsprüfung bestanden. Gezieltes KI-basiertes Eigenreview der
+  Korrektur ohne weitere korrekturbedürftige Befunde; kein zusätzlicher Agent.
+  Die frühere vollständige CI `42185348695` gilt ausschließlich für den alten
+  Head; die korrigierte Fassung benötigt eine neue vollständige Ready-CI.
 - **Nächster Schritt:** nach vollständiger Ready-CI und Review eine ausdrückliche
   Mergefreigabe für PR #76; danach ist der dokumentierte Manjaro-Aufruf der
   separate wissenschaftliche Ausführungsschritt. Kein automatischer Merge/Lauf.

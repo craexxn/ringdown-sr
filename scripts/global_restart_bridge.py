@@ -162,7 +162,24 @@ def failure_kind(error, metadata):
         return "worker_timeout"
     if str(error) != "Historical worker failed; inspect worker/worker.log.":
         return None
-    if metadata.get("failed_during") == "fit":
+    # Historical metadata retains the exception type and message, not a typed
+    # failure channel. Accept only explicit numerical/resource failures. A fit
+    # phase alone also covers our invocation guards and asynchronous interrupts.
+    # Unknown errors fail closed rather than becoming a scientific failure slot.
+    message = metadata.get("error")
+    ordinary_fit = isinstance(message, str) and message.startswith(
+        (
+            "FloatingPointError:",
+            "OverflowError:",
+            "ZeroDivisionError:",
+            "MemoryError:",
+            "JuliaError: DomainError with ",
+            "JuliaError: OverflowError:",
+            "JuliaError: OutOfMemoryError()",
+            "JuliaError: InexactError:",
+        )
+    )
+    if metadata.get("failed_during") == "fit" and ordinary_fit:
         return "fit_error"
     if metadata.get("failed_during") == "replay" and metadata.get("error") in {
         "ValueError: No admissible candidates were exported.",
@@ -184,12 +201,34 @@ def verify_failed_worker(output, arrays, prepared, context, kind):
     if kind == "worker_timeout":
         if not status.get("error", "").startswith("TimeoutExpired:"):
             raise ValueError("Missing timeout evidence.")
+        if (
+            metadata.get("phase") == "failed"
+            and failure_kind(
+                RuntimeError("Historical worker failed; inspect worker/worker.log."),
+                metadata,
+            )
+            is None
+        ):
+            raise ValueError("Worker timeout cannot mask an unclassified failure.")
     elif kind != failure_kind(
         RuntimeError("Historical worker failed; inspect worker/worker.log."), metadata
     ):
         raise ValueError("Unconfirmed or misclassified worker failure.")
     if kind not in {"worker_timeout", "fit_error", "unusable_native_loss"}:
         raise ValueError("Unknown worker failure category.")
+    if kind != "worker_timeout" and (
+        type(status.get("returncode")) is not int or status["returncode"] <= 0
+    ):
+        raise ValueError(
+            "Unconfirmed worker failure exit or worker interrupted by signal."
+        )
+    phase = metadata.get("phase")
+    if phase == "failed":
+        phase = metadata.get("failed_during")
+    elif kind != "worker_timeout" or "error" in metadata or "failed_during" in metadata:
+        raise ValueError("Inconsistent failed worker phase or failure evidence.")
+    if phase not in {"before_worker_start", "worker_start", "fit", "replay"}:
+        raise ValueError("Unknown failed worker phase.")
     if read("request.json") != {
         "format": symbolic.FORMAT,
         "budget": prepared["cell"]["budget"],
@@ -201,11 +240,29 @@ def verify_failed_worker(output, arrays, prepared, context, kind):
         ):
             raise ValueError("Failed worker input roles or bits changed.")
     manifest = control.verify_manifest(worker, output / "runtime")
+    initial = read("metadata_initial.json")
+    expected = prepared["initial"]
     if (
         manifest["sources"] != prepared["sources"]
-        or metadata["provenance"] != prepared["initial"]["provenance"]
+        or initial.get("phase") != "before_worker_start"
+        or any(
+            record.get(key) != expected[key]
+            for record in (initial, metadata)
+            for key in ("provenance", "adapter_source_sha256")
+        )
     ):
         raise ValueError("Failed worker source provenance changed.")
+    for key in ("provenance", "adapter_source_sha256"):
+        worker_key = "worker_" + key
+        # The unchanged worker records these immediately before fit. A timeout
+        # during bootstrap may precede them; contradictory present evidence is
+        # never allowed, including in an earlier phase.
+        if (phase in {"fit", "replay"} or worker_key in metadata) and metadata.get(
+            worker_key
+        ) != expected[key]:
+            raise ValueError(
+                "Failed worker provenance missing or changed: " + worker_key
+            )
     if read("profile.json") != {
         "format": control.PROFILE_FORMAT,
         "condition": "local_300_5",
