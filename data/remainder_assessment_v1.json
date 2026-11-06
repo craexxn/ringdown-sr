@@ -1,0 +1,35 @@
+{
+  "format": "ringdown-sr-remainder-proof-1",
+  "interval": "closed_verified_training_span_in_physical_seconds",
+  "constants": "exact_binary64_rationals_and_symbolic_real_expressions",
+  "components": "all_certified_affine_mode_groups_without_ranking",
+  "domain_requirement": "complete_nonempty_dense_original_domain",
+  "bound": "directed_mpfr_absolute_interval_enclosure",
+  "subdivision": {
+    "rule": "exact_midpoint_on_unproved_finite_bound_left_first",
+    "max_depth": 8,
+    "max_leaves": 256,
+    "stop_at_first_finite_bound": true
+  },
+  "limits": {
+    "nodes": 4096,
+    "terms": 256,
+    "roots": 4096,
+    "steps": 10000,
+    "rational_bits": 16384,
+    "precisions": [
+      128,
+      256,
+      512,
+      1024
+    ]
+  },
+  "budget_scope": "shared_across_all_components_and_reference_normalization_per_original_formula",
+  "relative_bounds": {
+    "rms": "B/sqrt(sum(y_i^2)/N)",
+    "max": "B/max(abs(y_i))",
+    "reference": "exact_saved_binary64_values_per_grid"
+  },
+  "negligible_threshold": null,
+  "new_parameter_match": "not_assessed"
+}

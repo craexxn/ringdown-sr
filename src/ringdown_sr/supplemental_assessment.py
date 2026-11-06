@@ -11,13 +11,14 @@ from pathlib import Path
 import numpy as np
 
 from . import assessment_sources as sources
+from . import remainder_assessment as remainder
 from . import structure_assessment as structure
 from .assessment_publication import export_transaction
 
 ROOT = sources.ROOT
-POLICY = ROOT / "data/supplemental_assessment_v2.json"
-VERSION = "ringdown-sr-supplemental-assessment-2"
-SCHEMA = "ringdown-sr-supplemental-record-2"
+POLICY = ROOT / "data/supplemental_assessment_v3.json"
+VERSION = "ringdown-sr-supplemental-assessment-3"
+SCHEMA = "ringdown-sr-supplemental-record-3"
 THRESHOLDS = (("A", 0.001, 0.01), ("B", 0.01, 0.02), ("C", 0.05, 0.10))
 
 
@@ -111,6 +112,11 @@ def record(
     }
     if verified:
         structure.supplement(result, original["grid_binding"]["structure_interval"])
+        remainder.supplement(
+            result,
+            original["grid_binding"]["structure_interval"],
+            remainder.decoded_references(original["assessment_references"]),
+        )
     return result
 
 
@@ -153,6 +159,7 @@ def groups(records):
                     )
                 ),
                 **structure.status_counts(items),
+                **remainder.status_counts(items),
             }
         )
     return result
@@ -179,6 +186,7 @@ def freeze_software(consumed):
         ROOT / "pyproject.toml",
         ROOT / ".python-version",
         *(ROOT / name for name in structure.FILES),
+        *(ROOT / name for name in remainder.FILES),
     ]
     hashes = {}
     for path in paths:
@@ -199,18 +207,19 @@ def freeze_software(consumed):
     if (
         policy["policy_id"] != VERSION
         or policy["schema"] != SCHEMA
-        or policy["stage"] != 2
+        or policy["stage"] != 3
         or policy["threshold_semantics"]
         != "binary64_inclusive_no_rounding_no_tolerance"
         or policy["grid_roles"] != ["training", "diagnostic"]
         or policy["domain_interval"] != structure.POLICY["interval"]
         or policy["proof_resource_limits"] != structure.POLICY["limits"]
         or policy["structure_proof_policy"] != structure.FILES[0]
-        or policy["remainder_rules"] is not None
+        or policy["remainder_rules"] != remainder.FILES[0]
         or policy["planned_selections"] != 78
     ):
         raise ValueError("Unsupported assessment policy.")
     structure.check_policy(consumed.files[ROOT / structure.FILES[0]])
+    remainder.check_policy(consumed.files[ROOT / remainder.FILES[0]])
     expected = [
         {
             "grade": grade,
@@ -240,11 +249,11 @@ def freeze_software(consumed):
 
 def render_summary(report):
     lines = [
-        "# Ergänzende Kurven- und Strukturbewertung – Stufe 2",
+        "# Ergänzende Kurven-, Struktur- und Zusatztermbewertung – Stufe 3",
         "",
         "Retrospektiv; ausschließlich ursprüngliche Auswahlen. Keine neue Suche oder Auswahl.",
         "Keine gemeinsame Erfolgsquote über die unterschiedlichen Versuchsbedingungen.",
-        "Identität, Originaldomain und stetige Fortsetzung getrennt; Restterm und neue Parametermatches: not_assessed.",
+        "Identität, Originaldomain, Fortsetzung und Zusatzterme getrennt; neue Parametermatches: not_assessed.",
         "Nur zusammen mit vollständigem Manifest, completed-Bericht und ohne ASSESSMENT_LOCKED gültig.",
         "",
         "| Serie | Quellenstatus | Geplant | Verifiziert |",
@@ -369,7 +378,7 @@ def build_assessment(archives, consumed):
     report = {
         "format": VERSION,
         "schema": SCHEMA,
-        "stage": 2,
+        "stage": 3,
         "software": software,
         "corpus_status": "complete"
         if all(s["verification_status"] == "verified" for s in results)
@@ -380,7 +389,11 @@ def build_assessment(archives, consumed):
     }
     consumed.check()
     payloads["assessment_records.json"] = sources.json_bytes(records)
-    return report, render_summary(report), payloads
+    return (
+        report,
+        render_summary(report) + "\n".join(remainder.summary_lines(records)) + "\n",
+        payloads,
+    )
 
 
 def run(archives, output, *, seconds=300):

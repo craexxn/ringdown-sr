@@ -39,7 +39,98 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: CI-Sparplan, Draft-Steuerung und serielle native Prüfung
+## Aktuell: Zusatzbewertung, Stufe 3 von 3
+
+- **Übernahme und Basis:** Stufe 2 / [PR #70](https://github.com/craexxn/ringdown-sr/pull/70)
+  ist als `7b7b9dfb9117b4202522cd620c90d0ec861ccc65` übernommen. Der Dateibaum
+  entspricht exakt dem geprüften Head `da05b9e36a27cb5f60f0e5ff6aa8644e61b232ee`.
+  Vollständige CI 42081241726 mit fünf Jobs und 2.928 Pythonfällen bestanden;
+  übermitteltes gezieltes KI-Nachreview ohne neue Befunde, 83 dort bestandene Tests.
+- **Übernommener technischer Auftrag:** [PR #71](https://github.com/craexxn/ringdown-sr/pull/71)
+  ist nach erfolgreicher vollständiger CI und übermitteltem KI-Review ohne
+  Befund ausdrücklich zum Merge freigegeben und als
+  `168e27617a4145d948a47588c4ed2118437260f1` übernommen. Der Baum entspricht
+  dem geprüften Head `8058647a5d3888c54251805415554682f5f2bdcb`.
+  Abschlussnachweise und erste Laufzeitmessung stehen im folgenden Abschnitt.
+- **Branch und Phase:** `codex/assessment-additional-terms`, eigener Worktree ab
+  dem Stufe-2-main, danach normale Einbindung des übernommenen PR #71;
+  Leitfadenphase 1, letzter eigener Bewertungs-PR.
+  [PR #72](https://github.com/craexxn/ringdown-sr/pull/72) als Draft angelegt.
+  Der Umfang ergänzt historischen Import und zukünftige Schema-3-Ausgaben.
+- **Methodenbeschluss:** Alle regelbasiert erkannten Grundterme getrennt
+  diagnostizieren, ohne bevorzugte Komponente. Adaptive exakte Halbierung bei
+  nicht bewiesener endlicher Schranke, links zuerst, höchstens Tiefe 8 und
+  256 Teilintervalle pro Grundterm; insgesamt 10.000 Analyseschritte je
+  Originalformel. Bestehende Ressourcen-/Präzisionsgrenzen und getrennte
+  Normierung `B/RMS(y)` bzw. `B/max|y|` übernehmen. Kein Vernachlässigbarkeits-
+  schwellwert. Am 05.11.2026 ausdrücklich festgelegt; Details und Alternativen
+  im [Resttermvertrag](supplemental_remainder.md) und
+  [maschinenlesbaren Vertrag](../data/remainder_assessment_v1.json).
+- **Vorbereitung:** Alle 17 Nutzdateien des Vorbereitungspakets gegen dessen
+  vollständiges Inventar und SHA-256-Werte geprüft. Paketprogramme wurden
+  nicht ausgeführt. Bestehende Algebra, Originaldomainprüfung, Exportbindung
+  und vorbereitete Gegenfälle T118–T126 gelesen. Vertrag vor Implementierung
+  in `9c771f4` gesichert; Kern und Exportanbindung in `92308ae` implementiert.
+- **Implementierung und gezielte Prüfung:** Eigenständiger Diagnosekern,
+  Quellen-/Referenzbindung und Ausgabeversion 3 ergänzen beide Exportwege.
+  Vorherige Snapshots werden ausdrücklich retrospektiv ergänzt. Synthetische
+  Gegenprüfungen decken unabhängige symbolische Zerlegungen, adaptive Schranken,
+  verschiedene Referenznormen, Originaldomain, Budgets, MPFR-Kontext, beide
+  Exportwege, fehlende Quellenbindungen und späte Resttermänderungen ab.
+  Die alten Quellenfixtures wurden um die zusätzlichen Vertragsdateien
+  ergänzt; Implementierung und Herkunftsprüfungen wurden dafür nicht gelockert.
+- **Lokaler Gesamtnachweis vor CI-Einbindung:** Auf
+  `97e02afca0591ba731fdb95f76eea4d8223cea99` bestanden 2.997 Pythonfälle
+  in 359,89 s, Ruff, Format (236 Dateien), Dokumentations- und Diffprüfung.
+  Reale Bindung aller 57 Vorbereitungsdateien bestanden, ohne Fit oder Suche.
+- **Anwendung und separate Nachrechnung:** Vier gebundene Originalarchive,
+  78 Auswahlen, 18 ursprüngliche Gruppen, Korpus `complete`. 41 bewiesene
+  Restschranken, davon 40 exakt null, ein nicht verschwindender begrenzter
+  Rest; 37 ungeklärte Fälle. Keine gepoolte Erfolgsquote. Originalkennzahlen,
+  Kurvenklassen und die vier Stufe-2-Statusentscheidungen unverändert.
+  Separate SymPy-Nachrechnung bestätigt 41 Zerlegungen; mpmath-Intervalle
+  bei 640 Bit bestätigen 41 Schranken, exakte Referenzrechnungen 82 getrennte
+  Normierungen. Belege, Einzelfälle und Artefakthashes im
+  [Ergebnisbericht](supplemental_remainder_results_001.md).
+- **Kombinierter Abschlussstand:** Auf Mergecommit
+  `7a3729610673bb1aaa0e78c22b6fe698a041d923` bestanden **3.061 Pythonfälle
+  in 355,37 s**, Exitstatus 0, sowie Ruff, Format (238 Dateien),
+  Dokumentation (82 Markdown-Dateien) und reale Bindung aller 57 Quellen.
+  Die eigene gezielte KI-basierte Implementierungsprüfung deckte die
+  Herleitung aller Komponenten ohne Referenzauswahl, Originaldomain,
+  vollständige Intervallabdeckung, gemeinsame Budgets, gerichtete Normen,
+  ältere Snapshots und Veröffentlichung ab; kein korrekturbedürftiger Befund.
+  Eine ergänzte Gegenprüfung bestätigt zusätzlich die erhaltene erste
+  Schranke bei Budgetende während der zweiten Komponente: separat bestanden,
+  1 Test in 1,16 s. Suchworker, Stufe-2-Beweiser, Daten, Abhängigkeiten und
+  native Suchbudgets gegenüber main unverändert. Kein separater Zweitreview.
+- **Offen / nächster konkreter Schritt:** Finalen Draft-Stand bündeln,
+  einmalig auf Ready setzen und die vollständige serielle CI auswerten;
+  danach PR #72 mit gebundenem Head/Basis/Checkout zum Review übergeben.
+  Aktuelle CI-Nachweise werden im PR ergänzt, damit reine Statuspflege keine
+  weitere Vollprüfung auslöst. Für die beschlossene
+  Stufe 3 sind keine Methodenentscheidungen mehr offen. Ihre CI-/Review-Abnahme
+  und Übernahme stehen aus. Keine vierte Bewertungsstufe beauftragt;
+  spätere Suchversuche benötigen ihren eigenen Laufauftrag.
+
+## Übernommen: CI-Sparplan, Draft-Steuerung und serielle native Prüfung
+
+Der folgende Abschnitt hält den Entwicklungs- und damaligen Übergabestand fest.
+Abschluss am 05.11.2026: PR #71 nach ausdrücklicher Freigabe als
+`168e27617a4145d948a47588c4ed2118437260f1` übernommen. Dateibaum
+`3987cc46a1d219ae00d09b957386e9ba2a5f9e1f` entspricht exakt dem geprüften
+Head `8058647a5d3888c54251805415554682f5f2bdcb` und CI-Checkout
+`aa57d3ba413c08e61b87e0ee9e14e7080edbf016`.
+
+Alle drei Jobs der [CI 42090756118](https://github.com/craexxn/ringdown-sr/actions/runs/42090756118)
+bestanden: 2.992 Pythonfälle, sämtliche seriellen nativen Kontrollen und
+vollständige Erfolgsfreigabe. Logs und Dateibaum wurden hier abgeglichen.
+Das übermittelte separate KI-basierte Review meldet keine korrekturbedürftigen
+Befunde; dort bestanden 204 CI-Tests, 2.000 Gate-Kombinationen und der direkte
+Befehlsvergleich. Diese zusätzlichen Reviewtests wurden hier nicht wiederholt.
+Gemessen: 42:40 summierte Jobminuten gegenüber 57:32 im vorherigen Volltest,
+42:46 statt 25:01 bis Abschluss. Etwa 26 % weniger summierte Jobzeit in diesem
+Einzellaufvergleich; keine Abrechnung oder garantierte Einsparquote.
 
 Der Auftrag wurde am 05.11.2026 nach einer Unterbrechung ausdrücklich wieder
 aufgenommen, insbesondere um unnötige Vollprüfungen während der Entwicklung
@@ -152,6 +243,9 @@ Die inzwischen bestätigte Übernahme von PR #70 wird jetzt in PR #71 eingebunde
   Start der vollständigen CI von PR #71; Methodenentscheidungen bleiben offen.**
 
 ## Übernommen: Zusatzbewertung, Stufe 2 von 3
+
+Die folgenden Stufe-2-Angaben dokumentieren die damalige Übergabe;
+der bestätigte Abschluss und die aktive Stufe stehen oben.
 
 - **Phase und Umfang:** Leitfadenphase 1, Bewertungsstufe 2: exakte
   Familienerkennung, Originaldefinitionsbereich und stetige Fortsetzung als

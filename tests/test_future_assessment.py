@@ -207,7 +207,7 @@ def test_preparation_is_saved_before_first_reference_fit(
         assert (parent / future.INPUTS).is_file()
         assert read(parent / "metadata_initial.json")["supplemental_assessment"]
         contract = read(parent / future.CONTRACT)
-        assert contract["software"]["policy"]["stage"] == 2
+        assert contract["software"]["policy"]["stage"] == 3
         assert contract["structure_interval"]["closed"] == [True, True]
         assert contract["software"]["policy"]["proof_resource_limits"][
             "precisions"
@@ -491,6 +491,9 @@ def test_software_and_policy_are_committed_before_use(tmp_path, monkeypatch, cha
         path.write_bytes(raw_policy if name == names[0] else b"synthetic source")
     (tmp_path / future.structure.FILES[0]).write_bytes(
         json_bytes(future.structure.POLICY)
+    )
+    (tmp_path / future.remainder.FILES[0]).write_bytes(
+        json_bytes(future.remainder.POLICY)
     )
     monkeypatch.setattr(future, "ROOT", tmp_path)
     monkeypatch.setattr(future, "POLICY", tmp_path / names[0])

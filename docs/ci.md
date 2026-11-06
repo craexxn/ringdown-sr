@@ -164,6 +164,9 @@ Dies gilt ebenso für `docs/supplemental_structure.md`, den gebundenen
 Stufe-2-Vertrag. Die beiden vorhandenen Schema-3-Kontrollen prüfen zusätzlich
 das vor dem ersten Fit gespeicherte Intervall, getrennte Strukturstatus und
 die unveränderte Originalauswahl. Keine zusätzlichen Suchläufe oder Jobs.
+Auch `docs/supplemental_remainder.md` ist gebundene Laufzeiteingabe. Dieselben
+Kontrollen prüfen in Stufe 3 außerdem den vorab gespeicherten Resttermvertrag,
+getrennte Komponentendiagnosen und die Hashbindung beider Referenzraster.
 Die bestehenden Prüfjobs und wissenschaftlichen Budgets bleiben erhalten.
 
 Der vollständige Pfad prüft zusätzlich die feste Konstantendiagnose mit

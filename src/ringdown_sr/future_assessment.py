@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 
 from . import assessment_sources as sources
+from . import remainder_assessment as remainder
 from . import structure_assessment as structure
 from .assessment_publication import (
     Consumption,
@@ -25,16 +26,22 @@ from .supplemental_assessment import THRESHOLDS, git, grade_curve
 from .symbolic import FORMAT, _check_prediction_replay, evaluate_tree
 
 ROOT = sources.ROOT
-POLICY = ROOT / "data/future_assessment_v2.json"
-POLICY_SHA256 = "05106be830e8c259a5a9e318e1ce3d6a1e3e488ac11542dfffea0bb3acb6fd5f"
+POLICY = ROOT / "data/future_assessment_v3.json"
+POLICY_SHA256 = "6dead9b2da02d4eb298e5188284f463e483a7cd58af60d7136352aa2fb8f690a"
+STAGE2_POLICY_SHA256 = (
+    "05106be830e8c259a5a9e318e1ce3d6a1e3e488ac11542dfffea0bb3acb6fd5f"
+)
+STAGE2_IMPLEMENTATION_SHA256 = (
+    "082146888ff925e478c350555234531a9d6dc6f27950bd9077ca5692a7cb0b8d"
+)
 LEGACY_POLICY_SHA256 = (
     "97ee7e796689c0d65ce69de3f9c567bed9dc0fce8319ab541b355e49d0bf7872"
 )
 LEGACY_IMPLEMENTATION_SHA256 = (
     "0107278b728f8890eb54cd84eb5aec49f41fa7c591b52c10ebdbccc35ad3a764"
 )
-VERSION = "ringdown-sr-future-assessment-2"
-SCHEMA = "ringdown-sr-future-record-2"
+VERSION = "ringdown-sr-future-assessment-3"
+SCHEMA = "ringdown-sr-future-record-3"
 INPUTS = "assessment_inputs.npz"
 CONTRACT = "assessment_contract.json"
 KEYS = {"training_time_s", "training_truth", "diagnostic_time_s", "diagnostic_truth"}
@@ -56,11 +63,27 @@ LEGACY_CONTRACT_FILES = (
     "data/future_assessment_v1.json",
     "docs/supplemental_assessment.md",
 )
-CONTRACT_FILES = (
+STAGE2_CONTRACT_FILES = (
     "data/future_assessment_v2.json",
     "docs/supplemental_assessment.md",
     *structure.FILES,
 )
+CONTRACT_FILES = (
+    "data/future_assessment_v3.json",
+    "docs/supplemental_assessment.md",
+    *structure.FILES,
+    *remainder.FILES,
+)
+STAGE_CONTRACTS = {
+    1: LEGACY_CONTRACT_FILES,
+    2: STAGE2_CONTRACT_FILES,
+    3: CONTRACT_FILES,
+}
+STAGE_POLICY_HASHES = {
+    1: LEGACY_POLICY_SHA256,
+    2: STAGE2_POLICY_SHA256,
+    3: POLICY_SHA256,
+}
 SELECTION = "minimum_training_loss_then_complexity"
 
 
@@ -82,13 +105,11 @@ def python_source_names(commit):
     return names
 
 
-def preparation_source_names(commit, stage=2):
-    if type(stage) is not int or stage not in (1, 2):
+def preparation_source_names(commit, stage=3):
+    if type(stage) is not int or stage not in STAGE_CONTRACTS:
         raise ValueError("Unsupported preparation stage.")
     return python_source_names(commit) | set(
-        (CONTRACT_FILES if stage == 2 else LEGACY_CONTRACT_FILES)
-        + ADAPTER_FILES
-        + PROJECT_FILES
+        STAGE_CONTRACTS[stage] + ADAPTER_FILES + PROJECT_FILES
     )
 
 
@@ -132,13 +153,15 @@ def freeze_software(consumed):
         or policy["schema"] != SCHEMA
         or policy["reference"] != "known_clean_signal_on_both_grids"
         or policy["planned_arms"] != list(ARMS)
-        or policy["stage"] != 2
+        or policy["stage"] != 3
         or policy["domain_interval"] != structure.POLICY["interval"]
         or policy["proof_resource_limits"] != structure.POLICY["limits"]
         or policy["structure_proof_policy"] != structure.FILES[0]
+        or policy["remainder_rules"] != remainder.FILES[0]
     ):
         raise ValueError("Unsupported future assessment policy.")
     structure.check_policy(consumed.files[ROOT / structure.FILES[0]])
+    remainder.check_policy(consumed.files[ROOT / remainder.FILES[0]])
     return {
         "software_commit": commit,
         "source_sha256": hashes,
@@ -316,24 +339,25 @@ def verify_snapshot(source, software):
         "Configuration differs.",
     )
     contract = source.document(CONTRACT)
-    if contract["format"] not in (VERSION, "ringdown-sr-future-assessment-1"):
+    formats = {f"ringdown-sr-future-assessment-{i}": i for i in (1, 2, 3)}
+    if contract["format"] not in formats:
         raise ValueError("Missing supported pre-search assessment contract.")
-    stage = 2 if contract["format"] == VERSION else 1
+    stage = formats[contract["format"]]
     expected_policy = software["policy"]
-    if stage == 1:
+    if stage < 3:
         if (
             contract["software"]["source_sha256"].get(
                 "src/ringdown_sr/future_assessment.py"
             )
-            != LEGACY_IMPLEMENTATION_SHA256
+            != {1: LEGACY_IMPLEMENTATION_SHA256, 2: STAGE2_IMPLEMENTATION_SHA256}[stage]
         ):
             raise ValueError(
-                "Legacy assessment requires the approved stage-1 implementation."
+                "Legacy assessment requires the approved earlier implementation."
             )
         raw = sources._git_file(
-            contract["software"]["software_commit"], LEGACY_CONTRACT_FILES[0]
+            contract["software"]["software_commit"], STAGE_CONTRACTS[stage][0]
         )
-        if sources.sha256(raw) != LEGACY_POLICY_SHA256:
+        if sources.sha256(raw) != STAGE_POLICY_HASHES[stage]:
             raise ValueError("Unsupported legacy curve policy.")
         expected_policy = sources.read_json(raw)
     sources._same(
@@ -356,7 +380,7 @@ def verify_snapshot(source, software):
             or sources.fingerprint(value) != contract["arrays"][key]
         ):
             raise ValueError("Assessment grid or truth differs: " + key)
-    if stage == 2:
+    if stage >= 2:
         sources._same(
             contract["structure_interval"],
             structure.interval_binding(arrays["training_time_s"]),
@@ -377,10 +401,12 @@ def verify_origin(source, frozen):
         raise ValueError("Invalid preparation commit.")
     hashes = frozen["source_sha256"]
     stage = frozen["policy"]["stage"]
-    policy_name = CONTRACT_FILES[0] if stage == 2 else LEGACY_CONTRACT_FILES[0]
-    if set(hashes) != preparation_source_names(commit, stage) or hashes[
-        policy_name
-    ] != (POLICY_SHA256 if stage == 2 else LEGACY_POLICY_SHA256):
+    expected_names = preparation_source_names(commit, stage)
+    policy_name = STAGE_CONTRACTS[stage][0]
+    if (
+        set(hashes) != expected_names
+        or hashes[policy_name] != STAGE_POLICY_HASHES[stage]
+    ):
         raise ValueError("Incomplete preparation source binding.")
     python = {}
     for name, digest in hashes.items():
@@ -389,8 +415,10 @@ def verify_origin(source, frozen):
             python[name.removeprefix("src/")] = digest
         if sources.sha256(sources._git_file(commit, name)) != digest:
             raise ValueError("Preparation source differs from its Git commit.")
-    if stage == 2:
+    if stage >= 2:
         structure.check_policy(sources._git_file(commit, structure.FILES[0]))
+    if stage == 3:
+        remainder.check_policy(sources._git_file(commit, remainder.FILES[0]))
     adapters = {name: hashes[name] for name in ADAPTER_FILES}
     project = {name: hashes[name] for name in PROJECT_FILES}
 
@@ -595,6 +623,14 @@ def selected_record(source, name, summary, config, shared, arrays):
         },
     }
     structure.supplement(record, structure.interval_binding(arrays["training_time_s"]))
+    remainder.supplement(
+        record,
+        structure.interval_binding(arrays["training_time_s"]),
+        {
+            role: {"time_s": arrays[role + "_time_s"], "truth": arrays[role + "_truth"]}
+            for role in ("training", "diagnostic")
+        },
+    )
     return record
 
 
@@ -685,10 +721,13 @@ def build_assessment(root, consumed, prepared=None):
     ]
     report = {
         "format": VERSION,
-        "stage": 2,
+        "stage": 3,
         "structure_policy_timing": "before_first_fit"
-        if contract["format"] == VERSION
+        if contract["software"]["policy"]["stage"] >= 2
         else "retrospective_upgrade_of_stage1_snapshot",
+        "remainder_policy_timing": "before_first_fit"
+        if contract["format"] == VERSION
+        else f"retrospective_upgrade_of_stage{contract['software']['policy']['stage']}_snapshot",
         "software": software,
         "pre_search_contract": contract,
         "condition": config.to_dict(),
@@ -711,11 +750,12 @@ def build_assessment(root, consumed, prepared=None):
                     for key in ("A", "B", "C", "D", "not_assessable")
                 },
                 **structure.status_counts([record]),
+                **remainder.status_counts([record]),
             }
             for record in records
         ],
     }
-    summary = "# Zusatzbewertung eines Schema-3-Laufs – Stufe 2\n\nOriginalauswahlen; sauberes Signal auf beiden Rastern.\nIdentität, Originaldomain und Fortsetzung getrennt; Restterm und neue Parametermatches: not_assessed.\nKeine gemeinsame Erfolgsquote.\n\n"
+    summary = "# Zusatzbewertung eines Schema-3-Laufs – Stufe 3\n\nOriginalauswahlen; sauberes Signal auf beiden Rastern.\nIdentität, Originaldomain, Fortsetzung und Zusatzterme getrennt; neue Parametermatches: not_assessed.\nKeine gemeinsame Erfolgsquote.\n\n"
     summary += (
         "\n".join(
             f"- {r['source_identity']['arm']}: Kurve {r['supplemental']['curve']['grade'] or 'not_assessable'}, Identität {r['supplemental']['algebraic_identity']['status']}, Domain {r['supplemental']['domain']['status']}, Originalfamilie {r['supplemental']['original_family']['status']}, Fortsetzung {r['supplemental']['continuous_extension']['status']} (Nenner 1)"
@@ -723,6 +763,7 @@ def build_assessment(root, consumed, prepared=None):
         )
         + "\n"
     )
+    summary += "\n".join(remainder.summary_lines(records)) + "\n"
     return (
         report,
         summary,

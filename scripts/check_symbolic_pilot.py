@@ -192,8 +192,9 @@ def verify_assessment(source, output):
     assert not (output / "ASSESSMENT_LOCKED").exists()
     report = read(output / "assessment_report.json")
     assert report["status"] == "completed"
-    assert report["stage"] == 2
+    assert report["stage"] == 3
     assert report["structure_policy_timing"] == "before_first_fit"
+    assert report["remainder_policy_timing"] == "before_first_fit"
     for name, digest in read(output / "assessment_checksums.json").items():
         assert hashlib.sha256((output / name).read_bytes()).hexdigest() == digest
     records = read(output / "assessment_records.json")
@@ -233,7 +234,21 @@ def verify_assessment(source, output):
                     proof["algebraic_identity"]["status"] == "proven_on_original_domain"
                 )
             assert proof["new_parameter_match"]["status"] == "not_assessed"
-            assert proof["remainder"]["status"] == "not_assessed"
+            remainder = proof["remainder"]
+            assert remainder["format"] == "ringdown-sr-remainder-proof-1"
+            assert remainder["status"] in ("bound_proven", "unresolved")
+            assert remainder["evaluation_model"] == "exact_real_original_tree"
+            for grid in ("training", "diagnostic"):
+                for field, source_key in (
+                    ("time_s", grid + "_time_s"),
+                    ("truth", grid + "_truth"),
+                ):
+                    vector = np.ascontiguousarray(arrays[source_key], dtype="<f8")
+                    assert remainder["reference_binding"][grid][field] == {
+                        "dtype": "<f8",
+                        "shape": list(vector.shape),
+                        "sha256": hashlib.sha256(vector.tobytes()).hexdigest(),
+                    }
             values = []
             for grid in ("training", "diagnostic"):
                 truth = arrays[grid + "_truth"]
@@ -269,6 +284,9 @@ def verify_assessment(source, output):
             assert record["supplemental"]["curve"]["grade"] == expected
     print(f"Prospective assessment audit passed: {output}; three original selections.")
     print("Stage-2 interval, proof statuses and original-selection bindings passed.")
+    print(
+        "Stage-3 remainder contract, separate components and reference bindings passed."
+    )
 
 
 def main():
