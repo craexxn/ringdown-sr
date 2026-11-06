@@ -3,10 +3,15 @@
 Stand: 06.11.2026, [Leitfadenphase 3](ringdown_recovery_roadmap.md).
 Das [Protokoll](global_restart_comparison_plan.md) und die
 [Konfiguration](../data/global_restart_protocol.json) wurden vor Implementierung
-in `b00fc4a0a5a5a90e7d72f45d2b27788d1fd1585a` eingefroren. Umsetzung in
-[PR #76](https://github.com/craexxn/ringdown-sr/pull/76), zunächst Draft;
+in `b00fc4a0a5a5a90e7d72f45d2b27788d1fd1585a` eingefroren. Umsetzung mit
+[PR #76](https://github.com/craexxn/ringdown-sr/pull/76) übernommen;
 technischer Prüfstand im [Fortsetzungsstand](representation_implementation_status.md).
-Noch keine wissenschaftliche Ausführung, keine Erfolgs- oder Kostenbehauptung.
+Für Manjaro ist [Lauf 001 als abgebrochen und 002 als laufend übermittelt](global_restart_results_manjaro_001.md).
+Noch kein abgeschlossener wissenschaftlicher Vergleich, keine Erfolgsbehauptung.
+Die folgenden 001-Befehle dokumentieren den ursprünglichen Laufweg; den bereits
+verwendeten Ausgabeordner nicht löschen oder erneut verwenden. Jeder gesondert
+beauftragte vollständige Wiederholungslauf erhält eine eigene ID, durchgängig
+auch für Verifikation und Archiv. Kein Resume oder Vermischen von Teilständen.
 
 ## Voraussetzungen und Vorbereitung
 
@@ -85,6 +90,10 @@ erforderlich; bei früherem Sicherheitsabbruch darf noch nicht erzeugte Evidenz
 fehlen, vorhandene Widersprüche bleiben in jeder Phase unzulässig.
 
 ## Anschließend ausschließlich lesend verifizieren
+
+Die vollständige Verifikation setzt einen freigegebenen Originalabschluss voraus.
+Bei einer abgebrochenen Serie Teilstände samt Sperre bewahren; die folgenden
+Erfolgs- und Packschritte machen aus 001 keinen vollständigen Lauf.
 
 ```bash
 env OPENBLAS_CORETYPE=Haswell \

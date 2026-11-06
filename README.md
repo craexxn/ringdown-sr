@@ -5,11 +5,12 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 06.11.2026; abgeglichener main `b547bb3` nach ausdrücklich
+Fortsetzungsstand: 06.11.2026; abgeglichener main `823732f` nach ausdrücklich
 freigegebener Übernahme von [PR #73](https://github.com/craexxn/ringdown-sr/pull/73)
 und [PR #74](https://github.com/craexxn/ringdown-sr/pull/74), anschließend
 [PR #75](https://github.com/craexxn/ringdown-sr/pull/75) und
-[PR #76](https://github.com/craexxn/ringdown-sr/pull/76).
+[PR #76](https://github.com/craexxn/ringdown-sr/pull/76) und
+[PR #77](https://github.com/craexxn/ringdown-sr/pull/77).
 Alle drei Bewertungsstufen sind implementiert, geprüft, übernommen und auf
 78 Originalauswahlen angewandt: [Kurvenklassen](docs/supplemental_assessment_results_001.md),
 [Originalfamilie und Domain](docs/supplemental_structure_results_001.md),
@@ -25,17 +26,19 @@ eine Beschreibung des Bestands, keine gepoolte Erfolgsquote. Neue Parameter-
 
 Die [begrenzte Endfrontdiagnose](docs/endfront_diagnostic_001.md) ist abgeschlossen:
 keine alternative A-Kurve in den 35 Nicht-A-Fronten. Gemäß
-[Leitfadenphase 3](docs/ringdown_recovery_roadmap.md) wird nun der
+[Leitfadenphase 3](docs/ringdown_recovery_roadmap.md) ist der
 [Suchvergleich](docs/global_restart_comparison.md) von 1 × 500, frischen
-1 × 2.000 und 4 × 500 bei festem lokalem Profil 300/5 vorbereitet.
+1 × 2.000 und 4 × 500 bei festem lokalem Profil 300/5 implementiert.
 Das Protokoll ist eingefroren; Umsetzung, korrigierte Schutzregeln und vollständige
-technische CI sind mit PR #76 übernommen. Der Manjaro-Lauf bleibt separat.
+technische CI sind mit PR #76 übernommen. Der
+[Manjaro-Lauf 001 wurde unterbrochen](docs/global_restart_results_manjaro_001.md);
+für den getrennten Lauf 002 ist Fortschritt, noch kein Abschluss übermittelt.
 Parallel ist der [begrenzte Zeitbudgetvergleich](docs/iteration_time_budget.md)
 von 2.000 Iterationen mit 400 Sekunden Suchzeit implementiert. Sein Protokoll legt
 vor Sichtung wissenschaftlicher PR76-Ergebnisse die vollständige Kontrollübernahme
 oder einen vollständig frischen Ersatzmodus fest. Lokal bestehen 3.188 Pythonfälle
-und sieben kleine native Suchprüfungen; die gemeinsame vollständige Ready-CI
-wird in PR #77 geführt. Die Wiederverwendung ist
+und sieben kleine native Suchprüfungen; PR #77 ist nach vollständiger grüner CI
+und separatem KI-Review übernommen. Die Wiederverwendung ist
 unbestätigt: tatsächliche historische Julia-/GC-Threadbelege fehlen im bisherigen
 PR76-Format. Ohne diese Belege bleibt nur der ausdrücklich gewählte frische
 Ersatzmodus mit acht Suchen; keine automatische Umschaltung.
@@ -50,12 +53,14 @@ Ausführungsschritt. Umsetzung und Nachweise stehen im
 [Ergebnisindex](docs/results_index.md) führt Zuordnung und offene Sicherung:
 gemeinsamer Archivordner plus zweite gesicherte Kopie, Releases optional.
 Konkrete Ablageorte und geprüfte Zweitkopien sind weiterhin unbestätigt.
-Die [Veröffentlichungsprüfung](docs/publication_review.md) und MIT-Lizenz werden
-zusammen mit dem Zeitbudgetvergleich in
-[PR #77](https://github.com/craexxn/ringdown-sr/pull/77) geführt, damit beide
-Arbeitspakete eine gemeinsame abschließende Vollprüfung erhalten. Das Repository bleibt
+Die [Veröffentlichungsprüfung](docs/publication_review.md) und MIT-Lizenz sind
+zusammen mit dem Zeitbudgetvergleich in PR #77 übernommen. Das Repository bleibt
 bis zur gesonderten Freigabe privat; diese Vorbereitung ändert keine
 wissenschaftlichen Protokolle und startet keine Versuchsserie.
+Der [Seed-/Treiber-Kreuzvergleich](docs/seed_driver_crosscheck_results_manjaro_001.md)
+ist jetzt am Originalarchiv lesend bestätigt. Noch fehlende Laufbelege und
+Sicherungsangaben stehen priorisiert im
+[Ergebnisindex](docs/results_index.md#priorisierte-fehlende-belege).
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 

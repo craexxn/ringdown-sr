@@ -6,10 +6,13 @@ von main `b9636ad92ecd57b24b142f39548a7a713d0934a0` nach Ergebnis-PR #66.
 Am 05.11.2026 wurde ein Nachrechnungsbefund zu beiden wissenschaftlichen
 Kreuzzellen übermittelt: vollständige Endfronten mit 7 beziehungsweise
 11 Kandidaten reproduziert, Originalauswahlen A beziehungsweise D.
-Das vollständige Kreuzlaufarchiv, sein SHA-256 und ein versionierter
-Ergebnisbericht liegen diesem Implementierungsschritt nicht vor; die
-Primärdaten wurden hier nicht eigenständig nachgerechnet. Einordnung und
-Aussagegrenzen im [Leitfaden](ringdown_recovery_roadmap.md#ziel-und-ausgangspunkt).
+Dieser damalige Implementierungsstand hatte das Kreuzlaufarchiv noch nicht
+vorliegen. Ergänzung vom 06.11.2026: Originalarchiv, tatsächlicher
+Orchestrierungscommit, beide Fronten und historische Python-Verifikation sind
+inzwischen lesend bestätigt; eigener
+[Ergebnisbericht](seed_driver_crosscheck_results_manjaro_001.md).
+Einordnung und Aussagegrenzen im
+[Leitfaden](ringdown_recovery_roadmap.md#ziel-und-ausgangspunkt).
 Die folgenden Befehle dokumentieren den vorgesehenen Laufweg und geben keine
 automatische Wiederholung frei.
 Der [vorab gebundene Plan](seed_driver_crosscheck_plan.md) wurde vor dem Code
@@ -148,10 +151,10 @@ Zusätzlich bestehen 116 abschließende fokussierte Fälle einschließlich eines
 zweiten Signals und eines weiteren Schreib-/Löschfehlers beim Widerruf.
 Der vollständige lokale/CI-Prüfnachweis wird im
 [Implementierungs-PR #67](https://github.com/craexxn/ringdown-sr/pull/67) festgehalten.
-Das übermittelte Originalarchiv der äußeren Staffel liegt dieser Cloudinstanz
-nicht vor; seine Originalprüfung und die wissenschaftliche Gegenüberstellung
-bleiben Teil des Manjaro-Aufrufs. Das Transferoriginal wurde separat lesend
-gegen den historischen Elternprüfpfad geprüft.
+Historische Grenze dieses Implementierungsstands: Das Originalarchiv der äußeren
+Staffel lag damals nicht vor; das Transferoriginal war separat lesend gegen den
+historischen Elternprüfpfad geprüft. Die inzwischen vorhandenen Originale und der
+abgeschlossene Kreuzversuch sind im Ergebnisbericht oben zugeordnet.
 
 Ein übermitteltes KI-basiertes Review prüfte Head
 `fe27c2e78d541f55ce60976c41a37b37f17dcaa4` gegen

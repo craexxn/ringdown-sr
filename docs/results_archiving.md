@@ -57,6 +57,18 @@ Abschlussdateien als fehlend belassen; keine erfolgreiche Freigabe nachbauen.
 Vorhandene Felder bleiben an ihrem bisherigen Ort. Keine zweite Liste aller
 Seeds, Optionen, Kandidaten oder Umgebungsversionen im Index führen.
 
+Ein besprochener Wiederholungsaufruf wird erst mit Ausführungsbeleg als gestartet
+geführt. Bei einem Abbruch Ursache und belegbaren Zellstand im Ergebnisbericht
+festhalten, gemessene verbrauchte Kosten erhalten und fehlende Messungen als
+unbekannt kennzeichnen. Eine vollständige Wiederholung erhält eine eigene ID;
+Teilstände werden weder hineinkopiert noch als zusätzliche unabhängige Erfolge
+gezählt. Technische Vorläufe bleiben von wissenschaftlichen Serien getrennt.
+
+Ist nur der unveränderte Ergebnisordner erhalten, zuerst seine vorhandenen
+Manifeste und Herkunft prüfen. Ein daraus neu erzeugtes Paket erhält eigenen
+Namen, Packdatum und SHA-256 mit Verweis auf den ursprünglichen Lauf. Es ist
+keine Rekonstruktion der verlorenen Originalarchivbytes oder ihres Hashes.
+
 Der Index hält pro Lauf nur Identität/Fragestellung, tatsächlichen
 Ausführungscommit, Laufstatus, Archivname/SHA-256, Ablagehinweis,
 Sicherungsstand, Ergebnisbericht und Bewertungszuordnung fest. Ein optionaler
