@@ -124,7 +124,9 @@ paralleler Auftrag; CI/Review und ihre weitere Bearbeitung gehören dorthin.
 
 - **Branch und Basis:** `codex/results-archive-index`, eigener Worktree ab
   `de33d52aede3903a9745305b52f35c467e0d3b9f`. Reiner Dokumentationsauftrag;
-  PR-Link und endgültiger Head folgen in der Übergabe.
+  [PR #74](https://github.com/craexxn/ringdown-sr/pull/74) ist zur Prüfung offen;
+  die geprüfte Indexfassung liegt in `e8694cb18418d27612dfa6fd486d5e5e2eccf192`.
+  Dieser Übergabenachtrag ergänzt nur die PR-Zuordnung.
 - **Umgesetzt:** [Archivierungsrichtlinie](results_archiving.md) und
   [Ergebnisindex](results_index.md), verlinkt aus README, Arbeitsregeln,
   Reproduzierbarkeitsvermerk und Leitfaden. 21 Entwicklungs-/Kontrollserien,
