@@ -6,22 +6,21 @@ Ready-Wechsel und führt native Kontrollen seriell aus. Die wissenschaftlichen
 Phasen und Kriterien bleiben erhalten; tatsächlicher Prüf- und Übernahmestand
 im [Fortsetzungsstand](representation_implementation_status.md).
 
-Version 1, Stand: 05.11.2026. Als Dokumentationsergänzung in
-[PR #69](https://github.com/craexxn/ringdown-sr/pull/69) übernommen.
-Der PR ist übernommen und umfasst ausschließlich **Phase 1, Bewertungsstufe 1**.
-Bewertungsstufe 2 ist mit [PR #70](https://github.com/craexxn/ringdown-sr/pull/70)
-übernommen. Stufe 3 ist als eigener fachlicher Auftrag implementiert und
-[auf die Originalauswahlen angewandt](supplemental_remainder_results_001.md).
-Ihr [Resttermvertrag](supplemental_remainder.md) bindet die
-bestätigten Mehrfachdiagnosen und die begrenzte adaptive Intervallunterteilung.
-Stufe 3 ist am 06.11.2026 mit
-[PR #72](https://github.com/craexxn/ringdown-sr/pull/72) übernommen; vollständige
-CI und KI-Review sind erfolgreich. Alle drei Bewertungsstufen sind abgeschlossen.
-Die [technische Laufzeitoptimierung](assessment_performance.md) ist als eigener
-Auftrag innerhalb Phase 1 in [PR #73](https://github.com/craexxn/ringdown-sr/pull/73)
-nach vollständiger CI, übermitteltem separatem KI-Review ohne Befund und
-ausdrücklicher Freigabe am 06.11.2026 übernommen.
-Bewertungsregeln und Prüfzeitpunkte bleiben erhalten.
+Version 2, Planungsstand: 06.11.2026, nach Übernahme von PR #73 und #74.
+Version 1 wurde mit PR #69 eingeführt. Alle drei Bewertungsstufen sind mit
+PR #69, #70 und #72 implementiert, technisch geprüft, übernommen und lesend
+auf die 78 Originalauswahlen angewandt. Die [technische Optimierung](assessment_performance.md)
+aus PR #73 und die [Archivregel](results_archiving.md) mit
+[Ergebnisindex](results_index.md) aus PR #74 sind ebenfalls übernommen.
+Sicherungskopien bleiben separat nachzuweisen.
+
+Die Planungsänderung vom 06.11.2026 zieht das unregelmäßige Zusatzraster in die
+Entwicklungsphase vor, präzisiert frische Einzelsuchen gegenüber Fortsetzung
+und trennt Gesamtkosten von neuem Aufwand. Zuerst erfolgt die
+[begrenzte Endfrontdiagnose](endfront_diagnostic_001.md), anschließend die
+Vorbereitung des Suchvergleichs. Wissenschaftliche Ausführung bleibt ein
+separater Schritt. Historische Berichte und eingefrorene Protokolle bleiben
+unverändert; deren damalige Ausblicke sind kein aktueller Arbeitsauftrag.
 
 Diese Datei hält die vereinbarte Vorgehensrichtung fest. Konkrete Seeds,
 Auswahlregeln, Budgets und noch offene methodische Einzelentscheidungen werden
@@ -90,23 +89,35 @@ keine weitere breite Treiberfehlersuche. Es beweist weder identische Suchverläu
 allgemeine Implementierungskorrektheit noch eine bestimmte Erfolgswahrscheinlichkeit.
 Eine automatische Budgeterhöhung folgt daraus nicht.
 
-Zum Dokumentationsstand umfasst PR #69 Stufe 1 der Zusatzbewertung: Kurvenklassen
-und ihre Anbindung an historische Auswahlen und zukünftige Schema-3-Läufe.
-Exakte Struktur/Definitionsbereich/Fortsetzung sowie Zusatzterm-Diagnose sind
-nachfolgende Stufen. Ein Merge von #69 allein schließt die Bewertung nicht ab.
-Die beauftragten Bewertungsstufen 2 und 3 folgen jeweils in eigenen PRs nach
-bestätigter Übernahme der vorherigen Stufe; ihre offenen Methodenentscheidungen
-werden vor der Umsetzung geklärt. Die Phasennummern dieses Leitfadens sind von
-diesen drei Bewertungsstufen zu unterscheiden. Für zukünftige simulierte
-Schema-3-Läufe gelten die beschlossenen Datenrollen und Raster aus dem
-[Bewertungsvertrag](supplemental_assessment.md); neue Endpunkte und Suchversuche
-in den folgenden Phasen bleiben vorher festzulegen und gesondert auszuführen.
+Die abgeschlossene [Kurvenbewertung](supplemental_assessment_results_001.md),
+[Strukturprüfung](supplemental_structure_results_001.md) und
+[Restdiagnose](supplemental_remainder_results_001.md) ändern die Einordnung:
+
+- Die äußere Staffel aus PR #63 erreicht bei 500, 2.000 und 5.000 Iterationen
+  jeweils 5/5 Klasse-A-Kurven und gültige Originalmitglieder der Ringdown-Familie.
+  Die frühere Strukturzählung 4/5, 3/5, 2/5 beruhte auf Erkennungsgrenzen;
+  die historischen Zählungen werden nicht rückwirkend ersetzt.
+- Die frischen Referenz-Seeds aus PR #65 bleiben bei 0/3 A-Kurven. Daher hat
+  Suchrobustheit Vorrang vor einer vollständigen formalen Entscheidung aller
+  ungeklärten Schreibweisen.
+- Unter 43 A-Kurven sind 38 gültige Originalmitglieder, zwei passende stetige
+  Fortsetzungen bei Originaldefinitionslücken und drei ungeklärte Familienbefunde.
+  Das beschreibt den Datenbestand, keine gepoolte Erfolgsquote. Die Restdiagnose
+  beweist 41 Schranken, davon 40 Nullreste; diese Zählung ist ein anderer Endpunkt.
+- Ein Familiennachweis bewertet neue Parameterübereinstimmungen weiterhin nicht.
+  `new_parameter_match` bleibt ohne neuen dokumentierten Vertrag `not_assessed`.
+
+Die Phasennummern sind von den abgeschlossenen drei Bewertungsstufen zu
+unterscheiden. [Intervall-/Strukturregeln](supplemental_structure.md) und
+[Resttermregeln](supplemental_remainder.md) einschließlich Ressourcen sind
+beschlossen. Für zukünftige Läufe gelten weiterhin die gebundenen Datenrollen
+und Raster des [Bewertungsvertrags](supplemental_assessment.md).
 
 ## Phasenfolge
 
 | Phase | Arbeitspaket | Ergebnis beziehungsweise Entscheidung |
 |---|---|---|
-| 1 | Bewertung vervollständigen | Getrennte, geprüfte Befunde zu Kurve, Struktur, Definitionsbereich und Parametern |
+| 1 | Bewertung abgeschlossen | Kurve, Struktur, Definitionsbereich und Restdiagnose; neue Parametermatches nicht bewertet |
 | 2 | Vorhandene Endfronten diagnostizieren | Erkennungs-, Auswahl-, Konstanten- und Suchprobleme unterscheiden |
 | 3 | Globale Neustarts mit längeren Einzelsuchen vergleichen | Eine begründete Suchstrategie auswählen oder unzureichenden Nutzen festhalten |
 | 4 | Nur bei Bedarf eine zweite Suchintervention | Zeitkoordinate unter dem aktuellen Profil prüfen |
@@ -117,7 +128,7 @@ in den folgenden Phasen bleiben vorher festzulegen und gesondert auszuführen.
 Die technische Vorbereitung der Rauschpipeline mit bekanntem Strukturfit kann
 parallel erfolgen. Die freie SR wird im Rauschpilot nach Phase 6 untersucht.
 
-## 1. Bewertung abschließen
+## 1. Abgeschlossene Bewertungsgrundlage
 
 Kurvengüte, Struktur, Originaldefinitionsbereich und Parameterübereinstimmung
 bleiben getrennte Angaben. Vorschlag für den gemeinsamen rauschfreien
@@ -164,36 +175,87 @@ Eine Endfront beschreibt nicht alle während der Evolution erzeugten Formeln.
 Ein diagnostisch passender Kandidat ist kein nachträglicher Ersatz für die
 ursprünglich ausgewählte Formel.
 
+Der [vorab festgelegte Umfang und Befund](endfront_diagnostic_001.md) priorisiert
+die drei Transfer-Referenzfälle und begrenzt sich auf die vier großen Serien.
+Keine Erkennerentwicklung zur Verbesserung der Erfolgszahlen. Fehlende Archive
+bleiben sichtbar; nur vorhandene und gebundene Primärdaten dürfen als neue
+Frontbefunde bestätigt werden. Der übermittelte Befund „kein anderer A-Kandidat
+in den 15 Nicht-A-Fronten unter 362 Staffel-/Transferkandidaten“ wurde inzwischen
+an den Originalarchiven bestätigt. Dasselbe gilt für alle 35 Nicht-A-Fronten
+der vier Serien. Die drei Referenzfronten enthalten auch kein nachgewiesenes
+Originalmitglied; fehlende Nachweise bleiben ungeklärt. Eine vollständige formale
+Entscheidung aller offenen Formeln ist keine Voraussetzung für Phase 3.
+
 ## 3. Erster Entwicklungsvergleich: Neustarts gegen längere Suche
 
-Vorgeschlagenes Design bei unverändertem lokalem Profil 300/5
+Beschlossenes Entwicklungsdesign bei unverändertem lokalem Profil 300/5
 (300 Optimiereriterationen und fünf zusätzliche lokale Neustarts):
 
 | Variante | Äußere Suche | Zweck |
 |---|---|---|
 | Referenz | 1 x 500 | Bisheriges Arbeitsprofil |
-| Längerer Lauf | 1 x 2.000 | Nutzen einer fortgesetzten einzelnen Suche |
+| Längerer Lauf | 1 x 2.000 | Nutzen einer frisch gestarteten längeren Einzelsuche |
 | Globale Neustarts | 4 x 500 | Nutzen unabhängig begonnener Suchen |
 
 Entwicklungskontrollen: erfolgreicher Seed 20261201 und bisher erfolglose
 Anker-Seeds 20261210 bis 20261212. Dies ist eine bewusst ausgewählte Diagnosemenge,
 keine Schätzung einer allgemeinen Erfolgsquote. Zusätzliche Seeds und disjunkte
-Seed-Blöcke vorab festlegen.
+Seed-Blöcke vorab festlegen. Eingeschaltete Häufigkeitsschalter, allgemeine
+Grammatik, `should_simplify=false` und alle übrigen verifizierten Einstellungen
+bleiben gleich. Vier globale Neustarts bedeuten vier vollständig neue SR-Suchen;
+die fünf zusätzlichen lokalen Neustarts betreffen die Konstantenoptimierung.
+Ein neuer 2.000er-Lauf mit demselben Seed ist ohne tatsächlich weiterverwendeten
+Checkpoint keine Fortsetzung eines historischen 500er-Laufs.
 
 Bei nachweislich identischen Bedingungen kann jeder historische 500er-Lauf
 als Referenz und erstes Mitglied seines Neustartpakets verwendet werden.
 Dann sind 16 neue Suchaufrufe erforderlich: vier lange und zwölf zusätzliche
-kurze Läufe. Andernfalls die Ausführungszahl vorab neu festlegen.
+kurze Läufe. Andernfalls werden genau 20 frische Suchaufrufe vorbereitet;
+jede 500er-Referenz ist zugleich das erste Mitglied ihres Viererpakets.
+Die Originalarchive sind geprüft; eine Wiederverwendung benötigt zusätzlich
+die identischen tatsächlichen Ausführungsbedingungen des neuen Manjaro-Laufwegs.
+Der startbare Standard wird deshalb der frische 20-Aufrufe-Pfad, ohne
+stillschweigende Wiederverwendung. Ein späterer 16-Aufrufe-Pfad benötigt vorab
+Quellen-, Daten-, Options-, Versions- und Kostenprüfung sowie dieselbe
+vorher eingefrorene Paket-/Rasterregel.
 
 Ein Viererpaket liefert ein Algorithmusergebnis. Die Auswahlregel wird vorab
-festgelegt und verwendet nur zulässige Trainingsdaten, Verlust und gegebenenfalls
-Komplexität. Saubere Signalwahrheit, Strukturdiagnose und Diagnosepunkte dienen
-nicht der Auswahl. „Passender Kandidat irgendwo vorhanden“ getrennt ausweisen.
+festgelegt: niedrigster endlicher nativer Trainingsverlust, dann kleinste
+Komplexität, dann die vorab gespeicherte Mitgliedsreihenfolge. Saubere
+Signalwahrheit, Klasse, Strukturdiagnose und Diagnosepunkte dienen weder der
+Auswahl noch dem vorzeitigen Beenden. „Passender Kandidat irgendwo vorhanden“
+getrennt ausweisen. Ausfälle und nichtendliche Verluste bleiben im Nenner;
+ein Paket ohne gültiges Mitglied liefert keine ausgewählte Ausgabe.
 
 Gemeinsame Kurven-/Strukturerfolge, kontinuierliche Fehler und tatsächliche
 Kosten vergleichen. Historische Kosten bei Wiederverwendung mitzählen;
 gleiche äußere Iterationssummen garantieren keine gleichen Rechenkosten.
 Keine Fortsetzung durch zusätzliche Seeds bis zum gewünschten Ergebnis.
+
+Vor Implementierung wird das konkrete Protokoll eingefroren: alle 16 Seeds in
+vier disjunkten Blöcken, Eingabebits, Versionen/Optionen, Ausfallbehandlung,
+Endpunkte, Laufzeit und Zielfunktionsaufrufe sowie Anschlussentscheidung.
+Historische Kosten zählen bei Wiederverwendung zum gesamten Algorithmusaufwand;
+aktuell zusätzlicher Aufwand wird separat ausgewiesen. Ein Neustartvorteil
+bleibt eine Hypothese, kein aus Literatur oder bisherigen Befunden abgeleitetes
+Ergebnis. Wird ein konkreter technischer Fehler oder vorrangiger Engpass
+nachgewiesen, wird dieser vor dem wissenschaftlichen Vergleich behandelt.
+
+### Unregelmäßiges Zusatzraster bereits in der Entwicklung
+
+Training und bisherige Zwischenpunkte liegen gemeinsam auf einem regelmäßigen
+Raster von `1/32768` Sekunden. Dadurch existieren theoretische Frequenz-Aliase.
+Ein unregelmäßiges Raster reduziert diese Blindstellen. Erzeugungsregel,
+Punktzahl und eigener RNG-Seed werden vorab festgelegt; konkrete Punkte werden
+vor der ersten Suche gespeichert und gehasht. Ein eigener Generator darf den
+Zufallszustand der Suche nicht verändern.
+
+Das Zusatzraster dient ausschließlich der Diagnose: kontinuierliche relative
+RMS-/Maximalfehler berichten, ohne neue Grenzwerte keinen Bestehensmarker oder
+nachträglichen Ausschluss erzeugen. Historische A–D-Klassen bleiben unverändert.
+Das Raster ersetzt keinen Definitionsnachweis und garantiert keine allgemeine
+Identifizierbarkeit. Familienzugehörigkeit und physikalische Parameter bleiben
+getrennt; neue Parameterdiagnosen brauchen zuvor eine dokumentierte Regel.
 
 ## 4. Zweite Intervention nur bei Bedarf
 
@@ -246,7 +308,7 @@ statistischer Nachweis einer wahren Erfolgswahrscheinlichkeit von mindestens
 80 %. Erfolgszahlen, Unsicherheit und alle Fehlschläge berichten; keine
 gepoolte Erfolgsquote über unterschiedliche Signale als Ersatz.
 
-Ein vorab festgelegtes unregelmäßiges Prüfraster ergänzt die Diagnose gegen
+Das bereits in Phase 3 vorab festgelegte unregelmäßige Prüfraster ergänzt die Diagnose gegen
 Blindstellen regelmäßiger Raster. Es beeinflusst weder Kandidatenauswahl noch
 nachträglich die historische A-D-Skala und ersetzt keinen Definitionsnachweis.
 
@@ -286,11 +348,12 @@ Untersuchung der Grenzen freier SR. Keine unbeschränkte Parametersuche.
 
 ## Vor dem jeweiligen Versuch noch festzulegen
 
-- Zielintervall, zulässige Strukturbeweise und Ressourcenbegrenzung der Prüfung.
+- Zielintervall aus tatsächlichen Trainingsendpunkten, Strukturbeweise und
+  Ressourcen gemäß bestehenden Verträgen anwenden; diese Regeln sind beschlossen.
 - Rolle möglicher Nachbearbeitung im endgültigen Ausgabemodell.
 - Zusätzliche Seeds, genaue Auswahl- und Kostenvergleichsregel sowie
   Entscheidung zwischen den Entwicklungsvarianten.
-- Unbenutzte Bestätigungssignale, unregelmäßiges Prüfraster und endgültige
+- Unbenutzte Bestätigungssignale und endgültige
   Fortsetzungskriterien; 8/10 je Signal ist zunächst ein Arbeitsvorschlag.
 - Konkrete Rausch-, Hintergrund- und Gewichtungsbedingungen des kleinen Piloten.
 

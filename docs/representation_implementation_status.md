@@ -1,14 +1,49 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Aktueller Abgleich am 06.11.2026: main `e28889c4013d6d4eb1725ad44f3f2a1ef844cfdf`
-enthält PR #73. PR #74 auf `codex/results-archive-index` bindet diese Basis
-normal ein; die drei Dokumentationskonflikte werden unter Erhalt beider
-Aufträge aufgelöst. Code, Bewertungsverträge, Ergebnisindex und Archivregel
-bleiben gegenüber ihren jeweiligen geprüften Ständen unverändert. Die neue
-Dokumentationsprüfung und der tatsächliche CI-Checkout werden in PR #74
-festgehalten. Anschließend ausdrückliche Mergefreigabe abwarten. Die danach
-beauftragte Leitfadenanpassung und begrenzte Endfrontdiagnose bleiben ein
-eigenes Arbeitspaket; keine wissenschaftliche Suchausführung freigegeben.
+Aktueller Abgleich am 06.11.2026: main `16d2f40506e6dae6534f02d76f1cf2f0dfde5dd2`
+enthält die ausdrücklich freigegebenen PRs #73 und #74. PR #74 wurde nach
+normaler Basiseinbindung auf Head `75823a33f63fdcaac9a3afaa1f76113e88429d2f`
+geprüft; sein Dateibaum `c3b24e575cd45a869004b7900a1fb4038820492d` entspricht
+dem Merge und tatsächlichen CI-Checkout `a7bb10b086e15cc54a0a6c5ba70c06e503e97b89`.
+[Dokumentations-CI 42178841264](https://github.com/craexxn/ringdown-sr/actions/runs/42178841264)
+erfolgreich: 85 Markdown-Dateien, `mode=docs`, beide erforderlichen Jobs grün,
+native Prüfungen planmäßig übersprungen. Index und Archivregel blieben bei der
+Konfliktauflösung bytegleich; Code/Verträge entsprachen main nach PR #73.
+
+## Aktuell: Leitfaden und begrenzte Endfrontdiagnose
+
+- **Branch und Basis:** `codex/recovery-roadmap-front-diagnosis`, aktueller main
+  `16d2f40` normal eingebunden. Bestehende Worktrees und Arbeiten bleiben erhalten.
+- **Umfang:** Leitfadenphase 2; [Diagnoseumfang](endfront_diagnostic_001.md) vor
+  Anwendung in `41e730d` festgeschrieben. Vier Originalserien, keine Suchen/Fits,
+  keine neue Erkennerentwicklung. Historische Berichte, Verträge und Protokolle
+  bleiben unverändert; künftige Planung im zentralen Leitfaden auf Version 2
+  vom 06.11.2026 gebracht.
+- **Bereits geprüft:** alle 78 Einzelauswahlen/18 Gruppen der drei Berichte,
+  Zell-/Seed-/Budgetzuordnung, Klassengrenzen anhand der gespeicherten Kennzahlen,
+  vier historische Planhashes und Verfügbarkeit von 50 Laufzeitdateiverweisen.
+  Anschließend alle vier bereitgestellten Originalarchive an Kataloghashes,
+  Manifesten und Quellenbindungen geprüft; 738 Kandidaten aus 78 Endfronten
+  lesend diagnostiziert. Kein anderer A-Kandidat in den 15 erfolglosen
+  Staffel-/Transferfronten, ebenso in allen 35 Nicht-A-Fronten des Bestands.
+  Sieben gültige Familienmitglieder mit Klasse D in fünf bereits erfolgreichen
+  Fronten; Originalauswahlen unverändert. Keine neue Suche/Fits oder native
+  Julia-Replays. Befunde und Grenzen im verlinkten Diagnosebericht.
+- **Nachweispaket:** `endfront-diagnostic-003-review.tar.gz`, SHA-256
+  `808da23defbbb2bfe7a58e6fe15783a96725d67f306e00e89fa8e8869bb8902a`.
+  Enthält Originalarchive, Scope, Diagnoseprogramm und vollständige Beweisspuren;
+  Ausgabemanifest unabhängig nachgehasht. Zwei vorherige Auditansätze blieben
+  gesperrt; anschließend vorhandene baumabhängige Replay-Regel korrekt angewandt.
+- **Vorbereitung Phase 3:** 1 × 500, frische 1 × 2.000 und 4 × 500;
+  festes 300/5, eingeschaltete Häufigkeitsschalter, allgemeine Grammatik,
+  `should_simplify=false`. Zusatzraster bereits in Entwicklung, rein diagnostisch.
+  Globaler Neustartvorteil bleibt Hypothese; vollständige Entscheidung aller
+  ungeklärten Formeln ist keine Voraussetzung. Ausführung separat.
+- **Nächster Schritt:** Diagnose-/Leitfadenpaket als Dokumentations-PR prüfen;
+  konkretes Vergleichsprotokoll einfrieren und den Manjaro-Laufweg als
+  überschaubaren Draft-PR implementieren. Weitere PRs nicht eigenständig mergen.
+- **Sicherung:** Bereitgestellte Arbeitskopien ersetzen keine bestätigte
+  Archivablage oder zweite Kopie; [Index](results_index.md) weiterführen.
 
 Historische Übernahmen und jeweilige damalige Prüfstände:
 

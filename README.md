@@ -5,48 +5,44 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 06.11.2026; abgeglichener Hauptbranch:
-`e28889c` ([technische Optimierung #73](https://github.com/craexxn/ringdown-sr/pull/73)).
-Der [CI-Sparplan](docs/github_actions_savings_plan.md) ist mit
-[PR #71](https://github.com/craexxn/ringdown-sr/pull/71) übernommen:
-günstige Draft-Prüfungen, danach vollständige [serielle native CI](docs/ci.md)
-beim Ready-Wechsel. Vollständige Prüfung bleibt vor der Übernahme erforderlich.
-Aktuell ist [Stufe 1 der ergänzenden Ergebnisbewertung](docs/supplemental_assessment.md)
-mit [PR #69](https://github.com/craexxn/ringdown-sr/pull/69) übernommen:
-verifizierter Originalimport und zusätzliche Kurvenklassen A/B/C/D, ergänzt um
-zukünftige Schema-3-Läufe mit `--assessment-output`. Die Bewertungsgrundlage wird
-vor der Suche gespeichert; bewertet wird die Originalauswahl gegen das saubere Signal.
-Die [lesende Anwendung auf alle 78 Originalauswahlen](docs/supplemental_assessment_results_001.md)
-ist abgeschlossen; alle vier verankerten Originalarchive liegen verifiziert vor.
-Die exakte Struktur-/Domain-/Fortsetzungsprüfung ist ebenfalls übernommen.
-Damit sind alle drei beauftragten Bewertungsstufen übernommen.
-Prüfstand und offene Arbeit stehen im [Fortsetzungsstand](docs/representation_implementation_status.md).
-Der [Leitfaden zur wiederholbaren Rekonstruktion](docs/ringdown_recovery_roadmap.md)
-ordnet Phasen, Begründungen und Entscheidungskriterien. Aktuell läuft dessen
-Phase 1. Stufe 2 ist mit [PR #70](https://github.com/craexxn/ringdown-sr/pull/70)
-übernommen und [auf die 78 Originalauswahlen angewandt](docs/supplemental_structure_results_001.md).
-Die [quantifizierte Zusatzterm-Diagnose](docs/supplemental_remainder.md)
-ist als Stufe 3 implementiert, lokal geprüft und
-[auf die 78 Originalauswahlen angewandt](docs/supplemental_remainder_results_001.md).
-Mehrere Grundterme werden separat diagnostiziert; adaptive Schranken bleiben
-begrenzt. [PR #72](https://github.com/craexxn/ringdown-sr/pull/72) enthält
-die übernommene Umsetzung, vollständige CI und den KI-Review ohne Befund.
-Der technische Folgeauftrag
-[Laufzeitoptimierung von Export und Testvorbereitung](docs/assessment_performance.md)
-ist mit [PR #73](https://github.com/craexxn/ringdown-sr/pull/73) nach vollständiger
-CI, übermitteltem separatem KI-Review ohne Befund und ausdrücklicher Freigabe
-übernommen. Die [Archivierungsregelung](docs/results_archiving.md) und der
-[Ergebnisindex](docs/results_index.md) stehen in PR #74 zur abschließenden Prüfung;
-konkrete Ablageorte und zweite Sicherungskopien bleiben unbestätigt.
-Suchversuche stehen aus.
-Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
-KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit
-[PR #59](https://github.com/craexxn/ringdown-sr/pull/59) übernommen.
-Die Suche behält `should_simplify=false` aus #56. Im lokalen Vergleich aus #61
-werden die Grenzen für lokale Iterationen und Neustarts ausdrücklich variiert;
-die übrigen Einstellungen und numerischen Prüfungen bleiben erhalten.
+Fortsetzungsstand: 06.11.2026; abgeglichener main `16d2f40` nach ausdrücklich
+freigegebener Übernahme von [PR #73](https://github.com/craexxn/ringdown-sr/pull/73)
+und [PR #74](https://github.com/craexxn/ringdown-sr/pull/74).
+Alle drei Bewertungsstufen sind implementiert, geprüft, übernommen und auf
+78 Originalauswahlen angewandt: [Kurvenklassen](docs/supplemental_assessment_results_001.md),
+[Originalfamilie und Domain](docs/supplemental_structure_results_001.md),
+[quantifizierte Restterme](docs/supplemental_remainder_results_001.md).
+
+Die Neubewertung erklärt den früheren Rückgang der Strukturzählung in der
+äußeren Staffel als Erkennungsgrenze: 500, 2.000 und 5.000 erreichen jeweils
+5/5 A-Kurven mit gültiger Originalfamilie. Die drei frischen Transfer-Referenzen
+bleiben bei 0/3; Suchrobustheit hat deshalb Vorrang. Die 38 gültigen Mitglieder,
+zwei Fortsetzungen und drei ungeklärten Familienbefunde unter 43 A-Kurven sind
+eine Beschreibung des Bestands, keine gepoolte Erfolgsquote. Neue Parameter-
+übereinstimmungen bleiben `not_assessed`.
+
+Der [zentrale Leitfaden](docs/ringdown_recovery_roadmap.md) führt nun Phase 2:
+[begrenzte Endfrontdiagnose](docs/endfront_diagnostic_001.md), danach Vorbereitung
+von 1 × 500, 1 × 2.000 und 4 × 500 bei festem lokalem Profil 300/5.
+Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
+ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
+Ausführungsschritt. Umsetzung und Nachweise stehen im
+[Fortsetzungsstand](docs/representation_implementation_status.md).
+
+[CI-Sparplan](docs/github_actions_savings_plan.md),
+[technische Optimierung](docs/assessment_performance.md) und
+[Archivregel](docs/results_archiving.md) sind übernommen. Der
+[Ergebnisindex](docs/results_index.md) führt Zuordnung und offene Sicherung:
+gemeinsamer Archivordner plus zweite gesicherte Kopie, Releases optional.
+Konkrete Ablageorte und geprüfte Zweitkopien sind weiterhin unbestätigt.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
+
+### Historische Entwicklungsbefunde
+
+Die folgenden Abschnitte erhalten die ursprünglichen Bewertungen und damaligen
+Arbeitspläne. Ihre Ausblicke werden durch den aktuellen Leitfaden oben abgelöst;
+sie geben keine erneute wissenschaftliche Ausführung frei.
 
 Der [Manjaro-Suchbudgetlauf 004](docs/search_duration_results_manjaro_004.md)
 ist vollständig abgeschlossen und unabhängig nachgerechnet: **20 Zellen,

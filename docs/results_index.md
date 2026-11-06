@@ -195,6 +195,25 @@ kein Originalarchiv.
 
 ## Noch zu erledigen
 
+### Zusätzliche begrenzte Endfrontdiagnose
+
+Am 06.11.2026 wurden die vier Originalarchive erneut bereitgestellt und anhand
+ihrer unveränderten Katalog-SHA-256, Manifeste und Quellenbindungen geprüft.
+Die [Endfrontdiagnose](endfront_diagnostic_001.md) bewertet getrennt 738 Kandidaten
+aus 78 Fronten, ohne Originalauswahlen zu ersetzen. Softwarestand
+`4e42ff74eda62a58202aa706fc42a840eea1226c`; das separate Diagnoseprogramm und
+sein Hash sind im Paket enthalten. Keine neue Suche und kein neuer Fit.
+
+| Diagnose-ID | Archiv | SHA-256 | Ablage / Sicherungsstand |
+| --- | --- | --- | --- |
+| `endfront-diagnostic-003` | `endfront-diagnostic-003-review.tar.gz` | `808da23defbbb2bfe7a58e6fe15783a96725d67f306e00e89fa8e8869bb8902a` | Lokale Arbeitskopie mit Originalen und Diagnose; dauerhafte Ablage und unabhängige zweite Kopie nicht bestätigt |
+
+Die beiden vorherigen unvollständigen technischen Auditversuche blieben
+gesperrt; sie sind keine zusätzliche Bewertung. Die erfolgreiche Diagnose
+und das Reviewpaket sind getrennt von allen Originalen aufbewahrt.
+
+### Offene Sicherungsschritte
+
 - Die 19 namentlich und mit Hash belegten Originalarchive aus „Originalarchive“
   im gemeinsamen Archivordner und einer zweiten gesicherten Kopie erhalten.
   Bei älteren Dateien die tatsächlichen Bytes zuerst mit dem
