@@ -62,7 +62,9 @@ def clock_fixture(tmp_path, condition="time", count=7, elapsed=400.25):
         "iteration_limit_reached": count == 2 * iterations,
         "technical_counter_stop": False,
         "affinity": [3],
-        "native_start_unix_seconds": 1.0,
+        "native_start_unix_seconds": 1000.0,
+        "loop_entry_unix_seconds": 1000.0,
+        "monotonic_to_last_check_seconds": elapsed,
         "elapsed_at_last_check_seconds": elapsed,
         "main_loop_call_wall_seconds": elapsed + 1,
         "clock_difference_seconds": 0.0,
@@ -132,6 +134,17 @@ def test_early_return_without_a_timer_or_iteration_limit_is_not_success(tmp_path
     request, record = clock_fixture(tmp_path, "iterations", 7, 4.0)
     _write_json(tmp_path / "worker/time_budget_clock.json", record)
     with pytest.raises(ValueError, match="without its allowed"):
+        bridge.clock_evidence(
+            tmp_path, request, SimpleNamespace(read_json=sources.read_json)
+        )
+
+
+@pytest.mark.parametrize("jump", [-2.0, 2.0])
+def test_clock_jump_before_first_timeout_check_is_not_hidden(tmp_path, jump):
+    request, record = clock_fixture(tmp_path, count=1)
+    record["loop_entry_unix_seconds"] += jump
+    _write_json(tmp_path / "worker/time_budget_clock.json", record)
+    with pytest.raises(ValueError, match="clock"):
         bridge.clock_evidence(
             tmp_path, request, SimpleNamespace(read_json=sources.read_json)
         )

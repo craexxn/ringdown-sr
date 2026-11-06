@@ -18,6 +18,8 @@ Julia-Import `JULIA_NUM_THREADS=1,0`, `PYTHON_JULIACALL_THREADS=1,0` sowie
 `JULIA_NUM_GC_THREADS=1`. Die tatsächlich beobachteten Default-/Interactive-/GC-
 und BLAS-Threadzahlen müssen 1/0/1/1 betragen. Hardware, Affinität und
 Threadumgebung werden vor und während jedes Fits gespeichert.
+Die Hardwarebindung enthält auch die tatsächlichen CPU-Modellnamen aus
+`/proc/cpuinfo`; Julias Architekturbezeichnung allein genügt dafür nicht.
 
 ```bash
 git status --short
@@ -106,6 +108,10 @@ und Elternprozessarbeit. JIT wird nicht als isoliert gemessene Größe ausgegebe
 `iteration_limit`, `regular_timeout`, `iteration_reserve`, `worker_timeout`
 und erlaubte numerische Fitfehler bleiben getrennt. Unbekannte Fehler,
 Aufrufwächter und Unterbrechungen sperren den Gesamtabschluss.
+Der Abgleich mit einer monotonen Uhr beginnt vor Eintritt in die native
+Hauptschleife; er erfasst auch Sprünge vor der ersten Zeitprüfung. Eine Abweichung
+über einer Sekunde sperrt die Freigabe. Reine JIT-Zeit wird nicht aus der
+Differenz zweier ungleicher Messfenster geschätzt.
 
 ## Artefakte und lesende Verifikation
 

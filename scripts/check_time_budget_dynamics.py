@@ -86,6 +86,40 @@ def worker(kind, output):
     events = [json.loads(str(event)) for event in jl.PREFIX_EVENTS]
     if len(events) != 4 or profile.checked_backend_sources(jl) != hashes:
         raise ValueError("Invalid or changed deterministic probe evidence.")
+    counterchecks = jl.seval("""
+    let original = SearchBudgetClock.OBSERVATION[], results = []
+        try
+            for jump in (0.0, -10.0, 10.0)
+                # A private snapshot with exactly one processed population:
+                # test both clock directions before the very first check.
+                o = typeof(original)((getfield(original, key)
+                    for key in fieldnames(typeof(original)))...)
+                o.state = (; cycles_remaining=[o.iterations * o.populations - 1])
+                o.checks = 1
+                o.last_tick = o.first_tick
+                o.last_elapsed = o.first_elapsed
+                o.loop_start_wall -= jump
+                SearchBudgetClock.OBSERVATION[] = o
+                accepted = try
+                    SearchBudgetClock.record()
+                    true
+                catch caught
+                    occursin("wall clock", sprint(showerror, caught)) || rethrow()
+                    false
+                end
+                accepted == iszero(jump) || error("First-check clock counterexample failed.")
+                push!(results, (; jump_seconds=jump, accepted))
+            end
+        finally
+            SearchBudgetClock.OBSERVATION[] = original
+        end
+        results
+    end
+    """)
+    clock_checks = [
+        {str(key): getattr(item, str(key)) for key in jl.keys(item)}
+        for item in counterchecks
+    ]
     _write_json(
         output / "prefix.json",
         {
@@ -97,6 +131,7 @@ def worker(kind, output):
             "runtime": runtime,
             "events": events,
             "clock": record,
+            "first_check_clock_counterchecks": clock_checks,
         },
     )
 

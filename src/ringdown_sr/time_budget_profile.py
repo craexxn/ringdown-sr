@@ -80,8 +80,17 @@ def checked_runtime(jl):
         interactive_threads=Threads.nthreads(:interactive), gc_threads=Threads.ngcthreads(),
         blas_threads=LinearAlgebra.BLAS.get_num_threads())""")
     record = {str(key): getattr(native, str(key)) for key in jl.keys(native)}
+    models = sorted(
+        {
+            line.partition(":")[2].strip()
+            for line in Path("/proc/cpuinfo").read_text().splitlines()
+            if line.partition(":")[0].strip() == "model name"
+        }
+    )
     record.update(
-        affinity=sorted(os.sched_getaffinity(0)), thread_environment=dict(JULIA_THREADS)
+        affinity=sorted(os.sched_getaffinity(0)),
+        thread_environment=dict(JULIA_THREADS),
+        cpu_models=models,
     )
     validate_runtime(record)
     return record
@@ -93,6 +102,7 @@ def validate_runtime(record):
         or set(record)
         != {
             "cpu_name",
+            "cpu_models",
             "cpu_threads",
             "word_size",
             "julia_threads",
@@ -104,6 +114,12 @@ def validate_runtime(record):
         }
         or not isinstance(record["cpu_name"], str)
         or not record["cpu_name"]
+        or type(record["cpu_models"]) is not list
+        or not record["cpu_models"]
+        or any(
+            not isinstance(model, str) or not model for model in record["cpu_models"]
+        )
+        or record["cpu_models"] != sorted(set(record["cpu_models"]))
         or type(record["cpu_threads"]) is not int
         or record["cpu_threads"] < 1
         or any(

@@ -243,6 +243,8 @@ def clock_evidence(output, request, support):
     elapsed = record["elapsed_at_last_check_seconds"]
     for key in (
         "native_start_unix_seconds",
+        "loop_entry_unix_seconds",
+        "monotonic_to_last_check_seconds",
         "elapsed_at_last_check_seconds",
         "main_loop_call_wall_seconds",
     ):
@@ -250,7 +252,19 @@ def clock_evidence(output, request, support):
         if type(value) not in (float, int) or not math.isfinite(value) or value < 0:
             raise ValueError("Invalid observed native time.")
     drift = record["clock_difference_seconds"]
-    if type(drift) not in (int, float) or not math.isfinite(drift) or abs(drift) > 1:
+    actual_drift = (
+        record["native_start_unix_seconds"]
+        + elapsed
+        - record["loop_entry_unix_seconds"]
+    ) - record["monotonic_to_last_check_seconds"]
+    if (
+        type(drift) not in (int, float)
+        or not math.isfinite(drift)
+        or abs(drift) > 1
+        or drift != actual_drift
+        or record["monotonic_to_last_check_seconds"]
+        > record["main_loop_call_wall_seconds"]
+    ):
         raise ValueError("Native wall clock drift invalidates comparison.")
     limit = control.LIMITS[plan["condition"]]
     if record["timeout_reached"] is not (limit is not None and elapsed > limit):

@@ -56,6 +56,12 @@ Konfliktauflösung bytegleich; Code/Verträge entsprachen main nach PR #73.
   Dokumentationsprüfung (91 Markdown-Dateien). Die CI-Inventarprüfung wurde um
   genau die beiden neuen technischen Blöcke ergänzt; die gespeicherten Hashes
   sämtlicher bisherigen Prüfkommandos bleiben unverändert.
+  Das gezielte KI-basierte Eigenreview fand zusätzlich eine Lücke in der neuen
+  Uhrsprungprüfung vor der ersten nativen Zeitprüfung. Beide Zeitrichtungen wurden
+  als Gegenfälle reproduziert und durch einen gemeinsamen Messbeginn vor Eintritt
+  in die Hauptschleife korrigiert; lesende Verifikation rechnet die Differenz nach.
+  Danach bestehen 317 gezielte Pythonfälle. Native Ein-Prüfpunkt-Gegenfälle und
+  erneuter Gesamtintegrationstest laufen am abschließenden Implementierungsstand.
 - **Offene Quellenlücke:** Wissenschaftliches PR76-Archiv liegt hier noch nicht vor.
   Das vorhandene Format belegt tatsächliche native CPU-/Julia-/GC-Threadbindung
   nicht vollständig. Ohne Originalbelege keine Wiederverwendungsfreigabe und

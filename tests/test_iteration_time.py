@@ -293,6 +293,7 @@ def test_whole_call_measurement_and_postpublication_revocation(
 def test_actual_runtime_evidence_rejects_missing_or_noninteger_limits(field, value):
     record = {
         "cpu_name": "fixture",
+        "cpu_models": ["fixture CPU"],
         "cpu_threads": 4,
         "word_size": 64,
         "julia_threads": 1,

@@ -15,6 +15,7 @@ mutable struct Observation
     first_tick::UInt64
     last_tick::UInt64
     loop_start::UInt64
+    loop_start_wall::Float64
     loop_end::UInt64
     timeout_reached::Bool
     finished::Bool
@@ -27,7 +28,7 @@ function configure(; technical_checks=nothing, observer=nothing)
     technical_checks === nothing ||
         (technical_checks isa Int && technical_checks > 0) || error("Invalid technical stop.")
     OBSERVATION[] = Observation(nothing, 0, 0, 0, NaN, NaN, NaN,
-        UInt64(0), UInt64(0), UInt64(0), UInt64(0), false, false, technical_checks, observer)
+        UInt64(0), UInt64(0), UInt64(0), NaN, UInt64(0), false, false, technical_checks, observer)
     return nothing
 end
 
@@ -43,6 +44,7 @@ function SR._main_search_loop!(state::SR.SearchState, datasets,
     observation.iterations = ropt.niterations
     observation.populations = options.populations
     observation.loop_start = time_ns()
+    observation.loop_start_wall = time()
     result = invoke(SR._main_search_loop!,
         Tuple{SR.AbstractSearchState, Any, SR.AbstractRuntimeOptions, SR.AbstractOptions},
         state, datasets, ropt, options)
@@ -81,13 +83,17 @@ function record()
     remaining = only(o.state.cycles_remaining)
     total = o.iterations * o.populations
     0 <= remaining < total || error("Invalid native cycle counter.")
-    elapsed_monotonic = Float64(o.last_tick - o.first_tick) / 1e9
-    clock_difference = (o.last_elapsed - o.first_elapsed) - elapsed_monotonic
+    # Compare both clocks from loop entry, including JIT before the backend
+    # sets its own origin. This also covers jumps before the first timeout check.
+    elapsed_monotonic = Float64(o.last_tick - o.loop_start) / 1e9
+    clock_difference = (o.native_start + o.last_elapsed - o.loop_start_wall) - elapsed_monotonic
     isfinite(o.last_elapsed) && o.last_elapsed >= 0 && abs(clock_difference) <= 1.0 ||
         error("Native wall clock changed relative to the monotonic clock.")
     # These count population outputs consumed by the main loop. A completed
     # but not consumed next population can exist; it is not counted as exported.
     return (; native_start_unix_seconds=o.native_start,
+        loop_entry_unix_seconds=o.loop_start_wall,
+        monotonic_to_last_check_seconds=elapsed_monotonic,
         elapsed_at_last_check_seconds=o.last_elapsed,
         main_loop_call_wall_seconds=Float64(o.loop_end - o.loop_start) / 1e9,
         clock_difference_seconds=clock_difference, checks=o.checks,
