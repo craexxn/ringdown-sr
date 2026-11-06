@@ -1,6 +1,30 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Aktueller Abgleich am 06.11.2026: main `16d2f40506e6dae6534f02d76f1cf2f0dfde5dd2`
+## Aktuell: Vorbereitung der öffentlichen Repository-Sichtbarkeit
+
+Stand: 06.11.2026; eigener Branch `codex/publication-preparation` auf main
+`2f9fff00c24a72f644dc42816b6a05aa87e392f0` nach PR #75. Der getrennte
+Suchvergleich in PR #76 bleibt eine aktive Arbeit; seine Änderungen und
+wissenschaftliche Ausführung sind nicht Teil dieses Auftrags.
+
+- Organisatorischer Folgeauftrag zur Quellen-/Archivpflege in Leitfadenphase 1:
+  Git-Historie und GitHub-Oberflächen lesend auf Veröffentlichungsbedarf prüfen,
+  kleine Dokumentationskorrekturen und die ausdrücklich gewählte MIT-Lizenz
+  mit Copyright 2026 Gregor Hubmann vorbereiten.
+- Konkrete Fundstellen, Umfang, Grenzen und offene Einstellungen stehen im
+  [Veröffentlichungsbefund](publication_review.md). Rohdaten der Prüfung liegen
+  außerhalb des Repositories; keine vertraulichen Fundwerte werden kopiert.
+- Wissenschaftlicher Code, Eingabedaten, eingefrorene Pläne, Bewertungsverträge
+  und Originalergebnisse bleiben unverändert. Keine Suche, Historienbereinigung,
+  Sichtbarkeitsänderung oder eigenständige Übernahme.
+- Die neue Root-Datei `LICENSE` löst nach unveränderter CI-Klassifikation den
+  vollständigen Scope aus. Prüfnachweise und tatsächlicher Checkout gehören
+  zum zugehörigen Veröffentlichungs-PR; eine erfolgreiche Dokumentationsprüfung
+  allein ist keine vollständige technische Freigabe.
+
+## Historischer Abgleich vor Übernahme von PR #75
+
+Abgleich am 06.11.2026: main `16d2f40506e6dae6534f02d76f1cf2f0dfde5dd2`
 enthält die ausdrücklich freigegebenen PRs #73 und #74. PR #74 wurde nach
 normaler Basiseinbindung auf Head `75823a33f63fdcaac9a3afaa1f76113e88429d2f`
 geprüft; sein Dateibaum `c3b24e575cd45a869004b7900a1fb4038820492d` entspricht

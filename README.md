@@ -5,9 +5,10 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 06.11.2026; abgeglichener main `16d2f40` nach ausdrücklich
-freigegebener Übernahme von [PR #73](https://github.com/craexxn/ringdown-sr/pull/73)
-und [PR #74](https://github.com/craexxn/ringdown-sr/pull/74).
+Fortsetzungsstand: 06.11.2026; abgeglichener main `2f9fff0` nach Übernahme von
+[PR #75](https://github.com/craexxn/ringdown-sr/pull/75), einschließlich
+[PR #73](https://github.com/craexxn/ringdown-sr/pull/73) und
+[PR #74](https://github.com/craexxn/ringdown-sr/pull/74).
 Alle drei Bewertungsstufen sind implementiert, geprüft, übernommen und auf
 78 Originalauswahlen angewandt: [Kurvenklassen](docs/supplemental_assessment_results_001.md),
 [Originalfamilie und Domain](docs/supplemental_structure_results_001.md),
@@ -35,6 +36,10 @@ Ausführungsschritt. Umsetzung und Nachweise stehen im
 [Ergebnisindex](docs/results_index.md) führt Zuordnung und offene Sicherung:
 gemeinsamer Archivordner plus zweite gesicherte Kopie, Releases optional.
 Konkrete Ablageorte und geprüfte Zweitkopien sind weiterhin unbestätigt.
+Die [Veröffentlichungsprüfung](docs/publication_review.md) dokumentiert die
+Vorbereitung einer öffentlichen Repository-Sichtbarkeit. Das Repository bleibt
+bis zur gesonderten Freigabe privat; diese Vorbereitung ändert keine
+wissenschaftlichen Protokolle und startet keine Versuchsserie.
 Offizieller Bearbeitungsbeginn: 12.10.2026.
 Beginn der fachlichen Pilotimplementierung: 15.10.2026.
 
@@ -447,7 +452,8 @@ Entwicklungswerkzeuge:
 
 ## Einrichtung auf einem weiteren Rechner
 
-Voraussetzungen: Git, uv und Zugriff auf das private GitHub-Repository.
+Voraussetzungen: Git, uv und Lesezugriff auf das GitHub-Repository.
+Solange es privat ist, ist eine berechtigte GitHub-Anmeldung erforderlich.
 Die folgenden Befehle sind für ein Linux- beziehungsweise WSL-Terminal.
 
 ```bash
@@ -459,6 +465,16 @@ uv sync --locked --dev --python 3.12.14
 
 Programme werden aus dem Projektordner mit `uv run` gestartet.
 Eine manuelle Aktivierung der virtuellen Umgebung ist nicht nötig.
+
+## Lizenz
+
+Der eigene Softwarecode und die zugehörige technische Dokumentation stehen
+unter der [MIT-Lizenz](LICENSE), Copyright 2026 Gregor Hubmann. Externe
+Abhängigkeiten und ausdrücklich anders gekennzeichnete Inhalte behalten ihre
+jeweiligen Lizenzen; sie werden durch die Projektlizenz nicht umlizenziert.
+Die separat verfasste Masterarbeit ist von dieser Lizenzierung nicht
+automatisch erfasst. Umfang und Grenzen der Prüfung stehen im
+[Veröffentlichungsbefund](docs/publication_review.md#lizenzentscheidung).
 
 ## Bestehenden Rechner aktualisieren
 

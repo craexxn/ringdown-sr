@@ -30,6 +30,10 @@ bereits erfolgte Implementierung oder wissenschaftliche Ausführung.
 
 ## Rolle und Pflege
 
+- Die [Veröffentlichungsprüfung](publication_review.md) ergänzt die
+  organisatorische Quellen- und Archivpflege aus Phase 1. Lizenzierung und
+  Repository-Sichtbarkeit ändern weder die wissenschaftlichen Kriterien noch
+  die Reihenfolge der Suchversuche; eine öffentliche Umstellung bleibt separat.
 - Die [Archivierungsrichtlinie](results_archiving.md) und der
   [Ergebnisindex](results_index.md) ergänzen Phase 1 um die dauerhafte
   Zuordnung vorhandener Versuche, Quellen und Bewertungen. Die Regelung ist
