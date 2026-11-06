@@ -6,6 +6,7 @@ import time
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
 
+from . import assessment_sources as sources
 from .assessment_sources import ROOT, json_bytes, safe_name, sha256
 
 REPORT = "assessment_report.json"
@@ -56,6 +57,7 @@ class Consumption:
     def __init__(self, clock):
         self.clock = clock
         self.files = {}
+        self.archives = set()
         self.callbacks = []
 
     def add(self, path, contents):
@@ -64,10 +66,27 @@ class Consumption:
             raise ValueError("Conflicting consumption snapshot.")
         self.files[path] = contents
 
+    def add_archive(self, path, contents):
+        self.add(path, contents)
+        path = Path(path).absolute()
+        if path in self.archives:
+            return
+        self.archives.add(path)
+
+        def unchanged():
+            if sources.bounded_read(path) != self.files[path]:
+                raise ValueError("Original archive changed after consumption.")
+
+        # Keep the later, strict read after previously registered checks (HEAD).
+        # A duplicate early read must not replace this final archive witness.
+        self.callbacks.append(unchanged)
+
     def check(self):
         self.clock.check()
         for path, raw in self.files.items():
-            if path.is_symlink() or path.read_bytes() != raw:
+            if path not in self.archives and (
+                path.is_symlink() or path.read_bytes() != raw
+            ):
                 raise ValueError("Consumed file changed: " + str(path))
         for callback in self.callbacks:
             callback()
@@ -227,7 +246,7 @@ def export_transaction(output, build, *, seconds=300):
     owned, revoked = None, False
     try:
         # Do not reserve an output when an existing alarm prevents cancellation control.
-        with clock.active():
+        with clock.active(), sources.git_file_cache():
             owned = reserve_output(output)
             try:
                 report, summary, payloads = build(consumed)

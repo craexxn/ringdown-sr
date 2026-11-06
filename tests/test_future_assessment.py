@@ -1,6 +1,7 @@
 """Exercise prospective integration with fixed synthetic worker outputs, never search."""
 
 import math
+import shutil
 from pathlib import Path
 
 import numpy as np
@@ -34,8 +35,7 @@ def rehash(root):
         path.write_bytes(json_bytes(record))
 
 
-@pytest.fixture
-def software(monkeypatch):
+def bind_software(monkeypatch):
     inventory = future.git("ls-tree", "-r", "-z", "HEAD", "--", "src/ringdown_sr")
     monkeypatch.setattr(future, "git", lambda *args: inventory)
     provenance = pilot._provenance()
@@ -73,7 +73,11 @@ def software(monkeypatch):
 
 
 @pytest.fixture
-def worker(monkeypatch):
+def software(monkeypatch):
+    bind_software(monkeypatch)
+
+
+def bind_worker(monkeypatch):
     calls = []
 
     def search(time, observed, **kwargs):
@@ -130,12 +134,27 @@ def worker(monkeypatch):
 
 
 @pytest.fixture
+def worker(monkeypatch):
+    return bind_worker(monkeypatch)
+
+
+@pytest.fixture
 def run_source(tmp_path, software, worker):
     config = tmp_path / "input.toml"
     config.write_text(small_config())
     source, output = tmp_path / "run", tmp_path / "assessment"
     assert run_pilot(config, source, assessment_output=output).status == "success"
     return source, output, config
+
+
+@pytest.fixture
+def replay_source(tmp_path, software, assessment_replay_template):
+    """Give each rejection test private, ordinary copies of valid source bytes."""
+    for name in ("run", "assessment"):
+        shutil.copytree(assessment_replay_template / name, tmp_path / name)
+    config = tmp_path / "input.toml"
+    shutil.copyfile(assessment_replay_template / "input.toml", config)
+    return tmp_path / "run", tmp_path / "assessment", config
 
 
 def test_integration_clean_reference_original_selection_and_no_input_leak(
@@ -273,9 +292,9 @@ def test_saved_export_is_read_only_and_needs_no_archive_or_worker(
     ],
 )
 def test_consistently_rehashed_source_corruption_is_blocked(
-    run_source, tmp_path, change
+    replay_source, tmp_path, change
 ):
-    source, _, _ = run_source
+    source, _, _ = replay_source
     arm = source / "symbolic/ordinary"
     path = arm / "result.json"
     record = read(path)
@@ -352,8 +371,8 @@ def test_consistently_rehashed_source_corruption_is_blocked(
     assert read(destination / REPORT)["groups"] == []
 
 
-def test_late_source_mutation_revokes_publication(run_source, tmp_path, monkeypatch):
-    source, _, _ = run_source
+def test_late_source_mutation_revokes_publication(replay_source, tmp_path, monkeypatch):
+    source, _, _ = replay_source
     original = Path.write_bytes
 
     def write(path, data):
@@ -419,8 +438,9 @@ def test_fixed_grid_has_seven_inner_points_and_no_extrapolation():
     )
 
 
-def test_output_overlap_is_rejected_before_any_worker(run_source, worker):
-    source, _, config = run_source
+def test_output_overlap_is_rejected_before_any_worker(tmp_path, software, worker):
+    source, config = tmp_path / "run", tmp_path / "input.toml"
+    config.write_text(small_config())
     calls = len(worker)
     with pytest.raises(ValueError, match="separate"):
         run_pilot(config, source, assessment_output=source / "assessment")
@@ -530,8 +550,10 @@ def test_software_and_policy_are_committed_before_use(tmp_path, monkeypatch, cha
             future.freeze_software(consumed)
 
 
-def test_cli_replay_failure_reports_export_error_and_keeps_lock(run_source, tmp_path):
-    source, _, _ = run_source
+def test_cli_replay_failure_reports_export_error_and_keeps_lock(
+    replay_source, tmp_path
+):
+    source, _, _ = replay_source
     path = source / "symbolic/ordinary/result.json"
     front = read(path)
     front["candidates"][1]["prediction"][0] += 0.25

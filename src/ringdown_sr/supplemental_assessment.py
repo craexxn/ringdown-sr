@@ -325,11 +325,10 @@ def build_assessment(archives, consumed):
             try:
                 # Freeze before validation; failed supplied inputs also remain bound.
                 raw = sources.bounded_read(path)
-                consumed.add(path, raw)
+                consumed.add_archive(path, raw)
                 verified = sources.read_verified_series(
-                    path, name, check=consumed.clock.check
+                    path, name, check=consumed.clock.check, contents=raw
                 )
-                consumed.callbacks.append(verified.unchanged)
                 originals = [sources.read_json(raw) for raw in verified.records]
                 payloads[name + "-historical-report.json"] = verified.files[
                     "report.json"
