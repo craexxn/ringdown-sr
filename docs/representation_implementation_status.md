@@ -1,6 +1,8 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Abgleich nach PR #74 am 06.11.2026: main `16d2f40506e6dae6534f02d76f1cf2f0dfde5dd2`
+## Historischer Abgleich vor Übernahme von PR #75
+
+Abgleich am 06.11.2026: main `16d2f40506e6dae6534f02d76f1cf2f0dfde5dd2`
 enthält die ausdrücklich freigegebenen PRs #73 und #74. PR #74 wurde nach
 normaler Basiseinbindung auf Head `75823a33f63fdcaac9a3afaa1f76113e88429d2f`
 geprüft; sein Dateibaum `c3b24e575cd45a869004b7900a1fb4038820492d` entspricht
@@ -29,9 +31,33 @@ Konfliktauflösung bytegleich; Code/Verträge entsprachen main nach PR #73.
   keine Gleichsetzung mit interner Suchzeit oder Gesamtkosten. Bei effektivem
   `warmup_maxsize_by=0.0` entfällt die iterationsabhängige Größenaufwärmung;
   technische Gegenprüfung der übrigen Suchdynamik steht noch aus.
-- **Nächster Schritt:** Protokoll committen, getrennten Zeitlaufweg und
-  Kontrollimport implementieren, kleine technische Gegenfälle prüfen und
-  eigenen Draft-PR erstellen. Kein wissenschaftlicher Suchlauf in Cloud/CI.
+- **Nächster Schritt:** Im bestehenden Draft
+  [PR #77](https://github.com/craexxn/ringdown-sr/pull/77) getrennten Zeitlaufweg
+  und Kontrollimport implementieren, kleine technische Gegenfälle prüfen und
+  danach beide Arbeitspakete gemeinsam vollständig prüfen.
+  Kein wissenschaftlicher Suchlauf in Cloud/CI.
+
+## Ergänzung in PR #77: Veröffentlichung vorbereiten
+
+Stand: 06.11.2026; die Veröffentlichungsvorbereitung wird auf ausdrücklichen
+Bündelungsauftrag in `codex/iteration-time-budget` ergänzt. Integrationsbasis
+ist `1aeedcce6a0f6c5683b2c4176161e14ed83ffa6d`; das dort eingefrorene
+Zeitbudgetprotokoll und seine Konfiguration bleiben bytegleich.
+
+- Organisatorischer Folgeauftrag zur Quellen-/Archivpflege in Leitfadenphase 1:
+  Git-Historie und GitHub-Oberflächen lesend auf Veröffentlichungsbedarf prüfen,
+  kleine Dokumentationskorrekturen und die ausdrücklich gewählte MIT-Lizenz
+  mit Copyright 2026 Gregor Hubmann vorbereiten.
+- Konkrete Fundstellen, Snapshot, Grenzen und offene Einstellungen stehen im
+  [Veröffentlichungsbefund](publication_review.md). Rohdaten der Prüfung liegen
+  außerhalb des Repositories; keine vertraulichen Fundwerte werden kopiert.
+- Diese Ergänzung ändert keinen wissenschaftlichen Code, keine Eingabedaten,
+  eingefrorenen Pläne, Bewertungsverträge oder Originalergebnisse. Keine Suche,
+  Historienbereinigung, Sichtbarkeitsänderung oder eigenständige Übernahme.
+- Die neue Root-Datei `LICENSE` verlangt nach unveränderter CI-Klassifikation
+  die vollständige Abschlussprüfung. Sie wird mit der Zeitbudgetimplementierung
+  in PR #77 gebündelt; Draft-Prüfungen allein sind keine technische Freigabe.
+  Prüfnachweise mit Bezugsstand und tatsächlichem Checkout werden im PR geführt.
 
 ## Separater Suchvergleich: globale Neustarts, Leitfadenphase 3
 
