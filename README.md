@@ -33,8 +33,9 @@ technische CI sind mit PR #76 übernommen. Der Manjaro-Lauf bleibt separat.
 Parallel ist der [begrenzte Zeitbudgetvergleich](docs/iteration_time_budget.md)
 von 2.000 Iterationen mit 400 Sekunden Suchzeit implementiert. Sein Protokoll legt
 vor Sichtung wissenschaftlicher PR76-Ergebnisse die vollständige Kontrollübernahme
-oder einen vollständig frischen Ersatzmodus fest. Technische Prüfungen und
-gemeinsame Ready-CI werden in PR #77 abgeschlossen. Die Wiederverwendung ist
+oder einen vollständig frischen Ersatzmodus fest. Lokal bestehen 3.188 Pythonfälle
+und sieben kleine native Suchprüfungen; die gemeinsame vollständige Ready-CI
+wird in PR #77 geführt. Die Wiederverwendung ist
 unbestätigt: tatsächliche historische Julia-/GC-Threadbelege fehlen im bisherigen
 PR76-Format. Ohne diese Belege bleibt nur der ausdrücklich gewählte frische
 Ersatzmodus mit acht Suchen; keine automatische Umschaltung.

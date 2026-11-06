@@ -16,8 +16,9 @@ Konfliktauflösung bytegleich; Code/Verträge entsprachen main nach PR #73.
 
 - **Branch/Basis:** `codex/iteration-time-budget`, eigener Worktree; main nach
   ausdrücklich freigegebenem PR76-Merge `b547bb3b1753235960cc0654f8cebd747fc1b2f3`
-  normal eingebunden. PR #77 zielt auf main und bleibt bis zum Abschluss der
-  gebündelten lokalen Prüfungen Draft; kein Auftrag zum Merge von PR #77.
+  normal eingebunden. PR #77 zielt auf main; gebündelte lokale Prüfungen und
+  Veröffentlichungsvorbereitung sind abgeschlossen. Der vollständige
+  Ready-CI-Stand wird im PR geführt; kein Auftrag zum Merge von PR #77.
 - **PR76-Abnahme:** Head `66ec4238f39edbbc2a71bb4e984571e41531e7ab`, Basis `2f9fff0`.
   [CI 42196112043](https://github.com/craexxn/ringdown-sr/actions/runs/42196112043)
   vollständig erfolgreich: 3.137 Pythonfälle, alle nativen Blöcke und Abschluss.
@@ -38,39 +39,45 @@ Konfliktauflösung bytegleich; Code/Verträge entsprachen main nach PR #73.
   möglich. Historische Fitzeit 2.001,72272/5 = 400,344544 Sekunden;
   keine Gleichsetzung mit interner Suchzeit oder Gesamtkosten. Bei effektivem
   `warmup_maxsize_by=0.0` entfällt die iterationsabhängige Größenaufwärmung;
-  erste native Präfixgegenprüfung bestanden; erneute Prüfung mit ausdrücklich
-  gebundenen Julia-/GC-Threads ist Teil des Abschlusses.
+  native Präfixgegenprüfung mit ausdrücklich gebundenen Julia-/GC-Threads
+  und CPU-Modell-/Affinitätsbelegen bestanden.
 - **Implementiert:** Eigener Zeitworker und native Profil-/Timerprüfung,
   vollständiger 8-/4-Aufrufplan, konservativer Kontrollimport, getrennte reale
   Kosten und Stopgründe, unveränderte Bewertungen und lesende Verifikation.
   [Manjaro-Laufweg](iteration_time_budget.md) mit konkreten Befehlen und Artefakten.
   Historische Worker, Bewertungsverträge und beide eingefrorenen Protokolle bleiben
   unverändert. Keine wissenschaftlichen PR76-Ergebnisse zur Bewertung geöffnet.
-- **Selbst geprüft:** Auf `12d9db8c164d06c72e482e5f568380e4f68dc6ac` bestehen
-  97 gezielte Pythonfälle sowie vier reale technische Worker auf acht Punkten
-  `y=1+t`: Iterationsende, reguläres Zeitende, Reserveende und identische
-  wiederholte Iterationsfront; anschließende lesende Verifikation bestanden.
-  Ergänzte Gesamtaufrufmessung und abschließender Prüfstand werden im PR geführt.
-  Nach Ergänzung der vollständigen Aufrufmessung, spätem Widerruf und CI-Blöcken
-  bestehen 315 gezielte Pythonfälle, Ruff, Formatprüfung (265 Dateien) und
-  Dokumentationsprüfung (91 Markdown-Dateien). Die CI-Inventarprüfung wurde um
-  genau die beiden neuen technischen Blöcke ergänzt; die gespeicherten Hashes
-  sämtlicher bisherigen Prüfkommandos bleiben unverändert.
-  Das gezielte KI-basierte Eigenreview fand zusätzlich eine Lücke in der neuen
+- **Selbst geprüft:** Implementierungsstand
+  `71118e7a9a6c5972ef0a5467af5dd2c936eb4239` gegen main
+  `b547bb3b1753235960cc0654f8cebd747fc1b2f3`: vollständige Python-Suite mit
+  **3.188 Fällen** in 307,14 s bestanden; darin 317 gezielte Fälle für Budget,
+  Kontrollimport, Ausfälle, Kosten, späten Widerruf und CI. Ruff, Format
+  (265 Dateien), Dokumentationsprüfung (91 Markdown-Dateien) und Diffprüfung
+  bestanden. Die Hashes sämtlicher bisherigen CI-Prüfkommandos bleiben erhalten.
+  Drei frische native Präfixe stimmen über vier Populationsschritte einschließlich
+  Populationen, Hall of Fame und Callbackzählern überein. Neun native
+  Ein-Prüfpunkt-Gegenfälle bestehen: je Profil unveränderte Uhr akzeptiert,
+  Vorwärts-/Rückwärtssprung abgelehnt. Vier weitere technische Worker auf acht
+  Punkten `y=1+t` bestehen: Iterationsende, reguläres Zeitende, Reserveende,
+  identische wiederholte Iterationsfront. Gesamtaufrufmessung und anschließende
+  lesende Verifikation aller vier Zellen mit `search_calls=0` bestanden.
+- **Gezieltes KI-Eigenreview:** Vorbereitung, Herkunft, Ausfallgrenzen,
+  Kontrollübernahme, Timersemantik, Kosten, Auswahl und Veröffentlichungsabschluss
+  am genannten Implementierungsstand geprüft. Es fand zunächst eine Lücke in der
   Uhrsprungprüfung vor der ersten nativen Zeitprüfung. Beide Zeitrichtungen wurden
   als Gegenfälle reproduziert und durch einen gemeinsamen Messbeginn vor Eintritt
   in die Hauptschleife korrigiert; lesende Verifikation rechnet die Differenz nach.
-  Danach bestehen 317 gezielte Pythonfälle. Native Ein-Prüfpunkt-Gegenfälle und
-  erneuter Gesamtintegrationstest laufen am abschließenden Implementierungsstand.
+  Nach Korrektur und den genannten Gegenprüfungen keine weiteren
+  korrekturbedürftigen Befunde im geprüften Umfang. Kein zusätzlicher Agent;
+  dies ist keine unabhängige wissenschaftliche Bestätigung.
 - **Offene Quellenlücke:** Wissenschaftliches PR76-Archiv liegt hier noch nicht vor.
   Das vorhandene Format belegt tatsächliche native CPU-/Julia-/GC-Threadbindung
   nicht vollständig. Ohne Originalbelege keine Wiederverwendungsfreigabe und
   keine nachträgliche Ergänzung vermeintlicher historischer Messungen.
-- **Nächster Schritt:** Im bestehenden
-  [PR #77](https://github.com/craexxn/ringdown-sr/pull/77) gebündelte lokale Prüfungen
-  und gezieltes KI-basiertes Implementierungsreview abschließen; danach einmal
-  gemeinsam mit der abgeschlossenen Veröffentlichungsvorbereitung Ready-CI starten.
-  Kein wissenschaftlicher Suchlauf in Cloud/CI.
+- **Nächster Schritt:** Gemeinsame vollständige Ready-CI von
+  [PR #77](https://github.com/craexxn/ringdown-sr/pull/77) abwarten und tatsächlichen
+  Checkout/Dateibaum prüfen. Wissenschaftlicher Zeitbudgetlauf erst separat nach
+  Übernahme und ausdrücklicher Moduswahl auf Manjaro; keine solche Serie in Cloud/CI.
 
 ## Ergänzung in PR #77: Veröffentlichung vorbereiten
 
@@ -94,7 +101,11 @@ Zeitbudgetprotokoll und seine Konfiguration bleiben bytegleich.
   in PR #77 gebündelt; Draft-Prüfungen allein sind keine technische Freigabe.
   Prüfnachweise mit Bezugsstand und tatsächlichem Checkout werden im PR geführt.
 
-## Separater Suchvergleich: globale Neustarts, Leitfadenphase 3
+## Historischer Entwicklungsstand: globale Neustarts, Leitfadenphase 3
+
+Die folgenden Angaben dokumentieren die Entwicklung vor der PR76-Abnahme.
+Die abgeschlossene CI, das Nachreview und die Übernahme stehen im aktuellen
+Abschnitt oben; frühere nächste Schritte sind damit erledigt.
 
 PR #75 ist nach ausdrücklichem Mergeauftrag als
 `2f9fff00c24a72f644dc42816b6a05aa87e392f0` übernommen. Head
