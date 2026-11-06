@@ -125,8 +125,11 @@ paralleler Auftrag; CI/Review und ihre weitere Bearbeitung gehören dorthin.
 - **Branch und Basis:** `codex/results-archive-index`, eigener Worktree ab
   `de33d52aede3903a9745305b52f35c467e0d3b9f`. Reiner Dokumentationsauftrag;
   [PR #74](https://github.com/craexxn/ringdown-sr/pull/74) ist zur Prüfung offen;
-  die geprüfte Indexfassung liegt in `e8694cb18418d27612dfa6fd486d5e5e2eccf192`.
-  Dieser Übergabenachtrag ergänzt nur die PR-Zuordnung.
+  die erste geprüfte Indexfassung liegt in
+  `e8694cb18418d27612dfa6fd486d5e5e2eccf192`. Die aktuelle Nachbesserung
+  vereinfacht die Ablage auf Grundlage des ausdrücklichen Beschlusses vom
+  06.11.2026: vorhandenen Archivordner und Backup nutzen, manuellen
+  Release-Aufwand vermeiden. GitHub wird zur optionalen zusätzlichen Ablage.
 - **Umgesetzt:** [Archivierungsrichtlinie](results_archiving.md) und
   [Ergebnisindex](results_index.md), verlinkt aus README, Arbeitsregeln,
   Reproduzierbarkeitsvermerk und Leitfaden. 21 Entwicklungs-/Kontrollserien,
@@ -134,12 +137,13 @@ paralleler Auftrag; CI/Review und ihre weitere Bearbeitung gehören dorthin.
   Tatsächliche, nur vorgesehene und fehlende Ausführungsstände bleiben getrennt.
   Auch Abbrüche und negative Ergebnisse bleiben sichtbar. Vorhandene
   Metadaten und der Serienkatalog bleiben die Detailquellen.
-- **Ablage beschlossen, Sicherung offen:** Originalarchive als Dateien privater
-  GitHub-Releases; keine großen Archive in Git, `results/` weiter lokal und
-  ignoriert. Unveränderliche Namen/Hashes, getrennte Fassungen und zusätzliche
-  externe Kopie. Release-Liste am 06.11.2026 leer, Repository privat;
-  Uploadlinks und externe Sicherungsbestätigung fehlen. Kein Upload und keine
-  Sichtbarkeitsänderung durch diesen Auftrag.
+- **Ablage beschlossen, Sicherung offen:** Gemeinsamer Archivordner plus zweite
+  gesicherte Kopie auf unabhängigem Datenträger oder im bestehenden Backup.
+  GitHub-Releases und Downloadlinks sind optional. Große Archive bleiben
+  außerhalb von Git, `results/` weiter lokal und ignoriert. Unveränderliche
+  Originaldateien/Hashes, getrennte Fassungen sowie Code- und Bewertungsbindung
+  bleiben erforderlich. Ablageorte und beide dauerhaften Kopien sind noch zu
+  bestätigen; diese Dokumentationsänderung behauptet keine ausgeführte Sicherung.
 - **Prüfnachweise:** Vier Originalarchive mit dem bestehenden Quellenkatalog
   abgeglichen: tatsächliche Datei-SHA-256, gespeicherter sauberer Commit,
   Berichtsformat und Laufstatus. Fünf Bewertungsarchive einschließlich
@@ -147,16 +151,22 @@ paralleler Auftrag; CI/Review und ihre weitere Bearbeitung gehören dorthin.
   Berichte/Methodenquellen auf Commitrollen und Hashzuordnung geprüft;
   weitere Originalarchivaudits oder neue SR-Versuche wurden nicht ausgeführt.
   Dokumentations-/Linkprüfung für 84 Markdown-Dateien, zwölf zusätzliche
-  interne Anker, Konsistenz- und Diffprüfung bestanden. Alle 25 verlinkten
-  Commits sind über GitHub erreichbar; der Diff ist reine Dokumentation.
-- **Offene Angaben:** 19 namentlich mit Hash belegte Originalarchive ohne
-  Release-Download; beim Kreuzversuch Hash/Originalarchiv und tatsächlicher
-  Orchestrierungscommit offen. Frühere Läufe teils nur über Terminalnachweise
+  interne Anker, Konsistenz- und Diffprüfung bestanden auf dem ersten Stand.
+  Alle 25 verlinkten Commits waren dort über GitHub erreichbar. Für die
+  vereinfachte Ablage bestanden erneut die Dokumentationsprüfung für
+  84 Markdown-Dateien und 40 interne Anker. Die ursprünglichen
+  Archiv-, Hash-, Commit- und Bewertungszuordnungen sind unverändert;
+  59 Indexzeilen und sämtliche Inline-Kennungen wurden gegen den vorigen
+  PR-Head `cff8da4dec3faf0348ea38429b52d086de16a3b1` abgeglichen.
+  Der Diff bleibt reine Dokumentation; keine neue wissenschaftliche Auswertung.
+- **Offene Angaben:** Für 19 namentlich mit Hash belegte Originalarchive sind
+  dauerhafte Ablage und zweite Kopie unbestätigt; beim Kreuzversuch sind
+  Hash/Originalarchiv und tatsächlicher Orchestrierungscommit offen. Frühere Läufe teils nur über Terminalnachweise
   belegt. Das ist kein abgeschlossener Archivierungsnachweis.
-- **Nächster konkreter Schritt:** Dokumentations-PR prüfen. Anschließend die
-  Originalarchive durch die Projektverantwortung hochladen, Rückdownloads
-  gegen die SHA-256 prüfen, Downloadlinks im Index ergänzen und externe Kopie
-  bestätigen. Keine neue Methodenentscheidung oder Versuchsausführung enthalten.
+- **Nächster konkreter Schritt:** Dokumentations-PR prüfen. Anschließend den
+  gemeinsamen Archivordner und die zweite Kopie benennen, Archive dort unverändert
+  sichern, beide Kopien gegen die SHA-256 prüfen und den Sicherungsstand im
+  Index bestätigen. Ein Release oder Downloadlink ist dafür nicht erforderlich.
 
 ## Übernommen: CI-Sparplan, Draft-Steuerung und serielle native Prüfung
 

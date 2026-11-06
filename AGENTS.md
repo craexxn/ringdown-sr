@@ -73,7 +73,7 @@ der [Fortsetzungsstand in der README](README.md#projektstatus).
 - Wissenschaftliche Ergebnisse gemäß [Archivierungsrichtlinie](docs/results_archiving.md)
   sichern und im [Ergebnisindex](docs/results_index.md) auffindbar halten.
   Vorhandene Originalmetadaten verwenden; Ausführung, Dokumentation,
-  Neubewertung und Uploadstatus getrennt führen. Keine Originalarchive ersetzen.
+  Neubewertung und Sicherungsstand getrennt führen. Keine Originalarchive ersetzen.
 - Wesentliche Entscheidungen im zuständigen Methodenplan oder Befunddokument
   festhalten: Beschluss und Begründung, erwogene/verworfene Alternativen,
   Belege mit Version/Commit sowie Aussagegrenzen und offene Fragen.

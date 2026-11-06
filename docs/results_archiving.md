@@ -4,14 +4,22 @@ Stand: 06.11.2026. Ergänzung der bestehenden Ergebnis- und
 [Reproduzierbarkeitskonventionen](reproducibility_decisions.md), technisch
 zu [Leitfadenphase 1](ringdown_recovery_roadmap.md). Der
 [Ergebnisindex](results_index.md) ist der zentrale Wegweiser; die einzelnen
-Berichte und Originalmetadaten bleiben die Detailquellen.
+Berichte und Originalmetadaten bleiben die Detailquellen. Die vereinfachte
+Ablage wurde am 06.11.2026 beschlossen: vorhandene Archivordner und Backups
+nutzen; GitHub-Releases sind eine optionale zusätzliche Ablage.
 
 ## Ablage und Unveränderlichkeit
 
-- Vollständige Originalarchive (`.tar.gz`) werden als angehängte Dateien eines
-  **privaten GitHub-Releases im privaten Repository** abgelegt. Releases erben
-  die Repository-Sichtbarkeit; ein Release in einem öffentlichen Repository
-  ist kein privates Archiv. Diese Regel ändert keine Sichtbarkeit.
+- Vollständige Originalarchive (`.tar.gz`) in einem gemeinsamen Archivordner
+  aufbewahren und eine **zweite gesicherte Kopie auf einem unabhängigen
+  Datenträger oder im bestehenden Backup** erhalten. Ein weiterer Ordner auf
+  derselben ungesicherten Platte genügt dafür nicht. Die tatsächlichen
+  Ablageorte werden einmal im [Ergebnisindex](results_index.md#archivablage)
+  bezeichnet; persönliche Rechnerpfade sind dafür nicht erforderlich.
+- GitHub-Releases können zusätzlich genutzt werden; Uploads, Downloadlinks
+  und eigene Releases pro Versuch sind keine Voraussetzung für eine
+  abgeschlossene Archivierung. Bestehende Archive unverändert behalten, weil
+  die Bewertungsimporte ihre konkreten SHA-256-Werte binden.
 - Große Ergebnisarchive gehören nicht regulär in die Git-Historie.
   `results/` bleibt gemäß [.gitignore](../.gitignore) die lokale, nicht
   versionierte Ausgabeablage. Ein lokaler Ordner ist keine bestätigte Sicherung.
@@ -25,15 +33,19 @@ Berichte und Originalmetadaten bleiben die Detailquellen.
   Artefaktnamen mit Verweis auf die Ausgangslauf-ID und deren Archivhash.
   Frühere Fassungen und Befunde bleiben verfügbar.
 - Auch erfolglose und abgebrochene Versuche samt Teilständen bleiben im Index.
-  Laufstatus, wissenschaftlicher Befund und Uploadstatus sind getrennte Angaben.
-  Ein vorhandenes Release macht einen abgebrochenen Versuch nicht vollständig.
-- Eine zusätzliche vollständige Kopie wird außerhalb von GitHub aufbewahrt,
-  beispielsweise auf einem gesicherten lokalen Datenträger. Vor Löschen lokaler
-  Arbeitskopien müssen Release-Download und externe Kopie am Archivhash geprüft
-  sein. Solange dies nicht bestätigt ist, bleibt die Sicherung offen.
+  Laufstatus, wissenschaftlicher Befund und Sicherungsstand sind getrennte
+  Angaben. Ein technischer Abbruch bleibt auch nach vollständiger Sicherung
+  ein Abbruch.
+- Archivkopie und zweite Kopie müssen am dokumentierten SHA-256 geprüft sein,
+  bevor entbehrliche Arbeitskopien gelöscht werden. Bei einem bestehenden
+  Backup die Datei aus der Sicherung lesend wiederherstellen und prüfen.
+  Solange die Ablage und beide Kopien nicht bestätigt sind, bleibt die
+  Sicherung offen. Ein bloßer Ablagehinweis oder geplanter Backupauftrag
+  belegt noch keine vorhandene Kopie.
 - Actions-Artefakte und CI-Logs haben Aufbewahrungsfristen und sind keine
   alleinige Archivlösung. Für einen Versuch benötigte Nachweise werden mit
   dessen Archiv bzw. einem eindeutig zugeordneten Nachweispaket erhalten.
+  Eine dauerhafte Archivierung jedes gewöhnlichen CI-Laufs ist nicht verlangt.
 
 ## Vorhandene Metadaten nutzen
 
@@ -46,8 +58,9 @@ Vorhandene Felder bleiben an ihrem bisherigen Ort. Keine zweite Liste aller
 Seeds, Optionen, Kandidaten oder Umgebungsversionen im Index führen.
 
 Der Index hält pro Lauf nur Identität/Fragestellung, tatsächlichen
-Ausführungscommit, Laufstatus, Archivname/Downloadlink/SHA-256, Ergebnisbericht
-und Bewertungszuordnung fest. Bei bereits gebundenen Serien bleibt der
+Ausführungscommit, Laufstatus, Archivname/SHA-256, Ablagehinweis,
+Sicherungsstand, Ergebnisbericht und Bewertungszuordnung fest. Ein optionaler
+Downloadlink ergänzt den Ablagehinweis. Bei bereits gebundenen Serien bleibt der
 [bestehende Quellenkatalog](../data/supplemental_series.json) die maschinenlesbare
 Quelle; der Index ist sein lesender Wegweiser, kein zweites Laufregister im Code.
 Fehlendes ausdrücklich als fehlend oder ungeprüft kennzeichnen. Ein bloß
@@ -66,31 +79,42 @@ Ausführung, Dokumentation und Neubewertung haben getrennte Commitrollen:
   auf unveränderte Originalarchive. Sie ersetzt keine Originalauswahl und keine
   zum Ausführungszeitpunkt festgelegte Bewertung.
 
-Die zugehörigen Git-Quellen müssen dauerhaft erreichbar bleiben. Für ein
-einzelnes Lauf-Release den tatsächlichen Ausführungscommit mit einem stabilen
-Tag binden. Bei Sammel-Releases sowie zusätzlichen Werkzeug-/Bewertungscommits
-jeden benötigten Stand über vorhandene dauerhafte Refs oder zusätzliche Tags
-erhalten. Ein Release-Tag allein bezeichnet nicht automatisch alle ausgeführten
-Quellen. Tags nicht verschieben; ursprüngliche Commits nicht durch einen bloß
-baumgleichen späteren Merge ersetzen. Vorhandene archivierte Quellen und ihre
-Hashbindungen zusätzlich bewahren. Fehlende Stände vor Archivierungsabschluss
-wiederbeschaffen und prüfen, nicht aus aktuellem Code rekonstruieren.
+Die zugehörigen Git-Quellen müssen dauerhaft erreichbar bleiben. Alle benötigten
+Ausführungs-, Werkzeug- und Bewertungscommits über vorhandene dauerhafte Refs
+oder zusätzliche stabile Tags erhalten; dafür ist kein Release erforderlich.
+Tags nicht verschieben; ursprüngliche Commits nicht durch einen bloß baumgleichen
+späteren Merge ersetzen. Vorhandene archivierte Quellen und ihre Hashbindungen
+zusätzlich bewahren. Fehlende Stände vor Archivierungsabschluss wiederbeschaffen
+und prüfen, nicht aus aktuellem Code rekonstruieren.
 
-## Upload und Abschluss
+## Ablage und Abschluss
 
 1. Vorhandenes Originalarchiv und dessen SHA-256 verwenden; etwa mit
-   `sha256sum ARCHIV.tar.gz` abgleichen. Vorhandene Archive nicht neu packen,
-   nur um sie hochzuladen.
-2. **GitHub → Releases → Release erstellen oder bearbeiten → Dateien anhängen**.
-   Im privaten Repository ein passend bezeichnetes Release mit dauerhaftem
-   Quellbezug wählen und das Originalarchiv hochladen. GitHubs automatisch
-   erzeugtes Quellcodearchiv ist kein Versuchsergebnisarchiv.
-3. Die angehängte Datei wieder herunterladen und SHA-256 vergleichen. Erst
-   danach den echten Asset-Downloadlink im Index ergänzen und den Uploadstatus
-   auf geprüft setzen. Ein vorab konstruierter Link ist kein Uploadnachweis.
-4. Externe Kopie prüfen und den bisherigen offenen Sicherungsvermerk im Index
-   aktualisieren. Bereits enthaltene Metadaten nicht nochmals abschreiben.
+   `sha256sum ARCHIV.tar.gz` abgleichen. Vorhandene Archive nicht neu packen.
+2. Die unveränderte Datei im gemeinsamen Archivordner und auf dem zweiten
+   Sicherungsziel ablegen. Beide Kopien am selben SHA-256 prüfen.
+3. Gemeinsame Ablagehinweise im Index ergänzen und den Sicherungsstand der
+   tatsächlich geprüften Einträge bestätigen. Vorhandene Metadaten nicht
+   nochmals abschreiben. Ein fehlender Downloadlink ist dabei kein offener
+   Pflichtschritt.
+
+Neue Archive werden nach einem Versuch oder einer Neubewertung gesichert;
+es ist kein zusätzlicher Kalenderturnus oder neues Sicherungssystem vorgeschrieben.
+
+## Optionale GitHub-Ablage
+
+Über **GitHub → Releases → Release erstellen oder bearbeiten → Dateien anhängen**
+können Archive zusätzlich bereitgestellt werden. Ein Sammel-Release darf weitere
+eindeutig benannte Dateien aufnehmen; bestehende Dateien und Tags bleiben
+unverändert. Releases erben die Repository-Sichtbarkeit. Für die vorgesehene
+private Zusatzablage das private Repository verwenden; keine Sichtbarkeit ändern.
+
+Nach einem Upload den Rückdownload gegen SHA-256 prüfen und erst dann den echten
+Downloadlink samt geprüftem Uploadstatus ergänzen. Ein Release-Tag bezeichnet
+nicht automatisch die Ausführungscommits seiner Archive. GitHubs automatisch
+erzeugtes Quellcodearchiv ersetzt kein Versuchsergebnisarchiv. Die zwei oben
+beschriebenen Archivkopien bleiben unabhängig vom optionalen Upload erhalten.
 
 Eine beschlossene Richtlinie und ein vollständiger Index bedeuten nicht, dass
-Uploads und Sicherungen bereits abgeschlossen sind. Der aktuelle offene Stand
+die Sicherungen bereits abgeschlossen sind. Der aktuelle offene Stand
 steht im [Ergebnisindex](results_index.md).

@@ -351,9 +351,10 @@ Namen wie `results/pilot-002` verwenden. Lokale Ausgaben unter `results/`
 werden nicht versioniert und müssen separat gesichert werden.
 Der [Ergebnisindex](docs/results_index.md) ordnet die dokumentierten Versuche
 ihren Ausführungsständen, Originalarchiven und Bewertungen zu. Die
-[Archivierungsrichtlinie](docs/results_archiving.md) regelt private
-GitHub-Release-Dateien und die zusätzliche externe Kopie. Uploads und
-Downloadlinks sind noch ausstehend; die Richtlinie allein ist keine Sicherung.
+[Archivierungsrichtlinie](docs/results_archiving.md) regelt einen gemeinsamen
+Archivordner und eine zweite gesicherte Kopie. GitHub-Releases sind optional.
+Ablageorte und Sicherung sind noch zu bestätigen; die Richtlinie allein ist
+keine Sicherung.
 Der Kontrolllauf braucht kein Julia/PySR und legt keine Einstellungen
 oder Erfolgskriterien für die Hauptversuche fest.
 

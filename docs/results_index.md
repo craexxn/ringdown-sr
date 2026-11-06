@@ -6,12 +6,26 @@ Serien sind die Indexeinheit, ihre Zellen/Wiederholungen bleiben im Originalberi
 Die Aufstellung ist keine Behauptung, dass alle jemals lokal erzeugten Ergebnisse
 bereits erfasst oder gesichert seien.
 
-**Archivierung offen:** Das Repository ist laut GitHub-API privat. Die am
-06.11.2026 abgefragte Release-Liste war leer; für keinen folgenden Eintrag ist
-ein Release-Download bestätigt. **Upload ausstehend** gilt unabhängig davon,
-ob der wissenschaftliche Lauf abgeschlossen ist. Eine zusätzliche dauerhafte
-Kopie außerhalb von GitHub ist hier noch nicht bestätigt; lokal verfügbare
-Arbeitskopien werden nicht als bereits geprüfte externe Sicherung gezählt.
+**Archivierung offen:** Dauerhafte Ablage und eine geprüfte zweite Kopie sind
+hier noch nicht bestätigt. Lokal verfügbare Arbeitskopien werden nicht als
+bereits geprüfte Sicherung gezählt. GitHub-Releases sind optional; ein fehlender
+Upload oder Downloadlink verhindert den Abschluss der lokalen Archivierung nicht.
+
+## Archivablage
+
+Die gemeinsamen Ablagehinweise werden einmal hier gepflegt. Die Dateinamen in
+den Tabellen bezeichnen die einzelnen Archive innerhalb dieser Ablage.
+Verweise auf diesen Abschnitt sind eine Zuordnung zur vorgesehenen Ablage,
+keine Bestätigung, dass die jeweilige Datei dort bereits gesichert ist.
+
+| Kopie | Ablagehinweis | Prüfstand |
+| --- | --- | --- |
+| Gemeinsamer Archivordner | Noch festzulegen; verständliche Bezeichnung genügt | Noch nicht bestätigt |
+| Zweite Kopie auf unabhängigem Datenträger oder im bestehenden Backup | Noch zu benennen | Noch nicht bestätigt |
+
+Nach Prüfung beider Kopien gegen den dokumentierten SHA-256 wird der
+Sicherungsstand des jeweiligen Eintrags bestätigt. Optionale Downloadlinks
+können nach geprüftem Rückdownload ergänzt werden; hierfür besteht keine Pflicht.
 
 ## Leseschlüssel und Quellen
 
@@ -75,34 +89,35 @@ wird nicht rückwirkend zugeordnet.
 
 ## Originalarchive
 
-Downloadlink und Uploadstatus werden ausschließlich hier gepflegt. Die Hashes
-bezeichnen die komprimierten Originaldateien, nicht GitHubs Quellcodearchive oder
+Ablagehinweis und Sicherungsstand werden hier gepflegt. Bei einer optionalen
+Onlinekopie kann ein geprüfter Downloadlink hinzukommen. Die Hashes bezeichnen
+die komprimierten Originaldateien, nicht GitHubs Quellcodearchive oder
 ein inneres Manifest. Die vier aktuell verfügbaren Originalarchive wurden am
 06.11.2026 selbst gehasht; Herkunft der übrigen Hashes steht je Zeile.
 
-| Lauf-ID | Originalarchiv | SHA-256 / Belegstatus | Downloadlink | Uploadstatus |
+| Lauf-ID | Originalarchiv | SHA-256 / Belegstatus | Ablagehinweis / optionaler Download | Sicherungsstand |
 | --- | --- | --- | --- | --- |
-| `noiseless-control-001` | Nicht belegt | **Fehlt**; Nur Terminalauszüge; Archivname und Hash fehlen | Fehlt | Upload ausstehend |
-| `representation-manjaro-001` | `representation-manjaro-001.tar.gz` | `a5b0cdae4262a7f759c72fbe1e7e9c142d817fbffa088107953250da861050db`; Bericht: Originalarchiv geprüft | Fehlt | Upload ausstehend |
-| `constant-manjaro-001` | `constant-manjaro-001.tar.gz` | `346459d953468c81975670577b92aa155a1eaec884cebd462fe61e1ab23d492b`; Bericht: Originalarchiv geprüft | Fehlt | Upload ausstehend |
-| `free-budget-manjaro-001` | `free-budget-manjaro-001.tar.gz` | `77fb34ff6ee139c1f2e0fbbb6acd81d7c1623cd6e8090056f641961e887ad33f`; Hash nur übermittelt; vollständiger Archivaudit offen | Fehlt | Upload ausstehend |
-| `trajectory-manjaro-001` | `trajectory-manjaro-001-incomplete.tar.gz` | `08676ddc21c1820110ae425a68de3c5b954c8bef2022b816ca274c307041c873`; Bericht: Originalarchiv geprüft | Fehlt | Upload ausstehend |
-| `trajectory-manjaro-002` | `trajectory-manjaro-002.tar.gz` | `99999285f6d7a8c50c54280cc36b526e704af01b07a1ccf95f2227e5e8597f55`; Bericht: Originalarchiv geprüft | Fehlt | Upload ausstehend |
-| `grammar-manjaro-001` | `grammar-manjaro-001.tar.gz` | `8d7fc8b09ed9c5091acef5237f5512ddb9fb014598e72ee3d9d4e435f33e3915`; Bericht: Originalarchiv geprüft | Fehlt | Upload ausstehend |
-| `duration-manjaro-001` | `duration-manjaro-001.tar.gz` | `d73e990cf0c8092f841bc402aa247eca0311c963421249b5e60ae2e73c55074a`; Bericht: Originalarchiv geprüft | Fehlt | Upload ausstehend |
-| `duration-manjaro-002` | `duration-manjaro-002.tar.gz` | `147d21ec13844f1500b41fa226c4f8d79a8da7558c65faea8f7a478540b70e14`; Bericht: Originalarchiv geprüft | Fehlt | Upload ausstehend |
-| `duration-manjaro-003` | `duration-manjaro-003.tar.gz` | `c39fb68ba6d98729ae64df83dd50feb332117d2204e2b49e49044cd1ebed5147`; Bericht: Originalarchiv geprüft | Fehlt | Upload ausstehend |
-| `duration-manjaro-004` | `duration-manjaro-004.tar.gz` | `c2d9e330770746030bab9467b682a6b595cac25aa132dbb4decd1c4b03472289`; Dateibytes und aufgezeichnete Herkunft am 06.11.2026 erneut gegen Quellenkatalog geprüft | Fehlt | Upload ausstehend |
-| `local-optimizer-manjaro-001` | `local-optimizer-manjaro-001.tar.gz` | `1ab8c0aa91436c4b169c6c6efa8053e04c47ef57d07915f36ac476483276866d`; Dateibytes und aufgezeichnete Herkunft am 06.11.2026 erneut gegen Quellenkatalog geprüft | Fehlt | Upload ausstehend |
-| `outer-ladder-manjaro-001` | `outer-ladder-manjaro-001.tar.gz` | `ac7e841b79042e216d6aacae2961ffb8395f298bbcc7ecc11f1092c90b3deb40`; Dateibytes und aufgezeichnete Herkunft am 06.11.2026 erneut gegen Quellenkatalog geprüft | Fehlt | Upload ausstehend |
-| `transfer-manjaro-001` | `transfer-manjaro-001.tar.gz` | `e363fe1be629973a460fc6e2188bf680c21b2c5519d331bc7e257968dcaaa139`; Dateibytes und aufgezeichnete Herkunft am 06.11.2026 erneut gegen Quellenkatalog geprüft | Fehlt | Upload ausstehend |
-| `seed-driver-crosscheck-manjaro-001` | `seed-driver-crosscheck-manjaro-001.tar.gz` (vorgesehener Name) | **Fehlt**; Name/ID nur gemäß vorgesehenem Laufweg; Archiv, Hash und eigener Ergebnisbericht fehlen | Fehlt | Upload ausstehend |
-| `sr-repeatability-wsl2-threads1-001` | `sr-repeatability-wsl2-threads1-001.tar.gz` | `7f63a075c2a95226d320fa6a6a204481c6038fd3ca6c837f9bcbb7f371bf63d7`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | Fehlt | Upload ausstehend |
-| `sr-core-control-wsl2-001` | `sr-core-control-wsl2-001.tar.gz` | `5826725c95499b498f9bc6c0a9935c4cbf7d97f2f63d14b81aad05c85813d114`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | Fehlt | Upload ausstehend |
-| `sr-free-haswell-wsl2-001` | `sr-free-haswell-wsl2-001.tar.gz` | `1442cbea82b6b80c6de9533ceb5bc2a620e1fb3500ee1524529c36c1f5c98ee3`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | Fehlt | Upload ausstehend |
-| `sr-repeatability-manjaro-threads1-001` | `sr-repeatability-manjaro-threads1-001.tar.gz` | `48ea1cd0efb6599378303ea1d77c42b3193e9361ef5799e2697b8c3fa841341b`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | Fehlt | Upload ausstehend |
-| `sr-core-control-manjaro-001` | `sr-core-control-manjaro-001.tar.gz` | `bd2dff7fda69a4124ca8736eb101c32809e9a770cdfd7b02b2e514a745ba8b4d`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | Fehlt | Upload ausstehend |
-| `sr-free-haswell-manjaro-001` | `sr-free-haswell-manjaro-001.tar.gz` | `37d8b1b4d1cc12c9dd7e487d1763a212283a9a3f92c62cdef70ff6be7bdfa94e`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | Fehlt | Upload ausstehend |
+| `noiseless-control-001` | Nicht belegt | **Fehlt**; Nur Terminalauszüge; Archivname und Hash fehlen | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `representation-manjaro-001` | `representation-manjaro-001.tar.gz` | `a5b0cdae4262a7f759c72fbe1e7e9c142d817fbffa088107953250da861050db`; Bericht: Originalarchiv geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `constant-manjaro-001` | `constant-manjaro-001.tar.gz` | `346459d953468c81975670577b92aa155a1eaec884cebd462fe61e1ab23d492b`; Bericht: Originalarchiv geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `free-budget-manjaro-001` | `free-budget-manjaro-001.tar.gz` | `77fb34ff6ee139c1f2e0fbbb6acd81d7c1623cd6e8090056f641961e887ad33f`; Hash nur übermittelt; vollständiger Archivaudit offen | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `trajectory-manjaro-001` | `trajectory-manjaro-001-incomplete.tar.gz` | `08676ddc21c1820110ae425a68de3c5b954c8bef2022b816ca274c307041c873`; Bericht: Originalarchiv geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `trajectory-manjaro-002` | `trajectory-manjaro-002.tar.gz` | `99999285f6d7a8c50c54280cc36b526e704af01b07a1ccf95f2227e5e8597f55`; Bericht: Originalarchiv geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `grammar-manjaro-001` | `grammar-manjaro-001.tar.gz` | `8d7fc8b09ed9c5091acef5237f5512ddb9fb014598e72ee3d9d4e435f33e3915`; Bericht: Originalarchiv geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `duration-manjaro-001` | `duration-manjaro-001.tar.gz` | `d73e990cf0c8092f841bc402aa247eca0311c963421249b5e60ae2e73c55074a`; Bericht: Originalarchiv geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `duration-manjaro-002` | `duration-manjaro-002.tar.gz` | `147d21ec13844f1500b41fa226c4f8d79a8da7558c65faea8f7a478540b70e14`; Bericht: Originalarchiv geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `duration-manjaro-003` | `duration-manjaro-003.tar.gz` | `c39fb68ba6d98729ae64df83dd50feb332117d2204e2b49e49044cd1ebed5147`; Bericht: Originalarchiv geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `duration-manjaro-004` | `duration-manjaro-004.tar.gz` | `c2d9e330770746030bab9467b682a6b595cac25aa132dbb4decd1c4b03472289`; Dateibytes und aufgezeichnete Herkunft am 06.11.2026 erneut gegen Quellenkatalog geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `local-optimizer-manjaro-001` | `local-optimizer-manjaro-001.tar.gz` | `1ab8c0aa91436c4b169c6c6efa8053e04c47ef57d07915f36ac476483276866d`; Dateibytes und aufgezeichnete Herkunft am 06.11.2026 erneut gegen Quellenkatalog geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `outer-ladder-manjaro-001` | `outer-ladder-manjaro-001.tar.gz` | `ac7e841b79042e216d6aacae2961ffb8395f298bbcc7ecc11f1092c90b3deb40`; Dateibytes und aufgezeichnete Herkunft am 06.11.2026 erneut gegen Quellenkatalog geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `transfer-manjaro-001` | `transfer-manjaro-001.tar.gz` | `e363fe1be629973a460fc6e2188bf680c21b2c5519d331bc7e257968dcaaa139`; Dateibytes und aufgezeichnete Herkunft am 06.11.2026 erneut gegen Quellenkatalog geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `seed-driver-crosscheck-manjaro-001` | `seed-driver-crosscheck-manjaro-001.tar.gz` (vorgesehener Name) | **Fehlt**; Name/ID nur gemäß vorgesehenem Laufweg; Archiv, Hash und eigener Ergebnisbericht fehlen | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `sr-repeatability-wsl2-threads1-001` | `sr-repeatability-wsl2-threads1-001.tar.gz` | `7f63a075c2a95226d320fa6a6a204481c6038fd3ca6c837f9bcbb7f371bf63d7`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `sr-core-control-wsl2-001` | `sr-core-control-wsl2-001.tar.gz` | `5826725c95499b498f9bc6c0a9935c4cbf7d97f2f63d14b81aad05c85813d114`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `sr-free-haswell-wsl2-001` | `sr-free-haswell-wsl2-001.tar.gz` | `1442cbea82b6b80c6de9533ceb5bc2a620e1fb3500ee1524529c36c1f5c98ee3`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `sr-repeatability-manjaro-threads1-001` | `sr-repeatability-manjaro-threads1-001.tar.gz` | `48ea1cd0efb6599378303ea1d77c42b3193e9361ef5799e2697b8c3fa841341b`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `sr-core-control-manjaro-001` | `sr-core-control-manjaro-001.tar.gz` | `bd2dff7fda69a4124ca8736eb101c32809e9a770cdfd7b02b2e514a745ba8b4d`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `sr-free-haswell-manjaro-001` | `sr-free-haswell-manjaro-001.tar.gz` | `37d8b1b4d1cc12c9dd7e487d1763a212283a9a3f92c62cdef70ff6be7bdfa94e`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 
 Bei fehlenden Dateien zuerst die ursprünglichen Geräteablagen prüfen. Neu packen
 oder einen Lauf wiederholen ersetzt kein verschwundenes Originalarchiv. Ein neu
@@ -113,7 +128,9 @@ erzeugtes Paket braucht einen unterscheidbaren Namen und einen eigenen Hash.
 Diese technischen Vorläufer sind im [Portabilitätsbericht](portability.md)
 dokumentiert; sie sind keine zusätzliche wissenschaftliche Leistungsstudie.
 Für **jeden** folgenden Eintrag fehlen ein belegter `.tar.gz`-Archivname,
-Archiv-SHA-256 und Downloadlink; Upload ausstehend, externe Sicherung unbestätigt.
+Archiv-SHA-256 und ein bestätigter dauerhafter Ablagehinweis; auch die zweite
+Kopie ist unbestätigt. Die [gemeinsame Ablage](#archivablage) gilt als vorgesehenes
+Ziel. Ein Onlineupload ist optional.
 Die Präfixe `manjaro:` und `wsl2:` sind nur Indexqualifizierungen der ursprünglichen
 Ordnernamen. Es werden keine neuen Lauf-IDs im Originaldatenbestand erzeugt.
 
@@ -159,13 +176,13 @@ Artefakte erhalten. Ihre Angaben stammen aus den vorhandenen archivierten
 Bewertungsberichten; technische Veröffentlichung `completed` bedeutete dort
 nicht vollständige wissenschaftliche Datenabdeckung.
 
-| Bewertungs-ID | Eigenständiges Bewertungsarchiv | Archiv-SHA-256 | Downloadlink | Uploadstatus |
+| Bewertungs-ID | Eigenständiges Bewertungsarchiv | Archiv-SHA-256 | Ablagehinweis / optionaler Download | Sicherungsstand |
 | --- | --- | --- | --- | --- |
-| `supplemental-assessment-transfer-001` | `supplemental-assessment-transfer-001.tar.gz` | `20a65f0cbbeb060b8c39570b4c9314781aaa554b8eea66cd63cd4d7133f73167` | Fehlt | Upload ausstehend |
-| `supplemental-assessment-transfer-002` | `supplemental-assessment-transfer-002.tar.gz` | `ab14c720058f2af17a3266bd737e0f7c7a4b56180c7fa4fa8c150d6bf178e1d6` | Fehlt | Upload ausstehend |
-| `supplemental-assessment-all-001` | `supplemental-assessment-all-001.tar.gz` | `3533d3ef163bdc18fa38f78687f87dfc1e485ecf0156a83ec2893c4656fe7466` | Fehlt | Upload ausstehend |
-| `supplemental-structure-all-001` | `supplemental-structure-all-001.tar.gz` | `cc52de459a4c250b4e70f9290898f9c0b9011e1182dccfc16dd47f8a40c19356` | Fehlt | Upload ausstehend |
-| `supplemental-remainder-all-001` | `supplemental-remainder-all-001-review.tar.gz` | `a47e88b11934c5cc3df0b433a0e0d1fffe6be5fb175b1f92def277075fa87155` | Fehlt | Upload ausstehend |
+| `supplemental-assessment-transfer-001` | `supplemental-assessment-transfer-001.tar.gz` | `20a65f0cbbeb060b8c39570b4c9314781aaa554b8eea66cd63cd4d7133f73167` | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `supplemental-assessment-transfer-002` | `supplemental-assessment-transfer-002.tar.gz` | `ab14c720058f2af17a3266bd737e0f7c7a4b56180c7fa4fa8c150d6bf178e1d6` | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `supplemental-assessment-all-001` | `supplemental-assessment-all-001.tar.gz` | `3533d3ef163bdc18fa38f78687f87dfc1e485ecf0156a83ec2893c4656fe7466` | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `supplemental-structure-all-001` | `supplemental-structure-all-001.tar.gz` | `cc52de459a4c250b4e70f9290898f9c0b9011e1182dccfc16dd47f8a40c19356` | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
+| `supplemental-remainder-all-001` | `supplemental-remainder-all-001-review.tar.gz` | `a47e88b11934c5cc3df0b433a0e0d1fffe6be5fb175b1f92def277075fa87155` | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 
 Diese fünf Paket-Hashes und die enthaltenen Ausgabemanifeste wurden am
 06.11.2026 lesend geprüft; damit wird keine neue wissenschaftliche Bewertung
@@ -179,19 +196,21 @@ kein Originalarchiv.
 ## Noch zu erledigen
 
 - Die 19 namentlich und mit Hash belegten Originalarchive aus „Originalarchive“
-  hochladen. Bei älteren Dateien die tatsächlichen Bytes zuerst mit dem
+  im gemeinsamen Archivordner und einer zweiten gesicherten Kopie erhalten.
+  Bei älteren Dateien die tatsächlichen Bytes zuerst mit dem
   dokumentierten Hash vergleichen; `free-budget-manjaro-001.tar.gz` ist bislang
   nur durch einen übermittelten Hash belegt.
 - Das Kreuzversuchsarchiv samt tatsächlichem Namen, Hash und vollständigem
   Ausführungsstand nachreichen; den vorgesehenen Dateinamen nicht als bereits
   verifiziert behandeln. Für `noiseless-control-001` und die früheren
   Portabilitätsläufe zunächst Originalpakete und fehlende Herkunft klären.
-- Die fünf getrennten Bewertungsarchive erhalten und anschließend als solche
-  hochladen. Fehlende Quellenrefs dauerhaft sichern, besonders ursprüngliche
+- Die fünf getrennten Bewertungsarchive ebenfalls mit zweiter Kopie erhalten.
+  Fehlende Quellenrefs dauerhaft sichern, besonders ursprüngliche
   PR-Heads/Werkzeug- und Bewertungscommits außerhalb der main-Historie.
-- Reale Downloadlinks nach geprüftem Rückdownload ergänzen und die zusätzliche
-  externe Kopie bestätigen. Bis dahin bleibt die Archivierung offen.
+- Gemeinsame Ablagehinweise ergänzen und beide Archivkopien je Eintrag gegen
+  SHA-256 prüfen. Bis zur Bestätigung bleibt der Sicherungsstand offen.
+  GitHub-Uploads und Downloadlinks sind optionale Ergänzungen.
 
-Bitte die noch ausstehenden .tar.gz-Originalarchive als Dateien eines
-privaten GitHub-Releases hochladen, die SHA-256-Prüfsummen abgleichen
-und anschließend die Downloadlinks im Ergebnisindex ergänzen.
+Bitte die vorhandenen .tar.gz-Originalarchive unverändert im gemeinsamen
+Archivordner und einer zweiten gesicherten Kopie aufbewahren, die SHA-256-Werte
+abgleichen und die Ablagehinweise sowie den Sicherungsstand im Index ergänzen.

@@ -29,7 +29,8 @@ bereits erfolgte Implementierung oder wissenschaftliche Ausführung.
 - Die [Archivierungsrichtlinie](results_archiving.md) und der
   [Ergebnisindex](results_index.md) ergänzen Phase 1 um die dauerhafte
   Zuordnung vorhandener Versuche, Quellen und Bewertungen. Die Regelung ist
-  dokumentiert; Uploads und externe Sicherung bleiben separat nachzuweisen.
+  dokumentiert; Archivablage und zweite gesicherte Kopie bleiben separat
+  nachzuweisen. GitHub-Releases sind eine optionale zusätzliche Ablage.
 - Diese Datei ist die zentrale Quelle für Reihenfolge, Begründung und
   Entscheidungskriterien des weiteren Vorgehens.
 - [README](../README.md#projektstatus) bleibt der Einstieg;
