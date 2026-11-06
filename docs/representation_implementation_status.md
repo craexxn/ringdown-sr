@@ -1,6 +1,6 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-Stand: 05.11.2026. PR #67 ist als
+Stand: 06.11.2026. PR #67 ist als
 `8096ddb8bb6fd065eb1079c7902a2016334a6e6b` übernommen; sein Dateibaum entspricht
 dem korrigierten Head `dc7f4a29a7a26516e5ea0b65bd8bc819e4f6cd71`.
 Die vollständige [CI 41996715772](https://github.com/craexxn/ringdown-sr/actions/runs/41996715772)
@@ -39,7 +39,68 @@ Der Ergebnisnachtrag #60 ist inzwischen als
 entspricht exakt fa5758d. Die Basis wurde ohne Änderung des Implementierungs-
 Dateibaums in #61 aufgenommen; dessen Zielbranch ist main.
 
-## Aktuell: Zusatzbewertung, Stufe 3 von 3
+## Aktuell: Laufzeitoptimierung nach Abschluss der drei Bewertungsstufen
+
+- **Auftrag und Basis:** Nach ausdrücklicher Freigabe PR #72 als
+  `de33d52aede3903a9745305b52f35c467e0d3b9f` übernommen. Dateibaum
+  `90b565904b5d06c8b4df296b1308f9d333029e12` entspricht dem Review-Head
+  `9d4268e162444c141f89cc2b855f8bae56021400` und tatsächlichen CI-Checkout
+  `9b4bad005477d6c3a7e0bb661a6b5a14c5fbab3a`.
+- **Abschluss Stufe 3:** Alle drei Jobs der
+  [CI 42101166272](https://github.com/craexxn/ringdown-sr/actions/runs/42101166272)
+  erfolgreich: 3.062 Pythonfälle in 325,43 s und sämtliche nativen Prüfblöcke.
+  Logs und Dateibaum hier abgeglichen. Das übermittelte separate KI-Review
+  meldet keine korrekturbedürftigen Befunde, 330 Repository-Tests und 23
+  zusätzliche Gegenprüfungen bestanden. Diese Reviewtests wurden hier nicht
+  erneut ausgeführt; die historische Anwendung wurde im separaten Review
+  ohne Originalarchive nur anhand des Ergebnisberichts geprüft.
+- **Branch, PR und Phase:** `codex/assessment-performance`,
+  [PR #73](https://github.com/craexxn/ringdown-sr/pull/73), eigener Worktree ab
+  genanntem main. Technischer Folgeauftrag zu Leitfadenphase 1, keine vierte
+  Bewertungsstufe. Keine zusätzlichen Agenten und keine wissenschaftliche Suche.
+- **Implementierung:** Archivbytes je Prüfzeitpunkt gemeinsam lesen; die spätere
+  strikte Archivprüfung bleibt hinter den bisherigen Quellenprüfungen.
+  Unveränderliche Git-Dateien ausdrücklich pro `Consumption` cachen, keine
+  beweglichen Refs oder Fehler speichern. Gemeinsame kanonische Bindungen,
+  geprüfte Fingerprints und Trainingsvorhersagen wiederverwenden. Reine
+  Fehlerfixtures erhalten private Kopien einer vollständig erzeugten Vorlage.
+  Automatische Ausführung und vollständige Integration bleiben separat geprüft.
+- **Messung und Aussagegrenze:** Gleiche 77 Tests 33,79 statt 77,90 s (rund 57 %
+  kürzer). Historische Archivlesevorgänge 72 → 38, Git-Dateiprozesse 413 → 388.
+  Die profilierten Exporte belegen keinen Zeitgewinn; der letzte historische
+  Export benötigte 11,633 statt 10,274 s, der Schema-3-Export 0,472 statt
+  0,386 s. Einzelmessungen erlauben keine garantierte Laufzeit-/CI-Einsparung.
+  [Vollständiger Messnachweis und Abnahme](assessment_performance.md).
+- **Ergebnisgleichheit:** Code `dde3b07f3a59df78f9baeb449811ca3af5ba08dc`
+  gegen Basis `de33d52`: alle vier Originalarchive erneut verifiziert,
+  78 Einzelsätze/18 Gruppen und drei Schema-3-Einzelsätze/3 Gruppen unverändert.
+  Einzelsätze, Zusammenfassungen und Originalberichte bytegleich; vollständige
+  Berichte nur mit erwartetem Exportcommit/Quellhash-Unterschied. Beide
+  Ausgabemanifeste unabhängig nachgehasht. Nachweispaket mit Originalarchiven,
+  Vorher-/Nachher-Ausgaben, Profilen, Vergleichsprogrammen und Testlogs zur
+  Reviewübergabe vorbereitet.
+- **Prüfnachweise:** 337 gezielte Fälle bestanden, darunter 14 neue Fälle für
+  Cachegrenzen, Symlinks, Größenänderungen, sämtliche Freigabezeitpunkte,
+  letzte Archivprüfung nach HEAD und identische Vorhersagen. Gesamtsuite:
+  3.076 Pythonfälle in 291,25 s am genannten Codestand. Ruff, Format-,
+  Dokumentations- und Diffprüfung bestanden.
+  KI-basierte Eigenprüfung von Quellenbindung, Cachelebensdauer, letzter
+  Archivprüfung, Vorhersagewiederverwendung und Fixture-Isolation ohne offenen
+  Befund. Separates Review und vollständige native Ready-CI stehen noch aus;
+  die Eigenprüfung ersetzt beide nicht.
+- **Grenzen und offene Entscheidungen:** Sämtliche Prüfzeitpunkte,
+  Bewertungsregeln, Versionen, Beweisgrenzen und Widerrufspfade erhalten.
+  Keine offene fachliche Methodenentscheidung für diesen technischen Auftrag.
+  Die drei Bewertungsstufen sind abgeschlossen; keine weitere Bewertungsstufe
+  ausstehend. Suchversuche bleiben ein gesonderter, noch nicht beauftragter Schritt.
+- **Nächster konkreter Schritt:** Vollständige Ready-CI für den gebündelten
+  PR-Head abwarten und tatsächlichen Checkout/Dateibaum prüfen; danach
+  separates KI-basiertes Review. Kein eigenständiger Merge.
+
+## Übernommen: Zusatzbewertung, Stufe 3 von 3
+
+Die folgenden Angaben dokumentieren Entwicklung und damalige Übergabe;
+Abschluss und aktuelle Fortsetzung stehen oben.
 
 - **Übernahme und Basis:** Stufe 2 / [PR #70](https://github.com/craexxn/ringdown-sr/pull/70)
   ist als `7b7b9dfb9117b4202522cd620c90d0ec861ccc65` übernommen. Der Dateibaum

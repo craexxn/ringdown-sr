@@ -124,7 +124,7 @@ def freeze_software(consumed):
         consumed.clock.check()
         raw = path.read_bytes()
         name = path.relative_to(ROOT).as_posix()
-        if raw != sources._git_file(commit, name):
+        if raw != consumed.git_file(commit, name):
             raise ValueError("Assessment source differs from its commit: " + name)
         consumed.add(path, raw)
         hashes[name] = sources.sha256(raw)
@@ -203,6 +203,7 @@ class PreparedAssessment:
     def __init__(self, config):
         self.consumed = Consumption(Deadline(300))
         software = freeze_software(self.consumed)
+        self.consumed.git_file.clear()
         arrays = planned_arrays(config)
         buffer = io.BytesIO()
         np.savez(buffer, **arrays)
@@ -283,6 +284,7 @@ class Source:
 
     def __init__(self, root, consumed):
         self.root = root
+        self.git_file = consumed.git_file
         self.source = _Source(root)
         if "metadata.json" in self.source.manifest:
             raise ValueError(
@@ -354,7 +356,7 @@ def verify_snapshot(source, software):
             raise ValueError(
                 "Legacy assessment requires the approved earlier implementation."
             )
-        raw = sources._git_file(
+        raw = source.git_file(
             contract["software"]["software_commit"], STAGE_CONTRACTS[stage][0]
         )
         if sources.sha256(raw) != STAGE_POLICY_HASHES[stage]:
@@ -413,38 +415,37 @@ def verify_origin(source, frozen):
         sources.safe_name(name)
         if name.startswith("src/ringdown_sr/") and name.endswith(".py"):
             python[name.removeprefix("src/")] = digest
-        if sources.sha256(sources._git_file(commit, name)) != digest:
+        if sources.sha256(source.git_file(commit, name)) != digest:
             raise ValueError("Preparation source differs from its Git commit.")
     if stage >= 2:
-        structure.check_policy(sources._git_file(commit, structure.FILES[0]))
+        structure.check_policy(source.git_file(commit, structure.FILES[0]))
     if stage == 3:
-        remainder.check_policy(sources._git_file(commit, remainder.FILES[0]))
+        remainder.check_policy(source.git_file(commit, remainder.FILES[0]))
     adapters = {name: hashes[name] for name in ADAPTER_FILES}
     project = {name: hashes[name] for name in PROJECT_FILES}
+    expected_git = sources.json_bytes(
+        {"available": True, "commit": commit, "dirty": False, "changes": []}
+    )
+    expected_python = sources.json_bytes(python)
+    expected_project = sources.json_bytes(project)
+    expected_python_digest = sources.sha256(expected_python)
 
     def verify_provenance(provenance):
-        sources._same(
+        sources._same_bytes(
             provenance["git"],
-            {
-                "available": True,
-                "commit": commit,
-                "dirty": False,
-                "changes": [],
-            },
+            expected_git,
             "Recorded execution and preparation Git states disagree.",
         )
-        sources._same(
+        sources._same_bytes(
             provenance["python_source_sha256"],
-            python,
+            expected_python,
             "Recorded execution and preparation Python sources disagree.",
         )
-        if provenance["python_source_set_sha256"] != sources.sha256(
-            sources.json_bytes(python)
-        ):
+        if provenance["python_source_set_sha256"] != expected_python_digest:
             raise ValueError("Recorded Python source-set hash disagrees.")
-        sources._same(
+        sources._same_bytes(
             provenance["project_file_sha256"],
-            project,
+            expected_project,
             "Recorded execution and preparation project sources disagree.",
         )
 
@@ -486,7 +487,21 @@ def verify_origin(source, frozen):
 
 def endpoint(tree, times, truth):
     try:
-        return curve_errors(evaluate_tree(tree, times), truth)
+        prediction = evaluate_tree(tree, times)
+    except (ValueError, OverflowError, FloatingPointError) as error:
+        return {
+            "status": "not_available",
+            "reason": str(error),
+            "relative_rms": None,
+            "relative_max": None,
+        }
+    return prediction_endpoint(prediction, truth)
+
+
+def prediction_endpoint(prediction, truth):
+    """Assess the same prediction bytes already used by the original-tree replay."""
+    try:
+        return curve_errors(prediction, truth)
     except (ValueError, OverflowError, FloatingPointError) as error:
         return {
             "status": "not_available",
@@ -496,7 +511,7 @@ def endpoint(tree, times, truth):
         }
 
 
-def selected_record(source, name, summary, config, shared, arrays):
+def selected_record(source, name, summary, config, shared, arrays, fingerprints):
     prefix = f"symbolic/{name}/"
     if (
         summary["status"] != "success"
@@ -529,15 +544,16 @@ def selected_record(source, name, summary, config, shared, arrays):
     )
     keys = {"time_s", "observed"} | (set() if name == "ordinary" else {"covariance"})
     inputs = sources._npz(source.files[prefix + "inputs.npz"], keys)
-    expected = {"time_s": shared["time_s"], "observed": shared["observed"]}
+    expected = {"time_s": fingerprints["time_s"], "observed": fingerprints["observed"]}
     if name != "ordinary":
-        expected["covariance"] = shared[
+        expected["covariance"] = fingerprints[
             "covariance_true" if name == "known_covariance" else "covariance_estimated"
         ]
     for key, value in inputs.items():
-        if value.dtype != np.dtype("float64") or sources.fingerprint(
-            value
-        ) != sources.fingerprint(expected[key]):
+        if (
+            value.dtype != np.dtype("float64")
+            or sources.fingerprint(value) != expected[key]
+        ):
             raise ValueError("Worker input differs: " + key)
     front = source.document(prefix + "result.json")
     if front["format"] != FORMAT or front["evaluation_scope"] != "fitted_samples_only":
@@ -566,9 +582,8 @@ def selected_record(source, name, summary, config, shared, arrays):
         "Original selection and worker disagree.",
     )
     _validated_tree(chosen["tree"])
-    replay = _check_prediction_replay(
-        evaluate_tree(chosen["tree"], arrays["training_time_s"]), chosen["prediction"]
-    )
+    prediction = evaluate_tree(chosen["tree"], arrays["training_time_s"])
+    replay = _check_prediction_replay(prediction, chosen["prediction"])
     if not np.array_equal(
         shared["observed"] - np.asarray(chosen["prediction"]), chosen["residual"]
     ):
@@ -583,10 +598,10 @@ def selected_record(source, name, summary, config, shared, arrays):
         raise ValueError("Invalid selected loss.")
     np.testing.assert_allclose(chosen["loss"], loss, rtol=1e-10, atol=0)
     errors = {
-        grid: endpoint(
-            chosen["tree"], arrays[grid + "_time_s"], arrays[grid + "_truth"]
-        )
-        for grid in ("training", "diagnostic")
+        "training": prediction_endpoint(prediction, arrays["training_truth"]),
+        "diagnostic": endpoint(
+            chosen["tree"], arrays["diagnostic_time_s"], arrays["diagnostic_truth"]
+        ),
     }
     record = {
         "schema": SCHEMA,
@@ -705,17 +720,24 @@ def build_assessment(root, consumed, prepared=None):
             raise ValueError("Invalid shared numerical data: " + key)
     if not np.array_equal(shared["observed"], shared["signal"] + shared["noise"]):
         raise ValueError("Observed samples differ from signal plus noise.")
+    fingerprints = {key: sources.fingerprint(value) for key, value in shared.items()}
     for key, expected in (
         ("time_s", arrays["training_time_s"]),
         ("signal", arrays["training_truth"]),
     ):
-        if shared[key].dtype != np.dtype("float64") or sources.fingerprint(
-            shared[key]
-        ) != sources.fingerprint(expected):
+        if shared[key].dtype != np.dtype("float64") or fingerprints[
+            key
+        ] != sources.fingerprint(expected):
             raise ValueError("Shared training data and frozen reference disagree.")
     records = [
         selected_record(
-            source, name, result["symbolic_arms"][name], config, shared, arrays
+            source,
+            name,
+            result["symbolic_arms"][name],
+            config,
+            shared,
+            arrays,
+            fingerprints,
         )
         for name in ARMS
     ]

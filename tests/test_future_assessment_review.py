@@ -16,6 +16,7 @@ from ringdown_sr.pilot import run_pilot
 software = fixtures.software
 worker = fixtures.worker
 run_source = fixtures.run_source
+replay_source = fixtures.replay_source
 
 CASES = (
     "worker_commit",
@@ -91,8 +92,10 @@ def assert_locked(output):
 
 
 @pytest.mark.parametrize("case", CASES)
-def test_rehashed_worker_counterexamples_block_saved_export(run_source, tmp_path, case):
-    source, _, _ = run_source
+def test_rehashed_worker_counterexamples_block_saved_export(
+    replay_source, tmp_path, case
+):
+    source, _, _ = replay_source
     mutate_arm(source / "symbolic/estimated_covariance", case)
     rehash(source)
     output = tmp_path / "rejected"
@@ -130,9 +133,9 @@ def test_actual_worker_counterexamples_block_automatic_publication(
 
 @pytest.mark.parametrize("change", ["missing", "extra"])
 def test_consistently_rewritten_python_sets_must_equal_git_inventory(
-    run_source, tmp_path, change
+    replay_source, tmp_path, change
 ):
-    source, _, _ = run_source
+    source, _, _ = replay_source
     contract = read(source / future.CONTRACT)
     name = (
         "ringdown_sr/future_assessment.py"
