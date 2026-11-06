@@ -1,11 +1,12 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Neustartvergleich 002 ausgewertet
+## Aktuell: Neustart- und Zeitbudgetvergleich ausgewertet
 
 Abgleich vom 06.11.2026, Leitfadenphase 3: Remote-main ist nach ausdrücklich
 freigegebenem PR78-Merge `4df7ecaaaed0a6d235f7db104c6982bdfcabf048`.
 Eigener Dokumentationsbranch `codex/global-restart-results-002`; bestehende
-Worktrees erhalten. Keine weiteren offenen PRs beim Einstieg. Implementierung,
+Worktrees erhalten. PR #79 bündelt beide Ergebnisdokumentationen und wurde vor
+der Ergänzung des Zeitbefunds wieder auf Draft gesetzt. Implementierung,
 wissenschaftliche Ausführung, Quellenprüfung und Profilentscheidung bleiben getrennt.
 
 - **Primärbeleg:** [Lauf 002](global_restart_results_manjaro_002.md) ist mit allen
@@ -28,15 +29,24 @@ wissenschaftliche Ausführung, Quellenprüfung und Profilentscheidung bleiben ge
   Verlustaufrufen als lange Suchen bei gleicher A-Zahl. Workerzeit zugleich
   14,14 % höher; keine allgemeine Überlegenheit oder Beschleunigung behaupten.
   Lauf 001 und seine Abbruchkosten bleiben separat erhalten.
-- **Nächster Versuch:** Die lesende technische Eignungsfunktion lehnt den
-  gesamten PR76-Kontrollarm wegen fehlender tatsächlicher CPU-/Julia-/GC-
-  Threadbelege ab. Der bereits vorbereitete [Zeitbudgetvergleich](iteration_time_budget.md)
-  bleibt im ausdrücklich gewählten Modus `fresh_all` mit acht frischen Suchen.
-  Start und technische Manjaro-Vorprüfungen dieses neuen Laufs sind noch nicht
-  belegt; Befehle sind kein Ausführungsnachweis. Danach bewusste Profilübernahme
-  und vorab festgelegte unabhängige Bestätigung, anschließend Rauschpilot.
+- **Zeitbudgetbefund:** [Lauf 001](iteration_time_results_manjaro_001.md) im vorab
+  begründeten Modus `fresh_all` auf `4df7eca` abgeschlossen: acht frische Suchen,
+  76 Kandidaten. 469 Dateien, 461 Rohmanifest-Einträge, 163 Vorbereitungsbindungen,
+  88 Orchestrierungsquellen und 128 Git-Commit-/Dateibindungen geprüft. Eigene
+  Python-/MPFR-Verifikation mit ausschließlich angepasstem Verify-Start bestanden;
+  drei Verify-Dateien bytegleich. Timer, tatsächliche Threadbindung und benachbarte
+  Aufrufmessung bestätigt; keine Suche und kein nativer Replay. I 4/4 A, Z 3/4 A,
+  beide 3/4 A plus Familie. Z verliert einen A-Erfolg; 12,51 % weniger Workerzeit
+  begründen deshalb keine Empfehlung für 400 Sekunden. Rund 66,5 Minuten
+  gemessener Aufrufaufwand, genaue Messgrenzen im Bericht.
+- **Nächster Schritt:** Viererpakete bleiben der Kandidat für bewusste
+  Profilübernahme und vorab festgelegte unabhängige Bestätigung, anschließend
+  Rauschpilot. Profil im allgemeinen Laufweg sowie unberührte Bestätigungsfälle,
+  Ausfall-/Kostenregeln und praktische Grenze vor neuer Ausführung festlegen.
+  Keine Wiederholung von Zeitbudgetlauf 001 und keine offene Budgetoptimierung.
+  Technische Manjaro-Vorprüfungen bleiben separat noch nicht belegt.
 - **Dokumentation und Prüfung:** Ergebnisbericht, README, Leitfaden, beide
-  Laufwege und Index abgeglichen. 95 Markdown-Dateien mit lokalen Linkzielen
+  Laufwege und Index abgeglichen. 96 Markdown-Dateien mit lokalen Linkzielen
   und Diffprüfung bestanden. KI-basiertes Eigenreview der Quellenzuordnung,
   Kostenbereiche und Anschlussregel; kein zusätzlicher Agent. Code, Tests,
   Konfigurationen, eingefrorene Protokolle und frühere Ergebnisberichte bleiben
@@ -44,7 +54,7 @@ wissenschaftliche Ausführung, Quellenprüfung und Profilentscheidung bleiben ge
 - **Offen:** Dokumentationsänderung noch separat zu übernehmen; technische
   Manjaro-Abschlussbelege, ältere nachrangige Quellenlücken sowie gemeinsame
   Archivablage und unabhängig geprüfte Zweitkopien gemäß [Index](results_index.md).
-  Original von 002 und gesonderter Audit liegen als Arbeitskopien vor. Keine
+  Beide neuen Originale und ihre gesonderten Audits liegen als Arbeitskopien vor. Keine
   wissenschaftliche Ausführung oder eigenständige Übernahme durch diesen Audit.
 
 ## Historischer Dokumentationsstand aus PR78

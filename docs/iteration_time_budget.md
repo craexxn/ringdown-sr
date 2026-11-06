@@ -4,8 +4,14 @@ Leitfadenphase 3; das [eingefrorene Protokoll](iteration_time_budget_plan.md)
 und die [Konfiguration](../data/iteration_time_protocol.json) gelten unverändert.
 Vier bekannte Entwicklungsseeds, keine allgemeine Erfolgswahrscheinlichkeit.
 Der [PR76-Neustartvergleich](global_restart_comparison.md) bleibt ein separater
-wissenschaftlicher Versuch. Die folgenden wissenschaftlichen Befehle sind
-ein späterer Ausführungsschritt auf Manjaro, keine CI-Aufgabe.
+wissenschaftlicher Versuch. Abgleich vom 06.11.2026: Der
+[Lauf 001](iteration_time_results_manjaro_001.md) ist mit acht frischen Suchen
+auf `4df7ecaaaed0a6d235f7db104c6982bdfcabf048` abgeschlossen und lesend bestätigt,
+einschließlich Aufrufmessung und Verify-Export. I erreicht 4/4 A, Z 3/4 A;
+beide 3/4 A mit Familiennachweis. Trotz geringerer Gesamtkosten ist dies nach
+der eingefrorenen Regel eine Verschlechterung dieser Entwicklungsfälle.
+Die folgenden Befehle dokumentieren den ausgeführten Manjaro-Laufweg; sie
+geben keine Wiederholung oder Überschreibung von 001 frei und sind keine CI-Aufgabe.
 
 ## Voraussetzungen und Kontrollimport
 

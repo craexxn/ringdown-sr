@@ -46,7 +46,8 @@ ebenfalls an den nachgereichten Primärdateien bestätigt. Beim globalen Verglei
 ist [Abbruch 001](global_restart_results_manjaro_001.md) mit 19 fertigen Zellen,
 unterbrochener Zelle 20, Teilkosten und gesperrter Freigabe geprüft.
 Der getrennte [Lauf 002](global_restart_results_manjaro_002.md) ist nun vollständig
-lesend bestätigt; seine Einordnung folgt im Phase-3-Abschnitt unten.
+lesend bestätigt; ebenso der [Zeitbudgetlauf 001](iteration_time_results_manjaro_001.md)
+mit acht frischen Suchen. Ihre getrennten Einordnungen folgen im Phase-3-Abschnitt unten.
 Fehlende Primärbelege und Sicherungen werden im
 [Ergebnisindex](results_index.md#priorisierte-fehlende-belege) priorisiert.
 Dies ist Quellen- und Statuspflege, keine Änderung der Versuchspläne.
@@ -306,12 +307,12 @@ Workerzeit ist allerdings 14,14 % höher. Keine allgemeine Erfolgswahrscheinlich
 kein Laufzeitvorteil und keine automatische Profilumstellung ableiten.
 
 Die bewusste Profilübernahme und unabhängige Bestätigung sind damit der
-vorgesehene Anschluss. Vorher den bereits separat eingefrorenen begrenzten
-Halteregelvergleich aus PR77 abschließen; sein Ausführungsstart ist hier noch
-nicht belegt. Für diesen Vergleich bestätigt die technische Eignungsprüfung
-von 002 die fehlende historische CPU-/Julia-/GC-Threadbindung aller vier
-Kontrollen. Die vorbereitete ausdrückliche Wahl `fresh_all` mit acht Suchen bleibt
-unverändert und wird nicht anhand der jetzt bekannten Kurvenqualität getroffen.
+vorgesehene Anschluss. Der bereits separat eingefrorene begrenzte
+Halteregelvergleich aus PR77 ist inzwischen ebenfalls abgeschlossen; Befund unten.
+Die technische Eignungsprüfung von 002 bestätigt die fehlende historische
+CPU-/Julia-/GC-Threadbindung aller vier Kontrollen. Die vorab begründete Wahl
+`fresh_all` wurde mit acht frischen Suchen ausgeführt, ohne ergebnisabhängige
+Kontrollauswahl oder Mischung mit historischen Zellen.
 Zeitnormalisierung bleibt nur die bereits bedingt vorgesehene zweite Intervention;
 dieser Befund begründet keine weitere offene Suchoptimierung. Vor dem Rauschpilot
 Profil im allgemeinen Laufweg bewusst übernehmen und an unberührten Fällen
@@ -344,6 +345,27 @@ Keine allgemeine Erfolgsquote, automatische Budgetstaffel oder neue offene
 Suchintervention. PR76 wird separat ausgeführt und nicht ersetzt. Anschließend
 bleiben bewusste Profilübernahme, gegebenenfalls Zeitnormalisierung als zweite
 Intervention, unabhängige Bestätigung und Rauschpilot in der bestehenden Ordnung.
+
+### Ergebnis des Halteregelvergleichs vom 06.11.2026
+
+[Zeitbudgetlauf 001](iteration_time_results_manjaro_001.md): alle acht Suchen
+im frischen Modus abgeschlossen und lesend bestätigt. I erreicht 4/4 A,
+Z 3/4 A; jeweils 3/4 A plus nachgewiesene Originalfamilie. Ein A-Verlust bei
+Seed 20261211, keine A-Gewinne. Familiennachweise bleiben in diesem Paar
+ungeklärt; keine Definitionslücke. Die eingefrorene Regel bewertet die
+verringerte A-Zahl als Verschlechterung dieser Entwicklungsfälle. Insgesamt
+12,51 % weniger Workerzeit und 13,32 % weniger Verlustaufrufe rechtfertigen
+daher keine Übernahmeempfehlung für das 400-Sekunden-Profil. Alle Zeitläufe
+enden regulär; kein technischer Fehler als Erklärung nachgewiesen.
+
+Planfortschreibung: kein nachträgliches Budgettuning oder weiterer Laufauftrag.
+Die Viererpakete aus dem getrennten Neustartvergleich bleiben der Kandidat für
+bewusste Profilübernahme und unabhängige Bestätigung. Zuerst Profil und
+Bestätigungsprotokoll mit unberührten Fällen, Ausfall-/Kostenregeln und praktischer
+Entscheidungsgrenze festlegen. Diese vier bekannten Seeds gelten nicht als
+unabhängige Bestätigung. Unterschiedliche Worker-Messbereiche der beiden Serien
+verbieten einen unmittelbaren Zeitkostenvergleich zwischen PR76-Paketen und
+PR77-Zeitarm; keine gepoolte Erfolgsquote. Die späteren Phasen bleiben bestehen.
 
 ### Unregelmäßiges Zusatzraster bereits in der Entwicklung
 

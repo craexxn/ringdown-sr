@@ -47,8 +47,12 @@ oder einen vollständig frischen Ersatzmodus fest. Lokal bestehen 3.188 Pythonf�
 und sieben kleine native Suchprüfungen; PR #77 ist nach vollständiger grüner CI
 und separatem KI-Review übernommen. Die lesende Eignungsprüfung von Lauf 002
 lehnt die Kontrollwiederverwendung wegen fehlender tatsächlicher CPU-/Julia-/GC-
-Threadbelege ab. Der ausdrücklich vorbereitete Modus `fresh_all` mit acht Suchen
-bleibt bestehen; sein Start ist hier noch nicht belegt.
+Threadbelege ab. Der [Zeitbudgetlauf 001](docs/iteration_time_results_manjaro_001.md)
+ist inzwischen im Modus `fresh_all` mit acht frischen Suchen lesend bestätigt:
+I erreicht 4/4 A, Z 3/4 A; beide 3/4 A mit Familiennachweis. Z benötigt insgesamt
+12,51 % weniger Workerzeit, verliert aber einen A-Erfolg. Deshalb keine
+Übernahmeempfehlung für 400 Sekunden. Nächster Schritt ist die bewusste
+Profilübernahme und das vorab festgelegte unabhängige Bestätigungsprotokoll.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
 Ausführungsschritt. Umsetzung und Nachweise stehen im
