@@ -10,7 +10,30 @@ erfolgreich: 85 Markdown-Dateien, `mode=docs`, beide erforderlichen Jobs grün,
 native Prüfungen planmäßig übersprungen. Index und Archivregel blieben bei der
 Konfliktauflösung bytegleich; Code/Verträge entsprachen main nach PR #73.
 
-## Aktuell: begrenzter Suchvergleich, Leitfadenphase 3
+## Aktuell: Zeitbudgetvergleich vorbereiten, PR76-Korrektur prüfen
+
+- **Branch/Basis:** `codex/iteration-time-budget`, eigener Worktree, auf PR76
+  `66ec4238f39edbbc2a71bb4e984571e41531e7ab`; main unverändert `2f9fff0`.
+  PR76 ist offen, seine Reviewkorrektur erhält eine neue vollständige CI.
+  Kein eigenständiger Merge. Vor Abschluss den tatsächlichen Übernahmestand
+  erneut abgleichen und die aktuelle main-Basis normal einbinden.
+- **Vorabfestlegung:** [Zeitbudgetprotokoll](iteration_time_budget_plan.md) und
+  [Konfiguration](../data/iteration_time_protocol.json) vor Implementierung und
+  vor Sichtung wissenschaftlicher PR76-Ergebnisse; solche Ergebnisse liegen
+  hier weiterhin nicht vor. Alle vier I wiederverwenden oder alle vier frisch,
+  keine qualitätsabhängige Teilübernahme. Kontrollarm mangels Originalarchiv
+  unbestätigt. PR76 bleibt separat auszuführen.
+- **Selbst geprüft:** Timerquellen von PySR 2.6.0/SymbolicRegression 2.5.1:
+  Uhrstart nach Aufwärmzyklen, kooperative Prüfung am Schleifenende, Überschreitung
+  möglich. Historische Fitzeit 2.001,72272/5 = 400,344544 Sekunden;
+  keine Gleichsetzung mit interner Suchzeit oder Gesamtkosten. Bei effektivem
+  `warmup_maxsize_by=0.0` entfällt die iterationsabhängige Größenaufwärmung;
+  technische Gegenprüfung der übrigen Suchdynamik steht noch aus.
+- **Nächster Schritt:** Protokoll committen, getrennten Zeitlaufweg und
+  Kontrollimport implementieren, kleine technische Gegenfälle prüfen und
+  eigenen Draft-PR erstellen. Kein wissenschaftlicher Suchlauf in Cloud/CI.
+
+## Separater Suchvergleich: globale Neustarts, Leitfadenphase 3
 
 PR #75 ist nach ausdrücklichem Mergeauftrag als
 `2f9fff00c24a72f644dc42816b6a05aa87e392f0` übernommen. Head

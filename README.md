@@ -29,6 +29,11 @@ keine alternative A-Kurve in den 35 Nicht-A-Fronten. Gemäß
 1 × 2.000 und 4 × 500 bei festem lokalem Profil 300/5 vorbereitet.
 Das Protokoll ist eingefroren; Umsetzung und aktueller technischer Prüfstand
 werden in PR #76 geführt.
+Parallel wird der [begrenzte Zeitbudgetvergleich](docs/iteration_time_budget_plan.md)
+von 2.000 Iterationen mit 400 Sekunden Suchzeit vorbereitet. Sein Protokoll legt
+vor Sichtung wissenschaftlicher PR76-Ergebnisse die vollständige Kontrollübernahme
+oder einen vollständig frischen Ersatzmodus fest. Umsetzung und Prüfung stehen
+noch aus; PR76 bleibt ein separater wissenschaftlicher Lauf.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
 Ausführungsschritt. Umsetzung und Nachweise stehen im
