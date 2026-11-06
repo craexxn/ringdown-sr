@@ -135,6 +135,31 @@ def archive_files(contents, prefix, check=lambda: None):
     return files
 
 
+class GitFileCache:
+    """An explicitly owned blob cache; no process-global state survives an export."""
+
+    def __init__(self):
+        self.files = {}
+
+    def clear(self):
+        self.files.clear()
+
+    def __call__(self, commit, name):
+        safe_name(name)
+        immutable = (
+            type(commit) is str
+            and len(commit) == 40
+            and all(c in "0123456789abcdef" for c in commit)
+        )
+        key = (ROOT.resolve(), commit, name) if immutable else None
+        if immutable and key in self.files:
+            return self.files[key]
+        raw = _git_file(commit, name)
+        if immutable:
+            self.files[key] = raw
+        return raw
+
+
 def _git_file(commit, name):
     safe_name(name)
     return subprocess.check_output(
@@ -143,7 +168,11 @@ def _git_file(commit, name):
 
 
 def _same(first, second, reason):
-    if json_bytes(first) != json_bytes(second):
+    _same_bytes(first, json_bytes(second), reason)
+
+
+def _same_bytes(value, expected, reason):
+    if json_bytes(value) != expected:
         raise ValueError(reason)
 
 
@@ -168,7 +197,8 @@ def fingerprint(array):
     }
 
 
-def _arrays(files, report, spec):
+def _arrays(files, report, spec, git_file=None):
+    git_file = _git_file if git_file is None else git_file
     arrays = {
         **_npz(files["training.npz"], ("time_s", "observed")),
         **_npz(files["diagnostic.npz"], ("diagnostic_time_s", "diagnostic_truth")),
@@ -199,7 +229,7 @@ def _arrays(files, report, spec):
     )
     if spec.get("input_manifest_path"):
         manifest = read_json(
-            _git_file(spec["execution_commit"], spec["input_manifest_path"])
+            git_file(spec["execution_commit"], spec["input_manifest_path"])
         )
         _same(report["input_manifest"], manifest, "Wrong frozen input manifest.")
         _same(
@@ -218,7 +248,7 @@ def _arrays(files, report, spec):
     return arrays
 
 
-def _sources(files, report, spec, check):
+def _sources(files, report, spec, check, git_file):
     sources = report["source_sha256"]
     if (
         len(sources) != spec["source_count"]
@@ -227,10 +257,10 @@ def _sources(files, report, spec, check):
         raise ValueError("Wrong complete historical source set.")
     for name, digest in sources.items():
         check()
-        if sha256(_git_file(spec["execution_commit"], name)) != digest:
+        if sha256(git_file(spec["execution_commit"], name)) != digest:
             raise ValueError("Historical source disagrees with trusted Git: " + name)
     if (
-        sha256(_git_file(spec["plan"]["commit"], spec["plan_path"]))
+        sha256(git_file(spec["plan"]["commit"], spec["plan_path"]))
         != spec["plan"]["sha256"]
     ):
         raise ValueError("Historical plan binding failed.")
@@ -275,12 +305,12 @@ def _sources(files, report, spec, check):
     }:
         raise ValueError("Incomplete project-file provenance.")
     for name, digest in provenance["project_file_sha256"].items():
-        if sha256(_git_file(spec["execution_commit"], name)) != digest:
+        if sha256(git_file(spec["execution_commit"], name)) != digest:
             raise ValueError("Wrong project-file provenance.")
     return provenance
 
 
-def _selection(files, cell, expected, arrays, spec, provenance, sources):
+def _selection(files, cell, expected, arrays, spec, common):
     for key, value in expected.items():
         _same(
             cell.get(key), value, "Original cell identity differs from its plan: " + key
@@ -288,7 +318,13 @@ def _selection(files, cell, expected, arrays, spec, provenance, sources):
     if cell["status"] != "completed":
         raise ValueError("Incomplete original cell.")
     prefix = expected["directory"] + "/"
-    read = lambda name: read_json(files[prefix + name])
+    documents = {}
+
+    def read(name):
+        if name not in documents:
+            documents[name] = read_json(files[prefix + name])
+        return documents[name]
+
     diagnosis = cell["diagnostics"]
     anchors = diagnosis["source_file_sha256"]
     required = {
@@ -331,11 +367,13 @@ def _selection(files, cell, expected, arrays, spec, provenance, sources):
         ("metadata.json", "provenance"),
         ("metadata.json", "worker_provenance"),
     ):
-        _same(read(name)[key], provenance, "Wrong original worker provenance.")
+        _same_bytes(
+            read(name)[key], common["provenance"], "Wrong original worker provenance."
+        )
     manifest = read("manifest.json")
-    _same(
+    _same_bytes(
         manifest["sources"],
-        sources,
+        common["sources"],
         "Wrong worker source binding.",
     )
     if manifest["format"] != spec["format"]:
@@ -348,9 +386,9 @@ def _selection(files, cell, expected, arrays, spec, provenance, sources):
         },
         "Incomplete worker input manifest.",
     )
-    _same(
+    _same_bytes(
         manifest["runtime"],
-        {alias: sources[name] for alias, name in spec["runtime_sources"].items()},
+        common["runtime"],
         "Wrong worker runtime manifest.",
     )
     for name, digest in read("checksums.json").items():
@@ -376,10 +414,8 @@ def _selection(files, cell, expected, arrays, spec, provenance, sources):
     saved = _npz(files[prefix + "inputs.npz"], ("time_s", "observed"))
     signal = expected.get("signal", "anchor")
     observed = arrays["observed"]
-    diagnostic_truth = arrays["diagnostic_truth"]
     if len(spec["signal_order"]) > 1:
         observed = observed[spec["signal_order"].index(signal)]
-        diagnostic_truth = diagnostic_truth[spec["signal_order"].index(signal)]
     for key, value in (("time_s", arrays["time_s"]), ("observed", observed)):
         if (
             saved[key].dtype != value.dtype
@@ -451,7 +487,7 @@ def _selection(files, cell, expected, arrays, spec, provenance, sources):
             raise ValueError("Selected numerical verification unavailable.")
     _same(
         selected["prediction_replay"]["times"],
-        fingerprint(arrays["time_s"]),
+        common["fingerprints"]["time_s"],
         "Prediction grid changed.",
     )
     if selected["prediction_replay"]["tree_sha256"] != sha256(
@@ -471,16 +507,12 @@ def _selection(files, cell, expected, arrays, spec, provenance, sources):
         "source_file_sha256": anchors,
         "candidate": selected,
         "unchanged_historical": old,
-        "assessment_references": reference_records(
-            arrays["time_s"], observed, arrays["diagnostic_time_s"], diagnostic_truth
-        ),
+        "assessment_references": common["references"][signal],
         "grid_binding": {
             "time_coordinate": "physical_seconds",
-            "structure_interval": interval_binding(arrays["time_s"]),
+            "structure_interval": common["interval"],
             "signal": signal,
-            "input_fingerprints": {
-                key: fingerprint(value) for key, value in arrays.items()
-            },
+            "input_fingerprints": common["fingerprints"],
         },
     }
 
@@ -500,10 +532,15 @@ class VerifiedSeries:
             raise ValueError("Original archive changed after consumption.")
 
 
-def read_verified_series(path, series_id, *, check=lambda: None):
+def read_verified_series(
+    path, series_id, *, check=lambda: None, contents=None, git_file=None
+):
+    git_file = _git_file if git_file is None else git_file
     spec = contracts()[series_id]
     path = Path(path).absolute()
-    raw = bounded_read(path)
+    raw = bounded_read(path) if contents is None else contents
+    if type(raw) is not bytes or len(raw) > MAX_ARCHIVE:
+        raise ValueError("Expected bounded immutable archive bytes.")
     if sha256(raw) != spec["archive_sha256"]:
         raise ValueError("Wrong externally anchored original archive: " + series_id)
     files = archive_files(raw, series_id, check)
@@ -527,8 +564,29 @@ def read_verified_series(path, series_id, *, check=lambda: None):
         frozen,
         "Incomplete or changed original consumption anchors.",
     )
-    provenance = _sources(files, report, spec, check)
-    arrays = _arrays(files, report, spec)
+    provenance = _sources(files, report, spec, check, git_file)
+    arrays = _arrays(files, report, spec, git_file)
+    common = {
+        "provenance": json_bytes(provenance),
+        "sources": json_bytes(report["source_sha256"]),
+        "runtime": json_bytes(
+            {
+                alias: report["source_sha256"][name]
+                for alias, name in spec["runtime_sources"].items()
+            }
+        ),
+        # _arrays has just checked these fingerprints against the frozen vectors.
+        "fingerprints": report["input_fingerprints"],
+        "interval": interval_binding(arrays["time_s"]),
+        "references": {},
+    }
+    for index, signal in enumerate(spec["signal_order"]):
+        truth = [arrays[key] for key in ("observed", "diagnostic_truth")]
+        if len(spec["signal_order"]) > 1:
+            truth = [value[index] for value in truth]
+        common["references"][signal] = reference_records(
+            arrays["time_s"], truth[0], arrays["diagnostic_time_s"], truth[1]
+        )
     records = []
     for cell, expected in zip(report["cells"], spec["cells"], strict=True):
         check()
@@ -540,8 +598,7 @@ def read_verified_series(path, series_id, *, check=lambda: None):
                     expected,
                     arrays,
                     spec,
-                    provenance,
-                    report["source_sha256"],
+                    common,
                 )
             )
         )

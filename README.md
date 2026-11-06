@@ -6,7 +6,7 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 ## Projektstatus
 
 Fortsetzungsstand: 06.11.2026; abgeglichener Hauptbranch:
-`de33d52` ([Zusatzbewertung Stufe 3 #72](https://github.com/craexxn/ringdown-sr/pull/72)).
+`e28889c` ([technische Optimierung #73](https://github.com/craexxn/ringdown-sr/pull/73)).
 Der [CI-Sparplan](docs/github_actions_savings_plan.md) ist mit
 [PR #71](https://github.com/craexxn/ringdown-sr/pull/71) übernommen:
 günstige Draft-Prüfungen, danach vollständige [serielle native CI](docs/ci.md)
@@ -31,6 +31,13 @@ ist als Stufe 3 implementiert, lokal geprüft und
 Mehrere Grundterme werden separat diagnostiziert; adaptive Schranken bleiben
 begrenzt. [PR #72](https://github.com/craexxn/ringdown-sr/pull/72) enthält
 die übernommene Umsetzung, vollständige CI und den KI-Review ohne Befund.
+Der technische Folgeauftrag
+[Laufzeitoptimierung von Export und Testvorbereitung](docs/assessment_performance.md)
+ist mit [PR #73](https://github.com/craexxn/ringdown-sr/pull/73) nach vollständiger
+CI, übermitteltem separatem KI-Review ohne Befund und ausdrücklicher Freigabe
+übernommen. Die [Archivierungsregelung](docs/results_archiving.md) und der
+[Ergebnisindex](docs/results_index.md) stehen in PR #74 zur abschließenden Prüfung;
+konkrete Ablageorte und zweite Sicherungskopien bleiben unbestätigt.
 Suchversuche stehen aus.
 Die baumabhängige Vorhersageprüfung ist mit vollständiger CI und einem
 KI-basierten Implementierungsreview ohne korrekturbedürftige Befunde mit

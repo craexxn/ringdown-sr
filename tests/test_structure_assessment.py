@@ -18,6 +18,7 @@ from ringdown_sr.pilot import run_pilot
 software = fixtures.software
 worker = fixtures.worker
 run_source = fixtures.run_source
+replay_source = fixtures.replay_source
 LEGACY_COMMIT = "e09ab286fc853fe2991f070c4d96d9f070b55d9d"
 
 
@@ -80,9 +81,9 @@ def bind_root_contract(source):
     ["nominal_end", "open_end", "missing_interval", "units", "resources", "downgrade"],
 )
 def test_consistently_rehashed_structure_contract_cannot_change_the_method(
-    run_source, tmp_path, change
+    replay_source, tmp_path, change
 ):
-    source, _, _ = run_source
+    source, _, _ = replay_source
     path = source / future.CONTRACT
     contract = read(path)
     if change == "nominal_end":
@@ -192,9 +193,9 @@ def test_approved_earlier_snapshot_upgrades_explicitly_retrospectively(
 
 
 def test_late_proof_record_mutation_revokes_stage2_release(
-    run_source, tmp_path, monkeypatch
+    replay_source, tmp_path, monkeypatch
 ):
-    source, _, _ = run_source
+    source, _, _ = replay_source
     output = tmp_path / "late-proof"
     write = Path.write_bytes
 
