@@ -191,6 +191,9 @@ def context(request, legacy):
             ):
                 raise ValueError("Invalid time-budget native preflight.")
             driver.verify_snapshots(record, initial, probe)
+            control.validate_runtime(record["budget_runtime"])
+        if options["budget_runtime"] != references["budget_runtime"]:
+            raise ValueError("Native runtime changed between preparation probes.")
         if options["callback_calls"] != 0 or len(options["profiles"]) != 1:
             raise ValueError("Incomplete time-budget options coverage.")
         record = options["profiles"][0]
@@ -283,6 +286,20 @@ def verify_result(output, request, arrays, prepared, legacy, ctx):
             raise ValueError("Changed stopping evidence.")
     else:
         raise ValueError("Unfinished time-budget worker.")
+    runtime = output / "worker/time_budget_runtime.json"
+    metadata = support.read_json((output / "worker/metadata.json").read_bytes())
+    phase = metadata.get("failed_during", metadata.get("phase"))
+    if runtime.exists() or phase in {"fit", "replay", "success"}:
+        actual_runtime = support.read_json(runtime.read_bytes())
+        control.validate_runtime(actual_runtime)
+        options = support.read_json((output / "options.json").read_bytes())
+        if actual_runtime != options["budget_runtime"]:
+            raise ValueError("Worker hardware/threads differ from preparation.")
+        if (
+            outcome["status"] == "completed"
+            and actual_runtime != outcome["stop"]["clock"]["budget_runtime"]
+        ):
+            raise ValueError("Runtime evidence differs at search completion.")
     resources = support.read_json((output / "worker_resources.json").read_bytes())
     if (
         set(resources)

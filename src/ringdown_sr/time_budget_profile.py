@@ -73,6 +73,7 @@ def checked_runtime(jl):
     # equation_search and BLAS limits alone do not bind these runtime threads.
     if any(os.environ.get(key) != value for key, value in JULIA_THREADS.items()):
         raise ValueError("Explicit Julia and GC thread limits must precede import.")
+    jl.seval("using LinearAlgebra")
     native = jl.seval("""(;
         cpu_name=string(Sys.CPU_NAME), cpu_threads=Sys.CPU_THREADS,
         word_size=Sys.WORD_SIZE, julia_threads=Threads.nthreads(:default),
@@ -82,6 +83,33 @@ def checked_runtime(jl):
     record.update(
         affinity=sorted(os.sched_getaffinity(0)), thread_environment=dict(JULIA_THREADS)
     )
+    validate_runtime(record)
+    return record
+
+
+def validate_runtime(record):
+    if (
+        not isinstance(record, dict)
+        or set(record)
+        != {
+            "cpu_name",
+            "cpu_threads",
+            "word_size",
+            "julia_threads",
+            "interactive_threads",
+            "gc_threads",
+            "blas_threads",
+            "affinity",
+            "thread_environment",
+        }
+        or not isinstance(record["cpu_name"], str)
+        or not record["cpu_name"]
+        or type(record["cpu_threads"]) is not int
+        or record["cpu_threads"] < 1
+        or record["word_size"] != 64
+        or record["thread_environment"] != JULIA_THREADS
+    ):
+        raise ValueError("Incomplete native hardware/thread evidence.")
     if (
         record["julia_threads"] != 1
         or record["interactive_threads"] != 0
@@ -92,7 +120,6 @@ def checked_runtime(jl):
         raise ValueError(
             "Effective native threads or CPU affinity violate the budget profile."
         )
-    return record
 
 
 def source_hashes():
@@ -225,6 +252,7 @@ def load_driver():
         "SearchTimeBudget.jl",
         "SearchBudgetClock.jl",
         "time_budget_clock.json",
+        "time_budget_runtime.json",
     )
     driver.expected_grammar_cases = expected_grammar_cases
     return driver

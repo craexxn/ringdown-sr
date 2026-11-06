@@ -60,6 +60,7 @@ def run(directory):
             module.SymbolicRegression = guard
             jl.SearchBudgetClock.configure()
             initial_runtime = actual_runtime
+            _write_json(directory / "time_budget_runtime.json", actual_runtime)
         elif phase == "after_search":
             if guard is None or module.SymbolicRegression is not guard:
                 raise ValueError("Missing time-budget invocation guard.")
