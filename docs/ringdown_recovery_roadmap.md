@@ -423,23 +423,39 @@ unbemerkt durch gewöhnliche MSE ersetzen.
 
 ## 6. Eingefrorene Bestätigung
 
-Vorschlag: drei vorab bestimmte Signale, davon das Ankersignal und zwei bisher
-ungenutzte Parameterkombinationen aus dem vorgesehenen Untersuchungsbereich;
-je zehn neue unabhängige Seed-Blöcke. Das ergibt 30 Algorithmusergebnisse,
-bei vier globalen Neustarts insgesamt 120 Suchaufrufe.
+Konkretisierung und Beschluss vom 09.11.2026 nach lesender Auswertung beider
+Vergleiche und Übernahme von PR79: [Bestätigungsprotokoll](restart_confirmation_plan.md)
+mit drei festen Signalen, davon der Anker und zwei bisher ungenutzte Kombinationen;
+je zehn neue gepaarte Seedblöcke. Viererpakete mit je 500 Iterationen gegen eine
+frische 2.000er-Kontrolle, beide bei lokal 300/5. 30 Paketausgaben plus 30
+Kontrollausgaben aus insgesamt 150 Suchaufrufen. Die frühere 120-Aufruf-Variante
+betrachtete nur das ausgewählte Profil; 30 lange Kontrollen kommen für den
+beschlossenen direkten Vergleich hinzu. Keine erneute offene Budgetoptimierung.
 
-Vorgeschlagene praktische Grenze zum Rauschpilot: mindestens 8/10 gemeinsame
-Kurven-/Strukturerfolge je Signal. Das ist kein Literaturstandard und kein
-statistischer Nachweis einer wahren Erfolgswahrscheinlichkeit von mindestens
-80 %. Erfolgszahlen, Unsicherheit und alle Fehlschläge berichten; keine
-gepoolte Erfolgsquote über unterschiedliche Signale als Ersatz.
+Praktische Grenze für das vorab ausgewählte Neustartprofil beschlossen:
+**mindestens 8/10 gemeinsame A-/Originalfamilienerfolge je Signal**.
+Offene Familienbeweise sind keine bestätigten gemeinsamen Erfolge und kein
+Nachweis der Nichtzugehörigkeit. Die Grenze ist kein Literaturstandard,
+kein statistischer Nachweis von mindestens 80 % wahrer Erfolgswahrscheinlichkeit
+und kein Überlegenheitskriterium gegenüber der langen Suche. Beide Arme,
+Paarungen, Ausfälle, marginale Unsicherheitsintervalle und reale Kosten berichten;
+keine gepoolte Erfolgsquote über unterschiedliche Signale.
 
-Das bereits in Phase 3 vorab festgelegte unregelmäßige Prüfraster ergänzt die Diagnose gegen
-Blindstellen regelmäßiger Raster. Es beeinflusst weder Kandidatenauswahl noch
-nachträglich die historische A-D-Skala und ersetzt keinen Definitionsnachweis.
+Drei getrennt ausführbare, vorher vollständig geplante Signalabschnitte mit
+je 50 Aufrufen erlauben Pausen. Die gemeinsame Entscheidung erfordert die
+lesende Prüfung aller Abschnitte mit gleicher Herkunft und numerischer Umgebung.
+Auch nach einem negativen ersten Abschnitt bleiben die weiteren vorgesehen.
+Kein Resume oder automatischer Wiederholungsauftrag nach Abbruch. Seeds,
+Signale, Reihenfolge, Auswahl, Kosten und Fristen stehen im eingefrorenen Plan;
+[Bedienung](restart_confirmation.md), tatsächliche Prüfungen und Ausführung
+im [Fortsetzungsstand](representation_implementation_status.md) getrennt führen.
 
-Nach Tuning an diesen Bestätigungsfällen gelten sie als Entwicklungsfälle.
-Sie dürfen anschließend nicht als unberührte unabhängige Bestätigung auftreten.
+Das unregelmäßige Prüfraster bleibt ausschließlich diagnostisch. Historische
+A–D-Regeln, Struktur-/Restverträge und Parameterstatus bleiben erhalten. Tuning
+an Bestätigungsfällen würde sie zu Entwicklungsfällen machen. Vor dem Rauschpilot
+ist das geprüfte 300/5-Profil im allgemeinen späteren Laufweg ausdrücklich zu
+übernehmen; seine Gewichtung muss Struktur- und Konstantensuche bestimmen.
+Die jetzige rauschfreie Bestätigung allein belegt diesen gewichteten Pfad nicht.
 
 ## 7. Rauschpilot und Hauptversuchsplanung
 
@@ -477,10 +493,9 @@ Untersuchung der Grenzen freier SR. Keine unbeschränkte Parametersuche.
 - Zielintervall aus tatsächlichen Trainingsendpunkten, Strukturbeweise und
   Ressourcen gemäß bestehenden Verträgen anwenden; diese Regeln sind beschlossen.
 - Rolle möglicher Nachbearbeitung im endgültigen Ausgabemodell.
-- Zusätzliche Seeds, genaue Auswahl- und Kostenvergleichsregel sowie
-  Entscheidung zwischen den Entwicklungsvarianten.
-- Unbenutzte Bestätigungssignale und endgültige
-  Fortsetzungskriterien; 8/10 je Signal ist zunächst ein Arbeitsvorschlag.
+- Seeds, Bestätigungssignale, Auswahl-/Kostenregeln und 8/10-Grenze sind
+  im Bestätigungsprotokoll vom 09.11.2026 festgelegt; vor Ausführung technische
+  Umsetzung und vollständige Abnahme abschließen.
 - Konkrete Rausch-, Hintergrund- und Gewichtungsbedingungen des kleinen Piloten.
 
 ## Literatur und Übertragungsgrenzen

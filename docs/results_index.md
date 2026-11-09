@@ -1,6 +1,6 @@
 # Ergebnisindex und Archivierungsstand
 
-Stand: 06.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
+Stand: 09.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
 nachträglichen Bewertungen; [Ablagerichtlinie](results_archiving.md).
 Serien sind die Indexeinheit, ihre Zellen/Wiederholungen bleiben im Originalbericht.
 Die Aufstellung ist keine Behauptung, dass alle jemals lokal erzeugten Ergebnisse
@@ -21,6 +21,15 @@ Ausführungscommit und Archiv-SHA-256 sind unten zugeordnet. Für alle Archive
 bleiben beide gesicherten Ablageorte und die Prüfung ihrer Kopien nachzutragen.
 Technische Fixtures und ein implementierter Laufweg sind keine wissenschaftliche
 Ausführung und kein Sicherungsnachweis.
+
+Die [unabhängige Bestätigung](restart_confirmation.md) ist vorab festgelegt und
+in technischer Umsetzung, noch nicht wissenschaftlich ausgeführt. Vorgesehene
+Abschnitte: `confirmation-anchor-manjaro-001`, `confirmation-low-manjaro-001`,
+`confirmation-high-manjaro-001`, je mit eigener Aufrufmessung; danach gemeinsame
+`restart-confirmation-manjaro-001-verification`. Diese Namen sind keine
+Ausführungsnachweise. Tatsächliche Commits, Abschlüsse/Teilstände und Kosten erst
+nach Belegen nachtragen. Das geplante gemeinsame Archiv
+`restart-confirmation-manjaro-001.tar.gz` erhält seinen Hash erst nach Erstellung.
 
 ## Archivablage
 

@@ -701,6 +701,7 @@ def test_all_original_commands_options_error_wrappers_and_order_are_preserved():
         "Verify restart comparison on three tiny technical workers",
         "Compare stopping-profile dynamics on three fixed technical prefixes",
         "Verify iteration and time stopping on four tiny technical workers",
+        "Verify confirmation on two tiny signals and six workers",
     }
     ordered = []
     for group in ("native-a", "native-b", "native-c"):

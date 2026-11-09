@@ -1,6 +1,40 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Neustart- und Zeitbudgetvergleich ausgewertet
+## Aktuell: unabhängige Bestätigung in Umsetzung
+
+Abgleich vom 09.11.2026, Leitfadenphasen 5/6: PR79 nach erneuter Prüfung des
+unveränderten Heads `11e5605`, Basis `4df7eca` und grüner Ready-CI `42242152399`
+ausdrücklich freigegeben und als `294f4ab79ee2e9588f9e5021b996bad726187d41`
+übernommen. Mergebaum `3caab0701f4a079ba9ab7a687c156aee0b738179` entspricht
+dem geprüften CI-Checkout. Eigener Branch `codex/restart-confirmation` baut
+auf diesem main auf; andere Worktrees und frühere Berichte bleiben erhalten.
+
+- **Beschlossen und eingefroren:** [Protokoll](restart_confirmation_plan.md),
+  120 neue überschneidungsfreie Seeds, drei Signale, je zehn gepaarte Blöcke,
+  150 Suchaufrufe in drei Abschnitten. Praktische Grenze: mindestens 8/10 A plus
+  gültige Originalfamilie je Signal für R, getrennt vom direkten Methodenvergleich.
+  Vor Implementierung in `2536d4e` versioniert; reine Stilkorrektur des
+  Eingabegenerators in `a1f498a`, wissenschaftlicher Plan und Eingabebits unverändert.
+  6.123 Eingabe-/Diagnosewerte unabhängig bei 100 Dezimalstellen geprüft,
+  normierter Maximalfehler 9,48e-16 unterschritten.
+- **Umsetzung:** eigener Abschnitts- und Gesamtverifikator mit dem bestehenden
+  PR77-Iterationsworker für beide Arme. Herkunft, tatsächliche Threads,
+  Originalauswahl, Ausfälle und Kosten bleiben gebunden. Keine Kontrollübernahme
+  und keine Änderung historischer Bewertungsregeln. Gemeinsame Freigabe nur bei
+  allen drei vollständig verifizierten Abschnitten; späte Änderungen widerrufen sie.
+- **Prüfung in Arbeit:** gezielte Gegenfälle und volle Pythonprüfung, danach
+  sechs winzige native Worker und vollständige Ready-CI. Tatsächliche Ergebnisse
+  werden vor Abschluss hier und im PR ergänzt. Keine wissenschaftlichen Suchen.
+- **Nächster Schritt:** technische Abnahme und Review der neuen Implementierung,
+  danach gesonderte Übernahmefreigabe. Der [Manjaro-Laufweg](restart_confirmation.md)
+  dokumentiert technische Vorprüfung, drei wissenschaftliche Abschnitte, lesende
+  Gesamtverifikation und Archivierung. Wissenschaftliche Ausführung nicht belegt.
+- **Weiterhin offen:** allgemeiner späterer gewichteter Laufweg vor Rauschpilot
+  ausdrücklich mit 300/5 abgleichen; Struktursuche und Konstantenoptimierung
+  müssen dieselbe Gewichtung verwenden. Historische technische Vorlaufbelege,
+  dauerhafte Archivablage und unabhängige Zweitkopien gemäß [Index](results_index.md).
+
+## Historischer Ergebnisabgleich aus PR79
 
 Abgleich vom 06.11.2026, Leitfadenphase 3: Remote-main ist nach ausdrücklich
 freigegebenem PR78-Merge `4df7ecaaaed0a6d235f7db104c6982bdfcabf048`.
