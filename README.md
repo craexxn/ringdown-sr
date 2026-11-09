@@ -5,13 +5,14 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 06.11.2026; abgeglichener main `4df7eca` nach ausdrücklich
+Fortsetzungsstand: 09.11.2026; abgeglichener main `294f4ab` nach ausdrücklich
 freigegebener Übernahme von [PR #73](https://github.com/craexxn/ringdown-sr/pull/73)
 und [PR #74](https://github.com/craexxn/ringdown-sr/pull/74), anschließend
 [PR #75](https://github.com/craexxn/ringdown-sr/pull/75) und
 [PR #76](https://github.com/craexxn/ringdown-sr/pull/76) und
 [PR #77](https://github.com/craexxn/ringdown-sr/pull/77) sowie der
-Archivdokumentation in [PR #78](https://github.com/craexxn/ringdown-sr/pull/78).
+Archivdokumentation in [PR #78](https://github.com/craexxn/ringdown-sr/pull/78)
+und den Ergebnisberichten in [PR #79](https://github.com/craexxn/ringdown-sr/pull/79).
 Alle drei Bewertungsstufen sind implementiert, geprüft, übernommen und auf
 78 Originalauswahlen angewandt: [Kurvenklassen](docs/supplemental_assessment_results_001.md),
 [Originalfamilie und Domain](docs/supplemental_structure_results_001.md),
@@ -51,8 +52,15 @@ Threadbelege ab. Der [Zeitbudgetlauf 001](docs/iteration_time_results_manjaro_00
 ist inzwischen im Modus `fresh_all` mit acht frischen Suchen lesend bestätigt:
 I erreicht 4/4 A, Z 3/4 A; beide 3/4 A mit Familiennachweis. Z benötigt insgesamt
 12,51 % weniger Workerzeit, verliert aber einen A-Erfolg. Deshalb keine
-Übernahmeempfehlung für 400 Sekunden. Nächster Schritt ist die bewusste
-Profilübernahme und das vorab festgelegte unabhängige Bestätigungsprotokoll.
+Übernahmeempfehlung für 400 Sekunden. Der nächste Vergleich ist jetzt
+[vorab festgelegt](docs/restart_confirmation_plan.md): drei Signale, je zehn neue
+gepaarte Seedblöcke, 4 × 500 gegen 1 × 2.000 bei 300/5. 150 Suchaufrufe in drei
+getrennten Abschnitten; mindestens 8/10 gemeinsame A-/Originalfamilienerfolge
+je Signal als praktische Grenze für das Neustartprofil, kein Nachweis von 80 %
+wahrer Erfolgswahrscheinlichkeit. Der [Laufweg](docs/restart_confirmation.md)
+ist implementiert und lokal mit sechs kleinen nativen Suchen samt lesender
+Gesamtverifikation geprüft. Vollständige Ready-CI und Übernahme der neuen
+Implementierung stehen noch aus; wissenschaftliche Ausführung noch nicht erfolgt.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
 Ausführungsschritt. Umsetzung und Nachweise stehen im

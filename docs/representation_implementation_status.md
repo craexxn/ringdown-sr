@@ -1,6 +1,59 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Neustart- und Zeitbudgetvergleich ausgewertet
+## Aktuell: unabhängige Bestätigung implementiert und lokal geprüft
+
+Abgleich vom 09.11.2026, Leitfadenphasen 5/6: PR79 nach erneuter Prüfung des
+unveränderten Heads `11e5605`, Basis `4df7eca` und grüner Ready-CI `42242152399`
+ausdrücklich freigegeben und als `294f4ab79ee2e9588f9e5021b996bad726187d41`
+übernommen. Mergebaum `3caab0701f4a079ba9ab7a687c156aee0b738179` entspricht
+dem geprüften CI-Checkout. Eigener Branch `codex/restart-confirmation` baut
+auf diesem main auf; andere Worktrees und frühere Berichte bleiben erhalten.
+
+- **Beschlossen und eingefroren:** [Protokoll](restart_confirmation_plan.md),
+  120 neue überschneidungsfreie Seeds, drei Signale, je zehn gepaarte Blöcke,
+  150 Suchaufrufe in drei Abschnitten. Praktische Grenze: mindestens 8/10 A plus
+  gültige Originalfamilie je Signal für R, getrennt vom direkten Methodenvergleich.
+  Vor Implementierung in `2536d4e` versioniert; reine Stilkorrektur des
+  Eingabegenerators in `a1f498a`, wissenschaftlicher Plan und Eingabebits unverändert.
+  6.123 Eingabe-/Diagnosewerte unabhängig bei 100 Dezimalstellen geprüft,
+  normierter Maximalfehler 9,48e-16 unterschritten.
+- **Umsetzung:** eigener Abschnitts- und Gesamtverifikator mit dem bestehenden
+  PR77-Iterationsworker für beide Arme. Herkunft, tatsächliche Threads,
+  Originalauswahl, Ausfälle und Kosten bleiben gebunden. Keine Kontrollübernahme
+  und keine Änderung historischer Bewertungsregeln. Gemeinsame Freigabe nur bei
+  allen drei vollständig verifizierten Abschnitten; späte Änderungen widerrufen sie.
+- **Lokale Prüfung:** vollständige Python-Suite auf `5761f657613bc6acddf4b93a37a07560c5ef8650`:
+  3.220 Fälle bestanden. Auf demselben Stand sechs kleine native Suchen
+  (je Signal zwei Zweier- und ein Dreierbudget), beide Einzelverifikationen und
+  gemeinsame lesende Verifikation bestanden: `restart-confirmation-technical-local-002`,
+  sechs verifizierte Zellen, null Suchaufrufe in der Verifikation, keine
+  wissenschaftliche Übergangsentscheidung. Tatsächliches Profil 300/5,
+  Häufigkeitsschalter, Iterationsende und Herkunft geprüft. Der erste technische
+  Versuch `restart-confirmation-technical-local-001` wurde für die Korrektur der
+  Abbruchgrund-Zuordnung gezielt unterbrochen: Zelle 1 fertig, Zelle 2 abgebrochen,
+  Zelle 3 nicht ausgeführt; gesperrter Abschluss und Teilbelege bleiben erhalten.
+- **Gezieltes KI-Eigenreview:** gegen Basis `294f4ab`; Paarung, unveränderte
+  Verlustauswahl, Ausfallnenner, gemeinsame Grenze, Optionen, Quellenbindung,
+  Abbruchgründe und späte Widerrufe geprüft. Reguläres Iterationsende für R und
+  Bindung der erstmals gelesenen Manifestbytes korrigiert, Gegenfälle erhalten.
+  Letzte Korrektur in `f23bf6db20b1c5f4570b32acbff70cd1ea3f7535`: 32 eigene
+  Bestätigungsfälle plus 17 bestehende Zeitbudgetfälle bestanden. Keine weitere
+  lokale Wiederholung der nativen Suchen nach dieser reinen Lesebindungskorrektur;
+  die vollständige Ready-CI prüft den abschließenden PR-Stand erneut. Ruff,
+  Format-, Dokumentationsprüfung (98 Markdown-Dateien) und Diffprüfung bestanden.
+  Vorbereitung bindet 97 Dateien einschließlich aller 47 Python-Paketquellen;
+  44 bisherige Berichte, Pläne und Bewertungsverträge sowie historische Worker
+  unverändert. Keine wissenschaftliche Bestätigungsserie gestartet.
+- **Nächster Schritt:** technische Abnahme und Review der neuen Implementierung,
+  danach gesonderte Übernahmefreigabe. Der [Manjaro-Laufweg](restart_confirmation.md)
+  dokumentiert technische Vorprüfung, drei wissenschaftliche Abschnitte, lesende
+  Gesamtverifikation und Archivierung. Wissenschaftliche Ausführung nicht belegt.
+- **Weiterhin offen:** allgemeiner späterer gewichteter Laufweg vor Rauschpilot
+  ausdrücklich mit 300/5 abgleichen; Struktursuche und Konstantenoptimierung
+  müssen dieselbe Gewichtung verwenden. Historische technische Vorlaufbelege,
+  dauerhafte Archivablage und unabhängige Zweitkopien gemäß [Index](results_index.md).
+
+## Historischer Ergebnisabgleich aus PR79
 
 Abgleich vom 06.11.2026, Leitfadenphase 3: Remote-main ist nach ausdrücklich
 freigegebenem PR78-Merge `4df7ecaaaed0a6d235f7db104c6982bdfcabf048`.

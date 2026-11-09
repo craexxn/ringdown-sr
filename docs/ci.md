@@ -167,7 +167,7 @@ Dies ist eine begrenzte Prüfung, kein vollständiger Markdown-Parser.
 `docs/search_duration_prediction_plan.md`, `docs/local_optimizer_plan.md`
 `docs/outer_search_ladder_plan.md`, `docs/transfer_check_plan.md`,
 `docs/seed_driver_crosscheck_plan.md`, `docs/global_restart_comparison_plan.md`
-und `docs/iteration_time_budget_plan.md`
+sowie `docs/iteration_time_budget_plan.md` und `docs/restart_confirmation_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -188,6 +188,14 @@ Reserveende und wiederholte Iterationskontrolle, danach lesende Verifikation).
 Die tatsächlich begrenzte CPU-Affinität und Julia-/GC-/BLAS-Threads werden
 geprüft. Bestehende Prüfblöcke bleiben bestehen; keine wissenschaftliche
 400-Sekunden-Serie in GitHub Actions.
+
+Die unabhängige Bestätigung ergänzt `scripts/check_restart_confirmation.py`:
+zwei getrennte Achtpunkt-Signale `y=1+t` und `y=2−t`, jeweils zwei kurze
+Mitglieder mit zwei Iterationen und eine lange Kontrolle mit drei Iterationen.
+Sechs frische technische Worker, tatsächliche Thread-/Aufrufbelege sowie
+lesende Einzel- und Gesamtverifikation. Die wissenschaftlichen 150 Aufrufe
+bleiben ausschließlich ein separater Manjaro-Schritt; bestehende Prüfblöcke
+werden nicht ersetzt. Der neue eingefrorene Plan erhält die volle CI.
 
 Auch `docs/supplemental_assessment.md` erhält die volle CI: Der lesende
 Bewertungsexport bindet diesen Versionsvertrag an seinen Softwarestand.
