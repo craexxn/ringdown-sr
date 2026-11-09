@@ -4,8 +4,14 @@ Leitfadenphase 3; das [eingefrorene Protokoll](iteration_time_budget_plan.md)
 und die [Konfiguration](../data/iteration_time_protocol.json) gelten unverändert.
 Vier bekannte Entwicklungsseeds, keine allgemeine Erfolgswahrscheinlichkeit.
 Der [PR76-Neustartvergleich](global_restart_comparison.md) bleibt ein separater
-wissenschaftlicher Versuch. Die folgenden wissenschaftlichen Befehle sind
-ein späterer Ausführungsschritt auf Manjaro, keine CI-Aufgabe.
+wissenschaftlicher Versuch. Abgleich vom 06.11.2026: Der
+[Lauf 001](iteration_time_results_manjaro_001.md) ist mit acht frischen Suchen
+auf `4df7ecaaaed0a6d235f7db104c6982bdfcabf048` abgeschlossen und lesend bestätigt,
+einschließlich Aufrufmessung und Verify-Export. I erreicht 4/4 A, Z 3/4 A;
+beide 3/4 A mit Familiennachweis. Trotz geringerer Gesamtkosten ist dies nach
+der eingefrorenen Regel eine Verschlechterung dieser Entwicklungsfälle.
+Die folgenden Befehle dokumentieren den ausgeführten Manjaro-Laufweg; sie
+geben keine Wiederholung oder Überschreibung von 001 frei und sind keine CI-Aufgabe.
 
 ## Voraussetzungen und Kontrollimport
 
@@ -40,7 +46,7 @@ nachladen; keine aufgezeichneten Hashes oder Commits ersetzen.
 
 ```bash
 uv run --locked python scripts/run_iteration_time.py audit-controls \
-  --archive /pfad/zum/gemeinsamen-archiv/global-restarts-manjaro-001.tar.gz \
+  --archive /pfad/zum/gemeinsamen-archiv/global-restarts-manjaro-002.tar.gz \
   --archive-sha256 ORIGINAL_SHA256 \
   --output results/time-controls-audit-001
 ```
@@ -57,8 +63,12 @@ ausdrückliche Vorgabe Julia-Threads auf `auto` und aktiviert zusätzliche
 GC-Threads. Ein unverändertes PR76-Archiv ohne solche Originalbelege wird deshalb
 nicht als wiederverwendbar freigegeben. Nachträglich ergänzte Behauptungen oder
 Messungen auf dem heutigen Rechner ersetzen keine historischen Workerbelege.
-Der Kontrollarm ist hier mangels wissenschaftlichen Archivs weiterhin
-unbestätigt. Diese Lücke ändert weder PR76 noch sein eingefrorenes Protokoll.
+Abgleich vom 06.11.2026: Das [wissenschaftliche Archiv von Lauf 002](global_restart_results_manjaro_002.md)
+ist inzwischen vollständig lesend geprüft. Die bestehende Eignungsfunktion
+meldet für den ganzen Arm `eligible=false`: In allen vier Kontrollzellen
+2/7/12/17 fehlen die tatsächlichen CPU-/Julia-/GC-Threadbelege. Damit ist der
+vorbereitete Ersatzmodus `fresh_all` technisch begründet, unabhängig von der
+Kurvenqualität. Diese Lücke ändert weder PR76 noch sein eingefrorenes Protokoll.
 
 ## Wissenschaftliche Ausführung
 
@@ -73,7 +83,7 @@ env OPENBLAS_CORETYPE=Haswell \
   OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
   uv run --locked python scripts/run_iteration_time.py run \
   --mode reuse_pr76 --reason 'Gesamter PR76-Kontrollarm technisch bestätigt' \
-  --archive /pfad/zum/gemeinsamen-archiv/global-restarts-manjaro-001.tar.gz \
+  --archive /pfad/zum/gemeinsamen-archiv/global-restarts-manjaro-002.tar.gz \
   --archive-sha256 ORIGINAL_SHA256 \
   --output results/iteration-time-manjaro-001
 ```

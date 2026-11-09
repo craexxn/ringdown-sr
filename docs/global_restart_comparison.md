@@ -7,9 +7,12 @@ in `b00fc4a0a5a5a90e7d72f45d2b27788d1fd1585a` eingefroren. Umsetzung mit
 [PR #76](https://github.com/craexxn/ringdown-sr/pull/76) übernommen;
 technischer Prüfstand im [Fortsetzungsstand](representation_implementation_status.md).
 Für Manjaro ist [der Abbruch von Lauf 001 am Paket geprüft](global_restart_results_manjaro_001.md):
-19 Zellen fertig, Zelle 20 unterbrochen, Freigabe gesperrt. Für 002 liegt ein
-übermittelter Zwischenstand vor.
-Noch kein abgeschlossener wissenschaftlicher Vergleich, keine Erfolgsbehauptung.
+19 Zellen fertig, Zelle 20 unterbrochen, Freigabe gesperrt.
+[Lauf 002](global_restart_results_manjaro_002.md) ist vollständig abgeschlossen und
+lesend bestätigt: 1/4, 4/4 und 4/4 A-Ausgaben bei Referenz, langer Suche und
+Neustartpaketen. Der Bericht trennt Familiennachweise, Kosten und Anschlussregel.
+Die folgenden Befehle sind keine Aufforderung zur erneuten Ausführung.
+Der begrenzte Entwicklungsbefund belegt keine allgemeine Erfolgswahrscheinlichkeit.
 Die folgenden 001-Befehle dokumentieren den ursprünglichen Laufweg; den bereits
 verwendeten Ausgabeordner nicht löschen oder erneut verwenden. Jeder gesondert
 beauftragte vollständige Wiederholungslauf erhält eine eigene ID, durchgängig
