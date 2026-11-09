@@ -1,12 +1,17 @@
 """Generate fixed confirmation inputs; no search or fitting."""
 
-import hashlib, json, re, subprocess
+import hashlib
+import json
+import re
+import subprocess
 from pathlib import Path
+
 import mpmath as mp
 import numpy as np
-from ringdown_sr.signals import ringdown_signal
+
 from ringdown_sr.global_restarts import grid
 from ringdown_sr.noiseless_control import fingerprint
+from ringdown_sr.signals import ringdown_signal
 
 root = Path(__file__).resolve().parents[1]
 sha = lambda raw: hashlib.sha256(raw).hexdigest()
@@ -17,7 +22,7 @@ signals = [
 ]
 old = json.loads((root / "data/transfer_check_inputs.json").read_bytes())["cases"]
 truths = [
-    dict(amplitude=a, frequency_hz=f, decay_time_s=tau, phase_rad=phase)
+    {"amplitude": a, "frequency_hz": f, "decay_time_s": tau, "phase_rad": phase}
     for _, a, f, tau, phase in signals
 ]
 assert all(truth not in [c["truth"] for c in old] for truth in truths[1:])
