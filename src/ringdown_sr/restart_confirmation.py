@@ -471,7 +471,8 @@ def run(output, name, *, technical=False):
 def read_section(source, consumed, software, temporary):
     """Verify all original worker evidence before trusting any reported endpoint."""
     completion = source / "completion"
-    manifest = load_json(completion, publication.MANIFEST)
+    manifest_bytes = (completion / publication.MANIFEST).read_bytes()
+    manifest = sources.read_json(manifest_bytes)
     if set(manifest) != {
         publication.REPORT,
         publication.SUMMARY,
@@ -483,10 +484,7 @@ def read_section(source, consumed, software, temporary):
         if sources.sha256(raw) != digest:
             raise ValueError("Confirmation completion checksum differs.")
         consumed.add(completion / name, raw)
-    consumed.add(
-        completion / publication.MANIFEST,
-        (completion / publication.MANIFEST).read_bytes(),
-    )
+    consumed.add(completion / publication.MANIFEST, manifest_bytes)
 
     def unlocked():
         if (completion / publication.LOCK).exists():

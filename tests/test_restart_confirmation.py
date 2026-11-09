@@ -1,6 +1,7 @@
 """Independent counterexamples for the fixed confirmation schedule and release."""
 
 import copy
+from pathlib import Path
 from types import SimpleNamespace
 
 import numpy as np
@@ -407,8 +408,10 @@ def test_both_arms_require_their_regular_iteration_end(
             bridge.clock_evidence(tmp_path, request, reader)
 
 
-@pytest.mark.parametrize("invalid", [True, "1"])
-def test_read_verification_rejects_nonnumeric_section_timing(tmp_path, invalid):
+@pytest.mark.parametrize("invalid,tamper", [(True, False), ("1", False), (True, True)])
+def test_read_verification_binds_original_manifest_and_numeric_timing(
+    tmp_path, monkeypatch, invalid, tamper
+):
     source = tmp_path / "source"
     completion = source / "completion"
     completion.mkdir(parents=True)
@@ -442,5 +445,20 @@ def test_read_verification_rejects_nonnumeric_section_timing(tmp_path, invalid):
         },
     )
     consumed = publication.Consumption(publication.Deadline(30))
+    if tamper:
+        original_read = Path.read_bytes
+        changed = []
+
+        def read(path):
+            raw = original_read(path)
+            if path == completion / publication.MANIFEST and not changed:
+                changed.append(True)
+                path.write_bytes(raw + b" ")
+            return raw
+
+        monkeypatch.setattr(Path, "read_bytes", read)
     with pytest.raises(ValueError, match="Invalid confirmation whole-call timing"):
         confirmation.read_section(source, consumed, {}, tmp_path)
+    if tamper:
+        with pytest.raises(ValueError, match="Consumed file changed"):
+            consumed.check()
