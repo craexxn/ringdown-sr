@@ -5,14 +5,16 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 09.11.2026; abgeglichener main `294f4ab` nach ausdrücklich
+Fortsetzungsstand: 09.11.2026; abgeglichener Implementierungsstand auf main
+`f933b40` nach ausdrücklich
 freigegebener Übernahme von [PR #73](https://github.com/craexxn/ringdown-sr/pull/73)
 und [PR #74](https://github.com/craexxn/ringdown-sr/pull/74), anschließend
 [PR #75](https://github.com/craexxn/ringdown-sr/pull/75) und
 [PR #76](https://github.com/craexxn/ringdown-sr/pull/76) und
 [PR #77](https://github.com/craexxn/ringdown-sr/pull/77) sowie der
 Archivdokumentation in [PR #78](https://github.com/craexxn/ringdown-sr/pull/78)
-und den Ergebnisberichten in [PR #79](https://github.com/craexxn/ringdown-sr/pull/79).
+und den Ergebnisberichten in [PR #79](https://github.com/craexxn/ringdown-sr/pull/79)
+sowie dem Bestätigungslaufweg in [PR #80](https://github.com/craexxn/ringdown-sr/pull/80).
 Alle drei Bewertungsstufen sind implementiert, geprüft, übernommen und auf
 78 Originalauswahlen angewandt: [Kurvenklassen](docs/supplemental_assessment_results_001.md),
 [Originalfamilie und Domain](docs/supplemental_structure_results_001.md),
@@ -58,9 +60,11 @@ gepaarte Seedblöcke, 4 × 500 gegen 1 × 2.000 bei 300/5. 150 Suchaufrufe in dr
 getrennten Abschnitten; mindestens 8/10 gemeinsame A-/Originalfamilienerfolge
 je Signal als praktische Grenze für das Neustartprofil, kein Nachweis von 80 %
 wahrer Erfolgswahrscheinlichkeit. Der [Laufweg](docs/restart_confirmation.md)
-ist implementiert und lokal mit sechs kleinen nativen Suchen samt lesender
-Gesamtverifikation geprüft. Vollständige Ready-CI und Übernahme der neuen
-Implementierung stehen noch aus; wissenschaftliche Ausführung noch nicht erfolgt.
+ist nach vollständiger Ready-CI mit 3.221 Pythonfällen, sämtlichen nativen
+Prüfblöcken und sechs neuen kleinen Suchen samt lesender Gesamtverifikation
+sowie separatem KI-Review in PR #80 übernommen. Als Nächstes folgt die technische
+Vorprüfung auf Manjaro, danach die getrennte wissenschaftliche Ausführung;
+diese ist noch nicht belegt.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
 Ausführungsschritt. Umsetzung und Nachweise stehen im

@@ -1,13 +1,20 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: unabhängige Bestätigung implementiert und lokal geprüft
+## Aktuell: Bestätigungslaufweg geprüft und übernommen
 
-Abgleich vom 09.11.2026, Leitfadenphasen 5/6: PR79 nach erneuter Prüfung des
-unveränderten Heads `11e5605`, Basis `4df7eca` und grüner Ready-CI `42242152399`
-ausdrücklich freigegeben und als `294f4ab79ee2e9588f9e5021b996bad726187d41`
-übernommen. Mergebaum `3caab0701f4a079ba9ab7a687c156aee0b738179` entspricht
-dem geprüften CI-Checkout. Eigener Branch `codex/restart-confirmation` baut
-auf diesem main auf; andere Worktrees und frühere Berichte bleiben erhalten.
+Abgleich vom 09.11.2026, Leitfadenphasen 5/6: [PR #80](https://github.com/craexxn/ringdown-sr/pull/80)
+nach vollständiger Ready-CI, separatem übermitteltem KI-Review und ausdrücklicher
+Freigabe unverändert als `f933b40e49ba70d53453b55a286d261fd403d05c` übernommen.
+Mergebaum `7efb6c9b0b5b27138854a0f877c6f71cd5eb3a86` entspricht dem geprüften
+Head und CI-Checkout. Die reine Statusnachführung auf
+`codex/confirmation-merge-status` baut auf diesem main auf.
+
+Entwicklungsbasis war PR79, am 09.11.2026 nach erneuter Prüfung von Head
+`11e5605`, Basis `4df7eca` und grüner Ready-CI `42242152399` ausdrücklich
+freigegeben und als `294f4ab79ee2e9588f9e5021b996bad726187d41` übernommen.
+Sein Mergebaum `3caab0701f4a079ba9ab7a687c156aee0b738179`
+entspricht dem damaligen CI-Checkout. Die Implementierung erfolgte auf
+`codex/restart-confirmation`; andere Worktrees und frühere Berichte bleiben erhalten.
 
 - **Beschlossen und eingefroren:** [Protokoll](restart_confirmation_plan.md),
   120 neue überschneidungsfreie Seeds, drei Signale, je zehn gepaarte Blöcke,
@@ -39,15 +46,37 @@ auf diesem main auf; andere Worktrees und frühere Berichte bleiben erhalten.
   Letzte Korrektur in `f23bf6db20b1c5f4570b32acbff70cd1ea3f7535`: 32 eigene
   Bestätigungsfälle plus 17 bestehende Zeitbudgetfälle bestanden. Keine weitere
   lokale Wiederholung der nativen Suchen nach dieser reinen Lesebindungskorrektur;
-  die vollständige Ready-CI prüft den abschließenden PR-Stand erneut. Ruff,
-  Format-, Dokumentationsprüfung (98 Markdown-Dateien) und Diffprüfung bestanden.
+  die anschließende vollständige Ready-CI hat den abschließenden PR-Stand erneut
+  geprüft. Ruff, Format-, Dokumentationsprüfung (98 Markdown-Dateien) und
+  Diffprüfung bestanden.
   Vorbereitung bindet 97 Dateien einschließlich aller 47 Python-Paketquellen;
   44 bisherige Berichte, Pläne und Bewertungsverträge sowie historische Worker
   unverändert. Keine wissenschaftliche Bestätigungsserie gestartet.
-- **Nächster Schritt:** technische Abnahme und Review der neuen Implementierung,
-  danach gesonderte Übernahmefreigabe. Der [Manjaro-Laufweg](restart_confirmation.md)
-  dokumentiert technische Vorprüfung, drei wissenschaftliche Abschnitte, lesende
-  Gesamtverifikation und Archivierung. Wissenschaftliche Ausführung nicht belegt.
+- **Separates übermitteltes KI-Review:** Head
+  `71cf6c2bc0fc3e23fb0ccddf1f3cdaca55d8a1b3` gegen Basis
+  `294f4ab79ee2e9588f9e5021b996bad726187d41`; keine korrekturbedürftigen Befunde
+  im geprüften Umfang. Übermittelt, bei der Übernahme nicht erneut ausgeführt:
+  382 gezielte Repository-Tests und 23 zusätzliche Gegenprüfungen bestanden;
+  unabhängige MPFR-Nachrechnung aller 6.123 Signalwerte mit maximalem
+  amplitudennormiertem Fehler etwa 9,47 × 10⁻¹⁶, direkte Binomial-Nachrechnung
+  der Intervalle, Seedabgleich und Herkunfts-/Widerrufsgegenfälle. Native Tests
+  im separaten Review anhand der CI geprüft; synthetische Verifikationsartefakte
+  ersetzen keine wissenschaftliche Bestätigungsserie.
+- **CI und eigener Mergeabgleich:** [Ready-Lauf 42571488371](https://github.com/craexxn/ringdown-sr/actions/runs/42571488371)
+  vollständig erfolgreich im Modus `full`: 3.221 Pythonfälle, sämtliche bisherigen
+  nativen Prüfblöcke, sechs neue abgeschlossene Worker und Einzel-/Gesamtverifikation.
+  Alle drei Joblogs selbst geprüft: Checkout
+  `4e703d0260e9a8841522f26b32c35dd64a8e7fd6`, Baum
+  `7efb6c9b0b5b27138854a0f877c6f71cd5eb3a86`, lokal identisch zum Review-Head.
+  CI-Mergeeltern, endgültiger Merge, Head und Basis abgeglichen; keine erneute
+  lokale Testausführung für die Übernahme. Repositoryseitiger Merge-Schutz war
+  über den verfügbaren API-Zugriff nicht erneut bestätigbar; sämtliche
+  erforderlichen Checks wurden selbst abgeglichen.
+- **Nächster Schritt:** technische Vorprüfung auf Manjaro nach dem
+  [Laufweg](restart_confirmation.md), dann getrennte wissenschaftliche Ausführung
+  der drei vorgesehenen Abschnitte mit demselben sauberen Ausführungscommit und
+  derselben numerischen Umgebung, lesende Gesamtverifikation und Archivierung.
+  Für Vorlauf und wissenschaftliche Bestätigung liegen noch keine Manjaro-Belege vor.
 - **Weiterhin offen:** allgemeiner späterer gewichteter Laufweg vor Rauschpilot
   ausdrücklich mit 300/5 abgleichen; Struktursuche und Konstantenoptimierung
   müssen dieselbe Gewichtung verwenden. Historische technische Vorlaufbelege,

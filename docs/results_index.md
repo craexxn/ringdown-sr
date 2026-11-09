@@ -23,8 +23,9 @@ Technische Fixtures und ein implementierter Laufweg sind keine wissenschaftliche
 Ausführung und kein Sicherungsnachweis.
 
 Die [unabhängige Bestätigung](restart_confirmation.md) ist vorab festgelegt und
-implementiert, mit lokal geprüften technischen Fixtures; vollständige CI und
-Übernahme noch offen, wissenschaftlich noch nicht ausgeführt. Vorgesehene
+mit PR #80 nach vollständiger CI und separatem KI-Review als `f933b40` übernommen.
+Technische Fixtures sind geprüft; der Manjaro-Vorlauf und die wissenschaftliche
+Ausführung sind noch nicht belegt. Vorgesehene
 Abschnitte: `confirmation-anchor-manjaro-001`, `confirmation-low-manjaro-001`,
 `confirmation-high-manjaro-001`, je mit eigener Aufrufmessung; danach gemeinsame
 `restart-confirmation-manjaro-001-verification`. Diese Namen sind keine
