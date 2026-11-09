@@ -1,6 +1,6 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: unabhängige Bestätigung in Umsetzung
+## Aktuell: unabhängige Bestätigung implementiert und lokal geprüft
 
 Abgleich vom 09.11.2026, Leitfadenphasen 5/6: PR79 nach erneuter Prüfung des
 unveränderten Heads `11e5605`, Basis `4df7eca` und grüner Ready-CI `42242152399`
@@ -22,9 +22,28 @@ auf diesem main auf; andere Worktrees und frühere Berichte bleiben erhalten.
   Originalauswahl, Ausfälle und Kosten bleiben gebunden. Keine Kontrollübernahme
   und keine Änderung historischer Bewertungsregeln. Gemeinsame Freigabe nur bei
   allen drei vollständig verifizierten Abschnitten; späte Änderungen widerrufen sie.
-- **Prüfung in Arbeit:** gezielte Gegenfälle und volle Pythonprüfung, danach
-  sechs winzige native Worker und vollständige Ready-CI. Tatsächliche Ergebnisse
-  werden vor Abschluss hier und im PR ergänzt. Keine wissenschaftlichen Suchen.
+- **Lokale Prüfung:** vollständige Python-Suite auf `5761f657613bc6acddf4b93a37a07560c5ef8650`:
+  3.220 Fälle bestanden. Auf demselben Stand sechs kleine native Suchen
+  (je Signal zwei Zweier- und ein Dreierbudget), beide Einzelverifikationen und
+  gemeinsame lesende Verifikation bestanden: `restart-confirmation-technical-local-002`,
+  sechs verifizierte Zellen, null Suchaufrufe in der Verifikation, keine
+  wissenschaftliche Übergangsentscheidung. Tatsächliches Profil 300/5,
+  Häufigkeitsschalter, Iterationsende und Herkunft geprüft. Der erste technische
+  Versuch `restart-confirmation-technical-local-001` wurde für die Korrektur der
+  Abbruchgrund-Zuordnung gezielt unterbrochen: Zelle 1 fertig, Zelle 2 abgebrochen,
+  Zelle 3 nicht ausgeführt; gesperrter Abschluss und Teilbelege bleiben erhalten.
+- **Gezieltes KI-Eigenreview:** gegen Basis `294f4ab`; Paarung, unveränderte
+  Verlustauswahl, Ausfallnenner, gemeinsame Grenze, Optionen, Quellenbindung,
+  Abbruchgründe und späte Widerrufe geprüft. Reguläres Iterationsende für R und
+  Bindung der erstmals gelesenen Manifestbytes korrigiert, Gegenfälle erhalten.
+  Letzte Korrektur in `f23bf6db20b1c5f4570b32acbff70cd1ea3f7535`: 32 eigene
+  Bestätigungsfälle plus 17 bestehende Zeitbudgetfälle bestanden. Keine weitere
+  lokale Wiederholung der nativen Suchen nach dieser reinen Lesebindungskorrektur;
+  die vollständige Ready-CI prüft den abschließenden PR-Stand erneut. Ruff,
+  Format-, Dokumentationsprüfung (98 Markdown-Dateien) und Diffprüfung bestanden.
+  Vorbereitung bindet 97 Dateien einschließlich aller 47 Python-Paketquellen;
+  44 bisherige Berichte, Pläne und Bewertungsverträge sowie historische Worker
+  unverändert. Keine wissenschaftliche Bestätigungsserie gestartet.
 - **Nächster Schritt:** technische Abnahme und Review der neuen Implementierung,
   danach gesonderte Übernahmefreigabe. Der [Manjaro-Laufweg](restart_confirmation.md)
   dokumentiert technische Vorprüfung, drei wissenschaftliche Abschnitte, lesende

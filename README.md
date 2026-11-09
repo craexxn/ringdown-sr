@@ -58,7 +58,9 @@ gepaarte Seedblöcke, 4 × 500 gegen 1 × 2.000 bei 300/5. 150 Suchaufrufe in dr
 getrennten Abschnitten; mindestens 8/10 gemeinsame A-/Originalfamilienerfolge
 je Signal als praktische Grenze für das Neustartprofil, kein Nachweis von 80 %
 wahrer Erfolgswahrscheinlichkeit. Der [Laufweg](docs/restart_confirmation.md)
-wird technisch geprüft; wissenschaftliche Ausführung noch nicht erfolgt.
+ist implementiert und lokal mit sechs kleinen nativen Suchen samt lesender
+Gesamtverifikation geprüft. Vollständige Ready-CI und Übernahme der neuen
+Implementierung stehen noch aus; wissenschaftliche Ausführung noch nicht erfolgt.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
 Ausführungsschritt. Umsetzung und Nachweise stehen im
