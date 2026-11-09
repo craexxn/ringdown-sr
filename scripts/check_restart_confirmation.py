@@ -19,4 +19,13 @@ if __name__ == "__main__":
     report = verify(roots, args.output, complete=True)
     if report["verified_cells"] != 6 or report["transition_criterion_met"] is not None:
         raise ValueError("Technical confirmation scope changed.")
+    if any(
+        cell["status"] != "completed"
+        or cell["stop"] != "iteration_limit"
+        or cell["completed_outer_rounds"] != cell["plan"]["niterations"]
+        or not cell["costs"]["callback_calls_during_fit"]
+        for section in report["sections"]
+        for cell in section["cells"]
+    ):
+        raise ValueError("Every tiny worker must complete its actual iteration budget.")
     print("Six tiny workers, both signals and read-only series verification passed.")

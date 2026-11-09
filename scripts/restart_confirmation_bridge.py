@@ -16,6 +16,18 @@ bridge = native.load_module(
     ROOT / "scripts/time_budget_bridge.py", "confirmation_native_bridge"
 )
 base_context = bridge.context
+base_clock_evidence = bridge.clock_evidence
+
+
+def clock_evidence(output, request, support):
+    evidence = base_clock_evidence(output, request, support)
+    # R has a regular iteration budget, unlike the historical timed Z arm.
+    if (
+        request["cell"]["condition"] == "iterations"
+        and evidence["reason"] == "iteration_reserve"
+    ):
+        evidence["reason"] = "iteration_limit"
+    return evidence
 
 
 def checked_request(path, inputs, action, legacy, support):
@@ -70,4 +82,5 @@ def context(request, legacy):
 if __name__ == "__main__":
     bridge.checked_request = checked_request
     bridge.context = context
+    bridge.clock_evidence = clock_evidence
     bridge.main()

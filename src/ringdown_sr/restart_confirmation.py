@@ -521,6 +521,8 @@ def read_section(source, consumed, software, temporary):
         or call["status"] != "completed"
         or call["scope"] != CALL_SCOPE
         or call["source_report_sha256"] != manifest[publication.REPORT]
+        or type(original["prepublication_wall_seconds"]) not in (int, float)
+        or not math.isfinite(original["prepublication_wall_seconds"])
         or any(
             type(call[k]) not in (int, float)
             or not math.isfinite(call[k])

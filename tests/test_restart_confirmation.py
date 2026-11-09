@@ -1,6 +1,7 @@
 """Independent counterexamples for the fixed confirmation schedule and release."""
 
 import copy
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -361,3 +362,85 @@ def test_nonfinite_member_loss_is_not_selected_and_ties_use_member_order():
     data[3]["selected"] = {"loss": 0.5, "complexity": 6}
     output = confirmation.selected_output(data)
     assert output["selected_cell"] == data[2]["plan"]["number"]
+
+
+@pytest.mark.parametrize("arm,iterations", [("R", 500), ("I", 2000)])
+@pytest.mark.parametrize("finished", [True, False])
+def test_both_arms_require_their_regular_iteration_end(
+    tmp_path, arm, iterations, finished
+):
+    bridge = profile.native.load_module(
+        profile.ROOT / profile.BRIDGE, "confirmation_stop_test"
+    )
+    count = 2 * iterations if finished else 7
+    record = {
+        "format": profile.native.FORMAT,
+        "populations": 2,
+        "processed_population_cycles": count,
+        "checks": count,
+        "requested_iterations": iterations,
+        "completed_outer_rounds": count // 2,
+        "residual_population_cycles": count % 2,
+        "iteration_limit_reached": finished,
+        "technical_counter_stop": False,
+        "affinity": [3],
+        "native_start_unix_seconds": 1000.0,
+        "loop_entry_unix_seconds": 1000.0,
+        "monotonic_to_last_check_seconds": 20.0,
+        "elapsed_at_last_check_seconds": 20.0,
+        "main_loop_call_wall_seconds": 21.0,
+        "clock_difference_seconds": 0.0,
+        "timeout_reached": False,
+    }
+    (tmp_path / "worker").mkdir()
+    _write_json(tmp_path / "worker/time_budget_clock.json", record)
+    request = {
+        "cell": {"condition": "iterations", "arm": arm, "niterations": iterations}
+    }
+    reader = SimpleNamespace(read_json=confirmation.sources.read_json)
+    if finished:
+        result = bridge.clock_evidence(tmp_path, request, reader)
+        assert result["reason"] == "iteration_limit"
+        assert result["clock"]["completed_outer_rounds"] == iterations
+    else:
+        with pytest.raises(ValueError, match="without its allowed stopping rule"):
+            bridge.clock_evidence(tmp_path, request, reader)
+
+
+@pytest.mark.parametrize("invalid", [True, "1"])
+def test_read_verification_rejects_nonnumeric_section_timing(tmp_path, invalid):
+    source = tmp_path / "source"
+    completion = source / "completion"
+    completion.mkdir(parents=True)
+    _write_json(
+        completion / publication.REPORT,
+        {
+            "format": confirmation.FORMAT,
+            "status": "completed",
+            "scope": "technical",
+            "signal": "fixture_a",
+            "prepublication_wall_seconds": invalid,
+        },
+    )
+    (completion / publication.SUMMARY).write_text("fixture")
+    _write_json(completion / "raw_checksums.json", {})
+    manifest = {
+        p.name: confirmation.sources.sha256(p.read_bytes())
+        for p in completion.iterdir()
+    }
+    _write_json(completion / publication.MANIFEST, manifest)
+    _write_json(
+        tmp_path / "source-call.json",
+        {
+            "format": confirmation.FORMAT + "-call-timing",
+            "status": "completed",
+            "scope": confirmation.CALL_SCOPE,
+            "wall_seconds": 100.0,
+            "cpu_user_seconds": 80.0,
+            "cpu_system_seconds": 2.0,
+            "source_report_sha256": manifest[publication.REPORT],
+        },
+    )
+    consumed = publication.Consumption(publication.Deadline(30))
+    with pytest.raises(ValueError, match="Invalid confirmation whole-call timing"):
+        confirmation.read_section(source, consumed, {}, tmp_path)
