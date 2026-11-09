@@ -1,0 +1,387 @@
+{
+  "format": "ringdown-sr-restart-confirmation-protocol-1",
+  "blocks_per_signal": 10,
+  "members": 4,
+  "long_iterations": 2000,
+  "restart_iterations": 500,
+  "worker_seconds": 1800,
+  "signal_seconds": 108000,
+  "verify_seconds": 7200,
+  "series_verify_seconds": 21600,
+  "minimum_joint_successes": 8,
+  "seed_generator": {
+    "bit_generator": "PCG64",
+    "seed": 2026110901,
+    "draw": "integers(1, 2**31); reject duplicates and numeric values on seed-related tracked lines",
+    "exclusion_commit": "294f4ab79ee2e9588f9e5021b996bad726187d41"
+  },
+  "grid_seed": 2026110601,
+  "grid_points": 1024,
+  "grid_attempts": 100,
+  "signals": [
+    {
+      "name": "anchor",
+      "truth": {
+        "amplitude": 1.0,
+        "frequency_hz": 250.0,
+        "decay_time_s": 0.008,
+        "phase_rad": 0.0
+      },
+      "seeds": [
+        [
+          1117798821,
+          1805268883,
+          1395695960,
+          97193619
+        ],
+        [
+          1030321884,
+          1958377793,
+          1232688867,
+          1728444520
+        ],
+        [
+          1155310602,
+          172033847,
+          2072869411,
+          1294702052
+        ],
+        [
+          301169227,
+          846533008,
+          935998488,
+          626207075
+        ],
+        [
+          523115599,
+          1647464516,
+          616972372,
+          1627230219
+        ],
+        [
+          899582762,
+          410772316,
+          399708857,
+          356489253
+        ],
+        [
+          510801071,
+          1499801579,
+          1752589787,
+          1044223523
+        ],
+        [
+          709640440,
+          1958031179,
+          55526110,
+          208993494
+        ],
+        [
+          1254076998,
+          1259722183,
+          939139494,
+          215729061
+        ],
+        [
+          264161231,
+          1585901327,
+          1556755223,
+          2032346186
+        ]
+      ],
+      "arrays": {
+        "time_s": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "50c345daa383e450558fca37cd20adf54f13549035ae53eeb0c528d140666c5c"
+        },
+        "observed": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "7947f112b6c2196cae5215803d4d7a50e2401755d5fddf786ce19fda0a2419aa"
+        },
+        "diagnostic_time_s": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "d93b19b716759c30734a68c0448a0f6bc619d00110dc458a461a237b2ebce854"
+        },
+        "diagnostic_truth": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "1339a1a9dc971a177bce24e7272c9d619a9dca4172fd937fbc27b45ff3a9df97"
+        }
+      },
+      "grid": {
+        "time_s": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "758fa033ec2686a28c1b4990fb09b34f3557706ddb128ab68e1bf0bb5a83f057"
+        },
+        "truth": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "db7ea73c17135c3afbd2c76271a04b7872b47f894d9a1d30572937ea742cfecd"
+        }
+      }
+    },
+    {
+      "name": "variant_low",
+      "truth": {
+        "amplitude": 0.5,
+        "frequency_hz": 210.0,
+        "decay_time_s": 0.01,
+        "phase_rad": -0.5
+      },
+      "seeds": [
+        [
+          1305640932,
+          458703520,
+          1770554883,
+          1875635670
+        ],
+        [
+          1993095220,
+          156826610,
+          502094329,
+          964682335
+        ],
+        [
+          1487307782,
+          1588654257,
+          1662779424,
+          1623789331
+        ],
+        [
+          1777223471,
+          1731942130,
+          1587053506,
+          1027142211
+        ],
+        [
+          1912784921,
+          2114970987,
+          813962935,
+          1994655956
+        ],
+        [
+          567202465,
+          530400201,
+          675314067,
+          1737117302
+        ],
+        [
+          764985921,
+          882019565,
+          1403857771,
+          1189418905
+        ],
+        [
+          1505751406,
+          115411029,
+          939735220,
+          1380370318
+        ],
+        [
+          229996622,
+          1204294396,
+          307090501,
+          1989845639
+        ],
+        [
+          1212598543,
+          2075398551,
+          1514726536,
+          1659716051
+        ]
+      ],
+      "arrays": {
+        "time_s": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "50c345daa383e450558fca37cd20adf54f13549035ae53eeb0c528d140666c5c"
+        },
+        "observed": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "f56908c62ed4133d13eac653d4c9ad6c11197091a4e9eeeb15010c8626740a07"
+        },
+        "diagnostic_time_s": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "d93b19b716759c30734a68c0448a0f6bc619d00110dc458a461a237b2ebce854"
+        },
+        "diagnostic_truth": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "ee7525232765be16ccc8cc23887d802280160202ab2f2227bc2cc3e526c0b139"
+        }
+      },
+      "grid": {
+        "time_s": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "758fa033ec2686a28c1b4990fb09b34f3557706ddb128ab68e1bf0bb5a83f057"
+        },
+        "truth": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "5c3b1bd99bf96d0846e09283de1e5820d6bb1c0be6a904e968007b1bfae8be85"
+        }
+      }
+    },
+    {
+      "name": "variant_high",
+      "truth": {
+        "amplitude": 0.8,
+        "frequency_hz": 320.0,
+        "decay_time_s": 0.006,
+        "phase_rad": 0.4
+      },
+      "seeds": [
+        [
+          2124380224,
+          2028982556,
+          184383008,
+          2032385551
+        ],
+        [
+          1566525609,
+          1503446342,
+          485947075,
+          555285293
+        ],
+        [
+          1597386441,
+          1851554196,
+          847407339,
+          2085921885
+        ],
+        [
+          1430097084,
+          1958371633,
+          637849674,
+          2003742246
+        ],
+        [
+          1890814876,
+          1357155440,
+          202022189,
+          1975270708
+        ],
+        [
+          1277676302,
+          788782005,
+          901413744,
+          1958469598
+        ],
+        [
+          61311292,
+          2060890011,
+          1439496052,
+          1413700006
+        ],
+        [
+          26025133,
+          713379905,
+          153081685,
+          699608383
+        ],
+        [
+          1877582679,
+          905356470,
+          860956255,
+          1699667694
+        ],
+        [
+          1994531873,
+          1842805145,
+          363516613,
+          1027624385
+        ]
+      ],
+      "arrays": {
+        "time_s": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "50c345daa383e450558fca37cd20adf54f13549035ae53eeb0c528d140666c5c"
+        },
+        "observed": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "fd0d9cb26f207a8b00448a28ceee2884815b7a88110fd2a4b879108b118ce0c8"
+        },
+        "diagnostic_time_s": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "d93b19b716759c30734a68c0448a0f6bc619d00110dc458a461a237b2ebce854"
+        },
+        "diagnostic_truth": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "72ff34301941ef52ca49dff86144cf03ca89ea7d3debb879c1df99a61e228334"
+        }
+      },
+      "grid": {
+        "time_s": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "758fa033ec2686a28c1b4990fb09b34f3557706ddb128ab68e1bf0bb5a83f057"
+        },
+        "truth": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "5d380e00c385bb82d9e97defbce0dfbd1c6ff86fdc554a4fc033f7b847053fcb"
+        }
+      }
+    }
+  ],
+  "inputs_sha256": "02d03ebf37be51613b4e6303a2806dcb308fc344c544e82ff0dfd0d82000c8f2",
+  "generation": {
+    "numpy": "2.5.3",
+    "source": "src/ringdown_sr/signals.py",
+    "source_sha256": "7be30656875bc0276be19a0cbd5df1f2d925add6eacdc241d30dfee94451f7cd",
+    "recipe": "reuse transfer training/diagnostic times; ringdown_signal for each fixed truth; reuse existing stratified irregular times; preserve anchor bits",
+    "independent_check": {
+      "method": "mpmath 100 decimal places, exact Binary64 times/parameters, mathematical pi",
+      "values_checked": 6123,
+      "max_absolute_error_over_amplitude": 9.47065663180114e-16,
+      "bound": 1e-13
+    }
+  }
+}
