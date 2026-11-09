@@ -6,6 +6,15 @@ Ready-Wechsel und führt native Kontrollen seriell aus. Die wissenschaftlichen
 Phasen und Kriterien bleiben erhalten; tatsächlicher Prüf- und Übernahmestand
 im [Fortsetzungsstand](representation_implementation_status.md).
 
+Aktueller Übernahmeabgleich vom 09.11.2026: Der
+[Bestätigungslaufweg](restart_confirmation.md) aus Phase 6 ist nach vollständiger
+CI und separatem KI-Review mit PR #80 als `f933b40` übernommen. Protokoll, Seeds,
+Eingaben und Entscheidungsregeln bleiben eingefroren. Nächster Schritt ist die
+technische Manjaro-Vorprüfung, anschließend die separate wissenschaftliche
+Ausführung aller drei Abschnitte. Dafür liegen noch keine Ausführungsbelege vor;
+Profilübernahme in den allgemeinen gewichteten Laufweg bleibt vor dem Rauschpilot
+gesondert zu prüfen. Die folgenden datierten Einordnungen erhalten ihre Historie.
+
 Version 2, Planungsstand: 06.11.2026, nach Übernahme von PR #73 und #74.
 Historische Konkretisierung am selben Tag nach PR #75: Phase 2 abgeschlossen;
 [Protokoll](global_restart_comparison_plan.md) für Phase 3 vor Implementierung
@@ -358,7 +367,8 @@ verringerte A-Zahl als Verschlechterung dieser Entwicklungsfälle. Insgesamt
 daher keine Übernahmeempfehlung für das 400-Sekunden-Profil. Alle Zeitläufe
 enden regulär; kein technischer Fehler als Erklärung nachgewiesen.
 
-Planfortschreibung: kein nachträgliches Budgettuning oder weiterer Laufauftrag.
+Historische Planfortschreibung vom 06.11.2026; die spätere Konkretisierung steht
+in Phase 6: kein nachträgliches Budgettuning oder weiterer Laufauftrag.
 Die Viererpakete aus dem getrennten Neustartvergleich bleiben der Kandidat für
 bewusste Profilübernahme und unabhängige Bestätigung. Zuerst Profil und
 Bestätigungsprotokoll mit unberührten Fällen, Ausfall-/Kostenregeln und praktischer
@@ -494,8 +504,10 @@ Untersuchung der Grenzen freier SR. Keine unbeschränkte Parametersuche.
   Ressourcen gemäß bestehenden Verträgen anwenden; diese Regeln sind beschlossen.
 - Rolle möglicher Nachbearbeitung im endgültigen Ausgabemodell.
 - Seeds, Bestätigungssignale, Auswahl-/Kostenregeln und 8/10-Grenze sind
-  im Bestätigungsprotokoll vom 09.11.2026 festgelegt; vor Ausführung technische
-  Umsetzung und vollständige Abnahme abschließen.
+  im Bestätigungsprotokoll vom 09.11.2026 festgelegt; Umsetzung, vollständige
+  technische CI, separates Review und Übernahme sind mit PR #80 abgeschlossen.
+  Technische Manjaro-Vorprüfung und wissenschaftliche Ausführung bleiben getrennte
+  nächste Schritte.
 - Konkrete Rausch-, Hintergrund- und Gewichtungsbedingungen des kleinen Piloten.
 
 ## Literatur und Übertragungsgrenzen
