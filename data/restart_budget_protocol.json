@@ -1,0 +1,383 @@
+{
+  "format": "ringdown-sr-restart-budget-protocol-1",
+  "status": "frozen_before_implementation",
+  "base_commit": "fbdb45003c777c878f833e08a2287b70daa00485",
+  "purpose": "bounded_development_budget_allocation",
+  "restart_iterations": 1000,
+  "long_iterations": 2000,
+  "outer_iterations_per_package": 4000,
+  "search_calls": 48,
+  "algorithm_outputs": 16,
+  "paired_blocks": 8,
+  "worker_seconds": 1800,
+  "signal_seconds": 50400,
+  "verify_seconds": 7200,
+  "series_verify_seconds": 21600,
+  "arms": [
+    {
+      "name": "R",
+      "members": 4,
+      "iterations": 1000,
+      "seed_slots": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "name": "L",
+      "members": 2,
+      "iterations": 2000,
+      "seed_slots": [
+        0,
+        1
+      ]
+    }
+  ],
+  "coordinate": {
+    "name": "t",
+    "scale_hex": "0x1.0000000000000p+0",
+    "unit": "s"
+  },
+  "execution": {
+    "all_members_fresh": true,
+    "historical_reuse": false,
+    "checkpoint_continuation": false,
+    "within_arm_order": "all_members_in_seed_slot_order",
+    "shared_seed_slots": [
+      0,
+      1
+    ],
+    "shared_seed_calls_are_distinct": true
+  },
+  "seed_generator": {
+    "bit_generator": "PCG64",
+    "seed": 2026111202,
+    "draw": "integers(1, 2**31); reject duplicates and every positive 31-bit integer token in tracked text under data/docs/src/scripts/tests",
+    "exclusion_commit": "fbdb45003c777c878f833e08a2287b70daa00485",
+    "excluded_values": 1498,
+    "excluded_values_sha256": "7493f9976f25e1c65733a56d6e3424599c54f871c0ce7593f094c99631260142",
+    "scope": "documented repository values; no claim about unknown external searches"
+  },
+  "source": {
+    "commit": "fbdb45003c777c878f833e08a2287b70daa00485",
+    "inputs_path": "data/restart_confirmation_inputs.npz",
+    "inputs_sha256": "02d03ebf37be51613b4e6303a2806dcb308fc344c544e82ff0dfd0d82000c8f2",
+    "protocol_path": "data/restart_confirmation_protocol.json",
+    "protocol_sha256": "44d2a73a2189c5b4f06570c6abebcc8edceb2d1669925871c665f51520b1d6f9",
+    "reuse": "byte-identical original NPZ with all physical time/truth values and irregular points; no signal or grid regeneration"
+  },
+  "grid": {
+    "reuse_source_points": true,
+    "seed": 2026110601,
+    "points": 1024,
+    "attempts": 100,
+    "new_threshold": null
+  },
+  "profile": {
+    "native_worker": "unchanged time_budget_worker; condition iterations",
+    "local_iterations": 300,
+    "additional_local_restarts": 5,
+    "use_frequency": true,
+    "use_frequency_in_tournament": true,
+    "should_simplify": false,
+    "warmup_maxsize_by": 0.0,
+    "grammar": [
+      "+",
+      "-",
+      "*",
+      "/",
+      "exp",
+      "sin",
+      "cos"
+    ],
+    "population_count": 2,
+    "population_size": 32,
+    "cycles_per_iteration": 50,
+    "maxsize": 20,
+    "maxdepth": 20,
+    "parsimony": 0.0,
+    "optimizer_function_limit": 10000,
+    "loss": "unweighted native MSE"
+  },
+  "selection": [
+    "finite_native_training_loss_of_original_selected_candidate",
+    "original_complexity",
+    "member_seed_slot"
+  ],
+  "original_selection": [
+    "finite_native_training_loss",
+    "original_complexity",
+    "original_front_index"
+  ],
+  "endpoint": "physical_curve_A_and_proven_original_family",
+  "parameter_match": "not_assessed",
+  "decision": {
+    "restart_candidate": "R A-count and joint-count are no lower on every signal, and R joint-count is strictly higher on at least one signal",
+    "long_candidate": "reverse directional condition with R and L exchanged",
+    "unchanged_counts": "same A-count and joint-count on all signals; costs remain descriptive",
+    "mixed": "all other complete verified outcomes; retain uncertainty, no automatic profile adoption",
+    "no_automatic_profile_change": true,
+    "no_confirmation_gate": true
+  },
+  "signals": [
+    {
+      "name": "anchor",
+      "truth": {
+        "amplitude": 1.0,
+        "frequency_hz": 250.0,
+        "decay_time_s": 0.008,
+        "phase_rad": 0.0
+      },
+      "blocks": 2,
+      "seeds": [
+        [
+          1142894727,
+          1788268186,
+          310784309,
+          267213945
+        ],
+        [
+          968620722,
+          1929595019,
+          1149544002,
+          153237496
+        ]
+      ],
+      "odd_block_order": [
+        "R",
+        "L"
+      ],
+      "even_block_order": [
+        "L",
+        "R"
+      ],
+      "arrays": {
+        "time_s": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "50c345daa383e450558fca37cd20adf54f13549035ae53eeb0c528d140666c5c"
+        },
+        "observed": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "7947f112b6c2196cae5215803d4d7a50e2401755d5fddf786ce19fda0a2419aa"
+        },
+        "diagnostic_time_s": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "d93b19b716759c30734a68c0448a0f6bc619d00110dc458a461a237b2ebce854"
+        },
+        "diagnostic_truth": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "1339a1a9dc971a177bce24e7272c9d619a9dca4172fd937fbc27b45ff3a9df97"
+        }
+      },
+      "grid": {
+        "time_s": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "758fa033ec2686a28c1b4990fb09b34f3557706ddb128ab68e1bf0bb5a83f057"
+        },
+        "truth": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "db7ea73c17135c3afbd2c76271a04b7872b47f894d9a1d30572937ea742cfecd"
+        }
+      }
+    },
+    {
+      "name": "variant_low",
+      "truth": {
+        "amplitude": 0.5,
+        "frequency_hz": 210.0,
+        "decay_time_s": 0.01,
+        "phase_rad": -0.5
+      },
+      "blocks": 2,
+      "seeds": [
+        [
+          2121536532,
+          681954354,
+          1496657533,
+          144513275
+        ],
+        [
+          24713360,
+          1119790728,
+          806367458,
+          1792616656
+        ]
+      ],
+      "odd_block_order": [
+        "R",
+        "L"
+      ],
+      "even_block_order": [
+        "L",
+        "R"
+      ],
+      "arrays": {
+        "time_s": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "50c345daa383e450558fca37cd20adf54f13549035ae53eeb0c528d140666c5c"
+        },
+        "observed": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "f56908c62ed4133d13eac653d4c9ad6c11197091a4e9eeeb15010c8626740a07"
+        },
+        "diagnostic_time_s": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "d93b19b716759c30734a68c0448a0f6bc619d00110dc458a461a237b2ebce854"
+        },
+        "diagnostic_truth": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "ee7525232765be16ccc8cc23887d802280160202ab2f2227bc2cc3e526c0b139"
+        }
+      },
+      "grid": {
+        "time_s": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "758fa033ec2686a28c1b4990fb09b34f3557706ddb128ab68e1bf0bb5a83f057"
+        },
+        "truth": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "5c3b1bd99bf96d0846e09283de1e5820d6bb1c0be6a904e968007b1bfae8be85"
+        }
+      }
+    },
+    {
+      "name": "variant_high",
+      "truth": {
+        "amplitude": 0.8,
+        "frequency_hz": 320.0,
+        "decay_time_s": 0.006,
+        "phase_rad": 0.4
+      },
+      "blocks": 4,
+      "seeds": [
+        [
+          1222254223,
+          864582946,
+          1473260216,
+          1449318492
+        ],
+        [
+          211930581,
+          357498329,
+          559436062,
+          319474661
+        ],
+        [
+          212804046,
+          115642736,
+          1922080589,
+          1938143121
+        ],
+        [
+          1563291329,
+          2131940538,
+          397504904,
+          772836642
+        ]
+      ],
+      "odd_block_order": [
+        "R",
+        "L"
+      ],
+      "even_block_order": [
+        "L",
+        "R"
+      ],
+      "arrays": {
+        "time_s": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "50c345daa383e450558fca37cd20adf54f13549035ae53eeb0c528d140666c5c"
+        },
+        "observed": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "fd0d9cb26f207a8b00448a28ceee2884815b7a88110fd2a4b879108b118ce0c8"
+        },
+        "diagnostic_time_s": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "d93b19b716759c30734a68c0448a0f6bc619d00110dc458a461a237b2ebce854"
+        },
+        "diagnostic_truth": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "72ff34301941ef52ca49dff86144cf03ca89ea7d3debb879c1df99a61e228334"
+        }
+      },
+      "grid": {
+        "time_s": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "758fa033ec2686a28c1b4990fb09b34f3557706ddb128ab68e1bf0bb5a83f057"
+        },
+        "truth": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "5d380e00c385bb82d9e97defbce0dfbd1c6ff86fdc554a4fc033f7b847053fcb"
+        }
+      }
+    }
+  ],
+  "inputs_sha256": "02d03ebf37be51613b4e6303a2806dcb308fc344c544e82ff0dfd0d82000c8f2",
+  "generation": {
+    "numpy": "2.5.3",
+    "recipe": "byte-identical source NPZ copy; independent PCG64 seed-slot generation",
+    "original_array_roles": 12,
+    "original_array_values": 8164,
+    "input_bytes": 68622,
+    "truth_regenerated": false,
+    "grid_regenerated": false,
+    "coordinate_transformed": false
+  }
+}
