@@ -1,6 +1,80 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Bestätigungslaufweg geprüft und übernommen
+## Aktuell: Bestätigungsserie geprüft, praktische Grenze verfehlt
+
+Abgleich vom 12.11.2026, Leitfadenphase 6: Remote-main und tatsächlicher sauberer
+Ausführungsstand sind `c3da991f389a4ec55206539ebe02a9648d4474b8` nach PR81,
+mit unverändert übernommener PR80-Implementierung. Ergebnisdokumentation auf
+`codex/restart-confirmation-results-pr` ab diesem Stand; andere Worktrees erhalten.
+Die [Serie 001](restart_confirmation_results_manjaro_001.md) ist wissenschaftlich
+ausgeführt und vollständig lesend geprüft. Die Dokumentationsübernahme bleibt
+ein eigener Schritt; eingefrorene Protokolle und bisherige Berichte bleiben erhalten.
+
+- **Original:** Drei Teile in der ursprünglichen Reihenfolge zusammengesetzt;
+  81.098.904 Bytes, SHA-256
+  `cc5eec6e2fd0a0407f2371c7d6b7591e84e9c2e2cc850b509ed201ba59003468`
+  selbst bestätigt. 8.954 Originaldateien einschließlich aller drei Abschnitte,
+  Aufrufmessungen, Gesamtverifikation und technischem Manjaro-Vorlauf erhalten.
+- **Eigene Prüfung:** unveränderter CLI-Gesamtverifikator am exakten sauberen
+  Ausführungscommit bestanden: 150 Zellen, 1.755 Frontkandidaten, null Suchaufrufe.
+  Original-/Paketwahl, Kurven-/Familien-/Restbefunde, Domains, Quellen, tatsächliche
+  Herkunft/Threads, Kosten und gemeinsame Umgebung bestätigt. Drei wissenschaftliche
+  Verify-Dateien bytegleich zum gelieferten Export. Technischer Vorlauf mit sechs
+  kleinen Workern und beiden Einzel-/Gesamtprüfungen ebenfalls bestätigt;
+  seine neun Verify-Dateien bytegleich. Ein eigener früher technischer Leseversuch
+  scheiterte am falsch geschriebenen lokalen Julia-Pfad, neuer Audit-Versuch
+  erfolgreich; kein wissenschaftlicher Wiederholungslauf. Keine neuen Fits oder
+  nativen Formelauswertungen; Python-/MPFR-Nachrechnung gespeicherter Ergebnisse.
+- **Zusätzliche Gegenrechnung:** Paketwahl, Kostenaddition und beide Erfolgszahlen
+  direkt aus Zellen; zwölf marginale Intervalle unabhängig über Binomialsummen
+  bestätigt. Abschlussvergleich aller 8.954 Dateihashes und des Originalarchivs
+  unverändert. Getrenntes [Auditpaket](results_index.md#lesende-verifikation-der-neustartbestätigung-001)
+  mit Skripten, Exporten und Belegen erhalten.
+- **Befund:** R erreicht auf anchor/variant_low/variant_high 10/10, 10/10, 4/10 A,
+  davon 8/10, 10/10, 4/10 mit gültiger Originalfamilie. I erreicht 5/10, 7/10,
+  7/10 A, davon 4/10, 5/10, 7/10 gemeinsam. Keine Ausfälle; alle 150 geplanten
+  Suchen abgeschlossen. Die vorab beschlossene praktische Grenze ist beim dritten
+  Signal verfehlt. Je Signal 22–26 % mehr Workerzeit für R, geringfügig weniger
+  Verlustaufrufe; insgesamt rund 11 h 16 min gemessene Abschnittsaufrufe ohne Pausen.
+  Keine allgemeine Überlegenheit oder gepoolte Erfolgsquote.
+- **Nachträgliche Kombination, 12.11.2026:** Die lesend nachgerechnete
+  [Vereinigung der beiden Originalausgaben je Block](restart_confirmation_results_manjaro_001.md#nachträgliche-kombination-beider-arme)
+  ergibt 9/10, 10/10 und 7/10 A-/Originalfamilienerfolge; reine A-Zahlen
+  10/10, 10/10 und 7/10. Bei variant_high sind alle vier R-Erfolge auch
+  I-Erfolge, beide verfehlen A in Block 1, 5 und 7. Diagnose mit nachträglichem
+  Wissen, keine neue verlustbasierte Auswahlmethode oder Übergangsfreigabe.
+  Originalauswahlen, Protokoll und negative R-Entscheidung bleiben erhalten.
+- **Beweisgrenzen:** Fünf A-Ausgaben bleiben bezüglich Originalfamilie ungeklärt;
+  ihre Domains sind vollständig nachgewiesen. Drei andere, nicht A-bewertete
+  Ausgaben haben offene gesamte Domainnachweise; bei zwei ist bereits eine
+  Originaldefinitionslücke belegt. Keine alternative A-Kurve in den 80 Nicht-A-
+  Endfronten, auch nicht innerhalb der sechs erfolglosen R-Pakete von variant_high.
+  Endfronten erklären nicht den gesamten Suchverlauf. Parameter bleiben
+  `not_assessed`, keine Erkenner- oder Grenzwertänderung.
+- **Nächster abgegrenzter Schritt:** negative Bestätigung und Forschungsanspruch
+  gemäß Leitfaden mit der Betreuung einordnen. Kein unmittelbarer Rauschpilot,
+  kein nachträgliches Armwechseln oder automatischer Auftrag für zusätzliche Seeds.
+  Zeitnormalisierung bleibt eine nur begründet zu entscheidende zweite Intervention.
+  Allgemeines Profil und Gewichtung von Struktur- und Konstantensuche vor einem
+  späteren Rauschpilot bewusst abgleichen.
+- **Dokumentationsprüfung:** 99 Markdown-Dateien samt lokalen Linkzielen und
+  Diffprüfung bestanden. Gezielt KI-basiert selbst geprüft: Zählungen/Paarungen,
+  Domain- und Restgrenzen, Kostenbereiche, unveränderte 8/10-Regel und Zuordnung
+  von Ausführung, Prüfung und Sicherung. Die ergänzende Kombinationsdiagnose
+  wurde zusätzlich separat KI-basiert gegen die drei Originalberichte geprüft:
+  keine korrekturbedürftigen Befunde im begrenzten Ergänzungsumfang.
+  Nur sechs Markdown-Dateien geändert, kein Code, keine Konfiguration, keine
+  eingefrorenen Pläne oder historischen Ergebnisberichte. Allgemeiner Default
+  auf `c3da991` erneut lesend geprüft: weiterhin 20/2, Häufigkeitsschalter aus.
+  Keine erneute Python-/Native-Testsuite für diese reine Ergebnisdokumentation;
+  Head, Basis und passende Dokumentations-CI werden im PR zugeordnet.
+- **Offen:** Dokumentations-PR separat prüfen und übernehmen; Original und Audit
+  dauerhaft im gemeinsamen Archivordner sowie unabhängig gesichert erhalten,
+  beide Kopien am SHA-256 prüfen und Ablagehinweise im [Index](results_index.md)
+  bestätigen. Ältere technische Vorlaufbelege bleiben getrennte Lücken; für diese
+  Bestätigungsserie ist der technische Manjaro-Vorlauf jetzt belegt.
+
+## Historischer Implementierungs- und Übernahmeabgleich aus PR80/81
 
 Abgleich vom 09.11.2026, Leitfadenphasen 5/6: [PR #80](https://github.com/craexxn/ringdown-sr/pull/80)
 nach vollständiger Ready-CI, separatem übermitteltem KI-Review und ausdrücklicher

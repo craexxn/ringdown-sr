@@ -5,8 +5,8 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 09.11.2026; abgeglichener Implementierungsstand auf main
-`f933b40` nach ausdrücklich
+Fortsetzungsstand: 12.11.2026; Ausführungs- und Prüfstand auf main
+`c3da991` nach ausdrücklich
 freigegebener Übernahme von [PR #73](https://github.com/craexxn/ringdown-sr/pull/73)
 und [PR #74](https://github.com/craexxn/ringdown-sr/pull/74), anschließend
 [PR #75](https://github.com/craexxn/ringdown-sr/pull/75) und
@@ -14,7 +14,8 @@ und [PR #74](https://github.com/craexxn/ringdown-sr/pull/74), anschließend
 [PR #77](https://github.com/craexxn/ringdown-sr/pull/77) sowie der
 Archivdokumentation in [PR #78](https://github.com/craexxn/ringdown-sr/pull/78)
 und den Ergebnisberichten in [PR #79](https://github.com/craexxn/ringdown-sr/pull/79)
-sowie dem Bestätigungslaufweg in [PR #80](https://github.com/craexxn/ringdown-sr/pull/80).
+sowie dem Bestätigungslaufweg in [PR #80](https://github.com/craexxn/ringdown-sr/pull/80)
+und dessen Statusabgleich in [PR #81](https://github.com/craexxn/ringdown-sr/pull/81).
 Alle drei Bewertungsstufen sind implementiert, geprüft, übernommen und auf
 78 Originalauswahlen angewandt: [Kurvenklassen](docs/supplemental_assessment_results_001.md),
 [Originalfamilie und Domain](docs/supplemental_structure_results_001.md),
@@ -42,7 +43,7 @@ der getrennte [Lauf 002 ist vollständig lesend bestätigt](docs/global_restart_
 Neustartpakete 4/4 A mit 4/4 Familiennachweisen. Die vorab festgelegte Regel
 bevorzugt die Pakete wegen weniger Verlustaufrufen bei gleicher A-Zahl; ihre
 Workerzeit ist jedoch höher. Gezielte Entwicklungsfälle, kein allgemeiner
-Erfolgs- oder Laufzeitnachweis und noch keine unabhängige Bestätigung.
+Erfolgs- oder Laufzeitnachweis; diese Entwicklungsfälle ersetzen keine unabhängige Bestätigung.
 Parallel ist der [begrenzte Zeitbudgetvergleich](docs/iteration_time_budget.md)
 von 2.000 Iterationen mit 400 Sekunden Suchzeit implementiert. Sein Protokoll legt
 vor Sichtung wissenschaftlicher PR76-Ergebnisse die vollständige Kontrollübernahme
@@ -54,17 +55,25 @@ Threadbelege ab. Der [Zeitbudgetlauf 001](docs/iteration_time_results_manjaro_00
 ist inzwischen im Modus `fresh_all` mit acht frischen Suchen lesend bestätigt:
 I erreicht 4/4 A, Z 3/4 A; beide 3/4 A mit Familiennachweis. Z benötigt insgesamt
 12,51 % weniger Workerzeit, verliert aber einen A-Erfolg. Deshalb keine
-Übernahmeempfehlung für 400 Sekunden. Der nächste Vergleich ist jetzt
-[vorab festgelegt](docs/restart_confirmation_plan.md): drei Signale, je zehn neue
-gepaarte Seedblöcke, 4 × 500 gegen 1 × 2.000 bei 300/5. 150 Suchaufrufe in drei
-getrennten Abschnitten; mindestens 8/10 gemeinsame A-/Originalfamilienerfolge
-je Signal als praktische Grenze für das Neustartprofil, kein Nachweis von 80 %
-wahrer Erfolgswahrscheinlichkeit. Der [Laufweg](docs/restart_confirmation.md)
-ist nach vollständiger Ready-CI mit 3.221 Pythonfällen, sämtlichen nativen
-Prüfblöcken und sechs neuen kleinen Suchen samt lesender Gesamtverifikation
-sowie separatem KI-Review in PR #80 übernommen. Als Nächstes folgt die technische
-Vorprüfung auf Manjaro, danach die getrennte wissenschaftliche Ausführung;
-diese ist noch nicht belegt.
+Übernahmeempfehlung für 400 Sekunden.
+
+Die [unabhängige Bestätigung](docs/restart_confirmation_results_manjaro_001.md)
+ist jetzt vollständig lesend geprüft: 150 frische Suchen, drei Signale mit je
+zehn gepaarten Blöcken, 4 × 500 gegen 1 × 2.000 bei 300/5. Gemeinsame
+A-/Originalfamilienerfolge der Pakete: **8/10, 10/10, 4/10**; lange Suchen:
+**4/10, 5/10, 7/10**. Die [vorab beschlossene Grenze](docs/restart_confirmation_plan.md)
+von mindestens 8/10 je Signal ist damit **verfehlt**. Keine ausgefallene Suche;
+technischer Manjaro-Vorlauf ebenfalls bestätigt. Die Pakete benötigen je Signal
+22–26 % mehr Workerzeit, obwohl ihre Verlustcallback-Zahl geringfügig kleiner ist.
+Gesamter gemessener Suchserienaufruf rund 11 h 16 min ohne Abschnittspausen.
+Die Wirkung ist signalabhängig; kein allgemeiner Neustartvorteil und keine
+gepoolte Erfolgsquote. Auch die [nachträgliche Vereinigung beider Arme](docs/restart_confirmation_results_manjaro_001.md#nachträgliche-kombination-beider-arme)
+erreicht nur **9/10, 10/10, 7/10** gemeinsame Erfolge; sie ist keine geprüfte
+kombinierte Auswahlstrategie und ändert den negativen Befund nicht.
+Nächster Schritt: Befund und Forschungsanspruch gemäß
+Leitfaden mit der Betreuung einordnen, keine automatische weitere Suchserie
+oder unmittelbarer Rauschpilot. Die bewusste Profilübernahme in den späteren
+allgemeinen gewichteten Laufweg bleibt gesondert offen.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
 Ausführungsschritt. Umsetzung und Nachweise stehen im

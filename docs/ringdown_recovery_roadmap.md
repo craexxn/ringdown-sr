@@ -6,13 +6,18 @@ Ready-Wechsel und führt native Kontrollen seriell aus. Die wissenschaftlichen
 Phasen und Kriterien bleiben erhalten; tatsächlicher Prüf- und Übernahmestand
 im [Fortsetzungsstand](representation_implementation_status.md).
 
-Aktueller Übernahmeabgleich vom 09.11.2026: Der
-[Bestätigungslaufweg](restart_confirmation.md) aus Phase 6 ist nach vollständiger
-CI und separatem KI-Review mit PR #80 als `f933b40` übernommen. Protokoll, Seeds,
-Eingaben und Entscheidungsregeln bleiben eingefroren. Nächster Schritt ist die
-technische Manjaro-Vorprüfung, anschließend die separate wissenschaftliche
-Ausführung aller drei Abschnitte. Dafür liegen noch keine Ausführungsbelege vor;
-Profilübernahme in den allgemeinen gewichteten Laufweg bleibt vor dem Rauschpilot
+Aktueller Ergebnisabgleich vom 12.11.2026: Die
+[unabhängige Bestätigung](restart_confirmation_results_manjaro_001.md) aus Phase 6
+ist einschließlich technischem Vorlauf auf main `c3da991` ausgeführt und vollständig
+lesend geprüft. 150 frische Suchen; R erreicht 8/10, 10/10 und 4/10 gemeinsame
+A-/Originalfamilienerfolge, I 4/10, 5/10 und 7/10. Damit ist die vorab beschlossene
+8/10-Grenze je Signal verfehlt. Auch die nachträgliche Vereinigung beider Arme
+erreicht nur 9/10, 10/10 und 7/10 gemeinsame Erfolge; sie belegt keine vorab
+festgelegte kombinierte Auswahlstrategie. Nächster Schritt ist die Einordnung des Befunds
+und Forschungsanspruchs mit der Betreuung gemäß der bestehenden Zyklusgrenze;
+keine automatische neue Suchserie oder unmittelbarer Rauschpilot. Protokoll,
+Seeds, Eingaben und Entscheidungsregeln bleiben eingefroren. Profilübernahme in
+den allgemeinen gewichteten Laufweg bleibt vor einem späteren Rauschpilot
 gesondert zu prüfen. Die folgenden datierten Einordnungen erhalten ihre Historie.
 
 Version 2, Planungsstand: 06.11.2026, nach Übernahme von PR #73 und #74.
@@ -72,8 +77,9 @@ unverändert; deren damalige Ausblicke sind kein aktueller Arbeitsauftrag.
 Diese Datei hält die vereinbarte Vorgehensrichtung fest. Konkrete Seeds,
 Auswahlregeln, Budgets und noch offene methodische Einzelentscheidungen werden
 vor Ausführung im jeweiligen Versuchsprotokoll festgelegt. Vorgeschlagene
-Zahlen sind unten ausdrücklich gekennzeichnet. Die Roadmap dokumentiert keine
-bereits erfolgte Implementierung oder wissenschaftliche Ausführung.
+Zahlen sind unten ausdrücklich gekennzeichnet. Planvorgaben allein belegen keine
+Implementierung oder wissenschaftliche Ausführung; datierte Ergebnisabgleiche
+verweisen dafür auf die jeweiligen Berichte.
 
 ## Rolle und Pflege
 
@@ -467,6 +473,44 @@ ist das geprüfte 300/5-Profil im allgemeinen späteren Laufweg ausdrücklich zu
 übernehmen; seine Gewichtung muss Struktur- und Konstantensuche bestimmen.
 Die jetzige rauschfreie Bestätigung allein belegt diesen gewichteten Pfad nicht.
 
+### Bestätigungsbefund und Planfortschreibung vom 12.11.2026
+
+Die [vollständig geprüfte Serie 001](restart_confirmation_results_manjaro_001.md)
+umfasst alle 150 geplanten Suchen und den technischen Manjaro-Vorlauf.
+R erzielt auf anchor/variant_low/variant_high 10/10, 10/10, 4/10 A-Ausgaben,
+davon 8/10, 10/10, 4/10 mit gültiger Originalfamilie. I erzielt 5/10, 7/10,
+7/10 A, davon 4/10, 5/10, 7/10 gemeinsam. Die praktische Grenze ist beim dritten
+Signal verfehlt; dort sind alle A-Familien nachgewiesen, sodass offene
+Strukturbeweise den A-Verlust nicht erklären. Keine Ausfälle, alle Kosten bekannt.
+R benötigt je Signal rund 22–26 % mehr Workerzeit und geringfügig weniger
+Verlustaufrufe. Weder allgemeine Überlegenheit noch Laufzeitgewinn bestätigt.
+
+Die am 12.11.2026 ergänzte [Kombinationsdiagnose](restart_confirmation_results_manjaro_001.md#nachträgliche-kombination-beider-arme)
+zählt je Block höchstens einen Erfolg aus den beiden Originalausgaben:
+9/10, 10/10 und 7/10 A plus Originalfamilie. Bei variant_high ergänzen die
+R-Ausgaben keinen I-Erfolg; beide Arme verfehlen A in Block 1, 5 und 7.
+Damit schließt auch diese Rückschau die Wiederholbarkeitslücke nicht.
+Die Verwendung nachträglicher Klassen-/Familienkenntnis ist keine zulässige
+Auswahlregel eines neuen Verfahrens. Eine tatsächliche Kombination benötigte
+eine vorab festgelegte Auswahl und die Kosten aller fünf Suchen mit insgesamt
+4.000 äußeren Iterationen je Block; sie ist hier nicht bestätigt oder beschlossen.
+
+Die begrenzte Diagnose aller gespeicherten Fronten findet auch in den sechs
+Nicht-A-Paketen des dritten Signals keine alternative A-Ausgabe. Das belegt
+keine vollständige Evolutionsgeschichte und identifiziert noch keine konkrete
+Suchursache. Die drei Signale erlauben keine isolierte Erklärung durch Frequenz
+oder einen anderen gleichzeitig veränderten Parameter.
+
+Gemäß eingefrorenem Plan jetzt den Befund und Forschungsanspruch mit der
+Betreuung einordnen: Grenzen freier SR oder stärkeres Vorwissen als ausdrücklich
+benannte Variante. Die Grenze nicht nachträglich lockern, keinen jeweils besten
+Arm als Ersatz auswählen und keine zusätzlichen Seeds bis zum Erfolg anhängen.
+Die bereits bedingt vorgesehene Zeitnormalisierung bleibt eine begründungsbedürftige
+zweite Intervention, kein automatischer Laufauftrag. Tuning an diesen Fällen
+würde sie zu Entwicklungsfällen machen. Der Rauschpilot folgt nicht unmittelbar
+auf diese verfehlte Bestätigung; seine Voraussetzungen und die bewusste
+Profilübernahme aus Phase 5 bleiben bestehen.
+
 ## 7. Rauschpilot und Hauptversuchsplanung
 
 Zunächst wenige Signale und Rauschbedingungen wählen. Rauschrealisierungen,
@@ -506,8 +550,9 @@ Untersuchung der Grenzen freier SR. Keine unbeschränkte Parametersuche.
 - Seeds, Bestätigungssignale, Auswahl-/Kostenregeln und 8/10-Grenze sind
   im Bestätigungsprotokoll vom 09.11.2026 festgelegt; Umsetzung, vollständige
   technische CI, separates Review und Übernahme sind mit PR #80 abgeschlossen.
-  Technische Manjaro-Vorprüfung und wissenschaftliche Ausführung bleiben getrennte
-  nächste Schritte.
+  Technischer Manjaro-Vorlauf und wissenschaftliche Serie sind inzwischen
+  vollständig lesend bestätigt; die praktische Grenze ist verfehlt. Der nächste
+  Schritt ist die oben datierte Einordnung, keine automatische Wiederholung.
 - Konkrete Rausch-, Hintergrund- und Gewichtungsbedingungen des kleinen Piloten.
 
 ## Literatur und Übertragungsgrenzen
