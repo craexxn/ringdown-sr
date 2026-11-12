@@ -5,9 +5,11 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 12.11.2026; aktuelle main-Basis `94e15c5` nach PR #82.
-Der wissenschaftliche Ausführungs- und lesende Prüfstand bleibt `c3da991`
-nach PR #81. Die bestehenden Laufwege entstanden nach ausdrücklich
+Fortsetzungsstand: 12.11.2026; aktuelle main-Basis sowie wissenschaftlicher
+Ausführungs- und lesender Prüfstand des Zeitkoordinatenvergleichs sind `91d461c`
+nach [PR #83](https://github.com/craexxn/ringdown-sr/pull/83). Die vorherige
+Bestätigungsserie bleibt dem Stand `c3da991` nach PR #81 zugeordnet.
+Die bestehenden Laufwege entstanden nach ausdrücklich
 freigegebener Übernahme von [PR #73](https://github.com/craexxn/ringdown-sr/pull/73)
 und [PR #74](https://github.com/craexxn/ringdown-sr/pull/74), anschließend
 [PR #75](https://github.com/craexxn/ringdown-sr/pull/75) und
@@ -72,13 +74,21 @@ gepoolte Erfolgsquote. Auch die [nachträgliche Vereinigung beider Arme](docs/re
 erreicht nur **9/10, 10/10, 7/10** gemeinsame Erfolge; sie ist keine geprüfte
 kombinierte Auswahlstrategie und ändert den negativen Befund nicht.
 PR #82 ist einschließlich dieser Diagnose nach grüner Dokumentations-CI übernommen.
-Als begrenzter nächster Entwicklungsvergleich ist [t gegen u=32t](docs/time_coordinate.md)
-mit 16 frischen 2.000er-Suchen beschlossen und vor Implementierung eingefroren:
-zwei gepaarte Blöcke auf Anker und niedriger Variante, vier auf der hohen Variante.
-Lokal bestehen 3.359 Pythonfälle und vier kleine native Suchprüfungen samt
-lesender Verifikation. PR #83 benötigt noch die vollständige CI und Übernahme;
-wissenschaftlich ist die Serie noch nicht ausgeführt.
-Danach folgt der separat zu protokollierende Vergleich 4 × 1.000 gegen 2 × 2.000.
+Der [Zeitkoordinatenvergleich t gegen u=32t](docs/time_coordinate_results_manjaro_001.md)
+ist nach vollständiger CI und Übernahme von PR #83 wissenschaftlich ausgeführt
+und am Original lesend bestätigt: 16 frische 2.000er-Suchen in 2/2/4 gepaarten
+Blöcken. T/U erreichen auf anchor, variant_low und variant_high **2/2 gegen 2/2,
+2/2 gegen 1/2 und 1/4 gegen 3/4 A-Ausgaben**. Die eingefrorene Entscheidung ist
+**`mixed`**, keine allgemeine Übernahmeempfehlung. Sechs U-Kompositionen
+überschreiten die unveränderte Beweisressource; ihre Familiennachweise bleiben
+ungeklärt. Auch ohne diesen Endpunkt bleibt der Kurvenbefund gemischt.
+U benötigt je Signal rund 10–15 % weniger Workerzeit; die vollständigen
+Abschnittsaufrufe dauern zusammen rund 2 h 26 min. Technischer Manjaro-Vorlauf
+und alle lesenden Prüfungen sind ebenfalls bestätigt.
+Für den separat einzufrierenden Anschlussvergleich **4 × 1.000 gegen 2 × 2.000**
+bleibt T die gemeinsame Referenzkoordinate beider Arme auf allen Signalen.
+Das isoliert die Budgetaufteilung, behauptet keinen Sieg von T und startet
+keine weitere wissenschaftliche Serie automatisch.
 Die bisherigen Bestätigungssignale sind damit Entwicklungswissen; eine spätere
 Bestätigung benötigt unberührte Fälle. Kein unmittelbarer Rauschpilot.
 Die bewusste Profilübernahme in den späteren

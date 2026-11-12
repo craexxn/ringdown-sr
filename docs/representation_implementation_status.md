@@ -1,6 +1,71 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Zeitkoordinatenvergleich lokal geprüft, vollständige CI ausstehend
+## Aktuell: Zeitkoordinatenserie geprüft, Befund gemischt
+
+Abgleich vom 12.11.2026, Leitfadenphase 4: [PR #83](https://github.com/craexxn/ringdown-sr/pull/83)
+ist nach vollständiger [Ready-CI 43168577591](https://github.com/craexxn/ringdown-sr/actions/runs/43168577591)
+mit 3.359 Pythonfällen und sämtlichen nativen Prüfblöcken als
+`91d461cf9c08c07b7fdb8ddae5ad4b207135bc67` übernommen. Dies ist zugleich der
+tatsächliche saubere wissenschaftliche Ausführungs- und lesende Prüfstand.
+Die Ergebnisdokumentation entsteht auf `codex/time-coordinate-results` ab dieser
+Basis; sie ersetzt den Ausführungscommit nicht. Der
+[Originalbefund 001](time_coordinate_results_manjaro_001.md) ist vollständig
+lesend bestätigt; der eingefrorene Plan und die negative frühere Bestätigung
+bleiben unverändert.
+
+- **Original:** `time-coordinate-manjaro-001.tar.gz`, 9.658.389 Bytes,
+  SHA-256 `0d4a662010ad90ae3119a20154b7a39e839b1fbe61cb0adffdbedf51ee6ab4b9`
+  bestätigt. 1.212 reguläre Dateien mit 72.035.452 entpackten Dateibytes:
+  drei wissenschaftliche Abschnitte, Aufrufmessungen, Gesamtverifikation und
+  technischer Manjaro-Vorlauf einschließlich Einzel-/Gesamtprüfungen.
+- **Tatsächliche Prüfung:** unveränderter vollständiger CLI-Verifikator am
+  exakten sauberen Ausführungscommit bestanden: 16 wissenschaftliche Zellen,
+  null neue Suchaufrufe; alle drei wissenschaftlichen Exportdateien bytegleich
+  zum gelieferten Export. Vier technische Worker sowie beide Einzelprüfungen
+  und die gemeinsame Verifikation ebenfalls bestätigt, ihre neun Exportdateien
+  bytegleich. 100 gebundene Quellen einschließlich aller 50 Python-Paketdateien
+  geprüft; abschließende Dateihashes und Originalarchiv unverändert.
+  Keine neuen Fits oder wissenschaftlichen Suchläufe für diese Auswertung.
+- **Ergebnisdokumentation:** 102 Markdown-Dateien samt lokalen Linkzielen und
+  Diffprüfung bestanden. Nur README und Markdown-Dokumentation geändert;
+  eingefrorenes Protokoll, Eingaben, Implementierung und historische Berichte
+  unverändert. Die frühere vollständige technische Abnahme bleibt ihrem
+  PR83-Baum zugeordnet; keine erneuten nativen Suchen für die Statuspflege.
+- **Befund:** auf anchor/variant_low/variant_high erreicht T 2/2, 2/2, 1/4 A,
+  davon 0/2, 2/2, 1/4 mit gültiger Originalfamilie. U erreicht 2/2, 1/2, 3/4 A,
+  davon 0/2, 0/2, 2/4 gemeinsam. Alle 16 geplanten Suchen abgeschlossen,
+  keine Ausfälle. Die eingefrorene Richtungsregel ergibt `mixed`: Gewinn auf
+  der hohen und Verlust auf der niedrigen Variante, auch beim reinen Kurvenendpunkt.
+  Keine gepoolte Erfolgsquote und keine allgemeine Übernahme einer Koordinate.
+- **Beweis- und Frontgrenzen:** sechs ausgewählte U-Kompositionen überschreiten
+  die unveränderte 20-Knoten-Prüfgrenze, darunter vier A- und zwei B-Ausgaben.
+  Ihre Familiennachweise sind ungeklärt, weder widerlegt noch als zusätzliche
+  Erfolge zu zählen. 188 gespeicherte Endfrontkandidaten lesend nachgerechnet;
+  in keiner der fünf Fronten mit Nicht-A-Auswahl eine alternative A-Kurve.
+  Dies ist kein vollständiges Evolutionsprotokoll. Bewertungsregeln und
+  Ressourcen unverändert; neue Parameterübereinstimmungen `not_assessed`.
+- **Kosten:** alle vorgesehenen Kostenfelder bekannt; separate JIT-Kosten und
+  ein nativer Gesamt-Evaluationszähler nicht beobachtet. U benötigt je Signal rund 10–15 % weniger
+  Workerzeit und 12,51–15,45 % weniger native Verlustcallback-Aufrufe.
+  Gemessene vollständige Abschnittsaufrufe zusammen 8.734,817 s, rund 2 h 26 min,
+  ohne Abschnittspausen, technischen Vorlauf und spätere Gesamtverifikation.
+  Überlappende Fit-/Worker-/Aufrufzeiten nicht addieren; keine Laufzeitgarantie
+  und kein Ausgleich des verlorenen Kurvenerfolgs durch geringere Kosten.
+- **Nächster abgegrenzter Schritt:** den gesonderten Vergleich 4 × 1.000 gegen
+  2 × 2.000 vor Implementierung einfrieren. Für seine Vorbereitung bleibt T
+  die gemeinsame Referenzkoordinate beider Arme auf allen Signalen. Das isoliert
+  die Budgetaufteilung; es behauptet keine Überlegenheit von T und verwirft U
+  nicht endgültig. Neue Seeds, Paketwahl, Kosten-/Ausfallregeln und Umfang
+  gesondert festlegen, keine automatische Ausführung. Kein unmittelbarer
+  Rauschpilot; spätere Bestätigung braucht unberührte Fälle, der allgemeine
+  gewichtete Laufweg bleibt vor dem Pilot gesondert abzugleichen.
+- **Offen:** Dokumentations-CI und separate Übernahme des Ergebnisberichts. Originalarchiv
+  und Audit dauerhaft im gemeinsamen Archivordner plus unabhängiger Zweitkopie
+  erhalten, beide SHA-256 prüfen und tatsächliche Ablage-/Sicherungsangaben im
+  [Ergebnisindex](results_index.md) bestätigen. Vorliegendes Uploadarchiv und
+  lesende Verifikation belegen noch keine unabhängige Sicherung.
+
+## Historisch: Zeitkoordinatenvergleich lokal geprüft, vollständige CI ausstehend
 
 Stand 12.11.2026, Leitfadenphase 4: PR #82 ist einschließlich retrospektiver
 Kombinationsdiagnose als `94e15c5bb782028e3ac3d89252185e2d2e03d655` übernommen.
