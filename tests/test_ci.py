@@ -703,6 +703,7 @@ def test_all_original_commands_options_error_wrappers_and_order_are_preserved():
         "Verify iteration and time stopping on four tiny technical workers",
         "Verify confirmation on two tiny signals and six workers",
         "Verify time coordinates on two tiny signals and four workers",
+        "Verify restart budgets on two tiny signals and twelve workers",
     }
     ordered = []
     for group in ("native-a", "native-b", "native-c"):

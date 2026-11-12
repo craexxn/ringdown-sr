@@ -168,7 +168,7 @@ Dies ist eine begrenzte Prüfung, kein vollständiger Markdown-Parser.
 `docs/outer_search_ladder_plan.md`, `docs/transfer_check_plan.md`,
 `docs/seed_driver_crosscheck_plan.md`, `docs/global_restart_comparison_plan.md`
 sowie `docs/iteration_time_budget_plan.md`, `docs/restart_confirmation_plan.md`
-und `docs/time_coordinate_plan.md`
+und `docs/time_coordinate_plan.md`, `docs/restart_budget_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -203,6 +203,15 @@ dieselben beiden künstlichen Achtpunkt-Signale, je eine Suche in t und in u=32t
 jeweils nur zwei äußere Iterationen. Vier frische technische Worker mit nativen
 Quellen-/Aufrufbelegen, physischer Auswertung und lesender Einzel-/Gesamtprüfung.
 Keine wissenschaftliche 16-Aufruf-Serie in Actions; bisherige Prüfblöcke bleiben.
+
+Der Anschlussvergleich der Neustartbudgets ergänzt `scripts/check_restart_budget.py`:
+zwei künstliche Achtpunkt-Signale, jeweils vier R-Worker mit einer und zwei
+L-Worker mit zwei äußeren Iterationen. Zwölf kleine technische Worker und vier
+Paketausgaben prüfen beide Mehrmitgliedsauswahlen, tatsächliche Iterationsenden,
+Herkunft, Kosten und lesende Einzel-/Gesamtverifikation. Die wissenschaftlichen
+48 Aufrufe sind ein separater Manjaro-Schritt. Alle bisherigen Prüfblöcke bleiben;
+keine Änderung der historischen Budgets oder Erweiterung zu wissenschaftlichen
+Serien in Actions.
 
 Auch `docs/supplemental_assessment.md` erhält die volle CI: Der lesende
 Bewertungsexport bindet diesen Versionsvertrag an seinen Softwarestand.

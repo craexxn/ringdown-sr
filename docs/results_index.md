@@ -362,6 +362,17 @@ ausdrücklich offen. Keine verpflichtende GitHub-Upload-Aufgabe.
 
 ### Offene Sicherungsschritte
 
+Der [begrenzte Budgetvergleich](restart_budget.md) nach PR84 ist vorbereitet,
+noch nicht wissenschaftlich ausgeführt. [Plan](restart_budget_plan.md), Seeds
+und byteidentische physische Eingaben sind vor Implementierung eingefroren.
+48 neue Suchaufrufe, 16 Paketausgaben und ein separater technischer Vorlauf mit
+zwölf winzigen Workern vorgesehen. Die im Laufweg genannten 001-IDs sind
+vorbereitete Befehle, keine belegten wissenschaftlichen Archive. Nach tatsächlicher
+Ausführung die drei Abschnitte, ihre benachbarten Aufrufmessungen, technische
+Einzel-/Gesamtverifikationen und wissenschaftliche Gesamtverifikation gemeinsam
+zuordnen; Ausführungscommit, Archivhash und tatsächliche Sicherung nachtragen.
+Die Vorbereitung behauptet keine neue Archivkopie und erzeugt keine Uploadpflicht.
+
 - Die namentlich und mit Hash belegten Archive und empfangenen ZIP-Pakete aus
   „Originalarchive“ im gemeinsamen Archivordner und einer zweiten gesicherten
   Kopie erhalten. Bei noch nicht selbst geprüften älteren Dateien die
