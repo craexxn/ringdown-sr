@@ -82,7 +82,7 @@ jobs:
     needs: prepare
     if: needs.prepare.outputs.mode == 'full'
     runs-on: ubuntu-24.04
-    timeout-minutes: 75
+    timeout-minutes: 90
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -331,6 +331,16 @@ jobs:
             uv run --locked python scripts/check_time_coordinate.py \
             --output results/ci-time-coordinate; then
             find results -path '*ci-time-coordinate*' -type f -name '*.log' -print -exec tail -n 100 {} \;
+            exit 1
+          fi
+
+      - name: Verify restart budgets on two tiny signals and twelve workers
+        run: |
+          if ! env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/check_restart_budget.py \
+            --output results/ci-restart-budget; then
+            find results -path '*ci-restart-budget*' -type f -name '*.log' -print -exec tail -n 100 {} \;
             exit 1
           fi
 

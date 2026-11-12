@@ -703,6 +703,7 @@ def test_all_original_commands_options_error_wrappers_and_order_are_preserved():
         "Verify iteration and time stopping on four tiny technical workers",
         "Verify confirmation on two tiny signals and six workers",
         "Verify time coordinates on two tiny signals and four workers",
+        "Verify restart budgets on two tiny signals and twelve workers",
     }
     ordered = []
     for group in ("native-a", "native-b", "native-c"):
@@ -727,7 +728,11 @@ def test_workflow_requires_early_success_and_all_native_results_without_bypasses
     assert text.count("ref: ${{ github.sha }}") == 3
     assert text.count("persist-credentials: false") == 3
     assert text.count("fetch-depth: 0") == 3
-    assert text.count("timeout-minutes: 75") == 3
+    assert text.count("timeout-minutes: 75") == 2
+    assert text.count("timeout-minutes: 90") == 1
+    assert "timeout-minutes: 90" in jobs["native"]
+    for job in ("prepare", "technical-checks"):
+        assert "timeout-minutes: 75" in jobs[job]
     assert "OPENBLAS" not in text.split("jobs:", 1)[0]
     assert "full: ${{ steps.scope.outputs.full }}" in jobs["prepare"]
     assert jobs["prepare"].count("if: steps.scope.outputs.full != 'false'") == 6

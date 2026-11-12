@@ -5,9 +5,10 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 12.11.2026; aktuelle main-Basis sowie wissenschaftlicher
-Ausführungs- und lesender Prüfstand des Zeitkoordinatenvergleichs sind `91d461c`
-nach [PR #83](https://github.com/craexxn/ringdown-sr/pull/83). Die vorherige
+Fortsetzungsstand: 12.11.2026; aktuelle main-Basis `fbdb450` nach
+[PR #84](https://github.com/craexxn/ringdown-sr/pull/84).
+Wissenschaftlicher Ausführungs- und lesender Prüfstand des Zeitkoordinatenvergleichs
+bleibt `91d461c` nach [PR #83](https://github.com/craexxn/ringdown-sr/pull/83). Die vorherige
 Bestätigungsserie bleibt dem Stand `c3da991` nach PR #81 zugeordnet.
 Die bestehenden Laufwege entstanden nach ausdrücklich
 freigegebener Übernahme von [PR #73](https://github.com/craexxn/ringdown-sr/pull/73)
@@ -85,10 +86,16 @@ ungeklärt. Auch ohne diesen Endpunkt bleibt der Kurvenbefund gemischt.
 U benötigt je Signal rund 10–15 % weniger Workerzeit; die vollständigen
 Abschnittsaufrufe dauern zusammen rund 2 h 26 min. Technischer Manjaro-Vorlauf
 und alle lesenden Prüfungen sind ebenfalls bestätigt.
-Für den separat einzufrierenden Anschlussvergleich **4 × 1.000 gegen 2 × 2.000**
-bleibt T die gemeinsame Referenzkoordinate beider Arme auf allen Signalen.
-Das isoliert die Budgetaufteilung, behauptet keinen Sieg von T und startet
-keine weitere wissenschaftliche Serie automatisch.
+PR #84 übernimmt diesen Befund nach grüner Dokumentations-CI und gezieltem
+KI-Review. Der [Anschlussvergleich **4 × 1.000 gegen 2 × 2.000**](docs/restart_budget.md)
+ist vor Implementierung [separat eingefroren](docs/restart_budget_plan.md):
+T bleibt gemeinsame Referenzkoordinate, lokal 300/5 unverändert. Zwei/zwei/vier
+gepaarte Blöcke ergeben 48 frische Suchaufrufe und 16 verlustbasiert ausgewählte
+Paketausgaben; 32 neue Seeds, die ersten beiden jedes Blocks in beiden Armen.
+Lokal bestehen 3.525 Pythonfälle und zwölf kleine native Kontrollworker samt
+Einzel-/Gesamtverifikation; vollständige Ready-CI und Übernahme bleiben offen.
+Die wissenschaftliche Serie ist noch nicht ausgeführt. Das isoliert die Budgetaufteilung und behauptet
+keinen Sieg von T. Grobe Laufzeitorientierung auf demselben Rechner: 5–6 Stunden.
 Die bisherigen Bestätigungssignale sind damit Entwicklungswissen; eine spätere
 Bestätigung benötigt unberührte Fälle. Kein unmittelbarer Rauschpilot.
 Die bewusste Profilübernahme in den späteren

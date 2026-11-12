@@ -1,6 +1,72 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Zeitkoordinatenserie geprüft, Befund gemischt
+## Aktuell: begrenzten Vergleich zweier Neustartpakete vorbereiten
+
+Stand 12.11.2026, Leitfadenphase 4: PR #84 ist nach erneutem Abgleich von Head,
+Basis, gezieltem KI-Review und erfolgreicher Dokumentations-CI `43206335353`
+als `fbdb45003c777c878f833e08a2287b70daa00485` übernommen. Tatsächlicher
+Mergebaum `ac24e3812079dd97b58e190cbbb47cb3a7aba220` entspricht dem geprüften
+Head-/CI-Baum. Der Zeitkoordinaten-Ausführungsstand bleibt `91d461c`, die
+frühere unabhängige Bestätigung bleibt negativ.
+
+Auf diesem main wird `codex/restart-budget-comparison` bearbeitet; andere
+Worktrees bleiben erhalten. [Plan](restart_budget_plan.md), Konfiguration,
+32 neue Seeds, Eingaben und Erzeuger sind **vor Implementierung** in
+`2cb96a7fef73a05e6c45564292dbce2c3d7f1583` eingefroren. Der ganze NPZ-Bytestrom
+ist identisch zur bisherigen physikalischen Eingabe: zwölf Arrayrollen,
+8.164 Werte, einschließlich des vorher gebundenen Zusatzrasters.
+
+- **Beschlossener Umfang:** 4 × 1.000 gegen 2 × 2.000 auf denselben drei bekannten
+  Entwicklungssignalen, zwei/zwei/vier Blöcke, 48 frische Suchen und 16 Paketausgaben.
+  Gemeinsame ursprüngliche Zeit t, lokal 300/5 und übrige Optionen unverändert.
+  Erste zwei Seeds eines Blocks in beiden Armen, jeweils eigenständige frische
+  Aufrufe. Keine historische Übernahme oder Checkpointfortsetzung.
+- **Vorabprüfung:** Generator bytegleich reproduziert, 32 verschiedene Seeds
+  gegen 1.498 vorhandene positive 31-Bit-Tokens disjunkt; alle Input-/Rasterbits
+  und unveränderter globaler RNG-Zustand geprüft. KI-Methodencheck ohne
+  korrekturbedürftige Befunde; Richtungsregel zusätzlich über alle 291.600
+  zulässigen Zählwertkombinationen vollständig und widerspruchsfrei abgeglichen.
+- **Umsetzung:** begrenzter neuer Runner mit unverändertem nativen Worker,
+  vorhandener Paketwahl, Bewertung, Herkunfts-/Fehler-/Kosten-/Archivverträgen.
+  Jedes Paket liefert genau eine Ausgabe; sämtliche Mitglieder, Ausfälle und
+  Kosten bleiben erhalten. Gemeinsame Entwicklungsentscheidung erst nach
+  vollständiger lesender Gesamtverifikation. Keine 8/10-Grenze und kein Pooling.
+- **Eigene Prüfung auf `75065edb656736fef27273755f33a9b785416d42`:** vollständige
+  Python-Suite **3.525 Fälle bestanden** in 317,80 s, darunter 165 neue gezielte
+  Plan-/Paket-/Bridge-/Veröffentlichungsgegenfälle. Ruff, Formatprüfung von
+  306 Dateien, 104 Markdown-Dateien samt lokalen Linkzielen und Diffprüfung
+  bestanden. **Zwölf kleine native Worker** auf zwei künstlichen Signalen
+  regulär mit je einer beziehungsweise zwei Iterationen abgeschlossen;
+  vier Paketausgaben, beide Einzelverifikationen und gemeinsame lesende
+  Verifikation bestanden. 102 gebundene Quellen einschließlich sämtlicher
+  52 Python-Paketdateien am sauberen Head geprüft. Verlustcallbacks 85.038
+  und 62.355; gemessene Abschnittsaufrufe 612,968 s und 602,772 s.
+  Keine wissenschaftliche Serie ausgeführt.
+- **Gezieltes KI-Code-/Methodenreview:** Head `75065ed` gegen Basis `fbdb450`,
+  keine korrekturbedürftigen Befunde im geprüften Umfang. Sieben zusätzliche
+  Gegenprüfungen bestanden, darunter sämtliche 291.600 zulässigen Zählwert-
+  kombinationen gegen die tatsächliche Richtungsregel, benachbarte Binary64-
+  Verluste bei allen Mitgliedsreihenfolgen, L-Teilausfälle und späte Quellenänderung
+  nach Rückkehr der Veröffentlichung. Ergänzend 60 gültige Requests, 240
+  abgelehnte Mutationen und fünf geladene Bridge-Kontexte geprüft; keine Fits dafür.
+- **CI-Frist:** nur der native Job erhält 90 statt 75 Minuten. Der bisherige
+  Job benötigte zuletzt knapp 56 Minuten, der neue lokale technische Vorlauf
+  zusätzlich gut 20 Minuten ohne seine separaten Verifikationsaufrufe.
+  Die eingefrorenen wissenschaftlichen Fristen und sämtliche alten Prüfblöcke
+  bleiben unverändert. Nach dieser Friständerung zusätzlich alle 211 CI-Fälle,
+  Ruff/Format, Dokumentations- und Diffprüfung bestanden.
+- **Nächster Schritt:** vollständige Ready-CI vor einer Übernahme abschließen.
+  [Manjaro-Befehle](restart_budget.md) für Vorlauf, drei Abschnitte, Fortschritt
+  alle zehn Sekunden, lesende Gesamtverifikation und Archivierung sind
+  dokumentiert. Wissenschaftliche Serie separat nach geprüfter Übernahme;
+  grobe Orientierung 5–6 Stunden, keine Garantie aus gleichen Iterationssummen.
+- **Weiter offen:** unabhängige Bestätigung auf unberührten Fällen, bewusste
+  Profilübernahme in den allgemeinen gewichteten Laufweg und spätere Entscheidung
+  zum Rauschpilot. Original-/Auditarchivablage und unabhängig geprüfte Zweitkopien
+  gemäß [Index](results_index.md); aus dieser Vorbereitung entstehen keine
+  wissenschaftlichen Archive oder Sicherungsnachweise.
+
+## Historisch: Zeitkoordinatenserie geprüft, Befund gemischt
 
 Abgleich vom 12.11.2026, Leitfadenphase 4: [PR #83](https://github.com/craexxn/ringdown-sr/pull/83)
 ist nach vollständiger [Ready-CI 43168577591](https://github.com/craexxn/ringdown-sr/actions/runs/43168577591)

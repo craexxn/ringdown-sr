@@ -18,9 +18,10 @@ festgelegte kombinierte Auswahlstrategie. PR #82 ist samt dieser Ergänzung
 [Zeitkoordinatenvergleich](time_coordinate_results_manjaro_001.md) mit 16 frischen
 Suchen auf main `91d461c` nach PR83 ausgeführt und vollständig lesend bestätigt.
 Der Befund ist gemischt: u=32t verbessert die hohe und verschlechtert die niedrige
-Variante. Für den nächsten separat einzufrierenden Vergleich 4 × 1.000 gegen
-2 × 2.000 bleibt t begründet die gemeinsame Referenzkoordinate; kein Nachweis
-seiner Überlegenheit, siehe datierte Entscheidung in Phase 4. Ausführung dieses
+Variante. PR84 hat diesen Befund als `fbdb450` übernommen. Der Anschlussvergleich
+4 × 1.000 gegen 2 × 2.000 ist inzwischen [vor Implementierung eingefroren](restart_budget_plan.md):
+48 frische Suchen, 16 Paketausgaben und t als gemeinsame Referenzkoordinate;
+kein Nachweis seiner Überlegenheit, siehe datierte Entscheidung in Phase 4. Ausführung dieses
 Anschlussversuchs und spätere Bestätigung bleiben eigene Schritte;
 kein unmittelbarer Rauschpilot. Historische
 Protokolle, Seeds, Eingaben und Entscheidungsregeln bleiben eingefroren. Profilübernahme in
@@ -489,6 +490,32 @@ Plan, neue Seeds, Paarung, verlustbasierte Paketwahl, Ausfälle, Kosten und
 Anschlussregel vor Implementierung einfrieren. Dieser Ergebnisbefund startet
 keine neuen Suchen und verändert weder den eingefrorenen Koordinatenplan noch
 die negative unabhängige Bestätigung.
+
+### Eingefrorener Budgetvergleich nach PR84, 12.11.2026
+
+Der [Plan](restart_budget_plan.md) ist zusammen mit Seeds, Eingaben und Erzeuger
+in `2cb96a7fef73a05e6c45564292dbce2c3d7f1583` vor Implementierung eingefroren.
+R hat vier frische 1.000er-Mitglieder, L zwei frische 2.000er-Mitglieder;
+ursprüngliches t und lokal 300/5 bleiben gleich. Zwei anchor-, zwei niedrige und
+vier hohe Blöcke ergeben 48 Aufrufe, 16 ausgewählte Paketausgaben und 32 verschiedene
+Seeds. Die ersten beiden Seeds jedes Blocks paaren beide Arme, ohne Suchzustände
+weiterzugeben. Die stärkere Vertretung der hohen Variante behält den begrenzten
+Entwicklungsumfang des Koordinatenversuchs bei; keine allgemeine Erfolgsquote.
+
+Die eingefrorene Richtungsregel vergleicht A-Zahl und gemeinsamen Familienerfolg
+je Signal: auf keinem Signal kleiner, mindestens ein gemeinsamer Erfolg größer.
+Reiner A-Gewinn ohne gemeinsamen Gewinn und widersprüchliche Richtungen bleiben
+gemischt; gleiche Zahlen bleiben gleich. Kosten beschreibend erhalten, kein
+nachträglicher Kostengleichstandsentscheid und keine automatische Profilübernahme.
+Alle Pakete/Mitglieder einschließlich Ausfällen behalten Nenner und Kosten.
+Neue Seeds oder dritte Suchinterventionen bis zum gewünschten Erfolg sind
+ausgeschlossen. Nach diesem begrenzten Abgleich folgt die begründete Einordnung
+mit der Betreuung vor unabhängiger Bestätigung auf unberührten Fällen.
+
+[Laufweg und Archivbefehle](restart_budget.md) werden technisch geprüft.
+Zwölf winzige Kontrollworker prüfen beide Mehrmitgliedspakete; die wissenschaftliche
+48-Aufruf-Serie bleibt ein gesonderter Manjaro-Schritt. Keine Änderung älterer
+Pläne, Berichte, Bewertungsverträge oder praktischer Bestätigungsgrenzen.
 
 ## 5. Suchprofil in den tatsächlichen späteren Laufweg übernehmen
 

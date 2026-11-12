@@ -168,7 +168,7 @@ Dies ist eine begrenzte Prüfung, kein vollständiger Markdown-Parser.
 `docs/outer_search_ladder_plan.md`, `docs/transfer_check_plan.md`,
 `docs/seed_driver_crosscheck_plan.md`, `docs/global_restart_comparison_plan.md`
 sowie `docs/iteration_time_budget_plan.md`, `docs/restart_confirmation_plan.md`
-und `docs/time_coordinate_plan.md`
+und `docs/time_coordinate_plan.md`, `docs/restart_budget_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -203,6 +203,25 @@ dieselben beiden künstlichen Achtpunkt-Signale, je eine Suche in t und in u=32t
 jeweils nur zwei äußere Iterationen. Vier frische technische Worker mit nativen
 Quellen-/Aufrufbelegen, physischer Auswertung und lesender Einzel-/Gesamtprüfung.
 Keine wissenschaftliche 16-Aufruf-Serie in Actions; bisherige Prüfblöcke bleiben.
+
+Der Anschlussvergleich der Neustartbudgets ergänzt `scripts/check_restart_budget.py`:
+zwei künstliche Achtpunkt-Signale, jeweils vier R-Worker mit einer und zwei
+L-Worker mit zwei äußeren Iterationen. Zwölf kleine technische Worker und vier
+Paketausgaben prüfen beide Mehrmitgliedsauswahlen, tatsächliche Iterationsenden,
+Herkunft, Kosten und lesende Einzel-/Gesamtverifikation. Die wissenschaftlichen
+48 Aufrufe sind ein separater Manjaro-Schritt. Alle bisherigen Prüfblöcke bleiben;
+keine Änderung der historischen Budgets oder Erweiterung zu wissenschaftlichen
+Serien in Actions.
+
+Die Frist ausschließlich des seriellen `native`-Jobs wird auf 90 Minuten
+gesetzt. Der letzte vollständig geprüfte native PR83-Lauf
+`43168577591` dauerte laut Joblog 55 min 37 s. Der lokale neue Vorlauf benötigte
+bereits 20 min 16 s für seine beiden Abschnittsaufrufe, zuzüglich separater
+Einzel-/Gesamtverifikation. Die bisherige 75-Minuten-Frist lässt für die zwölf
+zusätzlichen frischen Kontrollworker damit zu wenig Reserve; lokale Zeiten
+sind dabei keine Garantie der Actions-Laufzeit.
+`prepare` und Abschluss behalten je 75 Minuten; keine Änderung der eingefrorenen
+wissenschaftlichen Worker-/Abschnittsfristen und keine ausgelassenen Prüfblöcke.
 
 Auch `docs/supplemental_assessment.md` erhält die volle CI: Der lesende
 Bewertungsexport bindet diesen Versionsvertrag an seinen Softwarestand.

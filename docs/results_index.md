@@ -360,6 +360,21 @@ Original und Audit liegen als geprüfte Arbeitskopien vor. Gemeinsame dauerhafte
 Ablage, unabhängige Zweitkopien und SHA-256-Prüfung beider Speicherziele bleiben
 ausdrücklich offen. Keine verpflichtende GitHub-Upload-Aufgabe.
 
+### Vorbereiteter Vergleich zweier Neustartpakete
+
+Der [begrenzte Budgetvergleich](restart_budget.md) nach PR84 ist vorbereitet,
+noch nicht wissenschaftlich ausgeführt. [Plan](restart_budget_plan.md), Seeds
+und byteidentische physische Eingaben sind vor Implementierung eingefroren.
+48 neue Suchaufrufe und 16 Paketausgaben vorgesehen. Ein lokaler technischer
+Vorlauf auf `75065ed` mit zwölf winzigen Workern, vier Paketausgaben und
+Einzel-/Gesamtverifikation ist bestanden; kein wissenschaftlicher Manjaro-Nachweis.
+Die im Laufweg genannten 001-IDs sind
+vorbereitete Befehle, keine belegten wissenschaftlichen Archive. Nach tatsächlicher
+Ausführung die drei Abschnitte, ihre benachbarten Aufrufmessungen, technische
+Einzel-/Gesamtverifikationen und wissenschaftliche Gesamtverifikation gemeinsam
+zuordnen; Ausführungscommit, Archivhash und tatsächliche Sicherung nachtragen.
+Die Vorbereitung behauptet keine neue Archivkopie und erzeugt keine Uploadpflicht.
+
 ### Offene Sicherungsschritte
 
 - Die namentlich und mit Hash belegten Archive und empfangenen ZIP-Pakete aus
