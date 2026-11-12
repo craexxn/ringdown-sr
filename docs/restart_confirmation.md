@@ -1,12 +1,17 @@
 # Laufweg: unabhängige Bestätigung der Neustartstrategie
 
-Stand: 09.11.2026; [eingefrorenes Protokoll](restart_confirmation_plan.md),
+Stand: 12.11.2026; [eingefrorenes Protokoll](restart_confirmation_plan.md),
 [Konfiguration mit allen Seeds](../data/restart_confirmation_protocol.json),
 [zentraler Leitfaden](ringdown_recovery_roadmap.md). 4 × 500 gegen frische
 1 × 2.000, lokales Profil 300/5, drei Signale mit je zehn neuen Seedblöcken.
-150 Suchaufrufe in drei getrennten Abschnitten. Keine wissenschaftliche
-Ausführung durch Implementierung oder CI belegt. Technischer Prüfstand und
-Übernahme im [Fortsetzungsstand](representation_implementation_status.md).
+150 Suchaufrufe in drei getrennten Abschnitten. Der
+[Manjaro-Lauf 001](restart_confirmation_results_manjaro_001.md) einschließlich
+technischem Vorlauf ist auf `c3da991` abgeschlossen und lesend bestätigt.
+R erreicht 8/10, 10/10 und 4/10 gemeinsame A-/Originalfamilienerfolge;
+die vorab beschlossene Übergangsgrenze ist verfehlt. Die folgenden Befehle
+dokumentieren den ausgeführten Laufweg, keine Wiederholungsfreigabe.
+Technischer Prüfstand und Übernahme im
+[Fortsetzungsstand](representation_implementation_status.md).
 
 ## Vorbereitung nach Übernahme der Implementierung
 
