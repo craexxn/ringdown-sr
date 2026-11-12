@@ -1,6 +1,44 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Bestätigungsserie geprüft, praktische Grenze verfehlt
+## Aktuell: begrenzter Zeitkoordinatenvergleich in technischer Prüfung
+
+Stand 12.11.2026, Leitfadenphase 4: PR #82 ist einschließlich retrospektiver
+Kombinationsdiagnose als `94e15c5bb782028e3ac3d89252185e2d2e03d655` übernommen.
+Head `13271fa`, Basis `c3da991` und Dokumentations-CI `43165368707` vor Übernahme
+abgeglichen; Mergebaum `357371dc0dece717ddb2a1014df379ad6b99d24f` entspricht dem
+geprüften CI-Baum. Die zusätzliche KI-Gegenprüfung bestätigt 9/10, 10/10, 7/10
+gemeinsame Erfolge der nachträglichen Vereinigung, keine neue Auswahlstrategie.
+Die negative ursprüngliche Bestätigung bleibt erhalten.
+
+Auf diesem main entsteht `codex/time-coordinate-comparison`, andere Worktrees
+bleiben erhalten. [Plan](time_coordinate_plan.md), acht disjunkte Seeds,
+unveränderte physische Eingaben und exakt gedehnte Zeitachsen sind vor der
+Implementierung in `a77ee404d5d226544c6643d8500a9415631d9e16` eingefroren.
+Generator und erneuter Bytevergleich bestehen; alle zwölf Originalarrayrollen
+bleiben unverändert, 2.041 Koordinatenwerte exakt-rational geprüft und bitgleich
+zurückgerechnet. Gezielter KI-Methodencheck fand im Entwurf einen Einheitenwiderspruch:
+Der unveränderte Worker setzt `X_units=["s"]`. Vor Einfrieren korrigiert auf
+dimensionslosen Faktor 32 und gedehnte Zeit weiterhin in Sekunden; endgültige
+Passagen gegengeprüft. Kein zusätzlicher Eingriff in den nativen Suchpfad.
+
+- **Umfang:** 16 frische Suchen, 2/2/4 gepaarte Blöcke auf anchor/variant_low/variant_high,
+  jeweils 1 × 2.000 in T und U, lokal 300/5. Die drei Signale gelten künftig als
+  Entwicklungswissen, keine erneute unabhängige Bestätigung durch neue Seeds.
+- **Umsetzung:** eigener begrenzter Runner mit vorhandenen Worker-, Quellen-,
+  Fehler-, Kosten- und Veröffentlichungsverträgen; physische Modelle getrennt
+  von ursprünglichem Baum und nativer Auswahl. Beide Suchdateien vor erstem Fit
+  gebunden. Kein Tuning historischer Erkenner; zu große Kompositionen bleiben
+  ausdrücklich ungeklärt und werden gesondert gezählt.
+- **Prüfung:** technische Implementierung und lokale Gegenprüfungen in Arbeit;
+  vier kleine native Worker und lesende Gesamtprüfung vorgesehen. Vollständige
+  Ready-CI vor Übernahme erforderlich. Keine wissenschaftliche Serie ausgeführt.
+- **Nächster Schritt:** technische Prüfung abschließen und den
+  [Manjaro-Laufweg](time_coordinate.md) bereitstellen. Wissenschaftliche Ausführung
+  separat nach Übernahme; erst danach eigener eingefrorener Vergleich 4 × 1.000
+  gegen 2 × 2.000, dessen Koordinate anhand des Entwicklungsbefunds festzulegen ist.
+  Keine neuen Archive oder Sicherungskopien allein durch diese Vorbereitung.
+
+## Historisch: Bestätigungsserie geprüft, praktische Grenze verfehlt
 
 Abgleich vom 12.11.2026, Leitfadenphase 6: Remote-main und tatsächlicher sauberer
 Ausführungsstand sind `c3da991f389a4ec55206539ebe02a9648d4474b8` nach PR81,

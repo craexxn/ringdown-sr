@@ -5,8 +5,9 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 12.11.2026; Ausführungs- und Prüfstand auf main
-`c3da991` nach ausdrücklich
+Fortsetzungsstand: 12.11.2026; aktuelle main-Basis `94e15c5` nach PR #82.
+Der wissenschaftliche Ausführungs- und lesende Prüfstand bleibt `c3da991`
+nach PR #81. Die bestehenden Laufwege entstanden nach ausdrücklich
 freigegebener Übernahme von [PR #73](https://github.com/craexxn/ringdown-sr/pull/73)
 und [PR #74](https://github.com/craexxn/ringdown-sr/pull/74), anschließend
 [PR #75](https://github.com/craexxn/ringdown-sr/pull/75) und
@@ -70,9 +71,15 @@ Die Wirkung ist signalabhängig; kein allgemeiner Neustartvorteil und keine
 gepoolte Erfolgsquote. Auch die [nachträgliche Vereinigung beider Arme](docs/restart_confirmation_results_manjaro_001.md#nachträgliche-kombination-beider-arme)
 erreicht nur **9/10, 10/10, 7/10** gemeinsame Erfolge; sie ist keine geprüfte
 kombinierte Auswahlstrategie und ändert den negativen Befund nicht.
-Nächster Schritt: Befund und Forschungsanspruch gemäß
-Leitfaden mit der Betreuung einordnen, keine automatische weitere Suchserie
-oder unmittelbarer Rauschpilot. Die bewusste Profilübernahme in den späteren
+PR #82 ist einschließlich dieser Diagnose nach grüner Dokumentations-CI übernommen.
+Als begrenzter nächster Entwicklungsvergleich ist [t gegen u=32t](docs/time_coordinate.md)
+mit 16 frischen 2.000er-Suchen beschlossen und vor Implementierung eingefroren:
+zwei gepaarte Blöcke auf Anker und niedriger Variante, vier auf der hohen Variante.
+Die Implementierung wird technisch geprüft; wissenschaftlich noch nicht ausgeführt.
+Danach folgt der separat zu protokollierende Vergleich 4 × 1.000 gegen 2 × 2.000.
+Die bisherigen Bestätigungssignale sind damit Entwicklungswissen; eine spätere
+Bestätigung benötigt unberührte Fälle. Kein unmittelbarer Rauschpilot.
+Die bewusste Profilübernahme in den späteren
 allgemeinen gewichteten Laufweg bleibt gesondert offen.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater

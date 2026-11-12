@@ -324,6 +324,16 @@ jobs:
             exit 1
           fi
 
+      - name: Verify time coordinates on two tiny signals and four workers
+        run: |
+          if ! env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/check_time_coordinate.py \
+            --output results/ci-time-coordinate; then
+            find results -path '*ci-time-coordinate*' -type f -name '*.log' -print -exec tail -n 100 {} \;
+            exit 1
+          fi
+
   technical-checks:
     name: ${{ github.event_name == 'workflow_dispatch' && 'manual-technical-checks' || 'technical-checks' }}
     needs: [prepare, native]

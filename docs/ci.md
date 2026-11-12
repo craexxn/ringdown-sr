@@ -167,7 +167,8 @@ Dies ist eine begrenzte Prüfung, kein vollständiger Markdown-Parser.
 `docs/search_duration_prediction_plan.md`, `docs/local_optimizer_plan.md`
 `docs/outer_search_ladder_plan.md`, `docs/transfer_check_plan.md`,
 `docs/seed_driver_crosscheck_plan.md`, `docs/global_restart_comparison_plan.md`
-sowie `docs/iteration_time_budget_plan.md` und `docs/restart_confirmation_plan.md`
+sowie `docs/iteration_time_budget_plan.md`, `docs/restart_confirmation_plan.md`
+und `docs/time_coordinate_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -196,6 +197,12 @@ Sechs frische technische Worker, tatsächliche Thread-/Aufrufbelege sowie
 lesende Einzel- und Gesamtverifikation. Die wissenschaftlichen 150 Aufrufe
 bleiben ausschließlich ein separater Manjaro-Schritt; bestehende Prüfblöcke
 werden nicht ersetzt. Der neue eingefrorene Plan erhält die volle CI.
+
+Der begrenzte Zeitkoordinatenvergleich ergänzt `scripts/check_time_coordinate.py`:
+dieselben beiden künstlichen Achtpunkt-Signale, je eine Suche in t und in u=32t,
+jeweils nur zwei äußere Iterationen. Vier frische technische Worker mit nativen
+Quellen-/Aufrufbelegen, physischer Auswertung und lesender Einzel-/Gesamtprüfung.
+Keine wissenschaftliche 16-Aufruf-Serie in Actions; bisherige Prüfblöcke bleiben.
 
 Auch `docs/supplemental_assessment.md` erhält die volle CI: Der lesende
 Bewertungsexport bindet diesen Versionsvertrag an seinen Softwarestand.
