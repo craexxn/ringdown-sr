@@ -313,6 +313,18 @@ keine neue Serie und keine geprüfte kombinierte Auswahlmethode. Original und Au
 sind Arbeitskopien; gemeinsame Ablage und unabhängig SHA-256-geprüfte Zweitkopien
 beider Pakete bleiben gemäß [Archivregel](results_archiving.md) offen.
 
+### Vorbereiteter Zeitkoordinatenvergleich
+
+Stand 12.11.2026: [Protokoll](time_coordinate_plan.md) vor Implementierung
+eingefroren, [Laufweg](time_coordinate.md) lokal mit vier winzigen nativen Workern
+und lesender Verifikation geprüft; vollständige CI und Übernahme noch offen. 16 neue
+Entwicklungssuchen vorgesehen; wissenschaftliche Ausführung und Originalarchiv
+noch nicht vorhanden. Die dort genannten 001-IDs sind vorbereitete Befehle,
+kein Ausführungs- oder Sicherungsnachweis. Nach der tatsächlichen Ausführung
+Signalabschnitte, benachbarte Aufrufmessungen, technische Belege und lesende
+Gesamtverifikation gemeinsam zuordnen; Archivhash, Ablage und geprüfte Zweitkopie
+hier nachführen. Keine Pflicht zum GitHub-Upload.
+
 ### Offene Sicherungsschritte
 
 - Die namentlich und mit Hash belegten Archive und empfangenen ZIP-Pakete aus

@@ -1,6 +1,57 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Bestätigungsserie geprüft, praktische Grenze verfehlt
+## Aktuell: Zeitkoordinatenvergleich lokal geprüft, vollständige CI ausstehend
+
+Stand 12.11.2026, Leitfadenphase 4: PR #82 ist einschließlich retrospektiver
+Kombinationsdiagnose als `94e15c5bb782028e3ac3d89252185e2d2e03d655` übernommen.
+Head `13271fa`, Basis `c3da991` und Dokumentations-CI `43165368707` vor Übernahme
+abgeglichen; Mergebaum `357371dc0dece717ddb2a1014df379ad6b99d24f` entspricht dem
+geprüften CI-Baum. Die zusätzliche KI-Gegenprüfung bestätigt 9/10, 10/10, 7/10
+gemeinsame Erfolge der nachträglichen Vereinigung, keine neue Auswahlstrategie.
+Die negative ursprüngliche Bestätigung bleibt erhalten.
+
+Auf diesem main entsteht `codex/time-coordinate-comparison`, andere Worktrees
+bleiben erhalten. [Plan](time_coordinate_plan.md), acht disjunkte Seeds,
+unveränderte physische Eingaben und exakt gedehnte Zeitachsen sind vor der
+Implementierung in `a77ee404d5d226544c6643d8500a9415631d9e16` eingefroren.
+Generator und erneuter Bytevergleich bestehen; alle zwölf Originalarrayrollen
+bleiben unverändert, 2.041 Koordinatenwerte exakt-rational geprüft und bitgleich
+zurückgerechnet. Gezielter KI-Methodencheck fand im Entwurf einen Einheitenwiderspruch:
+Der unveränderte Worker setzt `X_units=["s"]`. Vor Einfrieren korrigiert auf
+dimensionslosen Faktor 32 und gedehnte Zeit weiterhin in Sekunden; endgültige
+Passagen gegengeprüft. Kein zusätzlicher Eingriff in den nativen Suchpfad.
+
+- **Umfang:** 16 frische Suchen, 2/2/4 gepaarte Blöcke auf anchor/variant_low/variant_high,
+  jeweils 1 × 2.000 in T und U, lokal 300/5. Die drei Signale gelten künftig als
+  Entwicklungswissen, keine erneute unabhängige Bestätigung durch neue Seeds.
+- **Umsetzung:** eigener begrenzter Runner mit vorhandenen Worker-, Quellen-,
+  Fehler-, Kosten- und Veröffentlichungsverträgen; physische Modelle getrennt
+  von ursprünglichem Baum und nativer Auswahl. Beide Suchdateien vor erstem Fit
+  gebunden. Kein Tuning historischer Erkenner; zu große Kompositionen bleiben
+  ausdrücklich ungeklärt und werden gesondert gezählt.
+- **Eigene Prüfung auf `0af8c83edb3ef1af2d7f3b8793d44517f69cbaa5`:**
+  3.359 Repository-Pythonfälle bestanden, darunter 137 gezielte neue Gegenfälle;
+  Ruff, Format, 101 Markdown-Dateien samt lokalen Linkzielen und Diffprüfung
+  bestanden. Vier kleine native Worker auf zwei künstlichen Signalen regulär
+  mit je zwei Iterationen abgeschlossen; beide Einzelverifikationen und
+  gemeinsame lesende Verifikation bestanden. Keine wissenschaftliche Serie.
+  Der erste Gesamttest vor dem Implementierungscommit erkannte die noch nicht
+  in Git gebundenen neuen Paketquellen und wurde abgebrochen; nach Commit
+  vollständiger Erfolg ohne gelockerten Vertrag.
+- **Separates KI-Review:** vollständiger neuer Laufweg gegen main `94e15c5`,
+  keine korrekturbedürftigen Befunde im geprüften Umfang. 137 gezielte Tests
+  separat bestanden; zusätzlich T-Auswertung für 110 historische Kandidaten
+  aus neun Originalfronten mit unverändertem Bewertungsweg abgeglichen:
+  Identität, Kurven-/Zusatzrasterfehler sowie Struktur-/Restbefunde gleich,
+  ausschließlich neue ausdrückliche Modellbindungen ergänzt. Keine Fits dafür.
+- **Nächster Schritt:** vollständige Ready-CI von
+  [PR #83](https://github.com/craexxn/ringdown-sr/pull/83) vor Übernahme abschließen;
+  [Manjaro-Laufweg](time_coordinate.md) mit konkreten Befehlen vorbereitet. Wissenschaftliche Ausführung
+  separat nach Übernahme; erst danach eigener eingefrorener Vergleich 4 × 1.000
+  gegen 2 × 2.000, dessen Koordinate anhand des Entwicklungsbefunds festzulegen ist.
+  Keine neuen Archive oder Sicherungskopien allein durch diese Vorbereitung.
+
+## Historisch: Bestätigungsserie geprüft, praktische Grenze verfehlt
 
 Abgleich vom 12.11.2026, Leitfadenphase 6: Remote-main und tatsächlicher sauberer
 Ausführungsstand sind `c3da991f389a4ec55206539ebe02a9648d4474b8` nach PR81,

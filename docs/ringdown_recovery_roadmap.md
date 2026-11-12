@@ -13,10 +13,13 @@ lesend geprüft. 150 frische Suchen; R erreicht 8/10, 10/10 und 4/10 gemeinsame
 A-/Originalfamilienerfolge, I 4/10, 5/10 und 7/10. Damit ist die vorab beschlossene
 8/10-Grenze je Signal verfehlt. Auch die nachträgliche Vereinigung beider Arme
 erreicht nur 9/10, 10/10 und 7/10 gemeinsame Erfolge; sie belegt keine vorab
-festgelegte kombinierte Auswahlstrategie. Nächster Schritt ist die Einordnung des Befunds
-und Forschungsanspruchs mit der Betreuung gemäß der bestehenden Zyklusgrenze;
-keine automatische neue Suchserie oder unmittelbarer Rauschpilot. Protokoll,
-Seeds, Eingaben und Entscheidungsregeln bleiben eingefroren. Profilübernahme in
+festgelegte kombinierte Auswahlstrategie. PR #82 ist samt dieser Ergänzung
+übernommen. Planentscheidung vom 12.11.2026: Die bereits vorgesehene zweite
+Intervention wird als begrenzter Zeitkoordinatenvergleich mit 16 frischen Suchen
+konkretisiert, siehe Phase 4. Danach ist ein separat einzufrierender Vergleich
+4 × 1.000 gegen 2 × 2.000 vorgesehen. Wissenschaftliche Ausführung und spätere
+Bestätigung bleiben eigene Schritte; kein unmittelbarer Rauschpilot. Historische
+Protokolle, Seeds, Eingaben und Entscheidungsregeln bleiben eingefroren. Profilübernahme in
 den allgemeinen gewichteten Laufweg bleibt vor einem späteren Rauschpilot
 gesondert zu prüfen. Die folgenden datierten Einordnungen erhalten ihre Historie.
 
@@ -422,6 +425,40 @@ Vorerst unverändert lassen:
 Kein Ringdown-spezifisches Vortraining und kein Template als stillschweigender
 Ersatz für freie Formelfindung. Stärkeres Vorwissen wäre eine eigene Methode.
 
+### Begrenzte Konkretisierung nach PR82, beschlossen am 12.11.2026
+
+Auf die negative Bestätigung folgt der vor Implementierung eingefrorene
+[Zeitkoordinatenplan](time_coordinate_plan.md), Umsetzung und Befehle im
+[Laufweg](time_coordinate.md). Acht neue gepaarte Entwicklungsblöcke:
+zwei anchor, zwei variant_low, vier variant_high. Je Block frische 1 × 2.000 in
+t und 1 × 2.000 in u=32t, insgesamt 16 Suchen. Faktor 32 aus dem Messfenster,
+beide Zeitkoordinaten in Sekunden; keine Ableitung aus wahren Signalparametern.
+300 lokale Optimiereriterationen plus fünf zusätzliche Neustarts, Grammatik,
+Häufigkeitsschalter, Vereinfachungsregel und alle übrigen Optionen unverändert.
+Keine historischen Übernahmen oder Checkpointfortsetzungen.
+
+Die Literatur und bisherigen Befunde begründen diese Frage, nicht einen Vorteil
+der Skalierung. Die eingefrorene Richtungsregel vergleicht beide Endpunkte
+pro Signal, lässt widersprüchliche Ergebnisse offen und verändert keine 8/10-Grenze.
+Originalauswahl, physische Bewertung q(32t), Kosten und alle Ausfälle erhalten.
+Das Zusatzraster bleibt diagnostisch; Parameterübereinstimmung bleibt `not_assessed`.
+Bei zu großem physischem Kompositionsbaum greifen weiterhin die bestehenden
+Beweisgrenzen; solche ungeklärten Fälle gesondert von Kurvenfehlern zählen.
+
+Anschließend **4 × 1.000 gegen 2 × 2.000** mit derselben ausdrücklich gewählten
+Koordinate und lokal 300/5 vergleichen: je 4.000 äußere Iterationen, nicht
+notwendig gleiche Kosten. Dies ist ein begrenzter Folgeabgleich der Budgetaufteilung,
+kein offener dritter Suchhebel. Zuvor eigene Seeds, Paarung, verlustbasierte
+Paketwahl, Ausfall-/Kostenregeln und Anschlussentscheidung einfrieren; keine
+automatische Ausführung oder Sprung zu 4 × 2.000. Bei gemischtem Koordinatenbefund
+die Entscheidung dafür ausdrücklich begründen.
+
+Die bisherige Bestätigung bleibt als negativer historischer Befund erhalten.
+Ihre Signale gelten ab jetzt als Entwicklungswissen; spätere unabhängige
+Bestätigung braucht unberührte Fälle. Die Grenze von höchstens zwei begründeten
+Suchinterventionen und die anschließende Einordnung mit der Betreuung bleiben
+bestehen. Keine weiteren Suchhebel oder Seeds bis zum gewünschten Erfolg anhängen.
+
 ## 5. Suchprofil in den tatsächlichen späteren Laufweg übernehmen
 
 Beim Codeabgleich auf main 46da82ec7bfe24614e0b3fc3203258535343d848 verwendete
@@ -501,7 +538,8 @@ keine vollständige Evolutionsgeschichte und identifiziert noch keine konkrete
 Suchursache. Die drei Signale erlauben keine isolierte Erklärung durch Frequenz
 oder einen anderen gleichzeitig veränderten Parameter.
 
-Gemäß eingefrorenem Plan jetzt den Befund und Forschungsanspruch mit der
+Historische Einordnung vor der oben datierten Konkretisierung von Phase 4:
+Gemäß eingefrorenem Plan den Befund und Forschungsanspruch mit der
 Betreuung einordnen: Grenzen freier SR oder stärkeres Vorwissen als ausdrücklich
 benannte Variante. Die Grenze nicht nachträglich lockern, keinen jeweils besten
 Arm als Ersatz auswählen und keine zusätzlichen Seeds bis zum Erfolg anhängen.
