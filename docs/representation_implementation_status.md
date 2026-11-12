@@ -31,11 +31,31 @@ ist identisch zur bisherigen physikalischen Eingabe: zwölf Arrayrollen,
   Jedes Paket liefert genau eine Ausgabe; sämtliche Mitglieder, Ausfälle und
   Kosten bleiben erhalten. Gemeinsame Entwicklungsentscheidung erst nach
   vollständiger lesender Gesamtverifikation. Keine 8/10-Grenze und kein Pooling.
-- **Technische Abnahme:** gezielte Python-Gegenprüfungen, vollständige Suite,
-  zwölf winzige native Worker auf zwei künstlichen Signalen sowie vollständige
-  Ready-CI werden vor einer Übernahme geprüft. Tatsächliche Nachweise folgen
-  nach Abschluss; ein eingefrorener Plan ist kein Test- oder Ausführungsnachweis.
-- **Nächster Schritt:** technische Abnahme des neuen Laufwegs abschließen.
+- **Eigene Prüfung auf `75065edb656736fef27273755f33a9b785416d42`:** vollständige
+  Python-Suite **3.525 Fälle bestanden** in 317,80 s, darunter 165 neue gezielte
+  Plan-/Paket-/Bridge-/Veröffentlichungsgegenfälle. Ruff, Formatprüfung von
+  306 Dateien, 104 Markdown-Dateien samt lokalen Linkzielen und Diffprüfung
+  bestanden. **Zwölf kleine native Worker** auf zwei künstlichen Signalen
+  regulär mit je einer beziehungsweise zwei Iterationen abgeschlossen;
+  vier Paketausgaben, beide Einzelverifikationen und gemeinsame lesende
+  Verifikation bestanden. 102 gebundene Quellen einschließlich sämtlicher
+  52 Python-Paketdateien am sauberen Head geprüft. Verlustcallbacks 85.038
+  und 62.355; gemessene Abschnittsaufrufe 612,968 s und 602,772 s.
+  Keine wissenschaftliche Serie ausgeführt.
+- **Gezieltes KI-Code-/Methodenreview:** Head `75065ed` gegen Basis `fbdb450`,
+  keine korrekturbedürftigen Befunde im geprüften Umfang. Sieben zusätzliche
+  Gegenprüfungen bestanden, darunter sämtliche 291.600 zulässigen Zählwert-
+  kombinationen gegen die tatsächliche Richtungsregel, benachbarte Binary64-
+  Verluste bei allen Mitgliedsreihenfolgen, L-Teilausfälle und späte Quellenänderung
+  nach Rückkehr der Veröffentlichung. Ergänzend 60 gültige Requests, 240
+  abgelehnte Mutationen und fünf geladene Bridge-Kontexte geprüft; keine Fits dafür.
+- **CI-Frist:** nur der native Job erhält 90 statt 75 Minuten. Der bisherige
+  Job benötigte zuletzt knapp 56 Minuten, der neue lokale technische Vorlauf
+  zusätzlich gut 20 Minuten ohne seine separaten Verifikationsaufrufe.
+  Die eingefrorenen wissenschaftlichen Fristen und sämtliche alten Prüfblöcke
+  bleiben unverändert. Nach dieser Friständerung zusätzlich alle 211 CI-Fälle,
+  Ruff/Format, Dokumentations- und Diffprüfung bestanden.
+- **Nächster Schritt:** vollständige Ready-CI vor einer Übernahme abschließen.
   [Manjaro-Befehle](restart_budget.md) für Vorlauf, drei Abschnitte, Fortschritt
   alle zehn Sekunden, lesende Gesamtverifikation und Archivierung sind
   dokumentiert. Wissenschaftliche Serie separat nach geprüfter Übernahme;

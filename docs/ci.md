@@ -213,6 +213,16 @@ Herkunft, Kosten und lesende Einzel-/Gesamtverifikation. Die wissenschaftlichen
 keine Änderung der historischen Budgets oder Erweiterung zu wissenschaftlichen
 Serien in Actions.
 
+Die Frist ausschließlich des seriellen `native`-Jobs wird auf 90 Minuten
+gesetzt. Der letzte vollständig geprüfte native PR83-Lauf
+`43168577591` dauerte laut Joblog 55 min 37 s. Der lokale neue Vorlauf benötigte
+bereits 20 min 16 s für seine beiden Abschnittsaufrufe, zuzüglich separater
+Einzel-/Gesamtverifikation. Die bisherige 75-Minuten-Frist lässt für die zwölf
+zusätzlichen frischen Kontrollworker damit zu wenig Reserve; lokale Zeiten
+sind dabei keine Garantie der Actions-Laufzeit.
+`prepare` und Abschluss behalten je 75 Minuten; keine Änderung der eingefrorenen
+wissenschaftlichen Worker-/Abschnittsfristen und keine ausgelassenen Prüfblöcke.
+
 Auch `docs/supplemental_assessment.md` erhält die volle CI: Der lesende
 Bewertungsexport bindet diesen Versionsvertrag an seinen Softwarestand.
 Dies gilt ebenso für `docs/supplemental_structure.md`, den gebundenen

@@ -92,8 +92,9 @@ ist vor Implementierung [separat eingefroren](docs/restart_budget_plan.md):
 T bleibt gemeinsame Referenzkoordinate, lokal 300/5 unverändert. Zwei/zwei/vier
 gepaarte Blöcke ergeben 48 frische Suchaufrufe und 16 verlustbasiert ausgewählte
 Paketausgaben; 32 neue Seeds, die ersten beiden jedes Blocks in beiden Armen.
-Der Laufweg befindet sich in technischer Prüfung; die wissenschaftliche Serie
-ist noch nicht ausgeführt. Das isoliert die Budgetaufteilung und behauptet
+Lokal bestehen 3.525 Pythonfälle und zwölf kleine native Kontrollworker samt
+Einzel-/Gesamtverifikation; vollständige Ready-CI und Übernahme bleiben offen.
+Die wissenschaftliche Serie ist noch nicht ausgeführt. Das isoliert die Budgetaufteilung und behauptet
 keinen Sieg von T. Grobe Laufzeitorientierung auf demselben Rechner: 5–6 Stunden.
 Die bisherigen Bestätigungssignale sind damit Entwicklungswissen; eine spätere
 Bestätigung benötigt unberührte Fälle. Kein unmittelbarer Rauschpilot.
