@@ -1,6 +1,6 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: begrenzter Zeitkoordinatenvergleich in technischer Prüfung
+## Aktuell: Zeitkoordinatenvergleich lokal geprüft, vollständige CI ausstehend
 
 Stand 12.11.2026, Leitfadenphase 4: PR #82 ist einschließlich retrospektiver
 Kombinationsdiagnose als `94e15c5bb782028e3ac3d89252185e2d2e03d655` übernommen.
@@ -29,11 +29,24 @@ Passagen gegengeprüft. Kein zusätzlicher Eingriff in den nativen Suchpfad.
   von ursprünglichem Baum und nativer Auswahl. Beide Suchdateien vor erstem Fit
   gebunden. Kein Tuning historischer Erkenner; zu große Kompositionen bleiben
   ausdrücklich ungeklärt und werden gesondert gezählt.
-- **Prüfung:** technische Implementierung und lokale Gegenprüfungen in Arbeit;
-  vier kleine native Worker und lesende Gesamtprüfung vorgesehen. Vollständige
-  Ready-CI vor Übernahme erforderlich. Keine wissenschaftliche Serie ausgeführt.
-- **Nächster Schritt:** technische Prüfung abschließen und den
-  [Manjaro-Laufweg](time_coordinate.md) bereitstellen. Wissenschaftliche Ausführung
+- **Eigene Prüfung auf `0af8c83edb3ef1af2d7f3b8793d44517f69cbaa5`:**
+  3.359 Repository-Pythonfälle bestanden, darunter 137 gezielte neue Gegenfälle;
+  Ruff, Format, 101 Markdown-Dateien samt lokalen Linkzielen und Diffprüfung
+  bestanden. Vier kleine native Worker auf zwei künstlichen Signalen regulär
+  mit je zwei Iterationen abgeschlossen; beide Einzelverifikationen und
+  gemeinsame lesende Verifikation bestanden. Keine wissenschaftliche Serie.
+  Der erste Gesamttest vor dem Implementierungscommit erkannte die noch nicht
+  in Git gebundenen neuen Paketquellen und wurde abgebrochen; nach Commit
+  vollständiger Erfolg ohne gelockerten Vertrag.
+- **Separates KI-Review:** vollständiger neuer Laufweg gegen main `94e15c5`,
+  keine korrekturbedürftigen Befunde im geprüften Umfang. 137 gezielte Tests
+  separat bestanden; zusätzlich T-Auswertung für 110 historische Kandidaten
+  aus neun Originalfronten mit unverändertem Bewertungsweg abgeglichen:
+  Identität, Kurven-/Zusatzrasterfehler sowie Struktur-/Restbefunde gleich,
+  ausschließlich neue ausdrückliche Modellbindungen ergänzt. Keine Fits dafür.
+- **Nächster Schritt:** vollständige Ready-CI von
+  [PR #83](https://github.com/craexxn/ringdown-sr/pull/83) vor Übernahme abschließen;
+  [Manjaro-Laufweg](time_coordinate.md) mit konkreten Befehlen vorbereitet. Wissenschaftliche Ausführung
   separat nach Übernahme; erst danach eigener eingefrorener Vergleich 4 × 1.000
   gegen 2 × 2.000, dessen Koordinate anhand des Entwicklungsbefunds festzulegen ist.
   Keine neuen Archive oder Sicherungskopien allein durch diese Vorbereitung.

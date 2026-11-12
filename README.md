@@ -75,7 +75,9 @@ PR #82 ist einschließlich dieser Diagnose nach grüner Dokumentations-CI übern
 Als begrenzter nächster Entwicklungsvergleich ist [t gegen u=32t](docs/time_coordinate.md)
 mit 16 frischen 2.000er-Suchen beschlossen und vor Implementierung eingefroren:
 zwei gepaarte Blöcke auf Anker und niedriger Variante, vier auf der hohen Variante.
-Die Implementierung wird technisch geprüft; wissenschaftlich noch nicht ausgeführt.
+Lokal bestehen 3.359 Pythonfälle und vier kleine native Suchprüfungen samt
+lesender Verifikation. PR #83 benötigt noch die vollständige CI und Übernahme;
+wissenschaftlich ist die Serie noch nicht ausgeführt.
 Danach folgt der separat zu protokollierende Vergleich 4 × 1.000 gegen 2 × 2.000.
 Die bisherigen Bestätigungssignale sind damit Entwicklungswissen; eine spätere
 Bestätigung benötigt unberührte Fälle. Kein unmittelbarer Rauschpilot.
