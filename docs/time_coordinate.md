@@ -6,19 +6,33 @@ Stand 12.11.2026, [Leitfadenphase 4](ringdown_recovery_roadmap.md),
 16 frische Suchen: zwei gepaarte Blöcke auf anchor, zwei auf variant_low und
 vier auf variant_high. T verwendet t, U die gedehnte Zeit u=32t; beide bei
 1 × 2.000 und lokal 300 Optimiereriterationen plus fünf zusätzliche Neustarts.
-Implementierung und technische Prüfbelege im
-[Fortsetzungsstand](representation_implementation_status.md) sind von der
-noch nicht ausgeführten wissenschaftlichen Serie getrennt.
+PR #83 ist nach vollständiger technischer CI als
+`91d461cf9c08c07b7fdb8ddae5ad4b207135bc67` übernommen. Die wissenschaftliche
+[Serie 001](time_coordinate_results_manjaro_001.md) und der technische
+Manjaro-Vorlauf sind inzwischen ausgeführt und vollständig lesend bestätigt.
+Implementierung, technische Prüfungen, wissenschaftliche Ausführung und
+Archivierung bleiben im [Fortsetzungsstand](representation_implementation_status.md)
+und Ergebnisbericht getrennt zugeordnet.
 
 Die drei Signale sind jetzt bekannte Entwicklungsfälle. Die ursprüngliche
 negative Bestätigung aus PR82 bleibt erhalten. Dieser Lauf hat keine 8/10-Grenze
 und entscheidet weder über einen Rauschpilot noch über physikalische Parameter.
-Der spätere Vergleich 4 × 1.000 gegen 2 × 2.000 erhält nach diesem Befund einen
-eigenen eingefrorenen Plan; seine Suchen sind hier nicht enthalten.
+Der Befund ist `mixed`: U gewinnt A-Ausgaben auf der hohen Variante und verliert
+eine auf der niedrigen; sechs U-Familiennachweise bleiben wegen der unveränderten
+Kompositionsgrenze ungeklärt. Für die Vorbereitung des getrennten Vergleichs
+4 × 1.000 gegen 2 × 2.000 bleibt T die gemeinsame Koordinate beider Arme auf allen
+Signalen. Das isoliert die Budgetaufteilung, bedeutet keinen nachgewiesenen Sieg
+von T und gibt keine weitere Suche automatisch frei. Dieser Anschluss braucht
+einen eigenen eingefrorenen Plan; seine Suchen sind hier nicht enthalten.
+
+Die folgenden Befehle dokumentieren den ausgeführten Laufweg. Die IDs 001 sind
+belegt; vorhandene Ordner und das Originalarchiv nicht überschreiben. Keine
+Wiederholung allein zur Statuspflege. Erneute lesende Verifikation benötigt den
+exakten sauberen Ausführungscommit und einen neuen Verifikationsausgabeordner.
 
 ## Sauberen Ausführungsstand vorbereiten
 
-Nach Übernahme der vollständig technisch geprüften Implementierung auf Manjaro:
+Der ursprüngliche Vorbereitungsweg für die inzwischen ausgeführte Serie auf Manjaro:
 
 ```bash
 git switch main
@@ -88,10 +102,11 @@ Prüfsummen sowie die benachbarte `-call.json`. Die zwei Suchkoordinatendateien
 werden vor allen Fits gespeichert und gebunden. Vier, vier und acht Zellaufrufe
 sind geplant; die Vorbereitung kann mehrere Minuten ohne Terminalausgabe dauern.
 
-Aus den bisherigen 2.000er-Workerzeiten ergeben sich für 16 gleich teure Suchen
-grob 2½ Stunden plus Vorbereitung und Auswertung. Das ist eine Orientierung:
-die geänderte Koordinate kann Kosten und Suchverlauf verändern. Die sechs Stunden
-Gesamtfrist je Abschnitt und 1.800 Sekunden pro Worker sind Sicherheitsgrenzen.
+Die vor Ausführung genannte Orientierung war grob 2½ Stunden plus Vorbereitung
+und Auswertung. Serie 001 hat tatsächlich 8.734,817 s, rund 2 h 26 min, für die
+drei vollständigen Abschnittsaufrufe benötigt, ohne Pausen, technischen Vorlauf
+und spätere Gesamtverifikation. Das ist keine Laufzeitgarantie; die sechs Stunden
+Gesamtfrist je Abschnitt und 1.800 Sekunden pro Worker bleiben Sicherheitsgrenzen.
 
 Einfacher lesender Fortschritt im zweiten Terminal, ohne `rg` und ohne Codeänderung:
 

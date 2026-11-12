@@ -14,11 +14,15 @@ A-/Originalfamilienerfolge, I 4/10, 5/10 und 7/10. Damit ist die vorab beschloss
 8/10-Grenze je Signal verfehlt. Auch die nachträgliche Vereinigung beider Arme
 erreicht nur 9/10, 10/10 und 7/10 gemeinsame Erfolge; sie belegt keine vorab
 festgelegte kombinierte Auswahlstrategie. PR #82 ist samt dieser Ergänzung
-übernommen. Planentscheidung vom 12.11.2026: Die bereits vorgesehene zweite
-Intervention wird als begrenzter Zeitkoordinatenvergleich mit 16 frischen Suchen
-konkretisiert, siehe Phase 4. Danach ist ein separat einzufrierender Vergleich
-4 × 1.000 gegen 2 × 2.000 vorgesehen. Wissenschaftliche Ausführung und spätere
-Bestätigung bleiben eigene Schritte; kein unmittelbarer Rauschpilot. Historische
+übernommen. Die zweite Intervention ist inzwischen als
+[Zeitkoordinatenvergleich](time_coordinate_results_manjaro_001.md) mit 16 frischen
+Suchen auf main `91d461c` nach PR83 ausgeführt und vollständig lesend bestätigt.
+Der Befund ist gemischt: u=32t verbessert die hohe und verschlechtert die niedrige
+Variante. Für den nächsten separat einzufrierenden Vergleich 4 × 1.000 gegen
+2 × 2.000 bleibt t begründet die gemeinsame Referenzkoordinate; kein Nachweis
+seiner Überlegenheit, siehe datierte Entscheidung in Phase 4. Ausführung dieses
+Anschlussversuchs und spätere Bestätigung bleiben eigene Schritte;
+kein unmittelbarer Rauschpilot. Historische
 Protokolle, Seeds, Eingaben und Entscheidungsregeln bleiben eingefroren. Profilübernahme in
 den allgemeinen gewichteten Laufweg bleibt vor einem späteren Rauschpilot
 gesondert zu prüfen. Die folgenden datierten Einordnungen erhalten ihre Historie.
@@ -458,6 +462,33 @@ Ihre Signale gelten ab jetzt als Entwicklungswissen; spätere unabhängige
 Bestätigung braucht unberührte Fälle. Die Grenze von höchstens zwei begründeten
 Suchinterventionen und die anschließende Einordnung mit der Betreuung bleiben
 bestehen. Keine weiteren Suchhebel oder Seeds bis zum gewünschten Erfolg anhängen.
+
+### Befund und Anschlussentscheidung vom 12.11.2026
+
+PR83 ist nach vollständiger CI als `91d461c` übernommen. Der
+[Zeitkoordinatenlauf 001](time_coordinate_results_manjaro_001.md) ist auf diesem
+Stand ausgeführt und vollständig lesend bestätigt: 16 wissenschaftliche Suchen,
+vier technische Vorlaufworker separat, keine Ausfälle. Die eingefrorene
+Einordnung lautet **gemischt**. T/U erreichen auf anchor je 2/2 A ohne
+Familiennachweis, auf variant_low 2/2 gegen 1/2 A (gemeinsam 2/2 gegen 0/2),
+auf variant_high 1/4 gegen 3/4 A (gemeinsam 1/4 gegen 2/4).
+
+Bei sechs ausgewählten U-Formeln, darunter vier A-Kurven, überschreitet die
+physische Komposition die bestehende 20-Knoten-Grenze. Diese Nachweise bleiben
+ungeklärt; kein Suchfehler und kein Beleg einer falschen Familie. Schon die
+Kurvenzahlen ohne Familienprüfung widersprechen einem einheitlichen Vorteil.
+U benötigt beobachtet je Signal rund 10–15 % weniger Workerzeit; dies hebt
+den Kurvenverlust auf der niedrigen Variante nicht auf. Keine gepoolte Erfolgsrate.
+
+Für die Vorbereitung des separat einzufrierenden **4 × 1.000 gegen 2 × 2.000**
+bleibt **T auf allen Signalen in beiden Armen die gemeinsame Referenzkoordinate**.
+Begründung ist die gezielte Untersuchung der Budgetaufteilung bei fortgeführtem
+Profil; kein nachgewiesener Sieg von T. U bleibt ein offener Entwicklungsbefund,
+wird aber weder signalabhängig übernommen noch nachträglich mit T kombiniert.
+Plan, neue Seeds, Paarung, verlustbasierte Paketwahl, Ausfälle, Kosten und
+Anschlussregel vor Implementierung einfrieren. Dieser Ergebnisbefund startet
+keine neuen Suchen und verändert weder den eingefrorenen Koordinatenplan noch
+die negative unabhängige Bestätigung.
 
 ## 5. Suchprofil in den tatsächlichen späteren Laufweg übernehmen
 
