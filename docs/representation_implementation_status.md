@@ -37,6 +37,13 @@ ein eigener Schritt; eingefrorene Protokolle und bisherige Berichte bleiben erha
   Signal verfehlt. Je Signal 22–26 % mehr Workerzeit für R, geringfügig weniger
   Verlustaufrufe; insgesamt rund 11 h 16 min gemessene Abschnittsaufrufe ohne Pausen.
   Keine allgemeine Überlegenheit oder gepoolte Erfolgsquote.
+- **Nachträgliche Kombination, 12.11.2026:** Die lesend nachgerechnete
+  [Vereinigung der beiden Originalausgaben je Block](restart_confirmation_results_manjaro_001.md#nachträgliche-kombination-beider-arme)
+  ergibt 9/10, 10/10 und 7/10 A-/Originalfamilienerfolge; reine A-Zahlen
+  10/10, 10/10 und 7/10. Bei variant_high sind alle vier R-Erfolge auch
+  I-Erfolge, beide verfehlen A in Block 1, 5 und 7. Diagnose mit nachträglichem
+  Wissen, keine neue verlustbasierte Auswahlmethode oder Übergangsfreigabe.
+  Originalauswahlen, Protokoll und negative R-Entscheidung bleiben erhalten.
 - **Beweisgrenzen:** Fünf A-Ausgaben bleiben bezüglich Originalfamilie ungeklärt;
   ihre Domains sind vollständig nachgewiesen. Drei andere, nicht A-bewertete
   Ausgaben haben offene gesamte Domainnachweise; bei zwei ist bereits eine
@@ -53,7 +60,9 @@ ein eigener Schritt; eingefrorene Protokolle und bisherige Berichte bleiben erha
 - **Dokumentationsprüfung:** 99 Markdown-Dateien samt lokalen Linkzielen und
   Diffprüfung bestanden. Gezielt KI-basiert selbst geprüft: Zählungen/Paarungen,
   Domain- und Restgrenzen, Kostenbereiche, unveränderte 8/10-Regel und Zuordnung
-  von Ausführung, Prüfung und Sicherung; kein separates Review behauptet.
+  von Ausführung, Prüfung und Sicherung. Die ergänzende Kombinationsdiagnose
+  wurde zusätzlich separat KI-basiert gegen die drei Originalberichte geprüft:
+  keine korrekturbedürftigen Befunde im begrenzten Ergänzungsumfang.
   Nur sechs Markdown-Dateien geändert, kein Code, keine Konfiguration, keine
   eingefrorenen Pläne oder historischen Ergebnisberichte. Allgemeiner Default
   auf `c3da991` erneut lesend geprüft: weiterhin 20/2, Häufigkeitsschalter aus.

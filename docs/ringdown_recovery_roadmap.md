@@ -11,7 +11,9 @@ Aktueller Ergebnisabgleich vom 12.11.2026: Die
 ist einschließlich technischem Vorlauf auf main `c3da991` ausgeführt und vollständig
 lesend geprüft. 150 frische Suchen; R erreicht 8/10, 10/10 und 4/10 gemeinsame
 A-/Originalfamilienerfolge, I 4/10, 5/10 und 7/10. Damit ist die vorab beschlossene
-8/10-Grenze je Signal verfehlt. Nächster Schritt ist die Einordnung des Befunds
+8/10-Grenze je Signal verfehlt. Auch die nachträgliche Vereinigung beider Arme
+erreicht nur 9/10, 10/10 und 7/10 gemeinsame Erfolge; sie belegt keine vorab
+festgelegte kombinierte Auswahlstrategie. Nächster Schritt ist die Einordnung des Befunds
 und Forschungsanspruchs mit der Betreuung gemäß der bestehenden Zyklusgrenze;
 keine automatische neue Suchserie oder unmittelbarer Rauschpilot. Protokoll,
 Seeds, Eingaben und Entscheidungsregeln bleiben eingefroren. Profilübernahme in
@@ -482,6 +484,16 @@ Signal verfehlt; dort sind alle A-Familien nachgewiesen, sodass offene
 Strukturbeweise den A-Verlust nicht erklären. Keine Ausfälle, alle Kosten bekannt.
 R benötigt je Signal rund 22–26 % mehr Workerzeit und geringfügig weniger
 Verlustaufrufe. Weder allgemeine Überlegenheit noch Laufzeitgewinn bestätigt.
+
+Die am 12.11.2026 ergänzte [Kombinationsdiagnose](restart_confirmation_results_manjaro_001.md#nachträgliche-kombination-beider-arme)
+zählt je Block höchstens einen Erfolg aus den beiden Originalausgaben:
+9/10, 10/10 und 7/10 A plus Originalfamilie. Bei variant_high ergänzen die
+R-Ausgaben keinen I-Erfolg; beide Arme verfehlen A in Block 1, 5 und 7.
+Damit schließt auch diese Rückschau die Wiederholbarkeitslücke nicht.
+Die Verwendung nachträglicher Klassen-/Familienkenntnis ist keine zulässige
+Auswahlregel eines neuen Verfahrens. Eine tatsächliche Kombination benötigte
+eine vorab festgelegte Auswahl und die Kosten aller fünf Suchen mit insgesamt
+4.000 äußeren Iterationen je Block; sie ist hier nicht bestätigt oder beschlossen.
 
 Die begrenzte Diagnose aller gespeicherten Fronten findet auch in den sechs
 Nicht-A-Paketen des dritten Signals keine alternative A-Ausgabe. Das belegt

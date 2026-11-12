@@ -67,7 +67,10 @@ technischer Manjaro-Vorlauf ebenfalls bestätigt. Die Pakete benötigen je Signa
 22–26 % mehr Workerzeit, obwohl ihre Verlustcallback-Zahl geringfügig kleiner ist.
 Gesamter gemessener Suchserienaufruf rund 11 h 16 min ohne Abschnittspausen.
 Die Wirkung ist signalabhängig; kein allgemeiner Neustartvorteil und keine
-gepoolte Erfolgsquote. Nächster Schritt: Befund und Forschungsanspruch gemäß
+gepoolte Erfolgsquote. Auch die [nachträgliche Vereinigung beider Arme](docs/restart_confirmation_results_manjaro_001.md#nachträgliche-kombination-beider-arme)
+erreicht nur **9/10, 10/10, 7/10** gemeinsame Erfolge; sie ist keine geprüfte
+kombinierte Auswahlstrategie und ändert den negativen Befund nicht.
+Nächster Schritt: Befund und Forschungsanspruch gemäß
 Leitfaden mit der Betreuung einordnen, keine automatische weitere Suchserie
 oder unmittelbarer Rauschpilot. Die bewusste Profilübernahme in den späteren
 allgemeinen gewichteten Laufweg bleibt gesondert offen.

@@ -222,6 +222,46 @@ hier genannten Zelle und den unveränderten Originalmetadaten.
 | variant_high | 9 / 1877582679 | 45 / A / P | 42 / A / P |
 | variant_high | 10 / 1994531873 | 46 / A / P | 47 / A / P |
 
+## Nachträgliche Kombination beider Arme
+
+Ergänzende lesende Auswertung vom 12.11.2026: Für jeden der zehn gepaarten
+Blöcke wird geprüft, ob mindestens eine der beiden bereits ausgewählten
+Originalausgaben erfolgreich ist. Die Vereinigung zählt jeden Block höchstens
+einmal; sie addiert weder die marginalen Erfolgszahlen noch verschiedene Signale.
+Grundlage sind die vollständige Paartabelle und die unveränderten Zell- und
+Paketzuordnungen in den drei Originalberichten unter
+`confirmation-{anchor,low,high}-manjaro-001/completion/assessment_report.json`.
+Die Felder `comparison.pairs[].outputs.{R,I}.A` und `A_and_original_family`
+wurden je Block direkt gezählt und über `selected_cell` mit Klasse und
+Originalfamilienstatus der jeweiligen Zelle abgeglichen; keine Suche oder Fits.
+
+| Signal | Beide: A plus Originalfamilie | Nur R | Nur I | Keiner | Mindestens einer: A plus Originalfamilie | Mindestens einer: A |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| anchor | 3 | 5 | 1 | 1 | **9/10** | 10/10 |
+| variant_low | 5 | 5 | 0 | 0 | **10/10** | 10/10 |
+| variant_high | 4 | 0 | 3 | 3 | **7/10** | 7/10 |
+
+Beim Anker ergänzt I den gemeinsamen Erfolg in Block 3; in Block 9 liefert R
+zwar eine A-Kurve, deren Originalfamilie aber ungeklärt bleibt. Bei variant_low
+erreicht bereits R alle zehn gemeinsamen Erfolge. Bei variant_high sind die
+vier R-Erfolge eine Teilmenge der sieben I-Erfolge: I ergänzt die Blöcke 3, 6
+und 8; **beide Arme verfehlen A in den Blöcken 1, 5 und 7**. Die Methoden
+scheitern dort also teilweise an denselben Seedblöcken desselben Signals.
+Auch die nachträgliche Vereinigung erreicht somit nicht mindestens 8/10
+gemeinsame Erfolge auf jedem Signal.
+
+Diese Zählung verwendet die nachträglich bekannten Klassen und Familienbeweise.
+Sie ist eine diagnostische Obergrenze für die Wahl zwischen diesen beiden
+Ausgaben, **kein Ergebnis eines vorab festgelegten kombinierten Algorithmus**.
+Insbesondere wurde keine neue verlustbasierte Wahl zwischen R und I geprüft.
+Eine künftig kombinierte Methode müsste ihre Auswahl ohne Signalwahrheit,
+Kurvenklasse oder Familienprüfung vorher festlegen und sämtliche Kosten tragen:
+vier frische 500er-Suchen plus eine frische 2.000er-Suche bedeuten fünf Suchaufrufe
+und insgesamt 4.000 äußere Iterationen je Block. Gleiche Iterationssummen
+bedeuten weiterhin keine gleichen Rechenkosten. Originalauswahlen, Nenner,
+eingefrorene R-Entscheidungsregel und ihr negativer Bestätigungsbefund bleiben
+unverändert; aus dieser Rückschau folgt keine neue Übergangsfreigabe.
+
 ## Eigene Prüfung und Anschlussentscheidung
 
 Am exakten sauberen Ausführungscommit wurde der unveränderte CLI-Laufweg

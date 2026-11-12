@@ -306,7 +306,10 @@ Clopper–Pearson-Intervalle unabhängig über Binomialsummen bestätigt. Das Or
 bleibt separat erhalten und wird durch dieses Auditpaket nicht ersetzt.
 
 [Ergebnisbericht](restart_confirmation_results_manjaro_001.md): gemeinsame
-Übergangsgrenze verfehlt, keine technische Unvollständigkeit. Original und Audit
+Übergangsgrenze verfehlt, keine technische Unvollständigkeit. Die ergänzende
+[Kombinationsdiagnose vom 12.11.2026](restart_confirmation_results_manjaro_001.md#nachträgliche-kombination-beider-arme)
+zählt aus denselben Originalausgaben 9/10, 10/10 und 7/10 gemeinsame Erfolge;
+keine neue Serie und keine geprüfte kombinierte Auswahlmethode. Original und Audit
 sind Arbeitskopien; gemeinsame Ablage und unabhängig SHA-256-geprüfte Zweitkopien
 beider Pakete bleiben gemäß [Archivregel](results_archiving.md) offen.
 
