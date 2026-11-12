@@ -1,0 +1,378 @@
+{
+  "format": "ringdown-sr-time-coordinate-protocol-1",
+  "status": "frozen_before_implementation",
+  "base_commit": "94e15c5bb782028e3ac3d89252185e2d2e03d655",
+  "purpose": "bounded_development_coordinate_comparison",
+  "outer_iterations": 2000,
+  "search_calls": 16,
+  "paired_blocks": 8,
+  "worker_seconds": 1800,
+  "signal_seconds": 21600,
+  "verify_seconds": 7200,
+  "series_verify_seconds": 21600,
+  "arms": [
+    {
+      "name": "T",
+      "coordinate": "t",
+      "scale_hex": "0x1.0000000000000p+0",
+      "unit": "s"
+    },
+    {
+      "name": "U",
+      "coordinate": "32*t",
+      "scale_hex": "0x1.0000000000000p+5",
+      "unit": "s"
+    }
+  ],
+  "seed_generator": {
+    "bit_generator": "PCG64",
+    "seed": 2026111201,
+    "draw": "integers(1, 2**31); reject duplicates and every positive 31-bit integer token in tracked text under data/docs/src/scripts/tests",
+    "exclusion_commit": "94e15c5bb782028e3ac3d89252185e2d2e03d655",
+    "excluded_values": 1455,
+    "excluded_values_sha256": "cb25a4a3c22400dedc35cd4d9062f657cee8ec0fedbc4d9fb1b7f27a05830898",
+    "scope": "documented repository values; no claim about unknown external searches"
+  },
+  "source": {
+    "commit": "94e15c5bb782028e3ac3d89252185e2d2e03d655",
+    "inputs_path": "data/restart_confirmation_inputs.npz",
+    "inputs_sha256": "02d03ebf37be51613b4e6303a2806dcb308fc344c544e82ff0dfd0d82000c8f2",
+    "protocol_path": "data/restart_confirmation_protocol.json",
+    "protocol_sha256": "44d2a73a2189c5b4f06570c6abebcc8edceb2d1669925871c665f51520b1d6f9",
+    "reuse": "all original physical time/truth bytes and irregular points; no regeneration of signal values"
+  },
+  "grid": {
+    "reuse_source_points": true,
+    "seed": 2026110601,
+    "points": 1024,
+    "attempts": 100,
+    "new_threshold": null
+  },
+  "profile": {
+    "native_worker": "unchanged time_budget_worker; condition iterations",
+    "local_iterations": 300,
+    "additional_local_restarts": 5,
+    "use_frequency": true,
+    "use_frequency_in_tournament": true,
+    "should_simplify": false,
+    "warmup_maxsize_by": 0.0,
+    "grammar": [
+      "+",
+      "-",
+      "*",
+      "/",
+      "exp",
+      "sin",
+      "cos"
+    ],
+    "population_count": 2,
+    "population_size": 32,
+    "cycles_per_iteration": 50,
+    "maxsize": 20,
+    "maxdepth": 20,
+    "parsimony": 0.0,
+    "optimizer_function_limit": 10000,
+    "loss": "unweighted native MSE"
+  },
+  "selection": [
+    "finite_native_training_loss",
+    "original_complexity",
+    "original_front_index"
+  ],
+  "endpoint": "physical_curve_A_and_proven_original_family",
+  "parameter_match": "not_assessed",
+  "decision": {
+    "normalization_candidate": "U A-count and joint-count are no lower on every signal, and U joint-count is strictly higher on at least one signal",
+    "raw_coordinate_supported": "reverse directional condition with T and U exchanged",
+    "unchanged_counts": "same A-count and joint-count on all signals; costs remain descriptive",
+    "mixed": "all other complete verified outcomes; retain uncertainty, no automatic coordinate adoption",
+    "no_automatic_profile_change": true,
+    "no_confirmation_gate": true,
+    "next_budget_plan": "separate frozen 4x1000 versus 2x2000; choose coordinate explicitly after this diagnosis"
+  },
+  "signals": [
+    {
+      "name": "anchor",
+      "truth": {
+        "amplitude": 1.0,
+        "frequency_hz": 250.0,
+        "decay_time_s": 0.008,
+        "phase_rad": 0.0
+      },
+      "blocks": 2,
+      "seeds": [
+        1151764945,
+        855357527
+      ],
+      "odd_block_order": [
+        "T",
+        "U"
+      ],
+      "even_block_order": [
+        "U",
+        "T"
+      ],
+      "arrays": {
+        "time_s": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "50c345daa383e450558fca37cd20adf54f13549035ae53eeb0c528d140666c5c"
+        },
+        "observed": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "7947f112b6c2196cae5215803d4d7a50e2401755d5fddf786ce19fda0a2419aa"
+        },
+        "diagnostic_time_s": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "d93b19b716759c30734a68c0448a0f6bc619d00110dc458a461a237b2ebce854"
+        },
+        "diagnostic_truth": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "1339a1a9dc971a177bce24e7272c9d619a9dca4172fd937fbc27b45ff3a9df97"
+        }
+      },
+      "grid": {
+        "time_s": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "758fa033ec2686a28c1b4990fb09b34f3557706ddb128ab68e1bf0bb5a83f057"
+        },
+        "truth": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "db7ea73c17135c3afbd2c76271a04b7872b47f894d9a1d30572937ea742cfecd"
+        }
+      },
+      "normalized_times": {
+        "time_u": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "8e8e12b57dacd06f3d7aa29ac17d71bfc048d769d9a6d06ed36ecfa8f4b4ebcb"
+        },
+        "diagnostic_time_u": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "827734b298125ab56d190f99c66a2e0d0871ebac876773e2706cb81d3c3c3882"
+        },
+        "irregular_time_u": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "dace9dbd3cc1cdbfbda59fdfa3e53e3af84759dd4df9b95299456eb3ae3d579e"
+        }
+      }
+    },
+    {
+      "name": "variant_low",
+      "truth": {
+        "amplitude": 0.5,
+        "frequency_hz": 210.0,
+        "decay_time_s": 0.01,
+        "phase_rad": -0.5
+      },
+      "blocks": 2,
+      "seeds": [
+        1429331782,
+        608579426
+      ],
+      "odd_block_order": [
+        "T",
+        "U"
+      ],
+      "even_block_order": [
+        "U",
+        "T"
+      ],
+      "arrays": {
+        "time_s": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "50c345daa383e450558fca37cd20adf54f13549035ae53eeb0c528d140666c5c"
+        },
+        "observed": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "f56908c62ed4133d13eac653d4c9ad6c11197091a4e9eeeb15010c8626740a07"
+        },
+        "diagnostic_time_s": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "d93b19b716759c30734a68c0448a0f6bc619d00110dc458a461a237b2ebce854"
+        },
+        "diagnostic_truth": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "ee7525232765be16ccc8cc23887d802280160202ab2f2227bc2cc3e526c0b139"
+        }
+      },
+      "grid": {
+        "time_s": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "758fa033ec2686a28c1b4990fb09b34f3557706ddb128ab68e1bf0bb5a83f057"
+        },
+        "truth": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "5c3b1bd99bf96d0846e09283de1e5820d6bb1c0be6a904e968007b1bfae8be85"
+        }
+      },
+      "normalized_times": {
+        "time_u": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "8e8e12b57dacd06f3d7aa29ac17d71bfc048d769d9a6d06ed36ecfa8f4b4ebcb"
+        },
+        "diagnostic_time_u": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "827734b298125ab56d190f99c66a2e0d0871ebac876773e2706cb81d3c3c3882"
+        },
+        "irregular_time_u": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "dace9dbd3cc1cdbfbda59fdfa3e53e3af84759dd4df9b95299456eb3ae3d579e"
+        }
+      }
+    },
+    {
+      "name": "variant_high",
+      "truth": {
+        "amplitude": 0.8,
+        "frequency_hz": 320.0,
+        "decay_time_s": 0.006,
+        "phase_rad": 0.4
+      },
+      "blocks": 4,
+      "seeds": [
+        1356550349,
+        409431025,
+        1625947320,
+        827273765
+      ],
+      "odd_block_order": [
+        "T",
+        "U"
+      ],
+      "even_block_order": [
+        "U",
+        "T"
+      ],
+      "arrays": {
+        "time_s": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "50c345daa383e450558fca37cd20adf54f13549035ae53eeb0c528d140666c5c"
+        },
+        "observed": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "fd0d9cb26f207a8b00448a28ceee2884815b7a88110fd2a4b879108b118ce0c8"
+        },
+        "diagnostic_time_s": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "d93b19b716759c30734a68c0448a0f6bc619d00110dc458a461a237b2ebce854"
+        },
+        "diagnostic_truth": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "72ff34301941ef52ca49dff86144cf03ca89ea7d3debb879c1df99a61e228334"
+        }
+      },
+      "grid": {
+        "time_s": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "758fa033ec2686a28c1b4990fb09b34f3557706ddb128ab68e1bf0bb5a83f057"
+        },
+        "truth": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "5d380e00c385bb82d9e97defbce0dfbd1c6ff86fdc554a4fc033f7b847053fcb"
+        }
+      },
+      "normalized_times": {
+        "time_u": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "8e8e12b57dacd06f3d7aa29ac17d71bfc048d769d9a6d06ed36ecfa8f4b4ebcb"
+        },
+        "diagnostic_time_u": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "827734b298125ab56d190f99c66a2e0d0871ebac876773e2706cb81d3c3c3882"
+        },
+        "irregular_time_u": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "dace9dbd3cc1cdbfbda59fdfa3e53e3af84759dd4df9b95299456eb3ae3d579e"
+        }
+      }
+    }
+  ],
+  "inputs_sha256": "25ea57100763af6385df50c7de41f871e6d53fb76f51fd24b6fd01743085efd1",
+  "generation": {
+    "numpy": "2.5.3",
+    "recipe": "copy source arrays; add exactly scaled time axes using ldexp(x,5)",
+    "coordinate_values_checked_with_exact_rationals": 2041,
+    "coordinate_roundtrip_bits": "identical",
+    "truth_regenerated": false
+  }
+}
