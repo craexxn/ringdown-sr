@@ -1,6 +1,6 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: erneute Bestätigung auf drei neuen Signaldefinitionen umsetzen
+## Aktuell: Bestätigungslaufweg lokal geprüft, vollständige Ready-CI vorbereiten
 
 Stand 13.11.2026, [Leitfadenphase 6](ringdown_recovery_roadmap.md): Die
 Ergebnisdokumentation aus [PR #86](https://github.com/craexxn/ringdown-sr/pull/86)
@@ -10,10 +10,13 @@ ist nach abgeglichenem Head, Basis, Review und grüner Dokumentations-CI als
 Der wissenschaftliche Budget-Ausführungsstand bleibt `680af98`; sein gemischter
 Befund und die frühere negative Bestätigung bleiben unverändert.
 
-Auf `codex/restart-budget-confirmation-pr` entstehen der begrenzte neue Laufweg
-und seine Prüfungen. [Plan](restart_budget_confirmation_plan.md), Konfiguration,
+Auf `codex/restart-budget-confirmation-pr` liegt der begrenzte neue Laufweg
+als [PR #87](https://github.com/craexxn/ringdown-sr/pull/87).
+[Plan](restart_budget_confirmation_plan.md), Konfiguration,
 120 neue Seeds, Eingaben und Erzeuger sind **vor Implementierung** in
-`352b7b5145ad8c8e735eea887a29744c97825c20` eingefroren. Der Quellenstand
+`6673d6e2108312a2f3e39d1a2fb98d94b3690887` eingefroren. Ihre später angelegte,
+byteidentische öffentliche Commitbindung ist
+`352b7b5145ad8c8e735eea887a29744c97825c20`. Der Quellenstand
 für die historischen Eingaben-/Seed-Ausschlüsse bleibt der im Plan gebundene
 Ergebniscommit `16f2e4533583ca7cced88799ffc3abb8d0052904`; der spätere Merge
 ersetzt diesen Bezug nicht.
@@ -21,10 +24,11 @@ ersetzt diesen Bezug nicht.
 Die erste lokale Commitfolge blieb wegen des GitHub-Schutzes für private
 Commit-E-Mail-Adressen unveröffentlicht. Für die Veröffentlichung wurde eine
 neue Folge auf einem eigenen Branch angelegt; die lokalen Originalcommits
-bleiben erhalten. Der neue Freeze ist zum ursprünglichen `6673d6e` bytegleich;
+bleiben erhalten. Diese spätere Veröffentlichungsfassung ändert weder den
+vorher festgelegten Planinhalt noch dessen ursprünglichen Zeitpunkt;
 im Laufzeitcode änderte sich ausschließlich die gebundene `PLAN_COMMIT`-Referenz.
 Prüfungen der alten Fassung bleiben ihrem tatsächlichen Commit zugeordnet;
-eine vollständige Python-Prüfung der Veröffentlichungsfassung läuft zusätzlich.
+die vollständige Python-Suite wurde auf der Veröffentlichungsfassung erneut geprüft.
 
 - **Beschlossener Umfang:** `confirm_low`, `confirm_mid`, `confirm_high`, jeweils
   zehn gepaarte Blöcke für R: 4 × 1.000 und L: 2 × 2.000. 180 frische Suchen,
@@ -49,34 +53,51 @@ eine vollständige Python-Prüfung der Veröffentlichungsfassung läuft zusätzl
   Archivierung einschließlich Aufrufmessungen und technischem Vorlauf.
 - **Bisherige technische Prüfung:** 129 neue gezielte Fälle, davon 25 Profil-
   und 104 Laufzeitfälle, sowie 213 CI-Vertragsfälle bestanden. Die vollständige
-  Python-Suite auf `7ee0e5ebb7970bc457e3c7dc55f74120fbd36fee` besteht mit
-  **3.656 Fällen in 349,31 s**. Ruff, Formatprüfung von 319 Dateien,
+  Python-Suite auf `6e211657481a10eb36801cd2d48de1c05af33baa` besteht mit
+  **3.656 Fällen in 348,48 s**; die ursprüngliche lokale Prüfung auf
+  `7ee0e5e` bestand zuvor mit 3.656 Fällen in 349,31 s.
+  Ruff, Formatprüfung von 319 Dateien,
   107 Markdown-Dateien einschließlich neuer Bedienung samt lokalen Linkzielen
   und Diffprüfung bestanden. Ein separates lesendes Bedienungsreview prüfte
   alle sieben Bash-Blöcke und neun Stub-/Dummyarchiv-Prüfgruppen; die
   Setupfolge stoppt nach Korrektur zuverlässig bei Fehler oder schmutzigem
   Checkout. Keine echte Manjaro-Serie für diese Bedienungsprüfung.
-  Der erste native Vorlauf 001 scheiterte vor der
-  ersten Suche bei der Julia-Findung: Die neue Umgebung versuchte eine gesperrte
-  Versionsnetzabfrage. Vorlauf 002 läuft am sauberen Implementierungscommit
-  `c6b699e` mit dem bereits installierten gepinnten Julia über
-  `PYTHON_JULIAPKG_EXE`; keine Codekorrektur dafür, beide Teilstände bleiben
-  erhalten. 104 gebundene Quellen einschließlich sämtlicher 54 Python-Paketdateien
-  geprüft; die zwölf kleinen Kontrollworker sind noch nicht abgeschlossen.
-- **Noch offen:** vollständige Python-Prüfung der Veröffentlichungsfassung,
-  Abschluss des nativen Vorlaufs, gezieltes KI-Review,
-  vollständige Ready-CI auf dem veröffentlichten Head und Übernahme des neuen
-  Laufwegs. Vorabprüfung des eingefrorenen Materials ersetzt diese technische
-  Abnahme nicht.
+- **Nativer technischer Vorlauf:** 002 auf dem sauberen lokalen Implementierungscommit
+  `c6b699e5325097ec15f1ffa48992b26147eaa808` erfolgreich abgeschlossen:
+  zwölf kleine Worker, vier Paketausgaben, beide Einzelverifikationen und
+  gemeinsame lesende Gesamtverifikation. Alle Worker erreichten ihre eine
+  beziehungsweise zwei Iterationen, keine Ausfälle. Die Verifikation startete
+  keine weiteren Suchen; beide wissenschaftlichen Entscheidungsschlüssel bleiben
+  für diese Fixtures `null`. 104 gebundene Quellen einschließlich sämtlicher
+  54 Python-Paketdateien geprüft. `fixture_a`/`fixture_b`: 85.038/62.355
+  Verlustcallbacks und 578,758/578,002 s für die vollständigen Abschnittsaufrufe.
+  Gegenüber diesem tatsächlich geprüften Code ändert die öffentliche Umsetzung
+  `150ff6d` ausschließlich die `PLAN_COMMIT`-Bindung an den bytegleichen Plan;
+  die vollständige Ready-CI muss den öffentlichen Head selbst prüfen.
+  Vorlauf 001 scheiterte vor der ersten Suche bei einer gesperrten Julia-
+  Versionsnetzabfrage. Für 002 wurde das bereits installierte gepinnte Julia
+  über `PYTHON_JULIAPKG_EXE` gewählt; keine Codekorrektur dafür, beide
+  Prüfstände bleiben erhalten.
+- **Gezieltes KI-Code-/Methoden-/Dokumentationsreview:** PR #87 auf
+  `796605d1fca034b0dabe91c916fd3b8b1a1f53b9` gegen Basis
+  `11c844d05703ba200f2d0333ce5a422cfe7d5791`, keine korrekturbedürftigen Befunde
+  im geprüften Umfang. Sieben zusätzliche Gegenprüfungen bestanden,
+  darunter 5.324 Zählkombinationen; Quellenbindung der öffentlichen Fassung
+  mit 104 Dateien einschließlich aller 54 Python-Paketquellen bestätigt.
+  Die abschließende reine Dokumentationsergänzung ist ebenfalls gegengeprüft;
+  neue Prüfzahlen direkt an Logs und nativen Original-JSON abgeglichen.
+- **Noch offen:** vollständige Ready-CI auf dem veröffentlichten Head und
+  Übernahme des neuen Laufwegs. Lokale Prüfungen
+  und Review ersetzen diese vollständige CI-Abnahme nicht.
 - **Wissenschaftliche Ausführung:** nicht gestartet. Drei feste neue
   Innenbereichskombinationen prüfen begrenzte Übertragung; keine zufällige
   Signalpopulation und keine erneute Bestätigung der schwierigen alten
   Randkombination. Keine neuen wissenschaftlichen Originalarchive,
   Ausführungscommits oder Sicherungsnachweise vorhanden.
 
-**Nächster abgegrenzter Schritt:** Native technische Prüfung abschließen,
-als Draft zur Prüfung stellen und vor Übernahme die vollständige
-Ready-CI abwarten. Danach die geplante wissenschaftliche Manjaro-Serie separat
+**Nächster abgegrenzter Schritt:** PR #87 nach abgeschlossener lokaler Prüfung
+auf Ready stellen und die vollständige CI am veröffentlichten Head abschließen.
+Erst nach geprüfter Übernahme die geplante wissenschaftliche Manjaro-Serie separat
 ausführen und alle drei Abschnitte gemeinsam lesend verifizieren. Die grobe
 Orientierung von 18–20 Stunden stammt aus alten Laufkosten, nicht aus bereits
 gemessenen neuen Suchen. Profilübernahme in den allgemeinen gewichteten Laufweg

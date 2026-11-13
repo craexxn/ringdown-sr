@@ -17,11 +17,13 @@ auf jedem Signal erreichen; L erhält dieselbe praktische Prüfung separat.
 Keine automatische Auswahl des besseren Arms oder Kombination ihrer Ausgaben.
 
 **Noch keine wissenschaftliche Ausführung:** Der Plan ist vor Implementierung
-in `352b7b5` eingefroren. Technische Abnahme, vollständige Ready-CI und Übernahme
-des Laufwegs stehen noch aus; tatsächliche Nachweise im
+festgelegt; seine öffentliche Commitbindung ist `352b7b5`. Der Laufweg ist
+implementiert und lokal mit Pythonprüfungen, zwölf kleinen nativen Workern und
+lesender Einzel-/Gesamtverifikation geprüft. Vollständige Ready-CI für PR #87
+und Übernahme stehen noch aus; genaue Prüfstände und Nachweise im
 [Fortsetzungsstand](representation_implementation_status.md). Die folgenden
 001-IDs sind geplante erste Ausgaben. Die wissenschaftlichen Befehle erst nach
-vollständig geprüfter Übernahme verwenden, nicht während der Implementierung.
+vollständig geprüfter Übernahme verwenden.
 
 ## 1. Eigenen sauberen Ausführungsstand nach Übernahme vorbereiten
 

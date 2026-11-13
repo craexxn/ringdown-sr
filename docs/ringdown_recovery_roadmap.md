@@ -29,9 +29,10 @@ PR86 hat den Ergebnisstand als `11c844d` übernommen. Die unten datierte
 Planentscheidung vom 13.11.2026 führt zur erneuten Bestätigung in Phase 6:
 drei neue feste Signaldefinitionen mit je zehn gepaarten Blöcken für
 4 × 1.000 als Kandidaten und 2 × 2.000 als aktive Kontrolle, 180 frische Suchen.
-Das [Protokoll](restart_budget_confirmation_plan.md) ist in `352b7b5` vor
-Implementierung eingefroren; technische Abnahme, Übernahme des neuen Laufwegs
-und wissenschaftliche Ausführung stehen aus. Keine automatische weitere
+Das [Protokoll](restart_budget_confirmation_plan.md) ist vor Implementierung
+festgelegt; seine öffentliche Commitbindung ist `352b7b5`. Der neue Laufweg ist
+implementiert und lokal technisch geprüft. Vollständige Ready-CI für PR #87,
+Übernahme und wissenschaftliche Ausführung stehen aus. Keine automatische weitere
 Suchintervention und kein unmittelbarer Rauschpilot. Historische
 Protokolle, Seeds, Eingaben und Entscheidungsregeln bleiben eingefroren. Profilübernahme in
 den allgemeinen gewichteten Laufweg bleibt vor einem späteren Rauschpilot
@@ -669,7 +670,8 @@ allgemeine Überlegenheit von R und keine nachträgliche Umdeutung der früheren
 negativen Bestätigung.
 
 Der [getrennt eingefrorene Plan](restart_budget_confirmation_plan.md), Seeds,
-Eingaben und Erzeuger sind vor Implementierung als `352b7b5` versioniert.
+Eingaben und Erzeuger sind vor Implementierung festgelegt; die öffentliche
+Commitbindung des unveränderten Inhalts ist `352b7b5`.
 `confirm_low`, `confirm_mid` und `confirm_high` erhalten je zehn gepaarte
 Blöcke: insgesamt 180 frische Suchen, 120 verschiedene Seeds und 60 Paketausgaben.
 Beide Arme bleiben in ursprünglichem t, lokal 300/5 und sonst unveränderten

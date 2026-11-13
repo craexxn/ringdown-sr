@@ -115,15 +115,17 @@ Pakete erlauben keinen ursächlichen Verbesserungsnachweis gegenüber früheren 
 Die bekannten Signale sind Entwicklungswissen; die frühere verfehlte 8/10-Grenze
 bleibt bestehen. Die am 13.11.2026 beschlossene
 [erneute Bestätigung](docs/restart_budget_confirmation_plan.md) ist vor
-Implementierung in `352b7b5` eingefroren: drei neue feste Signaldefinitionen,
+Implementierung festgelegt; ihre öffentliche Commitbindung ist `352b7b5`:
+drei neue feste Signaldefinitionen,
 je zehn gepaarte Blöcke, 180 frische Suchen und 60 Paketausgaben. R: 4 × 1.000
 als vorläufiger Kandidat; L: 2 × 2.000 als aktive Kontrolle, beide in t bei
 300/5. R muss mindestens 8/10 A-Ausgaben mit gültiger Originalfamilie auf jedem
 Signal erreichen; L wird getrennt berichtet. Keine automatische Armwahl,
 Kombination mit 4 × 500 oder weitere Budgetstaffel. Der
-[Manjaro-Laufweg](docs/restart_budget_confirmation.md) wird implementiert und
-technisch geprüft; vollständige technische Abnahme und Übernahme stehen noch
-aus, die wissenschaftliche Serie wurde nicht gestartet. Drei feste neue
+[Manjaro-Laufweg](docs/restart_budget_confirmation.md) ist implementiert und
+lokal geprüft: 3.656 Pythonfälle, zwölf kleine native Worker sowie Einzel- und
+Gesamtverifikation bestanden. Vollständige Ready-CI für PR #87 und Übernahme
+stehen aus; die wissenschaftliche Serie wurde nicht gestartet. Drei feste neue
 Innenbereichsfälle bestätigen weder den ganzen Parameterkasten noch erneut
 die zuvor schwierige Randkombination. U bleibt offen. Die bewusste
 Profilübernahme in den allgemeinen gewichteten Laufweg bleibt vor einem
