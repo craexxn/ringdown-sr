@@ -1,6 +1,74 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: begrenzten Vergleich zweier Neustartpakete vorbereiten
+## Aktuell: Budgetserie vollständig geprüft, Befund gemischt
+
+Stand 13.11.2026, Leitfadenphase 4: [PR #85](https://github.com/craexxn/ringdown-sr/pull/85)
+ist nach vollständiger [Ready-CI 43213172104](https://github.com/craexxn/ringdown-sr/actions/runs/43213172104)
+mit 3.525 Pythonfällen und sämtlichen nativen Prüfblöcken einschließlich zwölf
+neuer kleiner Worker als `680af98e4342dc831a6dcc995fe658d4fcbe942f` übernommen.
+Dies ist der tatsächliche wissenschaftliche Ausführungsstand des
+[Budgetlaufs 001](restart_budget_results_manjaro_001.md). Die Ergebnisdokumentation
+entsteht auf `codex/restart-budget-results` ab diesem main; sie ersetzt den
+Ausführungscommit nicht. Historische Pläne und die negative Bestätigung bleiben erhalten.
+
+- **Original:** `restart-budget-manjaro-001.tar.gz`, 27.824.763 Bytes,
+  SHA-256 `fbddd9b45061c3668c089217c7194ca01942655de5608bdc2df649f1c87614e6`
+  bestätigt. 3.482 reguläre Dateien mit 235.902.915 entpackten Dateibytes:
+  drei wissenschaftliche Abschnitte samt Aufrufmessungen und Gesamtverifikation
+  sowie der getrennte technische Manjaro-Vorlauf mit zwölf kleinen Workern.
+- **Ausführung:** alle 48 geplanten wissenschaftlichen Suchen abgeschlossen,
+  keine Ausfälle; 16 verlustbasiert ausgewählte Paketausgaben. R: 4 × 1.000,
+  L: 2 × 2.000, zwei/zwei/vier gepaarte Blöcke auf den bekannten Signalen,
+  ursprüngliche Zeit t und lokales Profil 300/5 unverändert. Die vollständigen
+  Abschnittsaufrufe dauern zusammen 17.612,447 s, rund 4 h 53 min 32 s.
+- **Tatsächliche Prüfung:** unveränderter vollständiger CLI-Gesamtverifikator
+  auf sauberem `680af98` bestätigt alle 48 wissenschaftlichen Zellen und
+  16 Paketausgaben; alle drei Exportdateien bytegleich. Zwölf technische
+  Vorlaufworker ebenfalls bestätigt: beide Einzel-CLIs und Gesamtprüfung per
+  unveränderter öffentlicher Verify-Funktion, neun Exportdateien bytegleich.
+  Die wissenschaftliche Serien-CLI ist auf drei Abschnitte festgelegt, technische
+  Fixtures sind zwei; kein neuer Suchaufruf. Quellenbindung aller 102 Dateien
+  einschließlich aller 52 Python-Paketquellen gegen Git und Disk geprüft.
+  Archiv und alle 3.482 Originaldateien unverändert. Erster lokaler Versuch
+  wegen Julia-Logcache-Schreibschutz gesperrt; nach eng begrenzter Cachefreigabe
+  vollständig bestanden, beide Versuche im Audit erhalten.
+- **Unabhängige Frontdiagnose:** 538 Kandidaten in 48 Endfronten mit unveränderten
+  Verträgen nachgerechnet; keine andere A-Kurve in den 19 Fronten mit
+  Nicht-A-Originalauswahl. Dies ist kein vollständiges Evolutionsprotokoll;
+  Originalauswahlen bleiben unverändert. Keine neuen Fits oder Suchen.
+
+| Signal | R / L: A-Ausgaben | R / L: A mit Originalfamilie |
+| --- | --- | --- |
+| anchor | 2/2 · 2/2 | 2/2 · 2/2 |
+| variant_low | 2/2 · 1/2 | 2/2 · 1/2 |
+| variant_high | 4/4 · 4/4 | 2/4 · 3/4 |
+
+Der vollständig lesend bestätigte Befund ist **`mixed`**: R gewinnt einen
+gemeinsamen Erfolg auf der niedrigen Variante, L einen auf der hohen. Bei der
+hohen Variante sind alle Paketausgaben A; zwei Originalausgaben besitzen
+Definitionslücken mit gültiger Fortsetzung (L/Block 1 und R/Block 3), eine
+weitere einen ungeklärten Zusatzterm (R/Block 1). Fortsetzungen ersetzen keine
+gültigen Originalmitglieder. Bestehende Beweisgrenzen bleiben erhalten;
+neue Parameterübereinstimmungen bleiben `not_assessed`.
+
+R benötigt auf anchor/variant_low/variant_high 25,30 % / 6,73 % / 4,94 % mehr
+Workerzeit als L. Kosten ändern die eingefrorene Richtungsregel nicht.
+Neue Seeds, andere Budgets und Paketwahl erlauben keinen ursächlichen
+Verbesserungsnachweis gegenüber früheren Serien. Die frühere verfehlte
+8/10-Grenze bleibt unverändert; bekannte Entwicklungssignale sind keine
+unabhängige Bestätigung. U wurde hier nicht getestet und bleibt offen.
+
+**Nächster Schritt:** den vollständigen Befund gemäß
+[Leitfaden](ringdown_recovery_roadmap.md) mit der
+Betreuung einordnen. Danach begründete Methodenentscheidung über unabhängige
+Bestätigung auf unberührten Fällen oder Begrenzung der erreichbaren Aussage;
+keine automatische weitere Iterationsstaffel, dritte Suchintervention oder
+Freigabe des Rauschpiloten. Bewusste Profilübernahme in den allgemeinen
+gewichteten Laufweg bleibt gesondert zu prüfen. Gemeinsame Original-/Auditablage
+und unabhängig SHA-256-geprüfte Zweitkopien gemäß [Index](results_index.md)
+weiter offen; GitHub-Uploads optional.
+
+## Historisch: begrenzten Vergleich zweier Neustartpakete vorbereiten
 
 Stand 12.11.2026, Leitfadenphase 4: PR #84 ist nach erneutem Abgleich von Head,
 Basis, gezieltem KI-Review und erfolgreicher Dokumentations-CI `43206335353`

@@ -5,8 +5,11 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 12.11.2026; aktuelle main-Basis `fbdb450` nach
-[PR #84](https://github.com/craexxn/ringdown-sr/pull/84).
+Fortsetzungsstand: 13.11.2026; aktuelle main-Basis `680af98` nach
+[PR #85](https://github.com/craexxn/ringdown-sr/pull/85).
+Der Budgetvergleich wurde auf diesem Stand wissenschaftlich ausgeführt;
+seine aktuelle Quellenprüfung steht im
+[Ergebnisbericht](docs/restart_budget_results_manjaro_001.md).
 Wissenschaftlicher Ausführungs- und lesender Prüfstand des Zeitkoordinatenvergleichs
 bleibt `91d461c` nach [PR #83](https://github.com/craexxn/ringdown-sr/pull/83). Die vorherige
 Bestätigungsserie bleibt dem Stand `c3da991` nach PR #81 zugeordnet.
@@ -87,19 +90,34 @@ U benötigt je Signal rund 10–15 % weniger Workerzeit; die vollständigen
 Abschnittsaufrufe dauern zusammen rund 2 h 26 min. Technischer Manjaro-Vorlauf
 und alle lesenden Prüfungen sind ebenfalls bestätigt.
 PR #84 übernimmt diesen Befund nach grüner Dokumentations-CI und gezieltem
-KI-Review. Der [Anschlussvergleich **4 × 1.000 gegen 2 × 2.000**](docs/restart_budget.md)
-ist vor Implementierung [separat eingefroren](docs/restart_budget_plan.md):
-T bleibt gemeinsame Referenzkoordinate, lokal 300/5 unverändert. Zwei/zwei/vier
-gepaarte Blöcke ergeben 48 frische Suchaufrufe und 16 verlustbasiert ausgewählte
-Paketausgaben; 32 neue Seeds, die ersten beiden jedes Blocks in beiden Armen.
-Lokal bestehen 3.525 Pythonfälle und zwölf kleine native Kontrollworker samt
-Einzel-/Gesamtverifikation; vollständige Ready-CI und Übernahme bleiben offen.
-Die wissenschaftliche Serie ist noch nicht ausgeführt. Das isoliert die Budgetaufteilung und behauptet
-keinen Sieg von T. Grobe Laufzeitorientierung auf demselben Rechner: 5–6 Stunden.
-Die bisherigen Bestätigungssignale sind damit Entwicklungswissen; eine spätere
-Bestätigung benötigt unberührte Fälle. Kein unmittelbarer Rauschpilot.
-Die bewusste Profilübernahme in den späteren
-allgemeinen gewichteten Laufweg bleibt gesondert offen.
+KI-Review. Der vor Implementierung [eingefrorene Anschlussvergleich](docs/restart_budget_plan.md)
+**4 × 1.000 (R) gegen 2 × 2.000 (L)** ist mit PR #85 nach vollständiger
+[CI 43213172104](https://github.com/craexxn/ringdown-sr/actions/runs/43213172104)
+übernommen: 3.525 Pythonfälle und sämtliche nativen Prüfblöcke einschließlich
+zwölf neuer kleiner Worker. Der [wissenschaftliche Lauf 001](docs/restart_budget_results_manjaro_001.md)
+umfasst 48 frische Suchen und 16 Paketausgaben in ursprünglichem t bei lokal 300/5,
+ohne Ausfälle. R/L erreichen auf anchor, variant_low und variant_high
+**2/2 gegen 2/2, 2/2 gegen 1/2 und 4/4 gegen 4/4 A-Ausgaben**;
+mit nachgewiesener Originalfamilie **2/2 gegen 2/2, 2/2 gegen 1/2 und 2/4 gegen 3/4**.
+Der vollständig lesend bestätigte Befund ist **`mixed`**; wissenschaftliche
+Gesamtprüfung, technischer Vorlauf und alle zwölf bytegleichen Verify-Exporte bestätigt.
+
+Die drei hohen A-Ausgaben ohne Originalfamiliennachweis umfassen zwei
+Originalformeln mit Definitionslücken und gültiger Fortsetzung sowie eine
+weitere mit ungeklärtem Zusatzterm.
+538 Kandidaten aus 48 Endfronten sind unabhängig nachgerechnet; in den
+19 Fronten mit Nicht-A-Originalauswahl liegt keine andere A-Kurve.
+Die vollständigen Abschnittsaufrufe dauern zusammen rund **4 h 53 min 32 s**;
+R benötigt je Signal **25,30 %, 6,73 % und 4,94 % mehr Workerzeit** als L.
+Kosten ändern die eingefrorene Richtungsregel nicht. Neue Seeds und geänderte
+Pakete erlauben keinen ursächlichen Verbesserungsnachweis gegenüber früheren Serien.
+
+Die bekannten Signale sind Entwicklungswissen; die frühere verfehlte 8/10-Grenze
+bleibt bestehen. Jetzt folgt die begründete Methodeneinordnung mit der Betreuung
+vor einer unabhängigen Bestätigung auf unberührten Fällen; keine automatische
+weitere Iterationsstaffel oder Suchintervention. U bleibt offen und wurde hier
+nicht getestet. Die bewusste Profilübernahme in den allgemeinen gewichteten
+Laufweg bleibt vor einem späteren Rauschpilot gesondert zu prüfen.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
 Ausführungsschritt. Umsetzung und Nachweise stehen im

@@ -1,6 +1,6 @@
 # Ergebnisindex und Archivierungsstand
 
-Stand: 12.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
+Stand: 13.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
 nachträglichen Bewertungen; [Ablagerichtlinie](results_archiving.md).
 Serien sind die Indexeinheit, ihre Zellen/Wiederholungen bleiben im Originalbericht.
 Die Aufstellung ist keine Behauptung, dass alle jemals lokal erzeugten Ergebnisse
@@ -38,6 +38,12 @@ wissenschaftliche Suchen in drei Abschnitten sowie vier technische Vorlaufworker
 Die vorab festgelegte Einordnung ist gemischt; Original und separates Audit
 sind unten zugeordnet. Keine neue unabhängige Bestätigung und keine
 stillschweigende Übernahme der gedehnten Zeitkoordinate.
+
+Der [Vergleich zweier Neustartpakete 001](restart_budget_results_manjaro_001.md)
+ist auf `680af98` nach PR85 am 12.11.2026 ausgeführt und am 13.11.2026 als
+Originalarchiv empfangen: 48 wissenschaftliche Suchen, 16 Paketausgaben,
+zwölf technische Vorlaufworker. Die vorab festgelegte Einordnung ist gemischt;
+Ausführung, lesender Prüfstand und offene Sicherung sind unten getrennt zugeordnet.
 
 ## Archivablage
 
@@ -110,6 +116,7 @@ Die Lauf-ID verbindet diese Übersicht mit genau der gleichnamigen Zeile in
 | `iteration-time-manjaro-001` — 2.000 Iterationen gegenüber 400 Sekunden | [`4df7ecaaaed0a6d235f7db104c6982bdfcabf048`](https://github.com/craexxn/ringdown-sr/commit/4df7ecaaaed0a6d235f7db104c6982bdfcabf048) | Abgeschlossen; 8 frische Zellen, 76 Kandidaten, Aufrufmessung und Verify-Export lesend bestätigt | `ringdown-sr-iteration-time-comparison-1`; I 4/4 A, Z 3/4 A; beide 3/4 A plus Familie | [Ergebnisbericht](iteration_time_results_manjaro_001.md) |
 | `restart-confirmation-manjaro-001` — Unabhängige Bestätigung von 4 × 500 gegenüber 1 × 2.000 | [`c3da991f389a4ec55206539ebe02a9648d4474b8`](https://github.com/craexxn/ringdown-sr/commit/c3da991f389a4ec55206539ebe02a9648d4474b8) | Alle 150 wissenschaftlichen Zellen und 1.755 Kandidaten in drei Abschnitten lesend bestätigt; technischer Vorlauf mit 6 Workern separat bestätigt | R: 8/10, 10/10, 4/10 A plus Originalfamilie; I: 4/10, 5/10, 7/10; praktische Grenze verfehlt, keine Ausfälle | [Ergebnisbericht](restart_confirmation_results_manjaro_001.md) |
 | `time-coordinate-manjaro-001` — Physische und gedehnte Zeit bei je 1 × 2.000 | [`91d461cf9c08c07b7fdb8ddae5ad4b207135bc67`](https://github.com/craexxn/ringdown-sr/commit/91d461cf9c08c07b7fdb8ddae5ad4b207135bc67) | Alle 16 wissenschaftlichen Zellen und 188 Kandidaten lesend bestätigt; technischer Vorlauf mit 4 Workern separat bestätigt | T/U A: 2/2–2/2, 2/2–1/2, 1/4–3/4; gemeinsame Familienerfolge: 0/2–0/2, 2/2–0/2, 1/4–2/4; gemischt, keine Ausfälle | [Ergebnisbericht](time_coordinate_results_manjaro_001.md) |
+| `restart-budget-manjaro-001` — 4 × 1.000 gegen 2 × 2.000 bei lokal 300/5 | [`680af98e4342dc831a6dcc995fe658d4fcbe942f`](https://github.com/craexxn/ringdown-sr/commit/680af98e4342dc831a6dcc995fe658d4fcbe942f) | Alle 48 wissenschaftlichen Suchen abgeschlossen; 538 Kandidaten nachgerechnet, technischer Vorlauf mit 12 Workern und vollständige Verifikation bestätigt | R/L A: 2/2–2/2, 2/2–1/2, 4/4–4/4; gemeinsame Familienerfolge: 2/2–2/2, 2/2–1/2, 2/4–3/4; gemischt, keine Ausfälle | [Ergebnisbericht](restart_budget_results_manjaro_001.md) |
 | `sr-repeatability-wsl2-threads1-001` — Wiederholbarkeit freier Fronten bei Poollimit 1 | Vollständige Ausführungs-/Treiberzuordnung im Bericht nicht ausgewiesen | Vergleichsergebnisse dokumentiert; vollständige Abschlussmetadaten nachtragen | Frontvergleich gemäß Bericht; keine Zusatzbewertung | [Bericht](symbolic_core_results.md) |
 | `sr-core-control-wsl2-001` — Feste numerische Kontrollen mit/ohne Haswell | [`6ed493d2e8fb3a845dd921bd99a620feb8b8850a`](https://github.com/craexxn/ringdown-sr/commit/6ed493d2e8fb3a845dd921bd99a620feb8b8850a); externer Treiber [`ac41251c180a9302aace512d8a100186a2636fe9`](https://github.com/craexxn/ringdown-sr/commit/ac41251c180a9302aace512d8a100186a2636fe9) | Abgeschlossen laut geprüftem Archivvergleich | Numerischer Vergleich gemäß [Befund](fixed_numerics_probe.md#übermittelter-haswell-vergleich-vom-26102026); keine Zusatzbewertung | [Bericht](fixed_numerics_probe.md) |
 | `sr-free-haswell-wsl2-001` — Freie SR-Suche mit bestätigtem Haswell-Kern | [`6ed493d2e8fb3a845dd921bd99a620feb8b8850a`](https://github.com/craexxn/ringdown-sr/commit/6ed493d2e8fb3a845dd921bd99a620feb8b8850a); externer Treiber [`6b3d156a9daecabc4f42d5b940b065a8dda5bc19`](https://github.com/craexxn/ringdown-sr/commit/6b3d156a9daecabc4f42d5b940b065a8dda5bc19) | Abgeschlossen; zwei freie Wiederholungen je Gerät | Geordneter Front-/Bitvergleich gemäß Bericht; keine Zusatzbewertung | [Bericht](symbolic_core_results.md) |
@@ -154,6 +161,7 @@ der übrigen Hashes steht je Zeile.
 | `iteration-time-manjaro-001` | `iteration-time-manjaro-001.tar.gz` | `b53f63ad9df07a1067d6909adf436ee9631b45b680ff274d5e7acafc4c9e81d9`; separat übermittelte SHA-256, Original-/Aufruf-/Verify-Bindungen am 06.11.2026 selbst geprüft | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `restart-confirmation-manjaro-001` einschließlich technischem Vorlauf | `restart-confirmation-manjaro-001.tar.gz` | `cc5eec6e2fd0a0407f2371c7d6b7591e84e9c2e2cc850b509ed201ba59003468`; am 12.11.2026 aus drei Teilen bytegenau zusammengesetzt, Hash, Original-/Aufruf-/Verify-Bindungen selbst geprüft | [Gemeinsame Ablage](#archivablage); Arbeitskopie vorhanden | Nicht bestätigt |
 | `time-coordinate-manjaro-001` einschließlich technischem Vorlauf | `time-coordinate-manjaro-001.tar.gz` | `0d4a662010ad90ae3119a20154b7a39e839b1fbe61cb0adffdbedf51ee6ab4b9`; 9.658.389 Bytes, 1.212 Originaldateien, Herkunft und vollständige wissenschaftliche/technische Verifikation am 12.11.2026 selbst bestätigt | [Gemeinsame Ablage](#archivablage); geprüfte Arbeitskopie vorhanden | Nicht bestätigt |
+| `restart-budget-manjaro-001` einschließlich technischem Vorlauf | `restart-budget-manjaro-001.tar.gz` | `fbddd9b45061c3668c089217c7194ca01942655de5608bdc2df649f1c87614e6`; 27.824.763 Bytes, 3.482 Originaldateien; SHA-256, Herkunft und vollständige Verifikation am 13.11.2026 selbst bestätigt | [Gemeinsame Ablage](#archivablage); geprüfte Arbeitskopie vorhanden | Nicht bestätigt |
 | `sr-repeatability-wsl2-threads1-001` | `sr-repeatability-wsl2-threads1-001.tar.gz` | `7f63a075c2a95226d320fa6a6a204481c6038fd3ca6c837f9bcbb7f371bf63d7`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `sr-core-control-wsl2-001` | `sr-core-control-wsl2-001.tar.gz` | `5826725c95499b498f9bc6c0a9935c4cbf7d97f2f63d14b81aad05c85813d114`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `sr-free-haswell-wsl2-001` | `sr-free-haswell-wsl2-001.tar.gz` | `1442cbea82b6b80c6de9533ceb5bc2a620e1fb3500ee1524529c36c1f5c98ee3`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
@@ -360,20 +368,48 @@ Original und Audit liegen als geprüfte Arbeitskopien vor. Gemeinsame dauerhafte
 Ablage, unabhängige Zweitkopien und SHA-256-Prüfung beider Speicherziele bleiben
 ausdrücklich offen. Keine verpflichtende GitHub-Upload-Aufgabe.
 
-### Vorbereiteter Vergleich zweier Neustartpakete
+### Lesende Verifikation des Neustartpaketvergleichs 001
 
-Der [begrenzte Budgetvergleich](restart_budget.md) nach PR84 ist vorbereitet,
-noch nicht wissenschaftlich ausgeführt. [Plan](restart_budget_plan.md), Seeds
-und byteidentische physische Eingaben sind vor Implementierung eingefroren.
-48 neue Suchaufrufe und 16 Paketausgaben vorgesehen. Ein lokaler technischer
-Vorlauf auf `75065ed` mit zwölf winzigen Workern, vier Paketausgaben und
-Einzel-/Gesamtverifikation ist bestanden; kein wissenschaftlicher Manjaro-Nachweis.
-Die im Laufweg genannten 001-IDs sind
-vorbereitete Befehle, keine belegten wissenschaftlichen Archive. Nach tatsächlicher
-Ausführung die drei Abschnitte, ihre benachbarten Aufrufmessungen, technische
-Einzel-/Gesamtverifikationen und wissenschaftliche Gesamtverifikation gemeinsam
-zuordnen; Ausführungscommit, Archivhash und tatsächliche Sicherung nachtragen.
-Die Vorbereitung behauptet keine neue Archivkopie und erzeugt keine Uploadpflicht.
+Original am 13.11.2026 empfangen; tatsächliche wissenschaftliche Ausführung
+am 12.11.2026 auf sauberem main `680af98` nach PR85. Archiv
+`restart-budget-manjaro-001.tar.gz`: **27.824.763 Bytes**, bestätigte SHA-256
+`fbddd9b45061c3668c089217c7194ca01942655de5608bdc2df649f1c87614e6`.
+3.482 reguläre Originaldateien, 235.902.915 entpackte Bytes; drei Abschnitte
+anchor/low/high mit benachbarten Aufrufmessungen und gemeinsamer Verifikation,
+technischer Manjaro-Vorlauf mit zwölf Workern, zwei Fixtures und eigenen
+Aufrufmessungen sowie Einzel-/Gesamtprüfungen vollständig enthalten.
+
+Alle fünf Vorbereitungen binden 102 Quellen einschließlich aller 52 Python-
+Paketdateien an Git und den sauberen Ausführungsstand. Vollständige offizielle
+wissenschaftliche und technische Verifikation bestanden: drei wissenschaftliche
+und neun technische Exportdateien bytegleich. Beide technischen Einzelprüfungen
+über CLI, Gesamtprüfung über die unveränderte öffentliche Verify-Funktion;
+die wissenschaftliche Serien-CLI verlangt genau drei Abschnitte. Unabhängige
+Nachzählung bestätigt 48 native Originalauswahlen, 16 Paketwahlen, Seeds,
+Iterationstopps und sämtliche Pflichtkosten. Alle 538 Frontkandidaten zusätzlich
+mit unveränderten Bewertungsverträgen nachgerechnet; eigener Baum-Replay und
+Fehlernormen bestätigen die Kurvenklassen. Keine neuen Fits oder Suchen.
+
+[Ergebnisbericht](restart_budget_results_manjaro_001.md): gemischte
+Entwicklungseinordnung trotz vier A-Kurven beider Verfahren auf variant_high.
+Zwei hohe Originalausgaben besitzen entfernbare Definitionslücken mit gültiger
+Fortsetzung, eine einen winzigen zusätzlichen Modus mit offenem Familiennachweis.
+Vollständige wissenschaftliche Abschnittsaufrufe zusammen 17.612,447 s,
+4 h 53 min 32 s ohne Pausen, technischen Vorlauf und spätere Verifikation.
+
+Getrenntes Auditpaket: `restart-budget-audit-001.tar.gz`, **8.259.028 Bytes**,
+SHA-256 `16f7568f6ed2d56245945d6a24d66b80e02ce3e782e659df74df2ea110e338b2`.
+137 Dateien: Empfangsmanifest, Zähl-/Front-/Bindungsskripte und Befunde,
+offizielle Prüfkommandos, zwölf eigene Verify-Exporte, Logs beider lokalen
+Verifikationsversuche, Abschlussnachweis und Auditmanifest. Paket-Rücklesen
+gegen Dateien und Manifest bestanden. Der erste Versuch blieb wegen
+schreibgeschütztem Julia-Logcache gesperrt; der zweite bestand mit unverändertem
+Verifikator und eng begrenztem Cache-Schreibrecht. Originalarchiv und alle
+3.482 Dateien vor/nach der Prüfung unverändert; Original bleibt separat erhalten.
+
+Original und Audit bleiben Arbeitskopien; gemeinsame dauerhafte Ablage,
+unabhängige Zweitkopien und SHA-256-Prüfung beider Speicherziele sind weiterhin
+offen. Keine verpflichtende GitHub-Upload-Aufgabe.
 
 ### Offene Sicherungsschritte
 
