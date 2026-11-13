@@ -25,9 +25,15 @@ Variante. PR84 hat diesen Befund als `fbdb450` übernommen. Der
 und t als gemeinsame Referenzkoordinate. Der
 [vollständig lesend bestätigte Befund](restart_budget_results_manjaro_001.md)
 ist erneut gemischt; wissenschaftliche Gesamtprüfung und technischer Vorlauf bestanden.
-Die datierte Einordnung in Phase 4 führt zur Methodenentscheidung mit der
-Betreuung vor einer unabhängigen Bestätigung auf unberührten Fällen;
-keine automatische weitere Suchintervention und kein unmittelbarer Rauschpilot. Historische
+PR86 hat den Ergebnisstand als `11c844d` übernommen. Die unten datierte
+Planentscheidung vom 13.11.2026 führt zur erneuten Bestätigung in Phase 6:
+drei neue feste Signaldefinitionen mit je zehn gepaarten Blöcken für
+4 × 1.000 als Kandidaten und 2 × 2.000 als aktive Kontrolle, 180 frische Suchen.
+Das [Protokoll](restart_budget_confirmation_plan.md) ist vor Implementierung
+festgelegt; seine öffentliche Commitbindung ist `352b7b5`. Der neue Laufweg ist
+implementiert und lokal technisch geprüft. Vollständige Ready-CI für PR #87,
+Übernahme und wissenschaftliche Ausführung stehen aus. Keine automatische weitere
+Suchintervention und kein unmittelbarer Rauschpilot. Historische
 Protokolle, Seeds, Eingaben und Entscheidungsregeln bleiben eingefroren. Profilübernahme in
 den allgemeinen gewichteten Laufweg bleibt vor einem späteren Rauschpilot
 gesondert zu prüfen. Die folgenden datierten Einordnungen erhalten ihre Historie.
@@ -653,6 +659,55 @@ würde sie zu Entwicklungsfällen machen. Der Rauschpilot folgt nicht unmittelba
 auf diese verfehlte Bestätigung; seine Voraussetzungen und die bewusste
 Profilübernahme aus Phase 5 bleiben bestehen.
 
+### Erneute Bestätigung beschlossen am 13.11.2026
+
+Der gemischte Budgetbefund begründet eine begrenzte Bestätigung der unveränderten
+Verfahren auf **drei neuen Signaldefinitionen**. R: 4 × 1.000 bleibt vorläufiger
+Kandidat wegen seiner durchgehenden A-Kurven im Entwicklungsbestand;
+L: 2 × 2.000 bleibt aktive Kontrolle wegen geringerer Workerzeit und des höheren
+gemeinsamen Erfolgs auf der hohen Entwicklungsvariante. Dies ist keine belegte
+allgemeine Überlegenheit von R und keine nachträgliche Umdeutung der früheren
+negativen Bestätigung.
+
+Der [getrennt eingefrorene Plan](restart_budget_confirmation_plan.md), Seeds,
+Eingaben und Erzeuger sind vor Implementierung festgelegt; die öffentliche
+Commitbindung des unveränderten Inhalts ist `352b7b5`.
+`confirm_low`, `confirm_mid` und `confirm_high` erhalten je zehn gepaarte
+Blöcke: insgesamt 180 frische Suchen, 120 verschiedene Seeds und 60 Paketausgaben.
+Beide Arme bleiben in ursprünglichem t, lokal 300/5 und sonst unveränderten
+Optionen; keine Kombination mit 4 × 500, keine neue Koordinaten- oder Budgetstaffel.
+Der [Manjaro-Laufweg](restart_budget_confirmation.md) trennt technische Abnahme,
+spätere wissenschaftliche Ausführung und lesende Gesamtverifikation.
+
+Hauptentscheidung ist vorab R zugeordnet: **mindestens 8/10 gemeinsame
+A-/Originalfamilienerfolge auf jedem der drei Signale**. L erhält dieselbe
+praktische Prüfung separat; ein L-Erfolg ersetzt keine verfehlte R-Grenze.
+Lückenhafte Originale mit gültiger Fortsetzung und ungeklärte Zusatzterme
+zählen nicht als gültige Originalfamilie. Die bestehenden Beweisgrenzen und
+`not_assessed` für neue Parameterübereinstimmungen bleiben bestehen.
+Gepaarte Gewinne/Verluste, Kosten und marginale exakte Binomialintervalle
+beschreiben den Vergleich; keine nachträgliche Armwahl, gepoolte Erfolgsquote,
+Signifikanz- oder Überlegenheitsentscheidung. Zehn Blöcke sind eine pragmatische
+Begrenzung, keine behauptete Powerberechnung; 8/10 belegt nicht eine wahre
+Erfolgswahrscheinlichkeit von mindestens 80 %.
+
+Die drei Kombinationen sind vorab festgelegte Innenbereichsfälle des bekannten
+Parameterkastens, keine zufällige Signalstichprobe und kein erneuter Test der
+zuvor schwierigen Randkombination. Neue Seeds allein auf den bereits benutzten
+Signalen würden keine Übertragung auf neue Signaldefinitionen prüfen. Auch
+ein positives Ergebnis dieser Serie hebt die früheren negativen Befunde nicht
+auf und bestätigt keine Robustheit auf dem ganzen Parameterkasten.
+
+Alle vorgesehenen Fälle einschließlich zulässiger Ausfälle bleiben im Nenner
+und in den Kosten; kein vorzeitiger wissenschaftlicher Abbruch, kein automatischer
+Neustart oder zusätzliche Seedrunde bis zum gewünschten Ergebnis. Integritätsfehler
+und Unterbrechungen sperren die Freigabe. Bei Nichterfüllung Befund und erreichbaren
+Forschungsanspruch mit der Betreuung einordnen, keinen weiteren Suchhebel öffnen.
+Die bewusste Profilübernahme nach Phase 5 in den allgemeinen gewichteten Laufweg
+bleibt vor dem Rauschpilot erforderlich: Gewichtung sowohl in Struktursuche als
+auch Konstantenoptimierung. Diese rauschfreie Bestätigung prüft diesen späteren
+gewichteten Laufweg nicht.
+
 ## 7. Rauschpilot und Hauptversuchsplanung
 
 Zunächst wenige Signale und Rauschbedingungen wählen. Rauschrealisierungen,
@@ -684,17 +739,23 @@ Rauschpilot übergehen. Andernfalls mit der Betreuung den Forschungsanspruch
 festlegen: stärkeres Vorwissen als ausdrücklich benannte Variante oder eine
 Untersuchung der Grenzen freier SR. Keine unbeschränkte Parametersuche.
 
-## Vor dem jeweiligen Versuch noch festzulegen
+## Beschlossene Regeln und vor dem Rauschpilot noch festzulegen
 
 - Zielintervall aus tatsächlichen Trainingsendpunkten, Strukturbeweise und
   Ressourcen gemäß bestehenden Verträgen anwenden; diese Regeln sind beschlossen.
-- Rolle möglicher Nachbearbeitung im endgültigen Ausgabemodell.
+- Für die neue Bestätigung ist die unveränderte Originalformel das endgültige
+  Ausgabemodell; keine nachträgliche Beseitigung von Definitionslücken oder
+  Zusatztermen. Eine mögliche spätere Nachbearbeitungsvariante bräuchte einen
+  eigenen Methodenbeschluss und ändert diese Bestätigung nicht.
 - Seeds, Bestätigungssignale, Auswahl-/Kostenregeln und 8/10-Grenze sind
   im Bestätigungsprotokoll vom 09.11.2026 festgelegt; Umsetzung, vollständige
   technische CI, separates Review und Übernahme sind mit PR #80 abgeschlossen.
   Technischer Manjaro-Vorlauf und wissenschaftliche Serie sind inzwischen
-  vollständig lesend bestätigt; die praktische Grenze ist verfehlt. Der nächste
-  Schritt ist die oben datierte Einordnung, keine automatische Wiederholung.
+  vollständig lesend bestätigt; die praktische Grenze ist verfehlt. Dies ist
+  ein historisch abgeschlossener Versuch. Aktuell gilt der gesonderte Beschluss
+  vom 13.11.2026 mit neuen festen Signalen, Seeds und unveränderter strenger
+  Originalfamilienregel im [neuen Bestätigungsplan](restart_budget_confirmation_plan.md);
+  technische Abnahme und spätere wissenschaftliche Ausführung getrennt führen.
 - Konkrete Rausch-, Hintergrund- und Gewichtungsbedingungen des kleinen Piloten.
 
 ## Literatur und Übertragungsgrenzen

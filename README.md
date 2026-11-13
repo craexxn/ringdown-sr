@@ -5,9 +5,9 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 13.11.2026; aktuelle main-Basis `680af98` nach
-[PR #85](https://github.com/craexxn/ringdown-sr/pull/85).
-Der Budgetvergleich wurde auf diesem Stand wissenschaftlich ausgeführt;
+Fortsetzungsstand: 13.11.2026; aktuelle main-Basis `11c844d` nach
+[PR #86](https://github.com/craexxn/ringdown-sr/pull/86).
+Der Budgetvergleich wurde auf `680af98` nach PR #85 wissenschaftlich ausgeführt;
 seine aktuelle Quellenprüfung steht im
 [Ergebnisbericht](docs/restart_budget_results_manjaro_001.md).
 Wissenschaftlicher Ausführungs- und lesender Prüfstand des Zeitkoordinatenvergleichs
@@ -113,11 +113,23 @@ Kosten ändern die eingefrorene Richtungsregel nicht. Neue Seeds und geänderte
 Pakete erlauben keinen ursächlichen Verbesserungsnachweis gegenüber früheren Serien.
 
 Die bekannten Signale sind Entwicklungswissen; die frühere verfehlte 8/10-Grenze
-bleibt bestehen. Jetzt folgt die begründete Methodeneinordnung mit der Betreuung
-vor einer unabhängigen Bestätigung auf unberührten Fällen; keine automatische
-weitere Iterationsstaffel oder Suchintervention. U bleibt offen und wurde hier
-nicht getestet. Die bewusste Profilübernahme in den allgemeinen gewichteten
-Laufweg bleibt vor einem späteren Rauschpilot gesondert zu prüfen.
+bleibt bestehen. Die am 13.11.2026 beschlossene
+[erneute Bestätigung](docs/restart_budget_confirmation_plan.md) ist vor
+Implementierung festgelegt; ihre öffentliche Commitbindung ist `352b7b5`:
+drei neue feste Signaldefinitionen,
+je zehn gepaarte Blöcke, 180 frische Suchen und 60 Paketausgaben. R: 4 × 1.000
+als vorläufiger Kandidat; L: 2 × 2.000 als aktive Kontrolle, beide in t bei
+300/5. R muss mindestens 8/10 A-Ausgaben mit gültiger Originalfamilie auf jedem
+Signal erreichen; L wird getrennt berichtet. Keine automatische Armwahl,
+Kombination mit 4 × 500 oder weitere Budgetstaffel. Der
+[Manjaro-Laufweg](docs/restart_budget_confirmation.md) ist implementiert und
+lokal geprüft: 3.656 Pythonfälle, zwölf kleine native Worker sowie Einzel- und
+Gesamtverifikation bestanden. Vollständige Ready-CI für PR #87 und Übernahme
+stehen aus; die wissenschaftliche Serie wurde nicht gestartet. Drei feste neue
+Innenbereichsfälle bestätigen weder den ganzen Parameterkasten noch erneut
+die zuvor schwierige Randkombination. U bleibt offen. Die bewusste
+Profilübernahme in den allgemeinen gewichteten Laufweg bleibt vor einem
+späteren Rauschpilot gesondert zu prüfen.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
 Ausführungsschritt. Umsetzung und Nachweise stehen im

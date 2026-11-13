@@ -45,6 +45,18 @@ Originalarchiv empfangen: 48 wissenschaftliche Suchen, 16 Paketausgaben,
 zwölf technische Vorlaufworker. Die vorab festgelegte Einordnung ist gemischt;
 Ausführung, lesender Prüfstand und offene Sicherung sind unten getrennt zugeordnet.
 
+Die [erneute Bestätigung](restart_budget_confirmation_plan.md) ist nach
+Übernahme von PR86 vor Implementierung festgelegt; ihre öffentliche
+Commitbindung ist `352b7b5`: drei neue
+Signaldefinitionen, 180 frische Suchen und 60 Paketausgaben. Sie ist
+**noch nicht wissenschaftlich ausgeführt**. Der [neue Laufweg](restart_budget_confirmation.md)
+ist implementiert und lokal technisch geprüft; vollständige Ready-CI für PR #87
+und Übernahme stehen aus. Daher gibt es hier noch keinen wissenschaftlichen
+Originalarchivhash, Ausführungscommit oder
+Sicherungsnachweis. Nach tatsächlicher Ausführung alle drei Abschnitte samt
+benachbarten `-call.json`, technischem Vorlauf und Gesamtverifikation zuordnen.
+Die dortigen 001-IDs sind bislang Befehlsvorlagen, keine Ausführungsbelege.
+
 ## Archivablage
 
 Die gemeinsamen Ablagehinweise werden einmal hier gepflegt. Die Dateinamen in

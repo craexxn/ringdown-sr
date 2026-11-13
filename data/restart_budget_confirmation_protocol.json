@@ -1,0 +1,629 @@
+{
+  "format": "ringdown-sr-restart-budget-confirmation-protocol-1",
+  "status": "frozen_before_implementation",
+  "base_commit": "16f2e4533583ca7cced88799ffc3abb8d0052904",
+  "purpose": "prospective_confirmation_on_untouched_fixed_signals",
+  "restart_iterations": 1000,
+  "long_iterations": 2000,
+  "outer_iterations_per_package": 4000,
+  "blocks_per_signal": 10,
+  "search_calls": 180,
+  "algorithm_outputs": 60,
+  "paired_blocks": 30,
+  "worker_seconds": 1800,
+  "signal_seconds": 115200,
+  "verify_seconds": 7200,
+  "series_verify_seconds": 21600,
+  "minimum_joint_successes": 8,
+  "arms": [
+    {
+      "name": "R",
+      "members": 4,
+      "iterations": 1000,
+      "seed_slots": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "name": "L",
+      "members": 2,
+      "iterations": 2000,
+      "seed_slots": [
+        0,
+        1
+      ]
+    }
+  ],
+  "coordinate": {
+    "name": "t",
+    "scale_hex": "0x1.0000000000000p+0",
+    "unit": "s"
+  },
+  "execution": {
+    "all_members_fresh": true,
+    "historical_reuse": false,
+    "checkpoint_continuation": false,
+    "within_arm_order": "all_members_in_seed_slot_order",
+    "shared_seed_slots": [
+      0,
+      1
+    ],
+    "shared_seed_calls_are_distinct": true
+  },
+  "seed_generator": {
+    "bit_generator": "PCG64",
+    "seed": 2026111301,
+    "draw": "integers(1, 2**31); reject duplicates and every positive 31-bit integer token in tracked text under data/docs/src/scripts/tests",
+    "exclusion_commit": "16f2e4533583ca7cced88799ffc3abb8d0052904",
+    "excluded_values": 1569,
+    "excluded_values_sha256": "b602ea4e8d18f8b962e4f2dee95185f09934128e3890aa7361ad83c45eaad83e",
+    "scope": "documented repository values; no claim about unknown external searches"
+  },
+  "source": {
+    "commit": "16f2e4533583ca7cced88799ffc3abb8d0052904",
+    "inputs_path": "data/restart_confirmation_inputs.npz",
+    "inputs_sha256": "02d03ebf37be51613b4e6303a2806dcb308fc344c544e82ff0dfd0d82000c8f2",
+    "reuse": "regular physical time axes only; all signal values and irregular points are new",
+    "signal_source_path": "src/ringdown_sr/signals.py",
+    "signal_source_sha256": "7be30656875bc0276be19a0cbd5df1f2d925add6eacdc241d30dfee94451f7cd"
+  },
+  "signal_design": {
+    "rule": "fixed midpoints of three equal-width strata in each parameter; fixed rank permutations, no search-based choice",
+    "parameter_order": [
+      "amplitude",
+      "frequency_hz",
+      "decay_time_s",
+      "phase_rad"
+    ],
+    "bounds_rational": {
+      "amplitude": [
+        "1/2",
+        "1"
+      ],
+      "frequency_hz": [
+        "210",
+        "320"
+      ],
+      "decay_time_s": [
+        "3/500",
+        "1/100"
+      ],
+      "phase_rad": [
+        "-1/2",
+        "2/5"
+      ]
+    },
+    "truth_definition": "the exact values of the stored binary64 parameters; rational midpoints are rounded once before signal evaluation",
+    "documented_parameter_tuples": 8,
+    "documented_parameter_tuples_sha256": "d7597668277e55f7b2460d7fa42250b64ca7f6e87653d29c5ece1da83a51a46c",
+    "novelty_scope": "all complete signal parameter dictionaries in tracked data JSON at base_commit; no claim about unknown external searches",
+    "generalization": "three fixed interior cases, not a random sample or a guarantee over the full parameter box"
+  },
+  "grid": {
+    "reuse_source_points": false,
+    "bit_generator": "PCG64",
+    "seed": 2026111302,
+    "points": 1024,
+    "attempts": 100,
+    "rule": "one private-RNG point per equal-width stratum in (0,127/4096); reject exact 1/32768-grid hits",
+    "new_threshold": null
+  },
+  "profile": {
+    "native_worker": "unchanged time_budget_worker; condition iterations",
+    "local_iterations": 300,
+    "additional_local_restarts": 5,
+    "use_frequency": true,
+    "use_frequency_in_tournament": true,
+    "should_simplify": false,
+    "warmup_maxsize_by": 0.0,
+    "grammar": [
+      "+",
+      "-",
+      "*",
+      "/",
+      "exp",
+      "sin",
+      "cos"
+    ],
+    "population_count": 2,
+    "population_size": 32,
+    "cycles_per_iteration": 50,
+    "maxsize": 20,
+    "maxdepth": 20,
+    "parsimony": 0.0,
+    "optimizer_function_limit": 10000,
+    "loss": "unweighted native MSE"
+  },
+  "selection": [
+    "finite_native_training_loss_of_original_selected_candidate",
+    "original_complexity",
+    "member_seed_slot"
+  ],
+  "original_selection": [
+    "finite_native_training_loss",
+    "original_complexity",
+    "original_front_index"
+  ],
+  "endpoint": "physical_curve_A_and_proven_original_family",
+  "parameter_match": "not_assessed",
+  "decision": {
+    "primary_candidate": "R",
+    "primary_confirmation": "R has at least 8 of 10 A-and-proven-original-family outputs on each of all three verified signals",
+    "control_arm": "L",
+    "control_gate": "report the same per-signal 8-of-10 condition separately for L; it never replaces the R decision",
+    "comparison": "descriptive paired A/joint gains, losses, ties and observed costs; no superiority or significance gate",
+    "uncertainty": "marginal exact two-sided 95-percent Clopper-Pearson intervals by signal/arm/endpoint under the Bernoulli assumption; no simultaneous guarantee",
+    "no_pooled_success_rate": true,
+    "no_automatic_control_adoption": true,
+    "no_hybrid_selection": true,
+    "no_automatic_profile_change": true,
+    "no_additional_tuning_after_failure": true
+  },
+  "technical": {
+    "scope": "separate artificial fixtures; no scientific confirmation decision",
+    "signals": [
+      "fixture_a",
+      "fixture_b"
+    ],
+    "blocks_per_signal": 1,
+    "restart_iterations": 1,
+    "long_iterations": 2,
+    "search_calls": 12,
+    "algorithm_outputs": 4
+  },
+  "signals": [
+    {
+      "name": "confirm_low",
+      "truth": {
+        "amplitude": 0.5833333333333334,
+        "frequency_hz": 228.33333333333334,
+        "decay_time_s": 0.009333333333333334,
+        "phase_rad": -0.05
+      },
+      "truth_hex": {
+        "amplitude": "0x1.2aaaaaaaaaaabp-1",
+        "frequency_hz": "0x1.c8aaaaaaaaaabp+7",
+        "decay_time_s": "0x1.31d5acb6f4651p-7",
+        "phase_rad": "-0x1.999999999999ap-5"
+      },
+      "design_rational": {
+        "amplitude": "7/12",
+        "frequency_hz": "685/3",
+        "decay_time_s": "7/750",
+        "phase_rad": "-1/20"
+      },
+      "design_strata": {
+        "amplitude": 0,
+        "frequency_hz": 0,
+        "decay_time_s": 2,
+        "phase_rad": 1
+      },
+      "blocks": 10,
+      "seeds": [
+        [
+          265854721,
+          824982342,
+          1837924728,
+          1913594427
+        ],
+        [
+          286528356,
+          848221329,
+          1774299266,
+          1858643745
+        ],
+        [
+          196497361,
+          1875557798,
+          488463072,
+          313097350
+        ],
+        [
+          409697066,
+          1020161207,
+          338049982,
+          284957682
+        ],
+        [
+          1956363624,
+          1587307462,
+          349437972,
+          330071998
+        ],
+        [
+          677946230,
+          70147906,
+          1889943485,
+          287873002
+        ],
+        [
+          1071932192,
+          1301612583,
+          536413059,
+          2016336140
+        ],
+        [
+          522161390,
+          120130275,
+          153552967,
+          1634964290
+        ],
+        [
+          483694273,
+          163754413,
+          2013499206,
+          1175166230
+        ],
+        [
+          270769115,
+          75300530,
+          396822053,
+          1664476870
+        ]
+      ],
+      "odd_block_order": [
+        "R",
+        "L"
+      ],
+      "even_block_order": [
+        "L",
+        "R"
+      ],
+      "arrays": {
+        "time_s": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "50c345daa383e450558fca37cd20adf54f13549035ae53eeb0c528d140666c5c"
+        },
+        "observed": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "661fa4c6fc9819a8211fab33f0b3ac7265e351f82c8afb0fbd5e122fe0125033"
+        },
+        "diagnostic_time_s": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "d93b19b716759c30734a68c0448a0f6bc619d00110dc458a461a237b2ebce854"
+        },
+        "diagnostic_truth": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "3389fc12d312ed8559bc4f0f3528539a8a6239f2bff3d89aa5cc5dfcb691b7ab"
+        }
+      },
+      "grid": {
+        "time_s": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "d0f489229d161c778985359cb848d8a60dce2539d0731eed36ad2bae8eda6a40"
+        },
+        "truth": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "57f9b0427dc0d1a3749e380d6683bdfa17cfc2678420d0f64a821e4205049949"
+        }
+      }
+    },
+    {
+      "name": "confirm_mid",
+      "truth": {
+        "amplitude": 0.9166666666666666,
+        "frequency_hz": 265.0,
+        "decay_time_s": 0.006666666666666667,
+        "phase_rad": 0.25
+      },
+      "truth_hex": {
+        "amplitude": "0x1.d555555555555p-1",
+        "frequency_hz": "0x1.0900000000000p+8",
+        "decay_time_s": "0x1.b4e81b4e81b4fp-8",
+        "phase_rad": "0x1.0000000000000p-2"
+      },
+      "design_rational": {
+        "amplitude": "11/12",
+        "frequency_hz": "265",
+        "decay_time_s": "1/150",
+        "phase_rad": "1/4"
+      },
+      "design_strata": {
+        "amplitude": 2,
+        "frequency_hz": 1,
+        "decay_time_s": 0,
+        "phase_rad": 2
+      },
+      "blocks": 10,
+      "seeds": [
+        [
+          1965581120,
+          73059591,
+          1239758536,
+          1556054307
+        ],
+        [
+          1407963241,
+          1958845597,
+          1480821105,
+          1575014642
+        ],
+        [
+          738291455,
+          1191442102,
+          1083137145,
+          825580692
+        ],
+        [
+          2105272471,
+          852920311,
+          2090973867,
+          481970336
+        ],
+        [
+          2137967116,
+          2124349482,
+          1980039043,
+          631944108
+        ],
+        [
+          422993715,
+          1924493784,
+          316372083,
+          335093042
+        ],
+        [
+          64983574,
+          678677205,
+          1277825077,
+          863323216
+        ],
+        [
+          257921557,
+          1487322332,
+          1504172095,
+          1588479805
+        ],
+        [
+          1415030702,
+          519592063,
+          372400225,
+          784601241
+        ],
+        [
+          386654994,
+          1163263463,
+          509184882,
+          469614116
+        ]
+      ],
+      "odd_block_order": [
+        "R",
+        "L"
+      ],
+      "even_block_order": [
+        "L",
+        "R"
+      ],
+      "arrays": {
+        "time_s": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "50c345daa383e450558fca37cd20adf54f13549035ae53eeb0c528d140666c5c"
+        },
+        "observed": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "d9b41a689341e10396d25a0a6aa7aafbf9d1a197d30527b4b9bb9f2c11107363"
+        },
+        "diagnostic_time_s": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "d93b19b716759c30734a68c0448a0f6bc619d00110dc458a461a237b2ebce854"
+        },
+        "diagnostic_truth": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "80a81d2ab0274acb4deb82c9ae96acb265c7dc8928891389cae231797991aaf0"
+        }
+      },
+      "grid": {
+        "time_s": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "d0f489229d161c778985359cb848d8a60dce2539d0731eed36ad2bae8eda6a40"
+        },
+        "truth": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "ebc6ab7d72e1c19a0443b449f6d5831e54627f19029ffc757ba7585c9b8663fc"
+        }
+      }
+    },
+    {
+      "name": "confirm_high",
+      "truth": {
+        "amplitude": 0.75,
+        "frequency_hz": 301.6666666666667,
+        "decay_time_s": 0.008,
+        "phase_rad": -0.35
+      },
+      "truth_hex": {
+        "amplitude": "0x1.8000000000000p-1",
+        "frequency_hz": "0x1.2daaaaaaaaaabp+8",
+        "decay_time_s": "0x1.0624dd2f1a9fcp-7",
+        "phase_rad": "-0x1.6666666666666p-2"
+      },
+      "design_rational": {
+        "amplitude": "3/4",
+        "frequency_hz": "905/3",
+        "decay_time_s": "1/125",
+        "phase_rad": "-7/20"
+      },
+      "design_strata": {
+        "amplitude": 1,
+        "frequency_hz": 2,
+        "decay_time_s": 1,
+        "phase_rad": 0
+      },
+      "blocks": 10,
+      "seeds": [
+        [
+          1680830187,
+          1343988738,
+          27737232,
+          121179736
+        ],
+        [
+          1216123854,
+          1074532703,
+          1754834861,
+          1551829106
+        ],
+        [
+          79165447,
+          2103824655,
+          1152630690,
+          911687019
+        ],
+        [
+          2008870417,
+          253375947,
+          1256597006,
+          1508511986
+        ],
+        [
+          1884074513,
+          1506637947,
+          1449630440,
+          1212203880
+        ],
+        [
+          1084355392,
+          271845372,
+          81602140,
+          2042701025
+        ],
+        [
+          1159644978,
+          157883326,
+          897763209,
+          96145925
+        ],
+        [
+          920311942,
+          35030246,
+          1213201727,
+          2100905783
+        ],
+        [
+          2055514367,
+          1712323128,
+          2078054804,
+          1064591059
+        ],
+        [
+          1941990148,
+          2133938824,
+          1959391119,
+          81279002
+        ]
+      ],
+      "odd_block_order": [
+        "R",
+        "L"
+      ],
+      "even_block_order": [
+        "L",
+        "R"
+      ],
+      "arrays": {
+        "time_s": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "50c345daa383e450558fca37cd20adf54f13549035ae53eeb0c528d140666c5c"
+        },
+        "observed": {
+          "shape": [
+            128
+          ],
+          "dtype": "<f8",
+          "sha256": "c9664946b656c57eb0eaf986640c0145ab5eb7869e062ac397dc27792835e321"
+        },
+        "diagnostic_time_s": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "d93b19b716759c30734a68c0448a0f6bc619d00110dc458a461a237b2ebce854"
+        },
+        "diagnostic_truth": {
+          "shape": [
+            889
+          ],
+          "dtype": "<f8",
+          "sha256": "b06bf518866a91343151dde7275efad4fc3e43488f152771d5c745e190ad3fc5"
+        }
+      },
+      "grid": {
+        "time_s": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "d0f489229d161c778985359cb848d8a60dce2539d0731eed36ad2bae8eda6a40"
+        },
+        "truth": {
+          "shape": [
+            1024
+          ],
+          "dtype": "<f8",
+          "sha256": "81d16476270f9fe1ef9a2d626c6abc3f0148553af9305f360f41a5814b10595f"
+        }
+      }
+    }
+  ],
+  "inputs_sha256": "7992cadd80fecb2a22a604071cf4e7364941218325d26809938f28923f031eb1",
+  "generation": {
+    "numpy": "2.5.3",
+    "mpmath": "1.3.0",
+    "recipe": "reuse regular time axes; new fixed binary64 signal parameters and private-PCG64 irregular grid; deterministic stored ZIP/NPY",
+    "array_roles": 12,
+    "array_values": 8164,
+    "input_bytes": 68412,
+    "truth_regenerated": true,
+    "grid_regenerated": true,
+    "coordinate_transformed": false,
+    "independent_check": {
+      "method": "mpmath 100 decimal places, exact stored Binary64 times/parameters, mathematical pi",
+      "values_checked": 6123,
+      "max_absolute_error_over_amplitude": 1.2080659697360985e-15,
+      "bound": 1e-13
+    }
+  }
+}

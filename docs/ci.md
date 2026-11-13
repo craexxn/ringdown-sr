@@ -168,7 +168,8 @@ Dies ist eine begrenzte Prüfung, kein vollständiger Markdown-Parser.
 `docs/outer_search_ladder_plan.md`, `docs/transfer_check_plan.md`,
 `docs/seed_driver_crosscheck_plan.md`, `docs/global_restart_comparison_plan.md`
 sowie `docs/iteration_time_budget_plan.md`, `docs/restart_confirmation_plan.md`
-und `docs/time_coordinate_plan.md`, `docs/restart_budget_plan.md`
+und `docs/time_coordinate_plan.md`, `docs/restart_budget_plan.md`,
+`docs/restart_budget_confirmation_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -213,8 +214,17 @@ Herkunft, Kosten und lesende Einzel-/Gesamtverifikation. Die wissenschaftlichen
 keine Änderung der historischen Budgets oder Erweiterung zu wissenschaftlichen
 Serien in Actions.
 
-Die Frist ausschließlich des seriellen `native`-Jobs wird auf 90 Minuten
-gesetzt. Der letzte vollständig geprüfte native PR83-Lauf
+Die neue unabhängige Bestätigung ergänzt
+`scripts/check_restart_budget_confirmation.py`: zwei getrennte künstliche
+Achtpunkt-Signale, je vier R-Worker mit einer und zwei L-Worker mit zwei äußeren
+Iterationen. Zwölf kleine Worker prüfen den neuen gebundenen Laufweg,
+Paketwahl, Kosten sowie lesende Einzel-/Gesamtverifikation. Technische Fixtures
+geben weder die praktische R-Grenze noch die getrennte L-Kontrollgrenze frei.
+Die 180 wissenschaftlichen Suchaufrufe bleiben ein separater Manjaro-Schritt;
+alle historischen Prüfblöcke bestehen unverändert fort.
+
+Die Frist ausschließlich des seriellen `native`-Jobs wurde mit PR85 auf 90 Minuten
+gesetzt. Der damals zuletzt vollständig geprüfte native PR83-Lauf
 `43168577591` dauerte laut Joblog 55 min 37 s. Der lokale neue Vorlauf benötigte
 bereits 20 min 16 s für seine beiden Abschnittsaufrufe, zuzüglich separater
 Einzel-/Gesamtverifikation. Die bisherige 75-Minuten-Frist lässt für die zwölf
@@ -222,6 +232,31 @@ zusätzlichen frischen Kontrollworker damit zu wenig Reserve; lokale Zeiten
 sind dabei keine Garantie der Actions-Laufzeit.
 `prepare` und Abschluss behalten je 75 Minuten; keine Änderung der eingefrorenen
 wissenschaftlichen Worker-/Abschnittsfristen und keine ausgelassenen Prüfblöcke.
+
+Erste Einordnung vom 13.11.2026: Der vollständig erfolgreiche native PR85-Lauf
+`43213172104` benötigte laut Joblog 64 min 24 s; sein Zwölf-Worker-Budgetblock
+davon 11 min 43 s. Für den zusätzlichen gleich großen technischen
+Bestätigungsblock blieb die vorhandene 90-Minuten-Frist zunächst bestehen.
+Diese Orientierung ist keine Garantie der nächsten Actions-Laufzeit.
+
+Korrektur nach [PR87-Lauf 43380454967](https://github.com/craexxn/ringdown-sr/actions/runs/43380454967):
+Der native Job begann um 06:48:11 UTC und wurde um 08:18:23 UTC nach rund
+90 Minuten abgebrochen. Alle Blöcke bis einschließlich Zeitkoordinatenprüfung
+bestanden; der bisherige Budgetblock wurde nach 15 min 27 s abgebrochen,
+der neue Bestätigungsblock nicht begonnen. Im Log steht ausschließlich
+`The operation was canceled.`, kein fachlicher Testfehler. Zeitpunkt und
+konfigurierte Jobfrist sprechen für das Zeitlimit; eine gesonderte
+Abbruchannotation lag bei der Auswertung nicht vor.
+
+28 vergleichbare abgeschlossene Loggruppen benötigten zusammen rund 42 % mehr
+Zeit als im PR85-Lauf. Mit dieser beobachteten Verlangsamung liegt die grobe
+Orientierung für den vollständigen Umfang einschließlich des neuen Blocks bei
+108 Minuten. Deshalb erhält ausschließlich der serielle `native`-Job nun
+**120 Minuten**. Die beiden übrigen Jobs behalten je 75 Minuten; alle Prüfschritte,
+wissenschaftlichen Fristen und eingefrorenen Protokolle bleiben unverändert.
+Der Abschluss verweigert eine Freigabe bei abgebrochenem nativen Job weiterhin.
+Der neue Workflowstand benötigt eine frische vollständige Ready-CI;
+ein Wiederanlauf des alten Stands würde die alte 90-Minuten-Frist verwenden.
 
 Auch `docs/supplemental_assessment.md` erhält die volle CI: Der lesende
 Bewertungsexport bindet diesen Versionsvertrag an seinen Softwarestand.

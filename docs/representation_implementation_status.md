@@ -1,6 +1,124 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Budgetserie vollständig geprüft, Befund gemischt
+## Aktuell: Bestätigungslaufweg lokal geprüft, vollständige Ready-CI vorbereiten
+
+Stand 13.11.2026, [Leitfadenphase 6](ringdown_recovery_roadmap.md): Die
+Ergebnisdokumentation aus [PR #86](https://github.com/craexxn/ringdown-sr/pull/86)
+ist nach abgeglichenem Head, Basis, Review und grüner Dokumentations-CI als
+`11c844d05703ba200f2d0333ce5a422cfe7d5791` übernommen. Der Mergebaum
+`6e938e81e4ed6c590fcd2b05c6887353d096d352` entspricht dem geprüften Head-/CI-Baum.
+Der wissenschaftliche Budget-Ausführungsstand bleibt `680af98`; sein gemischter
+Befund und die frühere negative Bestätigung bleiben unverändert.
+
+Auf `codex/restart-budget-confirmation-pr` liegt der begrenzte neue Laufweg
+als [PR #87](https://github.com/craexxn/ringdown-sr/pull/87).
+[Plan](restart_budget_confirmation_plan.md), Konfiguration,
+120 neue Seeds, Eingaben und Erzeuger sind **vor Implementierung** in
+`6673d6e2108312a2f3e39d1a2fb98d94b3690887` eingefroren. Ihre später angelegte,
+byteidentische öffentliche Commitbindung ist
+`352b7b5145ad8c8e735eea887a29744c97825c20`. Der Quellenstand
+für die historischen Eingaben-/Seed-Ausschlüsse bleibt der im Plan gebundene
+Ergebniscommit `16f2e4533583ca7cced88799ffc3abb8d0052904`; der spätere Merge
+ersetzt diesen Bezug nicht.
+
+Die erste lokale Commitfolge blieb wegen des GitHub-Schutzes für private
+Commit-E-Mail-Adressen unveröffentlicht. Für die Veröffentlichung wurde eine
+neue Folge auf einem eigenen Branch angelegt; die lokalen Originalcommits
+bleiben erhalten. Diese spätere Veröffentlichungsfassung ändert weder den
+vorher festgelegten Planinhalt noch dessen ursprünglichen Zeitpunkt;
+im Laufzeitcode änderte sich ausschließlich die gebundene `PLAN_COMMIT`-Referenz.
+Prüfungen der alten Fassung bleiben ihrem tatsächlichen Commit zugeordnet;
+die vollständige Python-Suite wurde auf der Veröffentlichungsfassung erneut geprüft.
+
+- **Beschlossener Umfang:** `confirm_low`, `confirm_mid`, `confirm_high`, jeweils
+  zehn gepaarte Blöcke für R: 4 × 1.000 und L: 2 × 2.000. 180 frische Suchen,
+  60 Paketausgaben, ursprüngliches t und lokal 300/5 unverändert. R ist der
+  vorläufige Kandidat, L die aktive Kontrolle. Hauptentscheidung: mindestens
+  8/10 A-Ausgaben mit nachgewiesener Originalfamilie auf jedem Signal für R;
+  L separat anhand derselben Grenze. Kein Pooling, kein automatischer Armwechsel,
+  keine kombinierte beste Auswahl und kein inferenzieller Überlegenheitsentscheid.
+- **Tatsächliche Vorabprüfung:** alle 6.123 Signalwerte gegen mpmath mit
+  100 Dezimalstellen und unabhängig MPFR mit 384 Bit geprüft; maximaler
+  amplitudennormierter MPFR-Fehler rund `1,21 × 10⁻¹⁵`. Alle 120 Seeds sind
+  verschieden und disjunkt zu den 1.569 dokumentierten Ausschlusswerten;
+  keine der drei neuen Signaldefinitionen gleicht einer der acht alten.
+  Generator bytegleich reproduziert und unveränderter globaler RNG-Zustand geprüft.
+- **Umsetzung:** Laufzeitcode in `150ff6d87e4ed27c0c1e6df2a51b090abd8ebefa`,
+  gezielte Tests in `6e211657481a10eb36801cd2d48de1c05af33baa` implementiert;
+  vorhandene Adapter, Auswahl-, Bewertungs-, Kosten- und
+  Veröffentlichungsverträge werden verwendet. Der
+  [Manjaro-Laufweg](restart_budget_confirmation.md) beschreibt den getrennten
+  technischen Vorlauf, drei feste Abschnitte automatisch hintereinander,
+  Fortschritt alle zehn Sekunden, lesende Gesamtverifikation und vollständige
+  Archivierung einschließlich Aufrufmessungen und technischem Vorlauf.
+- **Bisherige technische Prüfung:** 129 neue gezielte Fälle, davon 25 Profil-
+  und 104 Laufzeitfälle, sowie 213 CI-Vertragsfälle bestanden. Die vollständige
+  Python-Suite auf `6e211657481a10eb36801cd2d48de1c05af33baa` besteht mit
+  **3.656 Fällen in 348,48 s**; die ursprüngliche lokale Prüfung auf
+  `7ee0e5e` bestand zuvor mit 3.656 Fällen in 349,31 s.
+  Ruff, Formatprüfung von 319 Dateien,
+  107 Markdown-Dateien einschließlich neuer Bedienung samt lokalen Linkzielen
+  und Diffprüfung bestanden. Ein separates lesendes Bedienungsreview prüfte
+  alle sieben Bash-Blöcke und neun Stub-/Dummyarchiv-Prüfgruppen; die
+  Setupfolge stoppt nach Korrektur zuverlässig bei Fehler oder schmutzigem
+  Checkout. Keine echte Manjaro-Serie für diese Bedienungsprüfung.
+- **Nativer technischer Vorlauf:** 002 auf dem sauberen lokalen Implementierungscommit
+  `c6b699e5325097ec15f1ffa48992b26147eaa808` erfolgreich abgeschlossen:
+  zwölf kleine Worker, vier Paketausgaben, beide Einzelverifikationen und
+  gemeinsame lesende Gesamtverifikation. Alle Worker erreichten ihre eine
+  beziehungsweise zwei Iterationen, keine Ausfälle. Die Verifikation startete
+  keine weiteren Suchen; beide wissenschaftlichen Entscheidungsschlüssel bleiben
+  für diese Fixtures `null`. 104 gebundene Quellen einschließlich sämtlicher
+  54 Python-Paketdateien geprüft. `fixture_a`/`fixture_b`: 85.038/62.355
+  Verlustcallbacks und 578,758/578,002 s für die vollständigen Abschnittsaufrufe.
+  Gegenüber diesem tatsächlich geprüften Code ändert die öffentliche Umsetzung
+  `150ff6d` ausschließlich die `PLAN_COMMIT`-Bindung an den bytegleichen Plan;
+  die vollständige Ready-CI muss den öffentlichen Head selbst prüfen.
+  Vorlauf 001 scheiterte vor der ersten Suche bei einer gesperrten Julia-
+  Versionsnetzabfrage. Für 002 wurde das bereits installierte gepinnte Julia
+  über `PYTHON_JULIAPKG_EXE` gewählt; keine Codekorrektur dafür, beide
+  Prüfstände bleiben erhalten.
+- **Gezieltes KI-Code-/Methoden-/Dokumentationsreview:** PR #87 auf
+  `796605d1fca034b0dabe91c916fd3b8b1a1f53b9` gegen Basis
+  `11c844d05703ba200f2d0333ce5a422cfe7d5791`, keine korrekturbedürftigen Befunde
+  im geprüften Umfang. Sieben zusätzliche Gegenprüfungen bestanden,
+  darunter 5.324 Zählkombinationen; Quellenbindung der öffentlichen Fassung
+  mit 104 Dateien einschließlich aller 54 Python-Paketquellen bestätigt.
+  Die abschließende reine Dokumentationsergänzung ist ebenfalls gegengeprüft;
+  neue Prüfzahlen direkt an Logs und nativen Original-JSON abgeglichen.
+- **Noch offen:** vollständige Ready-CI auf dem veröffentlichten Head und
+  Übernahme des neuen Laufwegs. Lokale Prüfungen
+  und Review ersetzen diese vollständige CI-Abnahme nicht.
+- **CI-Abbruch und Zeitreserve vom 13.11.2026:** Ready-Lauf
+  [43380454967](https://github.com/craexxn/ringdown-sr/actions/runs/43380454967)
+  auf `d69b46fe98ff565439273392a90dab6a443448db` bestätigt alle 3.656 Pythonfälle.
+  Der native Job wurde nach rund 90 Minuten im bisherigen Budgetblock
+  abgebrochen; der neue Bestätigungsblock blieb ungestartet. Alle vorherigen
+  nativen Blöcke bestanden. Damit fehlt weiterhin die vollständige CI-Abnahme.
+  Nach [Laufzeitabgleich](ci.md) wird ausschließlich die native Jobfrist von
+  90 auf 120 Minuten erhöht, der zugehörige CI-Vertrag angepasst und eine
+  neue vollständige Ready-CI vorbereitet. Wissenschaftliche Budgets,
+  Auswertungsregeln, eingefrorene Dateien und sämtliche Prüfblöcke unverändert.
+  Die Anpassung besteht lokal 213 CI-Vertragsfälle, Ruff/Format,
+  Dokumentationsprüfung für 107 Dateien samt Linkzielen und Diffprüfung;
+  gezielter Nachcheck des engen Diffs ohne Befund.
+- **Wissenschaftliche Ausführung:** nicht gestartet. Drei feste neue
+  Innenbereichskombinationen prüfen begrenzte Übertragung; keine zufällige
+  Signalpopulation und keine erneute Bestätigung der schwierigen alten
+  Randkombination. Keine neuen wissenschaftlichen Originalarchive,
+  Ausführungscommits oder Sicherungsnachweise vorhanden.
+
+**Nächster abgegrenzter Schritt:** PR #87 nach abgeschlossener lokaler Prüfung
+auf Ready stellen und die vollständige CI am veröffentlichten Head abschließen.
+Erst nach geprüfter Übernahme die geplante wissenschaftliche Manjaro-Serie separat
+ausführen und alle drei Abschnitte gemeinsam lesend verifizieren. Die grobe
+Orientierung von 18–20 Stunden stammt aus alten Laufkosten, nicht aus bereits
+gemessenen neuen Suchen. Profilübernahme in den allgemeinen gewichteten Laufweg
+nach Phase 5 bleibt vor dem Rauschpilot offen; Gewichtung muss dort Struktursuche
+und Konstantenoptimierung bestimmen. Gemeinsame Archivablage und unabhängig
+geprüfte Zweitkopien gemäß [Index](results_index.md) bleiben separat nachzuweisen.
+
+## Vorheriger Stand: Budgetserie vollständig geprüft, Befund gemischt
 
 Stand 13.11.2026, Leitfadenphase 4: [PR #85](https://github.com/craexxn/ringdown-sr/pull/85)
 ist nach vollständiger [Ready-CI 43213172104](https://github.com/craexxn/ringdown-sr/actions/runs/43213172104)
