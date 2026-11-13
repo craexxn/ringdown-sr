@@ -89,6 +89,19 @@ die vollständige Python-Suite wurde auf der Veröffentlichungsfassung erneut ge
 - **Noch offen:** vollständige Ready-CI auf dem veröffentlichten Head und
   Übernahme des neuen Laufwegs. Lokale Prüfungen
   und Review ersetzen diese vollständige CI-Abnahme nicht.
+- **CI-Abbruch und Zeitreserve vom 13.11.2026:** Ready-Lauf
+  [43380454967](https://github.com/craexxn/ringdown-sr/actions/runs/43380454967)
+  auf `d69b46fe98ff565439273392a90dab6a443448db` bestätigt alle 3.656 Pythonfälle.
+  Der native Job wurde nach rund 90 Minuten im bisherigen Budgetblock
+  abgebrochen; der neue Bestätigungsblock blieb ungestartet. Alle vorherigen
+  nativen Blöcke bestanden. Damit fehlt weiterhin die vollständige CI-Abnahme.
+  Nach [Laufzeitabgleich](ci.md) wird ausschließlich die native Jobfrist von
+  90 auf 120 Minuten erhöht, der zugehörige CI-Vertrag angepasst und eine
+  neue vollständige Ready-CI vorbereitet. Wissenschaftliche Budgets,
+  Auswertungsregeln, eingefrorene Dateien und sämtliche Prüfblöcke unverändert.
+  Die Anpassung besteht lokal 213 CI-Vertragsfälle, Ruff/Format,
+  Dokumentationsprüfung für 107 Dateien samt Linkzielen und Diffprüfung;
+  gezielter Nachcheck des engen Diffs ohne Befund.
 - **Wissenschaftliche Ausführung:** nicht gestartet. Drei feste neue
   Innenbereichskombinationen prüfen begrenzte Übertragung; keine zufällige
   Signalpopulation und keine erneute Bestätigung der schwierigen alten

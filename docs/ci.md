@@ -233,11 +233,30 @@ sind dabei keine Garantie der Actions-Laufzeit.
 `prepare` und Abschluss behalten je 75 Minuten; keine Änderung der eingefrorenen
 wissenschaftlichen Worker-/Abschnittsfristen und keine ausgelassenen Prüfblöcke.
 
-Abgleich vom 13.11.2026: Der vollständig erfolgreiche native PR85-Lauf
+Erste Einordnung vom 13.11.2026: Der vollständig erfolgreiche native PR85-Lauf
 `43213172104` benötigte laut Joblog 64 min 24 s; sein Zwölf-Worker-Budgetblock
 davon 11 min 43 s. Für den zusätzlichen gleich großen technischen
-Bestätigungsblock bleibt die vorhandene 90-Minuten-Frist zunächst bestehen.
+Bestätigungsblock blieb die vorhandene 90-Minuten-Frist zunächst bestehen.
 Diese Orientierung ist keine Garantie der nächsten Actions-Laufzeit.
+
+Korrektur nach [PR87-Lauf 43380454967](https://github.com/craexxn/ringdown-sr/actions/runs/43380454967):
+Der native Job begann um 06:48:11 UTC und wurde um 08:18:23 UTC nach rund
+90 Minuten abgebrochen. Alle Blöcke bis einschließlich Zeitkoordinatenprüfung
+bestanden; der bisherige Budgetblock wurde nach 15 min 27 s abgebrochen,
+der neue Bestätigungsblock nicht begonnen. Im Log steht ausschließlich
+`The operation was canceled.`, kein fachlicher Testfehler. Zeitpunkt und
+konfigurierte Jobfrist sprechen für das Zeitlimit; eine gesonderte
+Abbruchannotation lag bei der Auswertung nicht vor.
+
+28 vergleichbare abgeschlossene Loggruppen benötigten zusammen rund 42 % mehr
+Zeit als im PR85-Lauf. Mit dieser beobachteten Verlangsamung liegt die grobe
+Orientierung für den vollständigen Umfang einschließlich des neuen Blocks bei
+108 Minuten. Deshalb erhält ausschließlich der serielle `native`-Job nun
+**120 Minuten**. Die beiden übrigen Jobs behalten je 75 Minuten; alle Prüfschritte,
+wissenschaftlichen Fristen und eingefrorenen Protokolle bleiben unverändert.
+Der Abschluss verweigert eine Freigabe bei abgebrochenem nativen Job weiterhin.
+Der neue Workflowstand benötigt eine frische vollständige Ready-CI;
+ein Wiederanlauf des alten Stands würde die alte 90-Minuten-Frist verwenden.
 
 Auch `docs/supplemental_assessment.md` erhält die volle CI: Der lesende
 Bewertungsexport bindet diesen Versionsvertrag an seinen Softwarestand.
