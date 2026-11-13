@@ -45,6 +45,16 @@ Originalarchiv empfangen: 48 wissenschaftliche Suchen, 16 Paketausgaben,
 zwölf technische Vorlaufworker. Die vorab festgelegte Einordnung ist gemischt;
 Ausführung, lesender Prüfstand und offene Sicherung sind unten getrennt zugeordnet.
 
+Die [erneute Bestätigung](restart_budget_confirmation_plan.md) ist nach
+Übernahme von PR86 in `352b7b5` vor Implementierung eingefroren: drei neue
+Signaldefinitionen, 180 frische Suchen und 60 Paketausgaben. Sie ist
+**noch nicht wissenschaftlich ausgeführt**; technische Abnahme und Übernahme
+des [neuen Laufwegs](restart_budget_confirmation.md) stehen aus. Daher gibt es
+hier noch keinen behaupteten Originalarchivhash, Ausführungscommit oder
+Sicherungsnachweis. Nach tatsächlicher Ausführung alle drei Abschnitte samt
+benachbarten `-call.json`, technischem Vorlauf und Gesamtverifikation zuordnen.
+Die dortigen 001-IDs sind bislang Befehlsvorlagen, keine Ausführungsbelege.
+
 ## Archivablage
 
 Die gemeinsamen Ablagehinweise werden einmal hier gepflegt. Die Dateinamen in
