@@ -168,7 +168,8 @@ Dies ist eine begrenzte Prüfung, kein vollständiger Markdown-Parser.
 `docs/outer_search_ladder_plan.md`, `docs/transfer_check_plan.md`,
 `docs/seed_driver_crosscheck_plan.md`, `docs/global_restart_comparison_plan.md`
 sowie `docs/iteration_time_budget_plan.md`, `docs/restart_confirmation_plan.md`
-und `docs/time_coordinate_plan.md`, `docs/restart_budget_plan.md`
+und `docs/time_coordinate_plan.md`, `docs/restart_budget_plan.md`,
+`docs/restart_budget_confirmation_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -213,8 +214,17 @@ Herkunft, Kosten und lesende Einzel-/Gesamtverifikation. Die wissenschaftlichen
 keine Änderung der historischen Budgets oder Erweiterung zu wissenschaftlichen
 Serien in Actions.
 
-Die Frist ausschließlich des seriellen `native`-Jobs wird auf 90 Minuten
-gesetzt. Der letzte vollständig geprüfte native PR83-Lauf
+Die neue unabhängige Bestätigung ergänzt
+`scripts/check_restart_budget_confirmation.py`: zwei getrennte künstliche
+Achtpunkt-Signale, je vier R-Worker mit einer und zwei L-Worker mit zwei äußeren
+Iterationen. Zwölf kleine Worker prüfen den neuen gebundenen Laufweg,
+Paketwahl, Kosten sowie lesende Einzel-/Gesamtverifikation. Technische Fixtures
+geben weder die praktische R-Grenze noch die getrennte L-Kontrollgrenze frei.
+Die 180 wissenschaftlichen Suchaufrufe bleiben ein separater Manjaro-Schritt;
+alle historischen Prüfblöcke bestehen unverändert fort.
+
+Die Frist ausschließlich des seriellen `native`-Jobs wurde mit PR85 auf 90 Minuten
+gesetzt. Der damals zuletzt vollständig geprüfte native PR83-Lauf
 `43168577591` dauerte laut Joblog 55 min 37 s. Der lokale neue Vorlauf benötigte
 bereits 20 min 16 s für seine beiden Abschnittsaufrufe, zuzüglich separater
 Einzel-/Gesamtverifikation. Die bisherige 75-Minuten-Frist lässt für die zwölf
@@ -222,6 +232,12 @@ zusätzlichen frischen Kontrollworker damit zu wenig Reserve; lokale Zeiten
 sind dabei keine Garantie der Actions-Laufzeit.
 `prepare` und Abschluss behalten je 75 Minuten; keine Änderung der eingefrorenen
 wissenschaftlichen Worker-/Abschnittsfristen und keine ausgelassenen Prüfblöcke.
+
+Abgleich vom 13.11.2026: Der vollständig erfolgreiche native PR85-Lauf
+`43213172104` benötigte laut Joblog 64 min 24 s; sein Zwölf-Worker-Budgetblock
+davon 11 min 43 s. Für den zusätzlichen gleich großen technischen
+Bestätigungsblock bleibt die vorhandene 90-Minuten-Frist zunächst bestehen.
+Diese Orientierung ist keine Garantie der nächsten Actions-Laufzeit.
 
 Auch `docs/supplemental_assessment.md` erhält die volle CI: Der lesende
 Bewertungsexport bindet diesen Versionsvertrag an seinen Softwarestand.
