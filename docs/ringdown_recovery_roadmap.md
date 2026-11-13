@@ -6,7 +6,7 @@ Ready-Wechsel und führt native Kontrollen seriell aus. Die wissenschaftlichen
 Phasen und Kriterien bleiben erhalten; tatsächlicher Prüf- und Übernahmestand
 im [Fortsetzungsstand](representation_implementation_status.md).
 
-Aktueller Ergebnisabgleich vom 12.11.2026: Die
+Aktueller Ergebnisabgleich vom 13.11.2026: Die
 [unabhängige Bestätigung](restart_confirmation_results_manjaro_001.md) aus Phase 6
 ist einschließlich technischem Vorlauf auf main `c3da991` ausgeführt und vollständig
 lesend geprüft. 150 frische Suchen; R erreicht 8/10, 10/10 und 4/10 gemeinsame
@@ -18,12 +18,16 @@ festgelegte kombinierte Auswahlstrategie. PR #82 ist samt dieser Ergänzung
 [Zeitkoordinatenvergleich](time_coordinate_results_manjaro_001.md) mit 16 frischen
 Suchen auf main `91d461c` nach PR83 ausgeführt und vollständig lesend bestätigt.
 Der Befund ist gemischt: u=32t verbessert die hohe und verschlechtert die niedrige
-Variante. PR84 hat diesen Befund als `fbdb450` übernommen. Der Anschlussvergleich
-4 × 1.000 gegen 2 × 2.000 ist inzwischen [vor Implementierung eingefroren](restart_budget_plan.md):
-48 frische Suchen, 16 Paketausgaben und t als gemeinsame Referenzkoordinate;
-kein Nachweis seiner Überlegenheit, siehe datierte Entscheidung in Phase 4. Ausführung dieses
-Anschlussversuchs und spätere Bestätigung bleiben eigene Schritte;
-kein unmittelbarer Rauschpilot. Historische
+Variante. PR84 hat diesen Befund als `fbdb450` übernommen. Der
+[vor Implementierung eingefrorene Budgetvergleich](restart_budget_plan.md)
+4 × 1.000 gegen 2 × 2.000 ist nach vollständiger CI mit PR85 als `680af98`
+übernommen und wissenschaftlich ausgeführt: 48 frische Suchen, 16 Paketausgaben
+und t als gemeinsame Referenzkoordinate. Der
+[vollständig lesend bestätigte Befund](restart_budget_results_manjaro_001.md)
+ist erneut gemischt; wissenschaftliche Gesamtprüfung und technischer Vorlauf bestanden.
+Die datierte Einordnung in Phase 4 führt zur Methodenentscheidung mit der
+Betreuung vor einer unabhängigen Bestätigung auf unberührten Fällen;
+keine automatische weitere Suchintervention und kein unmittelbarer Rauschpilot. Historische
 Protokolle, Seeds, Eingaben und Entscheidungsregeln bleiben eingefroren. Profilübernahme in
 den allgemeinen gewichteten Laufweg bleibt vor einem späteren Rauschpilot
 gesondert zu prüfen. Die folgenden datierten Einordnungen erhalten ihre Historie.
@@ -516,6 +520,48 @@ mit der Betreuung vor unabhängiger Bestätigung auf unberührten Fällen.
 Zwölf winzige Kontrollworker prüfen beide Mehrmitgliedspakete; die wissenschaftliche
 48-Aufruf-Serie bleibt ein gesonderter Manjaro-Schritt. Keine Änderung älterer
 Pläne, Berichte, Bewertungsverträge oder praktischer Bestätigungsgrenzen.
+
+### Budgetbefund und weitere Einordnung vom 13.11.2026
+
+Die vorstehende Vorbereitung ist mit PR85 nach vollständiger CI übernommen.
+Der [Budgetlauf 001](restart_budget_results_manjaro_001.md) umfasst alle 48
+geplanten Suchen und 16 Paketausgaben bei unverändertem t und lokal 300/5,
+ohne Ausfälle. R bezeichnet 4 × 1.000, L bezeichnet 2 × 2.000.
+Die unveränderte vollständige Verifikation bestätigt 48 wissenschaftliche Zellen
+und zwölf technische Vorlaufworker; alle zwölf Exportdateien sind bytegleich.
+Quellenbindung, unabhängige Zählungen und Endfrontdiagnose ebenfalls geprüft.
+
+| Signal | R / L: A-Ausgaben | R / L: A mit Originalfamilie |
+| --- | --- | --- |
+| anchor | 2/2 · 2/2 | 2/2 · 2/2 |
+| variant_low | 2/2 · 1/2 | 2/2 · 1/2 |
+| variant_high | 4/4 · 4/4 | 2/4 · 3/4 |
+
+Nach der eingefrorenen Regel ist der bestätigte Befund **gemischt**: R gewinnt
+auf der niedrigen Variante einen gemeinsamen Erfolg, L auf der hohen einen.
+Auf der hohen Variante sind alle Ausgaben A; zwei Originalausgaben besitzen
+Definitionslücken mit gültiger Fortsetzung, ein weiterer Familiennachweis bleibt
+wegen eines Zusatzterms ungeklärt. Weder Fortsetzungen noch ungeklärte Formeln
+nachträglich als gültige Originalmitglieder zählen. Die bestehenden Beweisgrenzen
+und Originalauswahlen bleiben unverändert.
+
+R benötigt je Signal 25,30 %, 6,73 % und 4,94 % mehr Workerzeit als L.
+Kosten liefern keinen nachträglichen Gleichstandsentscheid. Die beobachteten
+Kurvenerfolge sind ein Befund dieser gezielten Entwicklungsfälle; andere Seeds,
+Budgets und Pakete erlauben keinen ursächlichen Verbesserungsnachweis gegenüber
+den früheren 4 × 500-/1 × 2.000-Serien. Keine gepoolte Erfolgsquote und keine
+nachträgliche beste Auswahl über beide Arme. U wurde hier nicht getestet;
+sein früheres signalabhängiges Indiz bleibt offen.
+
+Nach abgeschlossener Quellenprüfung folgt die gemeinsame Einordnung mit der
+Betreuung und eine begründete Entscheidung über ein festes Profil für unabhängige
+Bestätigung auf unberührten Fällen oder die Begrenzung der erreichbaren Aussage.
+Die frühere verfehlte 8/10-Grenze bleibt bestehen; zwei/zwei/vier bekannte
+Entwicklungsblöcke prüfen sie nicht erneut. Kein automatischer weiterer
+Iterations- oder Koordinatenvergleich, keine dritte Suchintervention bis zum
+gewünschten Erfolg. Die bewusste Profilübernahme in den tatsächlichen allgemeinen
+gewichteten Laufweg bleibt vor einem späteren Rauschpilot erforderlich;
+Struktursuche und Konstantenoptimierung müssen dieselbe Gewichtung verwenden.
 
 ## 5. Suchprofil in den tatsächlichen späteren Laufweg übernehmen
 

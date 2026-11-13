@@ -1,6 +1,6 @@
 # Laufweg: vier mittlere gegen zwei längere globale Suchen
 
-Stand 12.11.2026, [Leitfadenphase 4](ringdown_recovery_roadmap.md),
+Stand 13.11.2026, [Leitfadenphase 4](ringdown_recovery_roadmap.md),
 [eingefrorener Plan](restart_budget_plan.md) und
 [Seeds/Eingaben](../data/restart_budget_protocol.json).
 R: vier frische 1.000er-Suchen; L: zwei frische 2.000er-Suchen. Beide in
@@ -14,6 +14,13 @@ startet vollständig neu. Keine Checkpointfortsetzung oder historische Übernahm
 Gezielter Entwicklungsvergleich, keine erneute unabhängige Bestätigung und
 keine 8/10-Grenze. Wissenschaftliche Ausführung ist vom technischen Prüfstand
 im [Fortsetzungsstand](representation_implementation_status.md) getrennt.
+
+Die erste Manjaro-Serie ist nach Übernahme von PR85 am 12.11.2026 auf
+`680af98e4342dc831a6dcc995fe658d4fcbe942f` ausgeführt; [Befund und Prüfstand](restart_budget_results_manjaro_001.md).
+Die folgenden 001-IDs bezeichnen nun vorhandene Originale. Befehle dokumentieren
+den tatsächlich verwendeten Laufweg und geben keine Wiederholung frei.
+Für eine erneute Ausführung wären ein eigener begründeter Beschluss und neue
+IDs erforderlich. Vorhandene Ergebnisse und Archive unverändert erhalten.
 
 ## Sauberen Ausführungsstand nach Übernahme vorbereiten
 
@@ -36,8 +43,8 @@ Fremde Julia-/CondaPkg-Sperren nicht löschen.
 
 Alle Befehle aus diesem Checkout ausführen. Ausgabeordner und benachbarte
 `-call.json` nicht löschen, überschreiben oder wiederverwenden. Die IDs 001
-sind für eine erste Ausführung vorbereitet; sie belegen noch keine Ausführung
-und erlauben keinen automatischen Neustart nach Abbruch.
+sind durch die erste Ausführung belegt; sie erlauben weder eine Wiederholung
+noch einen automatischen Neustart nach Abbruch.
 
 ## Technischer Vorlauf
 
