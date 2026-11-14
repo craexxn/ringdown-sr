@@ -1,6 +1,6 @@
 # Dreiarm-Pilot mit freier symbolischer Regression
 
-Stand: 22.10.2026. Schema 3 verbindet die bestehende
+Schema-3-Stand: 22.10.2026. Schema 3 verbindet die bestehende
 [Schema-2-Pipeline](estimated_covariance_pilot.md) mit dem
 [Suchadapter](symbolic_adapter.md). Die Budgets und die angezeigte
 Beispielkurve sind technische Kontrollvorgaben. Wissenschaftliche
@@ -209,3 +209,119 @@ und Verluste unterscheiden sich zwischen den Rechnern. Die Ursache ist
 noch nicht bestimmt; die lokalen Audits belegen keine identischen
 Suchergebnisse über Rechner hinweg. Details und Grenzen stehen im
 [Portabilitätsprotokoll](portability.md).
+
+## Bestätigtes R-Profil im allgemeinen Laufweg: Schema 4
+
+Beschluss vom 14.11.2026, [Leitfadenphase 5](ringdown_recovery_roadmap.md).
+Die [rauschfreie Bestätigung](restart_budget_confirmation_results_manjaro_001.md)
+begründet die bewusste Übernahme des R-Profils in den allgemeinen Laufweg.
+Sie validiert weder Gewichtungsvergleiche unter Rauschen noch den gesamten
+Parameterkasten. Die folgenden Vorgaben betreffen die technische Übernahme;
+ein wissenschaftliches Rauschpilotprotokoll ist noch gesondert festzulegen.
+
+### Auftrag und unveränderte Auswahlgrenzen
+
+Schema 4 verwendet die bestehende Schema-2-Datengenerierung mit demselben
+binären Eingabeübergang. Es ersetzt die einzelne Schema-3-Suche je Arm durch
+vier vollständig neue Worker. Die Schema-1–3-Aufträge, Formate und Defaults
+bleiben unverändert. Der neue Auftrag enthält anstelle von `[symbolic_search]`:
+
+```toml
+[confirmed_search]
+profile = "r4x1000-local300x5-v1"
+seeds = [2026111401, 2026111402, 2026111403, 2026111404]
+```
+
+Die vier unterschiedlichen Seeds werden vor Beginn gespeichert; derselbe
+Block gilt für die drei getrennten Gewichtungsarme. Die Beispielseeds
+definieren keine wissenschaftliche Bestätigungsstichprobe. Das Profil legt
+1.000 äußere Iterationen, 300 lokale Optimiereriterationen und fünf zusätzliche
+lokale Neustarts fest. Vier globale Neustarts sind vier neue SR-Suchen.
+Beide Häufigkeitsschalter sind eingeschaltet; allgemeine Grammatik,
+`should_simplify=false`, kein Größen-Warmup, ursprüngliches t und die übrigen
+gebundenen Einstellungen gelten gemeinsam.
+
+Innerhalb jedes Workers bleibt die native Originalauswahl erhalten.
+Das Paket wählt unter diesen vier Originalausgaben nach tatsächlichem
+Trainingsverlust, danach Komplexität und schließlich Mitgliedsposition.
+Ein Paket liefert genau eine Ausgabe. Keine Auswahl nach Signalwahrheit,
+Kurvenklasse, Familie oder zusätzlichen Diagnosepunkten; kein Vergleich
+roher Trainingsverluste zwischen unterschiedlichen Gewichtungen.
+
+Alle geplanten Mitglieder einschließlich zulässiger numerischer Ausfälle
+und Zeitüberschreitungen bleiben im Paket und in den Kosten. Fehlende
+Kostenbelege bedeuten unbekannte Kosten. Unterbrechungen, Herkunftswidersprüche,
+Aufrufwächterfehler und unbekannte Fehler verhindern die Freigabe. Ein
+Timeout darf einen bereits aufgezeichneten Integritätsfehler nicht verdecken.
+Die lesende Prüfung muss dieselben Grenzen wie die Ausführung anwenden.
+
+Die Betriebsgrenzen betragen 1.800 Sekunden je Worker und 7.800 Sekunden
+je vollständigem Paket einschließlich Vorbereitung und Abschluss. Sie sind
+keine wissenschaftlichen Erfolgsschwellen und keine Laufzeitvorhersage.
+Der reduzierte technische Paketcheck erhält 1.200 Sekunden; die reine
+Paketverifikation 600 Sekunden. Eine späte Überschreitung darf keine
+veröffentlichte Freigabe bestehen lassen.
+
+### Gewichtung und technische Abnahme
+
+Die feste vollständige Kovarianz bleibt im nativen `FixedWindowLoss` gebunden:
+für die Bewertung von Strukturen und für sämtliche Konstantenoptimierungen.
+Die drei Arme verwenden gewöhnliche MSE, wahres `Q/N` beziehungsweise
+geschätztes `Q/N`. Keine Diagonalisierung, Residuenanpassung der Kovarianz oder
+nachträgliche Gewichtung erst bei der Paketwahl.
+
+Der historische MSE-Replay des Spezialtreibers ist für Kovarianzverlust
+nicht definiert. Im neuen Profil werden deshalb Baumvorhersage und
+Residuenreduktion getrennt geprüft. Nahezu exakte Formeln dürfen nicht allein
+wegen kleiner zulässiger Vorhersagerundungen im Python-Replay scheitern;
+eine pauschale absolute Verlusttoleranz wäre dafür kein ausreichender Nachweis.
+Der gewichtete Vertrag prüft die tatsächlich verwendeten nativen und
+Python-Choleskyfaktoren über den Rückwärtsfehler `L Lᵀ − C` gegen die originale
+Matrix. Jede Weißung wird gegen ihren eigenen Residualvektor über `L z − r`
+geprüft; anschließend wird die Reduktion `Σ z²/N` exakt rational nachgerechnet.
+Auch die zur Prüfung berechneten Matrixprodukte und Schranken benötigen
+Rundungsfehlerhüllen. Die Baumvorhersagen werden separat durch den bestehenden
+MPFR-Intervallnachweis gebunden. Native Front-, Reimport- und Tabellenverluste
+behalten ihren strikten relativen Abgleich; die Paketwahl verwendet weiterhin
+den unveränderten nativen Trainingsverlust.
+
+Für `u=2^-53` und `γ_k=k·u/(1−k·u)` schließt die Nachrechnung den Fehler eines
+Skalarprodukts mit `N` Summanden durch `γ_N·|A|·|B| + α_N` ein. Dabei ist
+`α_N=N·2^-1075/(1−N·u)` der aus IEEE-Rundung abgeleitete Anteil für allmählichen
+Unterlauf. Gerichtete Float64-Schranken um Produkt, Betrag, Subtraktion und
+Schrankenrechnung müssen den tatsächlichen Rückwärtsfehler komponentenweise
+unter `γ_(2N+2)·|A|·|B| + 2α_N` nachweisen. NumPy-/BLAS-Kontrollen prüfen, dass
+subnormale Operanden und Produkte nicht einfach zu null gesetzt werden.
+Der Maschinenunterlaufanteil verändert keine Kovarianzeinträge und ist keine
+frei gewählte absolute Verlusttoleranz.
+
+Für die anschließend exakt rational überprüfte Quadratsummenreduktion gilt
+die bestehende `γ_(N+2)`-Grenze. Nichtverschwindende Quadrate müssen weiterhin
+im normalen Float64-Bereich bleiben; Extremskalen können daher ausdrücklich
+abgelehnt werden. Die Prüfung ändert weder Kovarianz noch native Auswahl.
+
+Dies ist ein Nachweis kleiner Rückwärtsfehler des numerischen Rechenwegs.
+Bei schlecht konditionierter Kovarianz folgt daraus keine enge Vorwärtsschranke
+zum mathematisch exakten `rᵀ C⁻¹ r/N` und keine behauptete Übereinstimmung
+beliebiger unabhängiger Implementierungen. Diese Grenze darf nicht als
+bewiesene Genauigkeit verschleiert werden. Numerische Unter-/Überläufe und
+nicht belegbare Schranken verhindern die Freigabe; keine neue Regularisierung,
+feste absolute Fehlertoleranz oder stillschweigende Änderung der historischen
+Verlustverträge.
+
+Die begrenzte technische Prüfung verwendet saubere, fest gespeicherte
+Beobachtungen mit separat gewählter positiv definiter Testkovarianz direkt
+über dieselbe allgemeine Paket-API. Sie behauptet kein Rauschen in diesen
+Daten und ändert nicht die positive Varianzvorgabe der Schema-2-Erzeugung.
+Ein vollständiges kleines Viererpaket sowie gewöhnliche und diagonale
+Kontrollen prüfen die neue Route. Analytische Referenzen müssen zeigen,
+dass die Nebendiagonalen die Strukturrangfolge und das Konstantenoptimum
+tatsächlich beeinflussen. Reduzierte äußere Budgets sind ausdrücklich als
+technisch gekennzeichnet; lokal 300/5 und die übrigen Profileinstellungen
+bleiben erhalten. Keine bestimmte gefundene Formel oder Kurvenklasse ist
+ein technisches Bestehenskriterium.
+
+Implementierung, konkrete Prüfbefehle und tatsächlich ausgeführte Nachweise
+werden im [Fortsetzungsstand](representation_implementation_status.md)
+nachgeführt. Originalarchive bleiben gemäß [Archivregel](results_archiving.md)
+unverändert; technische Nachweise erhalten eigene Ausgaben und Prüfsummen.

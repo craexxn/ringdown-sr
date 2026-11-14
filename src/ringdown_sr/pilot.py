@@ -16,7 +16,12 @@ import scipy
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.figure import Figure
 
-from ringdown_sr.config import CovariancePilotConfig, SymbolicPilotConfig, parse_config
+from ringdown_sr.config import (
+    ConfirmedPilotConfig,
+    CovariancePilotConfig,
+    SymbolicPilotConfig,
+    parse_config,
+)
 from ringdown_sr.losses import CovarianceLoss, mean_squared_error
 from ringdown_sr.noise import ar1_covariance, gaussian_ar1_noise, gaussian_white_noise
 from ringdown_sr.reference_fit import ReferenceFitError, fit_ringdown
@@ -235,6 +240,10 @@ def run_pilot(
         from ringdown_sr.symbolic_pilot import run_symbolic_pilot
 
         return run_symbolic_pilot(config, original, config_path.name, output_directory)
+    if isinstance(config, ConfirmedPilotConfig):
+        from ringdown_sr.confirmed_pilot import run_confirmed_pilot
+
+        return run_confirmed_pilot(config, original, config_path.name, output_directory)
     if isinstance(config, CovariancePilotConfig):
         from ringdown_sr.covariance_pilot import run_covariance_pilot
 

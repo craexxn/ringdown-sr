@@ -1,6 +1,30 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Bestätigung 001 vollständig geprüft, praktische R-Grenze erreicht
+## Aktuell: Profilübernahme in den allgemeinen gewichteten Laufweg
+
+Stand 14.11.2026, [Leitfadenphase 5](ringdown_recovery_roadmap.md): Die
+Bestätigungsergebnisse sind mit [PR #88](https://github.com/craexxn/ringdown-sr/pull/88)
+nach gezieltem KI-basiertem Review und erfolgreicher
+[Dokumentations-CI 43574313216](https://github.com/craexxn/ringdown-sr/actions/runs/43574313216)
+als `1f2cb1e2b1e1c3442f0372ec17f0aad129c91428` übernommen. Mergebaum und
+geprüfter Head `8d0cb40974fba1070256a5f1ac0fd9d09381c744` sind bytegleich.
+Wissenschaftlicher Ausführungsstand bleibt `6bc0282`.
+
+Auf `codex/confirmed-weighted-profile` ab diesem Merge wird die ausdrückliche
+[Schema-4-Profilübernahme](symbolic_pilot.md#bestätigtes-r-profil-im-allgemeinen-laufweg-schema-4)
+umgesetzt. Beschlossen sind vier vollständig frische 1.000er-Suchen je
+Gewichtungsarm, lokal 300/5, beide Häufigkeitsschalter und unveränderte
+Originalauswahl. Native Gewichtung, Paketwahl, Herkunft, Kosten, Fehlergrenzen
+und lesende Prüfung gehören gemeinsam zur technischen Abnahme. Schema 1–3
+behalten ihre bisherigen Defaults und Formate.
+
+Implementierung und technische Prüfung sind in Arbeit. Es wurde keine neue
+wissenschaftliche Suche oder Rauschserie gestartet. Der nächste wissenschaftliche
+Schritt ist erst nach technischer Abnahme ein vorab festgelegter begrenzter
+Rauschpilot. Offene Archivkopien und Sicherungsnachweise im
+[Ergebnisindex](results_index.md) bleiben unverändert offen.
+
+## Bestätigung 001 vom 14.11.2026: vollständig geprüft, praktische R-Grenze erreicht
 
 Stand 14.11.2026, [Leitfadenphase 6](ringdown_recovery_roadmap.md):
 [PR #87](https://github.com/craexxn/ringdown-sr/pull/87) ist nach vollständiger

@@ -354,6 +354,16 @@ jobs:
             exit 1
           fi
 
+      - name: Verify confirmed weighted profile and six tiny workers
+        run: |
+          if ! env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/check_confirmed_profile.py \
+            --output results/ci-confirmed-profile; then
+            find results -path '*ci-confirmed-profile*' -type f -name '*.log' -print -exec tail -n 100 {} \;
+            exit 1
+          fi
+
   technical-checks:
     name: ${{ github.event_name == 'workflow_dispatch' && 'manual-technical-checks' || 'technical-checks' }}
     needs: [prepare, native]

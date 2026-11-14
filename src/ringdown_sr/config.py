@@ -115,6 +115,54 @@ class SymbolicPilotConfig(CovariancePilotConfig):
         )
 
 
+CONFIRMED_PROFILE = "r4x1000-local300x5-v1"
+
+
+@dataclass(frozen=True)
+class ConfirmedSearchConfig:
+    """Select the fixed confirmed profile without exposing tuning parameters."""
+
+    profile: str
+    seeds: tuple[int, int, int, int]
+
+    def __post_init__(self):
+        if self.profile != CONFIRMED_PROFILE:
+            raise ValueError("Unknown confirmed search profile.")
+        if (
+            not isinstance(self.seeds, (tuple, list))
+            or len(self.seeds) != 4
+            or any(type(seed) is not int or not 0 < seed < 2**31 for seed in self.seeds)
+            or len(set(self.seeds)) != 4
+        ):
+            raise ValueError(
+                "Confirmed search requires four unique positive 31-bit seeds."
+            )
+        object.__setattr__(self, "seeds", tuple(self.seeds))
+
+
+@dataclass(frozen=True)
+class ConfirmedPilotConfig(CovariancePilotConfig):
+    confirmed_search: ConfirmedSearchConfig
+
+    def __post_init__(self):
+        if {self.noise.seed, self.background.seed} & set(self.confirmed_search.seeds):
+            raise ValueError(
+                "Search seeds must differ from noise and background seeds."
+            )
+
+    def reference_config(self) -> CovariancePilotConfig:
+        """Preserve the existing data and reference-fit preparation exactly."""
+        return CovariancePilotConfig(
+            2,
+            self.sampling,
+            self.signal,
+            self.noise,
+            self.fit,
+            self.background,
+            self.covariance_estimation,
+        )
+
+
 def _fields(table, required: set[str], name: str) -> dict:
     if not isinstance(table, dict) or set(table) != required:
         raise ValueError(f"{name} requires exactly these fields: {sorted(required)}.")
@@ -152,13 +200,15 @@ def parse_config(content: bytes) -> PilotConfig:
     except (UnicodeError, tomllib.TOMLDecodeError) as error:
         raise ValueError(f"Invalid UTF-8 TOML configuration: {error}") from error
     version = data.get("schema_version")
-    if type(version) is not int or version not in (1, 2, 3):
-        raise ValueError("schema_version must be 1, 2 or 3.")
+    if type(version) is not int or version not in (1, 2, 3, 4):
+        raise ValueError("schema_version must be 1, 2, 3 or 4.")
     root_fields = {"schema_version", "sampling", "signal", "noise", "fit"}
     if version >= 2:
         root_fields |= {"background", "covariance_estimation"}
     if version == 3:
         root_fields.add("symbolic_search")
+    if version == 4:
+        root_fields.add("confirmed_search")
     _fields(data, root_fields, "root")
     sampling = _fields(
         data["sampling"], set(SamplingConfig.__annotations__), "sampling"
@@ -291,6 +341,13 @@ def parse_config(content: bytes) -> PilotConfig:
             "symbolic_search",
         )
         return SymbolicPilotConfig(*common, *extra, SearchBudget(**search))
+    if version == 4:
+        search = _fields(
+            data["confirmed_search"],
+            set(ConfirmedSearchConfig.__annotations__),
+            "confirmed_search",
+        )
+        return ConfirmedPilotConfig(*common, *extra, ConfirmedSearchConfig(**search))
     return CovariancePilotConfig(
         *common,
         *extra,

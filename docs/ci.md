@@ -223,6 +223,16 @@ geben weder die praktische R-Grenze noch die getrennte L-Kontrollgrenze frei.
 Die 180 wissenschaftlichen Suchaufrufe bleiben ein separater Manjaro-Schritt;
 alle historischen Prüfblöcke bestehen unverändert fort.
 
+Die Profilübernahme aus Phase 5 ergänzt `scripts/check_confirmed_profile.py`
+im bestehenden nativen Job. Der technische Viererpaketweg mit vollständiger
+Kovarianz und gewöhnliche/diagonale Kontrollen verwenden sechs frische kleine
+Worker. Feste Referenzen prüfen zusätzlich die gewichtete Strukturrangfolge
+und Konstantenoptimierung unter lokal 300/5. Die äußeren Budgets sind
+ausdrücklich reduziert; wissenschaftliche 1.000er-Suchen oder ein Rauschpilot
+werden dadurch nicht in Actions gestartet. Alle bisherigen Prüfblöcke bleiben
+erhalten. Die vorhandene 120-Minuten-Frist bleibt zunächst unverändert;
+der neue vollständige Lauf muss ihre Eignung bestätigen.
+
 Die Frist ausschließlich des seriellen `native`-Jobs wurde mit PR85 auf 90 Minuten
 gesetzt. Der damals zuletzt vollständig geprüfte native PR83-Lauf
 `43168577591` dauerte laut Joblog 55 min 37 s. Der lokale neue Vorlauf benötigte

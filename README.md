@@ -5,8 +5,8 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 14.11.2026; aktuelle main-Basis `6bc0282` nach
-[PR #87](https://github.com/craexxn/ringdown-sr/pull/87).
+Fortsetzungsstand: 14.11.2026; aktuelle main-Basis `1f2cb1e` nach
+[PR #88](https://github.com/craexxn/ringdown-sr/pull/88).
 Der Budgetvergleich wurde auf `680af98` nach PR #85 wissenschaftlich ausgeführt;
 seine aktuelle Quellenprüfung steht im
 [Ergebnisbericht](docs/restart_budget_results_manjaro_001.md).
@@ -138,7 +138,10 @@ Drei feste neue
 Innenbereichsfälle bestätigen weder den ganzen Parameterkasten noch erneut
 die zuvor schwierige Randkombination. U bleibt offen. Die bewusste
 Profilübernahme in den allgemeinen gewichteten Laufweg und dessen rauschfreie
-Prüfung sind der nächste abgegrenzte Schritt vor einem späteren Rauschpilot;
+technische Prüfung werden als ausdrücklich wählbarer
+[Schema-4-Paketweg](docs/symbolic_pilot.md#bestätigtes-r-profil-im-allgemeinen-laufweg-schema-4)
+umgesetzt. Alte Schema-1–3-Aufträge behalten ihre Bedeutung. Der spätere
+Rauschpilot benötigt ein eigenes vorab festgelegtes Versuchsprotokoll;
 keine zusätzliche Budgetstaffel oder automatische Ausführung daraus ableiten.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
