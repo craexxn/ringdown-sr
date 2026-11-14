@@ -575,7 +575,7 @@ Struktursuche und Konstantenoptimierung müssen dieselbe Gewichtung verwenden.
 
 ## 5. Suchprofil in den tatsächlichen späteren Laufweg übernehmen
 
-Beim Codeabgleich auf main 46da82ec7bfe24614e0b3fc3203258535343d848 verwendete
+Beim historischen Codeabgleich auf main 46da82ec7bfe24614e0b3fc3203258535343d848 verwendete
 `src/ringdown_sr/symbolic.py` im allgemeinen Suchprofil lokal 20/2 und
 ausgeschaltete Häufigkeitsschalter. Die jüngsten rauschfreien Spezialversuche
 verwendeten 300/5 und eingeschaltete Schalter. Dies ist bei Übernahme erneut
@@ -776,6 +776,14 @@ drei festen Signale begrenzt. Nach technischer Abnahme folgt die begrenzte
 Rauschpilotplanung mit getrennten Rausch-, Hintergrund- und Suchzufallsquellen;
 keine wissenschaftliche Ausführung wird durch diesen Implementierungsschritt
 vorweggenommen.
+
+Technischer Stand: [PR #89](https://github.com/craexxn/ringdown-sr/pull/89)
+implementiert diesen Paketweg. Auf `609bc29` bestehen lokal 3.896 Pythonfälle,
+sechs kleine native Worker und neun analytische Gewichtungs-/Optimiererfälle;
+KI-basiertes Review und gezielte Nachprüfungen ohne offene Befunde. Die
+vollständige Ready-CI bleibt vor Übernahme erforderlich. Der dokumentierte
+Manjaro-Vorlauf ist eine zusätzliche technische Kontrolle; das wissenschaftliche
+Rauschpilotprotokoll und seine Ausführung bleiben separate nächste Schritte.
 
 ## 7. Rauschpilot und Hauptversuchsplanung
 

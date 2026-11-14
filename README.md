@@ -138,9 +138,13 @@ Drei feste neue
 Innenbereichsfälle bestätigen weder den ganzen Parameterkasten noch erneut
 die zuvor schwierige Randkombination. U bleibt offen. Die bewusste
 Profilübernahme in den allgemeinen gewichteten Laufweg und dessen rauschfreie
-technische Prüfung werden als ausdrücklich wählbarer
+technische Prüfung sind als ausdrücklich wählbarer
 [Schema-4-Paketweg](docs/symbolic_pilot.md#bestätigtes-r-profil-im-allgemeinen-laufweg-schema-4)
-umgesetzt. Alte Schema-1–3-Aufträge behalten ihre Bedeutung. Der spätere
+in [PR #89](https://github.com/craexxn/ringdown-sr/pull/89) implementiert;
+3.896 Pythonfälle, sechs kleine native Worker und neun analytische Kontrollen
+sind lokal bestanden. KI-basiertes Review ohne offene Befunde; die vollständige
+Ready-CI bleibt vor Übernahme erforderlich. Alte Schema-1–3-Aufträge behalten
+ihre Bedeutung. Der spätere
 Rauschpilot benötigt ein eigenes vorab festgelegtes Versuchsprotokoll;
 keine zusätzliche Budgetstaffel oder automatische Ausführung daraus ableiten.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient

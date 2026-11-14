@@ -482,6 +482,24 @@ sind offen. GitHub-Uploads sind optional.
   SHA-256 prüfen. Bis zur Bestätigung bleibt der Sicherungsstand offen.
   GitHub-Uploads und Downloadlinks sind optionale Ergänzungen.
 
+### Technische Profilübernahme vom 14.11.2026
+
+`confirmed-profile-technical-003` wurde in der Cloud am sauberen
+Ausführungscommit `609bc29745a354b212a8015a378b36800c2979c7` abgeschlossen:
+sechs kleine native Worker, neun analytische Gewichtungs-/Optimiererreferenzen,
+34 Endfrontkandidaten und separater lesender CLI-Aufruf geprüft. Dies ist die
+technische Abnahme des [allgemeinen Profilwegs](symbolic_pilot.md#bestätigtes-r-profil-im-allgemeinen-laufweg-schema-4),
+keine wissenschaftliche Ringdown- oder Rauschserie und kein Manjaro-Nachweis.
+Implementierungs- und Prüfumfang stehen im
+[Fortsetzungsstand](representation_implementation_status.md).
+
+Archiv einschließlich lesendem Prüfprotokoll:
+`confirmed-profile-technical-003.tar.gz`, **545.347 Bytes**, SHA-256
+`a940ca819cef12ba1c23f5d9ecf57e5d7fcd678ef4fc4693ec7ba7f26479fd08`.
+TAR und Prüfsumme sind geprüft. Eine Cloud-Arbeitskopie liegt vor;
+gemeinsame dauerhafte Archivablage und unabhängige hashgeprüfte Zweitkopie
+sind noch nicht bestätigt. Keine zusätzliche verpflichtende GitHub-Ablage.
+
 ### Priorisierte fehlende Belege
 
 Ergänzung vom 12.11.2026: Das Bestätigungsarchiv 001 mit allen drei
