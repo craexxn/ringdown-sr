@@ -1,6 +1,6 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Profilübernahme in den allgemeinen gewichteten Laufweg
+## Aktuell: Profilübernahme übernommen, technischer Manjaro-Vorlauf bestätigt
 
 Stand 14.11.2026, [Leitfadenphase 5](ringdown_recovery_roadmap.md): Die
 Bestätigungsergebnisse sind mit [PR #88](https://github.com/craexxn/ringdown-sr/pull/88)
@@ -10,10 +10,16 @@ als `1f2cb1e2b1e1c3442f0372ec17f0aad129c91428` übernommen. Mergebaum und
 geprüfter Head `8d0cb40974fba1070256a5f1ac0fd9d09381c744` sind bytegleich.
 Wissenschaftlicher Ausführungsstand bleibt `6bc0282`.
 
-Auf `codex/confirmed-weighted-profile` ab diesem Merge ist die ausdrückliche
+Die auf `codex/confirmed-weighted-profile` entwickelte ausdrückliche
 [Schema-4-Profilübernahme](symbolic_pilot.md#bestätigtes-r-profil-im-allgemeinen-laufweg-schema-4)
-als [PR #89](https://github.com/craexxn/ringdown-sr/pull/89) implementiert.
-Implementierungs- und lokaler technischer Prüfstand ist
+ist mit [PR #89](https://github.com/craexxn/ringdown-sr/pull/89) als
+`8b9c6ef3a17fed03958a24ff36698bd47622eca5` übernommen. Die vollständige
+[Ready-CI 43601849555](https://github.com/craexxn/ringdown-sr/actions/runs/43601849555)
+bestand mit 3.896 Pythonfällen und sämtlichen nativen Prüfblöcken einschließlich
+sechs neuer kleiner Suchworker. Alle drei Joblogs bestätigen Checkout
+`0f69de60ed8c14cd1d778a485472aec67b5af26f` und Baum
+`33b401bbf9ebef3e7149b94c1823c91a6938dab0`; PR-Head `aa5bc15` und tatsächlicher
+Merge sind baumgleich. Implementierungs- und lokaler technischer Prüfstand bleibt
 `609bc29745a354b212a8015a378b36800c2979c7`.
 Beschlossen sind vier vollständig frische 1.000er-Suchen je
 Gewichtungsarm, lokal 300/5, beide Häufigkeitsschalter und unveränderte
@@ -61,8 +67,8 @@ daraus nicht. Seine Prüfprodukte verwenden ein festes Speicherlayout.
   34 exportierte Endfrontkandidaten geprüft. Vollständiges Viererpaket mit
   voller Kovarianz sowie diagonale und gewöhnliche Einzelkontrolle; keine
   wissenschaftlichen 1.000er-Suchen. Der separate lesende CLI-Aufruf besteht
-  ebenfalls. Die Ready-Voll-CI bleibt vor Übernahme erforderlich;
-  ein erfolgreicher Draft-`prepare` ersetzt diese nicht.
+  ebenfalls. Die anschließende vollständige Ready-CI ist oben dem tatsächlich
+  geprüften Mergebaum zugeordnet.
 - **Technisches Nachweispaket:** `confirmed-profile-technical-003.tar.gz`,
   545.347 Bytes, SHA-256
   `a940ca819cef12ba1c23f5d9ecf57e5d7fcd678ef4fc4693ec7ba7f26479fd08`.
@@ -73,10 +79,53 @@ daraus nicht. Seine Prüfprodukte verwenden ein festes Speicherlayout.
   sechs technische Suchen sowie lesende Verifikation und anschließende
   Archivierung syntaxgeprüft; konkrete Befehle im bestehenden Pilotdokument.
 
-Es wurde keine neue wissenschaftliche Suche oder Rauschserie gestartet.
-Der nächste wissenschaftliche
-Schritt ist erst nach technischer Abnahme ein vorab festgelegter begrenzter
-Rauschpilot. Offene Archivkopien und Sicherungsnachweise im
+### Technischer Manjaro-Nachweis vom 14.11.2026
+
+`confirmed-profile-technical-manjaro-001` wurde auf dem sauberen PR89-Merge
+`8b9c6ef3a17fed03958a24ff36698bd47622eca5` ausgeführt. Das unveränderte
+Originalarchiv umfasst 195 reguläre Dateien mit 2.984.681 entpackten Bytes:
+194 Dateien im Laufordner und das separate lesende Prüfprotokoll.
+Archivname, SHA-256 und Sicherungsstand stehen im
+[Ergebnisindex](results_index.md#technische-profilübernahme-vom-14112026).
+
+Die eigene lesende Prüfung erfolgte in einem separaten sauberen Checkout
+desselben Ausführungscommits mit dem unveränderten
+`scripts/check_confirmed_profile.py --verify`: sechs technische Suchworker,
+vollständiges Viererpaket mit voller Kovarianz, diagonale und gewöhnliche
+Einzelkontrolle sowie neun analytische Rang-/Optimiererfälle bestanden.
+Jeder Suchworker verwendet eine äußere Iteration bei lokal unverändertem 300/5.
+Dies prüft die technische Anbindung, nicht die wissenschaftliche Erfolgsquote
+des vollständigen 4 × 1.000-Profils.
+
+Alle sechs Worker sind ohne Ausfall abgeschlossen. Die 34 nativen Endfrontzeilen
+stimmen mit den gespeicherten Kandidaten hinsichtlich Gleichung, Komplexität
+und exaktem Float64-Verlust überein. Die verlustbasierte Paketwahl bestätigt
+unverändert `member-03`. Die vollständige Paket-Softwarebindung umfasst
+166 Dateien einschließlich aller 58 Python-Paketquellen; ihre Hashes stimmen
+mit dem Ausführungscheckout überein. Eltern- und Workerherkunft belegen denselben
+sauberen Commit, Julia 1.13.1 und Haswell-BLAS mit einem Thread vor und nach
+der Suche. Eine zusätzliche exakte rationale Nachrechnung bestätigt die neun
+analytischen Referenzen innerhalb ihrer unveränderten Prüfgrenzen.
+
+Gemessene Kosten aller sechs Suchworker: **239,136208 s Workerzeit**, 158,259584 s
+Fitzeit einschließlich der darin liegenden JIT-/Exportschritte und
+**165.468 Verlustcallbacks**. Die analytischen Kontrollen weisen separat
+875 Callbacks aus. Eine vollständige Aufrufmessung einschließlich Einrichtung,
+analytischer Kontrollen und lesender Verifikation fehlt; die Summe der
+Workerzeiten wird nicht als Gesamtaufwand ausgegeben.
+
+Die CLI-Ausgabe ist bytegleich zum übermittelten Verifikationsprotokoll.
+SHA-256-Inventare vor und nach der Prüfung bestätigen alle 194 Dateien des
+Laufordners unverändert; auch der Originalarchivhash stimmt mit der übermittelten
+Prüfsumme überein. Keine Suche, kein Fit und keine Änderung der Originalauswahl
+wurden für diese Nachprüfung ausgeführt.
+
+Der Nachtrag entsteht auf `codex/weighted-manjaro-evidence` ab `8b9c6ef` und
+ändert ausschließlich bestehende Dokumentation; der Ausführungsstand bleibt
+unverändert. Es wurde keine neue wissenschaftliche Suche oder Rauschserie gestartet.
+Der nächste Schritt ist das vorab festgelegte Protokoll für einen begrenzten
+Rauschpilot mit getrennten Rausch-, Hintergrund- und Suchzufallsquellen.
+Offene Archivkopien und Sicherungsnachweise im
 [Ergebnisindex](results_index.md) bleiben unverändert offen.
 
 ## Bestätigung 001 vom 14.11.2026: vollständig geprüft, praktische R-Grenze erreicht

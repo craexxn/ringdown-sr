@@ -342,17 +342,20 @@ unverändert; technische Nachweise erhalten eigene Ausgaben und Prüfsummen.
 
 ### Begrenzter technischer Manjaro-Lauf
 
-Erst nach vollständiger Abnahme des Implementierungsstands aus
-[PR #89](https://github.com/craexxn/ringdown-sr/pull/89) starten. Die folgenden
-Befehle holen dessen tatsächlichen Head in einen eigenen unveränderlichen
-Checkout. Aus dem bisherigen Repository ausführen; vorhandene Arbeitsbäume
-oder Ausgabeordner nicht überschreiben:
+[PR #89](https://github.com/craexxn/ringdown-sr/pull/89) ist nach vollständiger
+Ready-CI als `8b9c6ef` übernommen. Der Manjaro-Vorlauf 001 ist inzwischen am
+Originalarchiv lesend bestätigt; Nachweise im
+[Fortsetzungsstand](representation_implementation_status.md#technischer-manjaro-nachweis-vom-14112026).
+Die folgenden Befehle dokumentieren den Laufweg auf einem festen übernommenen
+Stand; sie sind kein Wiederholungsauftrag. Aus dem bisherigen Repository
+ausführen; vorhandene Arbeitsbäume oder Ausgabeordner nicht überschreiben:
 
 ```bash
 bash <<'BASH'
 set -euo pipefail
-git fetch origin refs/pull/89/head
-task_commit=$(git rev-parse FETCH_HEAD)
+git fetch origin main
+task_commit=8b9c6ef3a17fed03958a24ff36698bd47622eca5
+git merge-base --is-ancestor "$task_commit" FETCH_HEAD
 git worktree add --detach ../ringdown-confirmed-profile-run "$task_commit"
 cd ../ringdown-confirmed-profile-run
 test -z "$(git status --porcelain)"

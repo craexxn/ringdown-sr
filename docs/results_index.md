@@ -500,6 +500,25 @@ TAR und Prüfsumme sind geprüft. Eine Cloud-Arbeitskopie liegt vor;
 gemeinsame dauerhafte Archivablage und unabhängige hashgeprüfte Zweitkopie
 sind noch nicht bestätigt. Keine zusätzliche verpflichtende GitHub-Ablage.
 
+Der zusätzliche **Manjaro-Vorlauf `confirmed-profile-technical-manjaro-001`**
+wurde am sauberen Ausführungscommit
+`8b9c6ef3a17fed03958a24ff36698bd47622eca5` nach Übernahme von PR89 abgeschlossen.
+Originalarchiv am 14.11.2026 empfangen und auf demselben Commit selbst lesend
+verifiziert: sechs kleine Suchworker und neun analytische Kontrollen bestanden.
+194 Dateien des Laufordners bleiben bytegleich; die neue CLI-Ausgabe stimmt
+mit dem mitgelieferten separaten Verifikationsprotokoll überein. Dies ist ein
+technischer Gerätebeleg, keine wissenschaftliche Ringdown- oder Rauschserie.
+Details und Aussagegrenzen im [Fortsetzungsstand](representation_implementation_status.md#technischer-manjaro-nachweis-vom-14112026).
+
+Originalarchiv: `confirmed-profile-technical-manjaro-001.tar.gz`,
+**572.274 Bytes**, SHA-256
+`73b98b8d153a353a5b596cbffa34f9fa7699a0c6f177cd70aa190654fd1857a2`.
+195 reguläre Dateien einschließlich des separaten lesenden Prüfprotokolls,
+2.984.681 entpackte Bytes; TAR und SHA-256 selbst geprüft. Die übermittelte
+Arbeitskopie liegt vor. Dauerhafte Ablage im gemeinsamen Archivordner sowie
+unabhängige hashgeprüfte Zweitkopie sind weiterhin nicht bestätigt; keine
+weiteren Laufdateien werden für diesen technischen Nachweis benötigt.
+
 ### Priorisierte fehlende Belege
 
 Ergänzung vom 12.11.2026: Das Bestätigungsarchiv 001 mit allen drei
