@@ -169,7 +169,7 @@ Dies ist eine begrenzte Prüfung, kein vollständiger Markdown-Parser.
 `docs/seed_driver_crosscheck_plan.md`, `docs/global_restart_comparison_plan.md`
 sowie `docs/iteration_time_budget_plan.md`, `docs/restart_confirmation_plan.md`
 und `docs/time_coordinate_plan.md`, `docs/restart_budget_plan.md`,
-`docs/restart_budget_confirmation_plan.md`
+`docs/restart_budget_confirmation_plan.md`, `docs/noise_pilot_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -232,6 +232,21 @@ ausdrücklich reduziert; wissenschaftliche 1.000er-Suchen oder ein Rauschpilot
 werden dadurch nicht in Actions gestartet. Alle bisherigen Prüfblöcke bleiben
 erhalten. Die vorhandene 120-Minuten-Frist bleibt zunächst unverändert;
 der neue vollständige Lauf muss ihre Eignung bestätigen.
+
+Der begrenzte Rauschpilot ergänzt `scripts/check_noise_pilot.py` mit drei
+frischen technischen Workern: gewöhnliche, wahre und geschätzte Gewichtung
+auf 128 Punkten mit AR(1)-Rauschen, je zehn äußere Iterationen bei lokal 300/5.
+Eigene technische Seeds trennen diese Kontrolle von den wissenschaftlichen
+Blöcken. Jeder Worker erhält höchstens 600 Sekunden; der Checker speichert
+die technische Konfiguration und die vollständige Aufrufmessung. Anschließend
+prüft ein separater `--verify`-Aufruf die vorhandene Ausgabe
+`results/ci-noise-pilot-001` lesend. Fehler aus Lauf oder Verifikation sperren
+den Job und geben vorhandene Workerlogs aus. Der neu konsumierte eingefrorene
+Rauschpilotplan gehört zum vollen CI-Scope. Keine der 144 wissenschaftlichen
+Suchen wird in Actions gestartet; sämtliche bisherigen Prüfblöcke bleiben
+erhalten. Die Frist des nativen Jobs bleibt zunächst bei 120 Minuten; die
+Laufzeit des neuen Vorlaufs muss vor Ready gegen die verbleibende Reserve
+geprüft werden. Dies ändert keine wissenschaftliche Workerfrist.
 
 Die Frist ausschließlich des seriellen `native`-Jobs wurde mit PR85 auf 90 Minuten
 gesetzt. Der damals zuletzt vollständig geprüfte native PR83-Lauf
