@@ -17,6 +17,15 @@ erzeugt und gegen den versionierten Bestand abgeglichen. Literatur zu
 Simulationsplanung, SR-Benchmarks und Kovarianzschrumpfung wurde erneut geprüft;
 konkrete Mengen und sechs Wiederholungen bleiben begrenzte Projektvorgaben.
 
+Prüfnachweise des Entwurfs: Dokumentation und lokale Dateiziele für 109
+Markdown-Dateien sowie Diffprüfung bestanden. Unabhängige numerische
+Nachrechnung bestätigt Signalhexwerte, Pegel, Umfang und Unsicherheitsangaben;
+alle 72 Seeds aus 1.766 ausgeschlossenen Bestandstokens exakt reproduziert,
+48 anfängliche Messrausch-/Hintergrundzustände ohne Kollision. KI-basiertes
+Methodenreview und gezielte technische Planprüfung durchgeführt; der fehlende
+Zehn-Iterationenmodus und die differenzierte Behandlung von Vorbereitungs-/
+Referenzfit-Ausfällen sind ausdrücklich als Implementierungsarbeiten erfasst.
+
 Die vorhandene Schema-4-Ausführung einzelner Dreiervergleiche ist kein fertiger
 Serientreiber: Zusatzraster und bestehende Zusatzbewertungen für Schema 4,
 gemeinsame Eingabenvorbereitung, Abschnitts-/Gesamtbindung und vollständige

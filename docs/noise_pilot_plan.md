@@ -332,7 +332,9 @@ Vor dem ersten wissenschaftlichen Suchaufruf müssen vorliegen:
 
 - bestätigter Umfang und getrennt versionierter endgültiger Protokollcommit;
 - konkrete vollständige Eingaben, Hintergrundmatrizen, ausgewählte Kovarianzen,
-  Referenzwerte und Raster mit SHA-256; vorab gespeicherte Quellen-/Versionsbindung;
+  Referenzwerte und Raster mit SHA-256, soweit erzeugbar; andernfalls vorab
+  gebundene zulässige Vorbereitungsfehler samt betroffenen `not_run`-Armen.
+  Quellen-/Versionsbindung gilt auch für diese Ausfälle;
 - geprüfter Implementierungs-PR einschließlich Fehler-/Abbruchgrenzen und
   separatem lesendem Serienverifikator, vollständige erforderliche CI;
 - erfolgreicher begrenzter technischer Manjaro-Vorlauf auf dem Ausführungsstand;
