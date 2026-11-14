@@ -60,13 +60,13 @@ Für den endgültigen Stand einen eigenen sauberen Checkout verwenden. Nach
 Übernahme des Implementierungs-PRs im vorhandenen Repository:
 
 ```bash
-git fetch origin main
-git worktree add --detach ../ringdown-noise-pilot-run origin/main
-cd ../ringdown-noise-pilot-run
-test -f scripts/check_noise_pilot.py
-git status --short
-git rev-parse HEAD
-unset VIRTUAL_ENV
+git fetch origin main &&
+git worktree add --detach ../ringdown-noise-pilot-run origin/main &&
+cd ../ringdown-noise-pilot-run &&
+test -f scripts/check_noise_pilot.py &&
+test -z "$(git status --porcelain)" &&
+git rev-parse HEAD &&
+unset VIRTUAL_ENV &&
 uv sync --locked --dev --python 3.12.14
 ```
 
