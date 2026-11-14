@@ -152,8 +152,8 @@ sigma/A=0,05, je sechs unabhängige Blöcke und drei Gewichtungsarme,
 insgesamt 144 Suchaufrufe. Die wissenschaftliche Ausführung bleibt separat.
 Der [Serienlaufweg](docs/noise_pilot.md) in PR #92 ist lokal mit 4.119
 Pythonfällen, drei echten N128-Zehnerworkern und KI-basiertem Review geprüft.
-Vor Übernahme und wissenschaftlichem Start bleiben die vollständige CI sowie der separate
-technische Manjaro-Ressourcencheck mit 128 Punkten erforderlich.
+Vor Übernahme bleibt die vollständige CI erforderlich; vor wissenschaftlichem
+Start zusätzlich der separate technische Manjaro-Ressourcencheck mit 128 Punkten.
 Keine zusätzliche Budgetstaffel oder automatische Ausführung daraus ableiten.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
