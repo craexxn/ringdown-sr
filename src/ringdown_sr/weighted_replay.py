@@ -17,7 +17,8 @@ from . import duration_replay, prediction_reference
 from .losses import CovarianceLoss, _real_array, mean_squared_error
 from .symbolic import evaluate_tree
 
-FORMAT = "ringdown-sr-weighted-loss-replay-1"
+FORMAT = "ringdown-sr-weighted-loss-replay-2"
+ORDINARY_FORMAT = "ringdown-sr-confirmed-ordinary-loss-replay-1"
 _U = Fraction(1, 2**53)
 _MAX_FINITE = Fraction.from_float(float(np.finfo(np.float64).max))
 _HALF_MIN_SUBNORMAL = Fraction(1, 2**1075)
@@ -44,6 +45,117 @@ def _gamma(operations):
 
 def _fraction_record(value):
     return {"numerator": str(value.numerator), "denominator": str(value.denominator)}
+
+
+def _reduction_bounds(samples):
+    """Bound the complete sum-of-squares/sqrt/divide/square reference model.
+
+    The sum of rounded squares has relative error at most gamma_N. Taking its
+    square root and later squaring contributes two numerator rounding factors;
+    dividing and later squaring contributes two more; the final square adds
+    one. The rounded sqrt(N) contributes two denominator factors. This model
+    is checked against each actual scalar, not presumed for arbitrary BLAS.
+    """
+    gamma = _gamma(samples)
+    if gamma >= 1:
+        raise ValueError("Loss reduction exceeds its rounding-bound domain.")
+    lower = (1 - gamma) * (1 - _U) ** 5 / (1 + _U) ** 2
+    upper = (1 + gamma) * (1 + _U) ** 5 / (1 - _U) ** 2
+    return lower, upper
+
+
+def _reduction_record(samples):
+    lower, upper = _reduction_bounds(samples)
+    return {
+        "model": "sum_squares_sqrt_divide_sqrt_N_then_square",
+        "meaning": "checked_scalar_error_not_a_universal_BLAS_guarantee",
+        "sum_squares_gamma": _fraction_record(_gamma(samples)),
+        "unit_roundoff": _fraction_record(_U),
+        "numerator_rounding_factors": 5,
+        "denominator_rounding_factors": 2,
+        "relative_lower": _fraction_record(lower),
+        "relative_upper": _fraction_record(upper),
+    }
+
+
+def _reduction(loss, reference, samples):
+    value = duration_replay._loss(loss)
+    duration_replay._normal_or_zero(value)
+    lower, upper = _reduction_bounds(samples)
+    if reference * samples * (1 + _gamma(samples)) > _MAX_FINITE:
+        raise ValueError("Loss reduction sum is outside the finite Float64 domain.")
+    if not lower * reference <= value <= upper * reference:
+        raise ValueError("Loss disagrees with its own residual reduction bound.")
+
+
+def _ordinary_evidence(
+    observed, native, python, raw_loss, replay_loss, table_loss, python_loss, proof
+):
+    """Use the new scalar contract without changing the frozen duration worker."""
+    observed, native, python = (
+        _real_array(values, name)
+        for values, name in (
+            (observed, "observed"),
+            (native, "native_prediction"),
+            (python, "python_prediction"),
+        )
+    )
+    if (
+        observed.ndim != 1
+        or not observed.size
+        or not (observed.shape == native.shape == python.shape)
+    ):
+        raise ValueError("Replay needs equal nonempty vectors.")
+    for loss in (raw_loss, replay_loss, table_loss, python_loss):
+        duration_replay._loss(loss)
+    np.testing.assert_allclose([replay_loss, table_loss], raw_loss, rtol=1e-10, atol=0)
+    with np.errstate(over="raise", invalid="raise"):
+        native_residual, python_residual = observed - native, observed - python
+    rn, qn = duration_replay._reference(native_residual)
+    rp, qp = duration_replay._reference(python_residual)
+    for loss in (raw_loss, replay_loss):
+        _reduction(loss, qn, observed.size)
+    _reduction(python_loss, qp, observed.size)
+    native_mse = mean_squared_error(native_residual)
+    python_mse = mean_squared_error(python_residual)
+    _reduction(native_mse, qn, observed.size)
+    _reduction(python_mse, qp, observed.size)
+    if float(python_loss).hex() != python_mse.hex():
+        raise ValueError("Recorded Python loss differs from its actual replay.")
+    residual_bound = (
+        sum(
+            (
+                2 * abs(a) * abs(b - a) + (b - a) ** 2
+                for a, b in zip(rn, rp, strict=True)
+            ),
+            Fraction(0),
+        )
+        / observed.size
+    )
+    lower, upper = _reduction_bounds(observed.size)
+    gamma = max(1 - lower, upper - 1)
+    bound = residual_bound + gamma * (qn + qp)
+    difference = abs(Fraction(python_loss) - Fraction(raw_loss))
+    if difference > bound:
+        raise ValueError("Independent MSE difference exceeds its residual bound.")
+    return {
+        "format": ORDINARY_FORMAT,
+        "status": "passed",
+        "metric": "ordinary_mse",
+        "samples": int(observed.size),
+        "table_loss": float(table_loss),
+        "table_loss_role": "pysr_pandas_csv_value; relative_comparison_only",
+        "prediction_replay": proof,
+        "native_residual_mse": native_mse,
+        "independent_residual_mse": python_mse,
+        "reduction_rounding": _reduction_record(observed.size),
+        "reduction_gamma": _fraction_record(gamma),
+        "residual_difference_bound": float(residual_bound),
+        "loss_difference_bound": float(bound),
+        "absolute_loss_difference": float(difference),
+        "decision_arithmetic": "exact_rational",
+        "domain": "normal_float64_or_exact_zero",
+    }
 
 
 def _directed_fraction(value, upwards):
@@ -270,7 +382,7 @@ def verify_loss_replay(
             value is not None for value in (covariance, native_factor, native_whitened)
         ):
             raise ValueError("Unweighted replay must not carry covariance evidence.")
-        return duration_replay.verify_loss_replay(
+        return _ordinary_evidence(
             observed,
             native_prediction,
             python_prediction,
@@ -278,8 +390,7 @@ def verify_loss_replay(
             replay_loss,
             table_loss,
             python_loss,
-            None,
-            prediction_check=prediction_check,
+            prediction_check,
         )
     if not isinstance(loss_object, CovarianceLoss):
         raise TypeError("Weighted replay requires its actual CovarianceLoss object.")
@@ -324,16 +435,17 @@ def verify_loss_replay(
         "native": _product_certificate(native_factor, native_whitened, native_residual),
         "python": _product_certificate(python_factor, python_whitened, python_residual),
     }
-    gamma = _gamma(observed.size + 2)
+    lower, upper = _reduction_bounds(observed.size)
+    gamma = max(1 - lower, upper - 1)
     _, native_reference = duration_replay._reference(native_whitened)
     _, python_reference = duration_replay._reference(python_whitened)
     for loss in (raw_loss, replay_loss):
-        duration_replay._reduction(loss, native_reference, gamma)
-    duration_replay._reduction(python_loss, python_reference, gamma)
+        _reduction(loss, native_reference, observed.size)
+    _reduction(python_loss, python_reference, observed.size)
     native_reduction = mean_squared_error(native_whitened)
     python_reduction = loss_object.mean_squared(python_residual)
-    duration_replay._reduction(native_reduction, native_reference, gamma)
-    duration_replay._reduction(python_reduction, python_reference, gamma)
+    _reduction(native_reduction, native_reference, observed.size)
+    _reduction(python_reduction, python_reference, observed.size)
     if float(python_loss).hex() != python_reduction.hex():
         raise ValueError("Recorded Python loss differs from its actual replay.")
     return {
@@ -351,6 +463,7 @@ def verify_loss_replay(
         "native_residual": _fingerprint(native_residual),
         "python_residual": _fingerprint(python_residual),
         "reduction_gamma": _fraction_record(gamma),
+        "reduction_rounding": _reduction_record(observed.size),
         "native_reduction_reference": _fraction_record(native_reference),
         "python_reduction_reference": _fraction_record(python_reference),
         "native_reduction": native_reduction,

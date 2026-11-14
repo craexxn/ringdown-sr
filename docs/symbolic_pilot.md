@@ -295,10 +295,24 @@ subnormale Operanden und Produkte nicht einfach zu null gesetzt werden.
 Der Maschinenunterlaufanteil verändert keine Kovarianzeinträge und ist keine
 frei gewählte absolute Verlusttoleranz.
 
-Für die anschließend exakt rational überprüfte Quadratsummenreduktion gilt
-die bestehende `γ_(N+2)`-Grenze. Nichtverschwindende Quadrate müssen weiterhin
-im normalen Float64-Bereich bleiben; Extremskalen können daher ausdrücklich
-abgelehnt werden. Die Prüfung ändert weder Kovarianz noch native Auswahl.
+Für die anschließend exakt rational überprüfte skalare Reduktion werden alle
+Rundungsschritte berücksichtigt. Mit `q=Σ z²/N` muss der tatsächliche Verlust
+im Intervall `q·[(1−γ_N)(1−u)^5/(1+u)^2, (1+γ_N)(1+u)^5/(1−u)^2]` liegen.
+Die Faktoren stammen aus Quadrat-/Summenphase, Quadratwurzel der Summe,
+Quadratwurzel von N, Division und abschließendem Quadrieren. Damit wird die
+tatsächliche Ausgabe gegen ein ausdrücklich festgelegtes Rechenmodell geprüft;
+es wird keine universelle Fehlergarantie für beliebige BLAS-Implementierungen
+behauptet. Nichtverschwindende Quadrate müssen weiterhin im normalen
+Float64-Bereich bleiben; Extremskalen können abgelehnt werden.
+
+Diese neue Versionsgrenze gilt für gewöhnliche und gewichtete Verluste des
+bestätigten Profils. Die historische `duration_replay`-Regel bleibt unverändert.
+Die technische Zweipunktkontrolle zeigte deren Grenze: Schon `z=[3,27]` ergibt
+bei gültiger Norm-/Divisions-/Quadratrechnung `368.99999999999983` statt exakt
+369, etwas außerhalb von `γ_4`. Beim tatsächlich geprüften nativen Gegenfall
+sind Front-, Callback- und Reimportverlust bitgleich. Die Korrektur betrifft
+ausschließlich die begründete Prüfhülle; Kovarianz, native Verluste, Auswahl,
+Suchbudgets und Seeds werden nicht verändert.
 
 Dies ist ein Nachweis kleiner Rückwärtsfehler des numerischen Rechenwegs.
 Bei schlecht konditionierter Kovarianz folgt daraus keine enge Vorwärtsschranke

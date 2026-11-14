@@ -11,7 +11,7 @@ from test_structure import constant as c
 from test_structure import operator as op
 from test_structure import time_node as t
 
-from ringdown_sr import prediction_reference, symbolic
+from ringdown_sr import duration_replay, prediction_reference, symbolic
 from ringdown_sr import weighted_replay as replay
 from ringdown_sr.losses import CovarianceLoss, mean_squared_error
 
@@ -72,7 +72,8 @@ def test_white_covariance_scales_exact_q_without_an_absolute_tolerance(n, expone
     assert fraction(result["native_reduction_reference"]) == Fraction(2) ** (
         2 * exponent - 2
     )
-    assert fraction(result["reduction_gamma"]) == replay._gamma(n + 2)
+    lower, upper = replay._reduction_bounds(n)
+    assert fraction(result["reduction_gamma"]) == max(1 - lower, upper - 1)
 
 
 @pytest.mark.parametrize("rho", [0.0, 0.7, -0.8])
@@ -389,14 +390,73 @@ def test_reading_parent_recomputes_mpfr_and_weighted_evidence(fault):
         )
 
 
-def test_unweighted_path_retains_the_existing_mpfr_reduction_contract():
+def test_unweighted_path_uses_its_own_confirmed_profile_reduction_contract():
     args = arguments(np.eye(2), [1, 2])
     args.update(
         loss_object=None, covariance=None, native_factor=None, native_whitened=None
     )
     result = replay.verify_loss_replay(**args)
-    assert result["format"] == "ringdown-sr-duration-loss-replay-2"
+    assert result["format"] == replay.ORDINARY_FORMAT
     assert result["metric"] == "ordinary_mse"
     args["native_factor"] = np.eye(2)
     with pytest.raises(ValueError, match="must not carry"):
         replay.verify_loss_replay(**args)
+
+
+@pytest.mark.parametrize("weighted", [False, True])
+@pytest.mark.parametrize(
+    ("values", "raw"),
+    [
+        ([3.0, 27.0], 368.99999999999983),
+        ([25.0, 26.0], 650.4999999999997),
+        (
+            [
+                float.fromhex("-0x1.1744c5f9ae742p-38"),
+                float.fromhex("0x1.36f511d366a28p-44"),
+            ],
+            float.fromhex("0x1.30be95671c71ap-77"),
+        ),
+    ],
+)
+def test_complete_reduction_model_handles_actual_small_n_counterexamples(
+    weighted, values, raw
+):
+    # The final pair is the exact native whitening and native reduction from
+    # the second technical worker. Its CSV/callback/reimport losses were equal.
+    args = arguments(np.eye(2), values)
+    exact = sum(Fraction(value) ** 2 for value in values) / 2
+    with pytest.raises(ValueError, match="own residual"):
+        duration_replay._reduction(raw, exact, replay._gamma(4))
+    args.update(raw_loss=raw, replay_loss=raw, table_loss=raw)
+    if not weighted:
+        args.update(
+            loss_object=None, covariance=None, native_factor=None, native_whitened=None
+        )
+    record = replay.verify_loss_replay(**args)
+    assert record["status"] == "passed"
+    assert record["format"] == (replay.FORMAT if weighted else replay.ORDINARY_FORMAT)
+    u = Fraction(1, 2**53)
+    gamma_sum = 2 * u / (1 - 2 * u)
+    assert fraction(record["reduction_rounding"]["relative_lower"]) == (
+        (1 - gamma_sum) * (1 - u) ** 5 / (1 + u) ** 2
+    )
+    assert fraction(record["reduction_rounding"]["relative_upper"]) == (
+        (1 + gamma_sum) * (1 + u) ** 5 / (1 - u) ** 2
+    )
+
+
+@pytest.mark.parametrize("boundary", ["lower", "upper"])
+def test_complete_scalar_model_rejects_the_first_float_outside_its_exact_bound(
+    boundary,
+):
+    lower, upper = replay._reduction_bounds(2)
+    endpoint = lower if boundary == "lower" else upper
+    direction = np.inf if boundary == "upper" else -np.inf
+    inside = float(endpoint)
+    if not lower <= Fraction(inside) <= upper:
+        inside = float(np.nextafter(inside, -direction))
+    replay._reduction(inside, Fraction(1), 2)
+    outside = float(np.nextafter(inside, direction))
+    assert not lower <= Fraction(outside) <= upper
+    with pytest.raises(ValueError, match="own residual"):
+        replay._reduction(outside, Fraction(1), 2)
