@@ -258,6 +258,14 @@ Der Abschluss verweigert eine Freigabe bei abgebrochenem nativen Job weiterhin.
 Der neue Workflowstand benötigt eine frische vollständige Ready-CI;
 ein Wiederanlauf des alten Stands würde die alte 90-Minuten-Frist verwenden.
 
+Abschluss am 13.11.2026: Der neue
+[Ready-Lauf 43394100165](https://github.com/craexxn/ringdown-sr/actions/runs/43394100165)
+auf Head `b17a741` bestand vollständig: 3.656 Pythonfälle und sämtliche nativen
+Blöcke einschließlich der zwölf neuen Bestätigungsworker und lesender
+Einzel-/Gesamtverifikation. Alle drei Jobs prüften Mergecommit `93d6b3a` mit
+Baum `8ddae5be67afd26fa3615a9bb54883d6609d70e7`; der tatsächliche
+PR87-Merge `6bc0282` besitzt denselben Baum. Keine wissenschaftliche Serie in CI.
+
 Auch `docs/supplemental_assessment.md` erhält die volle CI: Der lesende
 Bewertungsexport bindet diesen Versionsvertrag an seinen Softwarestand.
 Dies gilt ebenso für `docs/supplemental_structure.md`, den gebundenen

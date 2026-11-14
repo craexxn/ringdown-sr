@@ -1,6 +1,6 @@
 # Ergebnisindex und Archivierungsstand
 
-Stand: 13.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
+Stand: 14.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
 nachträglichen Bewertungen; [Ablagerichtlinie](results_archiving.md).
 Serien sind die Indexeinheit, ihre Zellen/Wiederholungen bleiben im Originalbericht.
 Die Aufstellung ist keine Behauptung, dass alle jemals lokal erzeugten Ergebnisse
@@ -45,17 +45,16 @@ Originalarchiv empfangen: 48 wissenschaftliche Suchen, 16 Paketausgaben,
 zwölf technische Vorlaufworker. Die vorab festgelegte Einordnung ist gemischt;
 Ausführung, lesender Prüfstand und offene Sicherung sind unten getrennt zugeordnet.
 
-Die [erneute Bestätigung](restart_budget_confirmation_plan.md) ist nach
-Übernahme von PR86 vor Implementierung festgelegt; ihre öffentliche
-Commitbindung ist `352b7b5`: drei neue
-Signaldefinitionen, 180 frische Suchen und 60 Paketausgaben. Sie ist
-**noch nicht wissenschaftlich ausgeführt**. Der [neue Laufweg](restart_budget_confirmation.md)
-ist implementiert und lokal technisch geprüft; vollständige Ready-CI für PR #87
-und Übernahme stehen aus. Daher gibt es hier noch keinen wissenschaftlichen
-Originalarchivhash, Ausführungscommit oder
-Sicherungsnachweis. Nach tatsächlicher Ausführung alle drei Abschnitte samt
-benachbarten `-call.json`, technischem Vorlauf und Gesamtverifikation zuordnen.
-Die dortigen 001-IDs sind bislang Befehlsvorlagen, keine Ausführungsbelege.
+Die [erneute Bestätigung 001](restart_budget_confirmation_results_manjaro_001.md)
+ist auf `6bc0282` nach vollständiger CI und Übernahme von PR87 am 13./14.11.2026
+ausgeführt: drei neue Signaldefinitionen, 180 frische Suchen und 60 Paketausgaben.
+Das am 14.11.2026 aus vier Teilen zusammengesetzte Originalarchiv umfasst alle
+drei Abschnitte samt benachbarten `-call.json`, technischen Vorlauf und
+Gesamtverifikation. R erfüllt mit 10/10, 10/10, 9/10 gemeinsamen Erfolgen die
+praktische Grenze; L mit 9/10, 7/10, 7/10 nicht. Wissenschaftliche und technische
+Verifikation sind vollständig lesend bestätigt; alle zwölf Verify-Exporte bytegleich. Eingefrorener Plan weiterhin `352b7b5`; keine
+Umwidmung der belegten 001-IDs für neue Läufe und kein Sicherungsnachweis aus
+der bloßen Verfügbarkeit der Arbeitskopie.
 
 ## Archivablage
 
@@ -129,6 +128,7 @@ Die Lauf-ID verbindet diese Übersicht mit genau der gleichnamigen Zeile in
 | `restart-confirmation-manjaro-001` — Unabhängige Bestätigung von 4 × 500 gegenüber 1 × 2.000 | [`c3da991f389a4ec55206539ebe02a9648d4474b8`](https://github.com/craexxn/ringdown-sr/commit/c3da991f389a4ec55206539ebe02a9648d4474b8) | Alle 150 wissenschaftlichen Zellen und 1.755 Kandidaten in drei Abschnitten lesend bestätigt; technischer Vorlauf mit 6 Workern separat bestätigt | R: 8/10, 10/10, 4/10 A plus Originalfamilie; I: 4/10, 5/10, 7/10; praktische Grenze verfehlt, keine Ausfälle | [Ergebnisbericht](restart_confirmation_results_manjaro_001.md) |
 | `time-coordinate-manjaro-001` — Physische und gedehnte Zeit bei je 1 × 2.000 | [`91d461cf9c08c07b7fdb8ddae5ad4b207135bc67`](https://github.com/craexxn/ringdown-sr/commit/91d461cf9c08c07b7fdb8ddae5ad4b207135bc67) | Alle 16 wissenschaftlichen Zellen und 188 Kandidaten lesend bestätigt; technischer Vorlauf mit 4 Workern separat bestätigt | T/U A: 2/2–2/2, 2/2–1/2, 1/4–3/4; gemeinsame Familienerfolge: 0/2–0/2, 2/2–0/2, 1/4–2/4; gemischt, keine Ausfälle | [Ergebnisbericht](time_coordinate_results_manjaro_001.md) |
 | `restart-budget-manjaro-001` — 4 × 1.000 gegen 2 × 2.000 bei lokal 300/5 | [`680af98e4342dc831a6dcc995fe658d4fcbe942f`](https://github.com/craexxn/ringdown-sr/commit/680af98e4342dc831a6dcc995fe658d4fcbe942f) | Alle 48 wissenschaftlichen Suchen abgeschlossen; 538 Kandidaten nachgerechnet, technischer Vorlauf mit 12 Workern und vollständige Verifikation bestätigt | R/L A: 2/2–2/2, 2/2–1/2, 4/4–4/4; gemeinsame Familienerfolge: 2/2–2/2, 2/2–1/2, 2/4–3/4; gemischt, keine Ausfälle | [Ergebnisbericht](restart_budget_results_manjaro_001.md) |
+| `restart-budget-confirmation-manjaro-001` — Bestätigung von 4 × 1.000 gegen 2 × 2.000 auf drei neuen Signalen | [`6bc028204ff651ee883eeac4d38bff7c07fb3ded`](https://github.com/craexxn/ringdown-sr/commit/6bc028204ff651ee883eeac4d38bff7c07fb3ded) | Alle 180 wissenschaftlichen Suchen und 60 Paketwahlen vollständig lesend bestätigt; 2.053 Endfrontkandidaten gebunden, technischer Vorlauf mit 12 Workern separat bestätigt | R: 10/10, 10/10, 9/10 A plus Originalfamilie, praktische Grenze erfüllt; L: 9/10, 7/10, 7/10, getrennt verfehlt; keine Ausfälle | [Ergebnisbericht](restart_budget_confirmation_results_manjaro_001.md) |
 | `sr-repeatability-wsl2-threads1-001` — Wiederholbarkeit freier Fronten bei Poollimit 1 | Vollständige Ausführungs-/Treiberzuordnung im Bericht nicht ausgewiesen | Vergleichsergebnisse dokumentiert; vollständige Abschlussmetadaten nachtragen | Frontvergleich gemäß Bericht; keine Zusatzbewertung | [Bericht](symbolic_core_results.md) |
 | `sr-core-control-wsl2-001` — Feste numerische Kontrollen mit/ohne Haswell | [`6ed493d2e8fb3a845dd921bd99a620feb8b8850a`](https://github.com/craexxn/ringdown-sr/commit/6ed493d2e8fb3a845dd921bd99a620feb8b8850a); externer Treiber [`ac41251c180a9302aace512d8a100186a2636fe9`](https://github.com/craexxn/ringdown-sr/commit/ac41251c180a9302aace512d8a100186a2636fe9) | Abgeschlossen laut geprüftem Archivvergleich | Numerischer Vergleich gemäß [Befund](fixed_numerics_probe.md#übermittelter-haswell-vergleich-vom-26102026); keine Zusatzbewertung | [Bericht](fixed_numerics_probe.md) |
 | `sr-free-haswell-wsl2-001` — Freie SR-Suche mit bestätigtem Haswell-Kern | [`6ed493d2e8fb3a845dd921bd99a620feb8b8850a`](https://github.com/craexxn/ringdown-sr/commit/6ed493d2e8fb3a845dd921bd99a620feb8b8850a); externer Treiber [`6b3d156a9daecabc4f42d5b940b065a8dda5bc19`](https://github.com/craexxn/ringdown-sr/commit/6b3d156a9daecabc4f42d5b940b065a8dda5bc19) | Abgeschlossen; zwei freie Wiederholungen je Gerät | Geordneter Front-/Bitvergleich gemäß Bericht; keine Zusatzbewertung | [Bericht](symbolic_core_results.md) |
@@ -174,6 +174,7 @@ der übrigen Hashes steht je Zeile.
 | `restart-confirmation-manjaro-001` einschließlich technischem Vorlauf | `restart-confirmation-manjaro-001.tar.gz` | `cc5eec6e2fd0a0407f2371c7d6b7591e84e9c2e2cc850b509ed201ba59003468`; am 12.11.2026 aus drei Teilen bytegenau zusammengesetzt, Hash, Original-/Aufruf-/Verify-Bindungen selbst geprüft | [Gemeinsame Ablage](#archivablage); Arbeitskopie vorhanden | Nicht bestätigt |
 | `time-coordinate-manjaro-001` einschließlich technischem Vorlauf | `time-coordinate-manjaro-001.tar.gz` | `0d4a662010ad90ae3119a20154b7a39e839b1fbe61cb0adffdbedf51ee6ab4b9`; 9.658.389 Bytes, 1.212 Originaldateien, Herkunft und vollständige wissenschaftliche/technische Verifikation am 12.11.2026 selbst bestätigt | [Gemeinsame Ablage](#archivablage); geprüfte Arbeitskopie vorhanden | Nicht bestätigt |
 | `restart-budget-manjaro-001` einschließlich technischem Vorlauf | `restart-budget-manjaro-001.tar.gz` | `fbddd9b45061c3668c089217c7194ca01942655de5608bdc2df649f1c87614e6`; 27.824.763 Bytes, 3.482 Originaldateien; SHA-256, Herkunft und vollständige Verifikation am 13.11.2026 selbst bestätigt | [Gemeinsame Ablage](#archivablage); geprüfte Arbeitskopie vorhanden | Nicht bestätigt |
+| `restart-budget-confirmation-manjaro-001` einschließlich technischem Vorlauf | `restart-budget-confirmation-manjaro-001.tar.gz` | `4217baf42ceece7c451f01d388c0f1b9d76bfb58a2e205d0ac6d67aea2a574b2`; am 14.11.2026 aus vier Teilen bytegenau zusammengesetzt; 98.344.207 Bytes, 11.006 Originaldateien | [Gemeinsame Ablage](#archivablage); geprüfte Arbeitskopie vorhanden | Nicht bestätigt |
 | `sr-repeatability-wsl2-threads1-001` | `sr-repeatability-wsl2-threads1-001.tar.gz` | `7f63a075c2a95226d320fa6a6a204481c6038fd3ca6c837f9bcbb7f371bf63d7`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `sr-core-control-wsl2-001` | `sr-core-control-wsl2-001.tar.gz` | `5826725c95499b498f9bc6c0a9935c4cbf7d97f2f63d14b81aad05c85813d114`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
 | `sr-free-haswell-wsl2-001` | `sr-free-haswell-wsl2-001.tar.gz` | `1442cbea82b6b80c6de9533ceb5bc2a620e1fb3500ee1524529c36c1f5c98ee3`; Archivhash aus [gemeinsamem Primärnachweis](symbolic_core_results.md#separat-gesicherte-primärnachweise) | [Gemeinsame Ablage](#archivablage) | Nicht bestätigt |
@@ -422,6 +423,46 @@ Verifikator und eng begrenztem Cache-Schreibrecht. Originalarchiv und alle
 Original und Audit bleiben Arbeitskopien; gemeinsame dauerhafte Ablage,
 unabhängige Zweitkopien und SHA-256-Prüfung beider Speicherziele sind weiterhin
 offen. Keine verpflichtende GitHub-Upload-Aufgabe.
+
+### Lesende Verifikation der erneuten Bestätigung 001
+
+Am 14.11.2026 aus vier übermittelten Teilen bytegenau zusammengesetzt:
+`restart-budget-confirmation-manjaro-001.tar.gz`, **98.344.207 Bytes**,
+bestätigte SHA-256
+`4217baf42ceece7c451f01d388c0f1b9d76bfb58a2e205d0ac6d67aea2a574b2`.
+11.006 reguläre Originaldateien, 806.168.742 entpackte Bytes und 14 Wurzeleinträge.
+Tatsächlicher Ausführungsstand ist sauberer main `6bc0282` nach PR87.
+
+Enthalten sind `restart-budget-confirmation-low-manjaro-001`,
+`restart-budget-confirmation-mid-manjaro-001` und
+`restart-budget-confirmation-high-manjaro-001`, alle drei Aufrufmessungen und
+`restart-budget-confirmation-manjaro-001-verification`. Der vollständige
+technische Vorlauf `restart-budget-confirmation-technical-001` mit `fixture_a`,
+`fixture_b`, ihren beiden Aufrufmessungen und Einzel-/Gesamtverifikationen
+bleibt getrennt von den wissenschaftlichen Nennern.
+
+180 native Originalwahlen und 60 verlustbasierte Paketwahlen unabhängig
+nachgezählt; alle zwölf marginalen Binomialintervalle und Kosten bestätigt.
+Die vollständige eigene wissenschaftliche und technische lesende Verifikation
+am unveränderten Ausführungscommit ist bestanden; drei wissenschaftliche und
+neun technische Exportdateien sind bytegleich. Alle 11.006 Originaldateien
+und der Archivhash sind vor/nach der Prüfung unverändert. Ergebnis und Grenzen stehen im
+[Bericht](restart_budget_confirmation_results_manjaro_001.md); keine neuen Fits
+oder Suchen.
+
+Getrenntes Auditpaket: `restart-budget-confirmation-audit-001.tar.gz`,
+**28.362.063 Bytes**, SHA-256
+`87d5862be583c3cfe2b059397b072ed39744efadbd83157a36e7f9c33f2dd8e6`.
+44 Dateien: Empfangs-/Originalinventar, Zähl-, Quellen- und begrenzte Formel-
+prüfungen samt Skripten, tatsächlicher Verifikationskontext, alle zwölf eigenen
+Verify-Exporte, Logs, Abschlussnachweis und Auditmanifest. Alle Paketdateien
+nach dem Packen gegen das Manifest zurückgelesen und bestätigt. Das vollständige
+Originalarchiv bleibt separat erhalten; es wird durch dieses Audit nicht ersetzt.
+
+Original und separates Audit bleiben geprüfte Arbeitskopien, keine bestätigte
+unabhängige Sicherung.
+Gemeinsame dauerhafte Ablage, zweite Kopie und SHA-256-Prüfung beider Speicherziele
+sind offen. GitHub-Uploads sind optional.
 
 ### Offene Sicherungsschritte
 

@@ -1,6 +1,6 @@
 # Laufweg: Bestätigung zweier Neustartpakete auf neuen Signalen
 
-Stand 13.11.2026, [Leitfadenphase 6](ringdown_recovery_roadmap.md),
+Stand 14.11.2026, [Leitfadenphase 6](ringdown_recovery_roadmap.md),
 [eingefrorener Plan](restart_budget_confirmation_plan.md) und
 [Seeds/Eingaben](../data/restart_budget_confirmation_protocol.json).
 R: vier frische 1.000er-Suchen als vorläufiger Kandidat; L: zwei frische
@@ -16,14 +16,20 @@ R muss mindestens 8/10 A-Ausgaben mit nachgewiesener gültiger Originalfamilie
 auf jedem Signal erreichen; L erhält dieselbe praktische Prüfung separat.
 Keine automatische Auswahl des besseren Arms oder Kombination ihrer Ausgaben.
 
-**Noch keine wissenschaftliche Ausführung:** Der Plan ist vor Implementierung
-festgelegt; seine öffentliche Commitbindung ist `352b7b5`. Der Laufweg ist
-implementiert und lokal mit Pythonprüfungen, zwölf kleinen nativen Workern und
-lesender Einzel-/Gesamtverifikation geprüft. Vollständige Ready-CI für PR #87
-und Übernahme stehen noch aus; genaue Prüfstände und Nachweise im
-[Fortsetzungsstand](representation_implementation_status.md). Die folgenden
-001-IDs sind geplante erste Ausgaben. Die wissenschaftlichen Befehle erst nach
-vollständig geprüfter Übernahme verwenden.
+**Lauf 001 ist ausgeführt:** PR #87 wurde nach vollständiger Ready-CI als
+`6bc028204ff651ee883eeac4d38bff7c07fb3ded` übernommen. Auf genau diesem Stand
+liefen der technische Manjaro-Vorlauf und alle drei wissenschaftlichen Abschnitte
+am 13./14.11.2026; das vollständige Originalarchiv ist eingegangen.
+[Ergebnisbericht](restart_budget_confirmation_results_manjaro_001.md) und
+[Fortsetzungsstand](representation_implementation_status.md) halten tatsächliche
+Prüfung und wissenschaftlichen Befund getrennt fest. Der eingefrorene Plan
+bleibt unverändert an `352b7b5` gebunden.
+
+Die folgenden **001-IDs sind belegte Originalausgaben, keine freien Laufnamen**.
+Die Befehle dokumentieren den ausgeführten Weg und geben keinen erneuten Lauf
+frei. Vorhandene Quellen, Ergebnisse und Archive erhalten; für die lesende
+Nachprüfung den ursprünglichen Ausführungscommit verwenden. Eine gesondert
+beschlossene Wiederholung bräuchte neue IDs und eine dokumentierte Begründung.
 
 ## 1. Eigenen sauberen Ausführungsstand nach Übernahme vorbereiten
 
@@ -31,7 +37,8 @@ Aus dem bestehenden Repository einen eigenen Worktree anlegen:
 
 ```bash
 git fetch origin &&
-git worktree add --detach ../ringdown-budget-confirmation-run origin/main &&
+git worktree add --detach ../ringdown-budget-confirmation-run \
+  6bc028204ff651ee883eeac4d38bff7c07fb3ded &&
 cd ../ringdown-budget-confirmation-run &&
 git status --short &&
 test -z "$(git status --porcelain)" &&

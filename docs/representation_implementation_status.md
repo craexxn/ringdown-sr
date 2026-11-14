@@ -1,6 +1,86 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Bestätigungslaufweg lokal geprüft, vollständige Ready-CI vorbereiten
+## Aktuell: Bestätigung 001 vollständig geprüft, praktische R-Grenze erreicht
+
+Stand 14.11.2026, [Leitfadenphase 6](ringdown_recovery_roadmap.md):
+[PR #87](https://github.com/craexxn/ringdown-sr/pull/87) ist nach vollständiger
+[Ready-CI 43394100165](https://github.com/craexxn/ringdown-sr/actions/runs/43394100165)
+als `6bc028204ff651ee883eeac4d38bff7c07fb3ded` übernommen. 3.656 Pythonfälle,
+sämtliche nativen Prüfblöcke einschließlich zwölf neuer kleiner Worker und
+Abschlussprüfung bestanden. Alle drei Jobs prüften `93d6b3a`; tatsächlicher
+Merge und geprüfter Head `b17a741` haben denselben Baum
+`8ddae5be67afd26fa3615a9bb54883d6609d70e7`. Die frühere 90-Minuten-Unterbrechung
+ist durch diese neue vollständige Abnahme nach der Fristanpassung aufgelöst.
+
+Auf diesem sauberen Merge wurde die [wissenschaftliche Bestätigung 001](restart_budget_confirmation_results_manjaro_001.md)
+am 13./14.11.2026 auf Manjaro ausgeführt. Die Ergebnisdokumentation entsteht
+auf `codex/restart-budget-confirmation-results` ab `6bc0282`; sie ersetzt den
+Ausführungscommit nicht. Eingefrorener Plan, Seeds, Eingaben, Auswahl-,
+Bewertungs- und Kostenverträge bleiben unverändert.
+
+- **Original:** vier übermittelte Teile ergeben bytegenau
+  `restart-budget-confirmation-manjaro-001.tar.gz`, 98.344.207 Bytes,
+  SHA-256 `4217baf42ceece7c451f01d388c0f1b9d76bfb58a2e205d0ac6d67aea2a574b2`.
+  11.006 reguläre Dateien, 806.168.742 entpackte Bytes; alle drei Abschnitte,
+  ihre Aufrufmessungen, Gesamtverifikation und vollständiger technischer Vorlauf
+  mit zwölf Workern, zwei Aufrufmessungen und Einzel-/Gesamtprüfungen enthalten.
+- **Ausführung und Befund:** 180 abgeschlossene wissenschaftliche Suchen,
+  60 unverändert verlustbasiert gewählte Paketausgaben, keine Mitglieds- oder
+  Paketausfälle. R: 4 × 1.000 erreicht auf low/mid/high 10/10 A-Kurven und
+  **10/10, 10/10, 9/10** gemeinsame Originalfamilienerfolge; L: 2 × 2.000
+  erreicht 9/10, 9/10, 8/10 A-Kurven und **9/10, 7/10, 7/10** gemeinsame Erfolge.
+  R erfüllt die vorab festgelegte praktische Grenze, L verfehlt sie getrennt.
+- **Unabhängige Nachzählung:** 180 native Originalwahlen, 60 Paketwahlen,
+  alle Kosten und zwölf marginale Clopper–Pearson-Intervalle über direkte
+  Binomialinversion bestätigt. Die gemeinsame Paarung ergibt für R je Signal
+  1/3/2 Gewinne und keine Verluste. Drei A-Paketausgaben haben ungeklärte
+  Familiennachweise, eine besitzt nachgewiesene Definitionslücken und eine
+  gültige Fortsetzung; keine davon ersetzt einen Originalfamilienerfolg.
+- **Tatsächliche Verifikation:** unveränderter vollständiger wissenschaftlicher
+  CLI-Gesamtverifikator am sauberen Ausführungscommit bestätigt alle 180 Zellen
+  und 60 Paketausgaben. Technischer Vorlauf mit zwölf Workern ebenfalls
+  bestätigt: beide Einzel-CLIs und gemeinsame öffentliche Verify-Funktion.
+  Alle zwölf Exportdateien sind bytegleich zum Original; Archiv und alle
+  11.006 Originaldateien unverändert. Keine neuen Suchen, Fits oder Optimierungen.
+- **Herkunft und begrenzte Diagnose:** fünf Vorbereitungen binden 104 Quellen
+  einschließlich aller 54 Python-Paketdateien gegen Git und Disk; tatsächliche
+  Herkunft und Adapter aller 192 Worker mit jeweils 117 Quellen bestätigt.
+  Bestand: 2.053 wissenschaftliche Endfrontkandidaten, 35 technische. Zusätzlich
+  60 Paketoriginale und 226 Kandidaten aus den 18 Mitgliedsfronten der acht
+  Pakete ohne gemeinsamen Erfolg mit unveränderten Bewertungsverträgen geprüft:
+  278 getrennt gebundene Kandidateneinträge nach Abzug der Überschneidungen.
+  Unabhängiger numerischer Replay bestätigt die kontinuierlichen Fehler.
+  Keine A-Alternative in den vier Nicht-A-Paketen; Originalauswahlen erhalten.
+- **Kosten:** vollständige wissenschaftliche Abschnittsaufrufe zusammen
+  68.750,956 s, **19 h 5 min 51 s**, ohne Pausen, technischen Vorlauf und
+  spätere Verifikation. R benötigt je Signal 8,66 %, 5,93 % und 7,50 % mehr
+  Workerzeit als L. Kosten sind kein zusätzlicher Erfolgsentscheid.
+- **Aussagegrenzen und Sicherung:** drei feste neue Innenbereichsfälle,
+  keine allgemeine Erfolgswahrscheinlichkeit oder statistische Überlegenheit.
+  Frühere negative Bestätigung und gemischte Entwicklungsbefunde erhalten;
+  neue Parameterübereinstimmung bleibt `not_assessed`. Original und Audit sind
+  Arbeitskopien; gemeinsame Ablage und unabhängig SHA-256-geprüfte Zweitkopien
+  gemäß [Index](results_index.md) weiterhin unbestätigt.
+- **Ergebnisdokumentation:** ausschließlich README und bestehende Dokumentations-
+  struktur samt neuem Ergebnisbericht geändert; eingefrorene Pläne, Quellen und
+  Originalbewertungen unverändert. Dokumentationsprüfung für 108 Markdown-Dateien
+  samt lokalen Linkzielen und Diffprüfung bestanden. Gezieltes KI-basiertes
+  Ergebnis-/Dokumentationsreview ohne verbleibende korrekturbedürftige Befunde;
+  keine erneute Python-/Native-Testsuite für diese reine Dokumentationsänderung.
+
+**Nächster abgegrenzter Schritt:** auf Grundlage der abgeschlossenen Quellenprüfung die
+bewusste Profilübernahme nach Phase 5 in den allgemeinen tatsächlichen Laufweg
+vorbereiten und dort rauschfrei prüfen. Ursprüngliches t, vier globale
+1.000er-Suchen, lokal 300 Optimiereriterationen plus fünf zusätzliche lokale
+Neustarts, beide Häufigkeitsschalter und Originalauswahl gelten gemeinsam.
+Die Gewichtung muss sowohl Struktursuche als auch Konstantenoptimierung bestimmen.
+Kein unmittelbarer Rauschpilot, keine weitere Budgetstaffel, Hybridwahl oder
+Nachoptimierung auf den jetzt bekannten Bestätigungsfällen.
+
+## Historischer Vorbereitungsstand vom 13.11.2026: Laufweg lokal geprüft
+
+Die folgenden damaligen Angaben zu offener CI, Übernahme und Ausführung sind
+durch den aktuellen Stand oben abgelöst; ursprüngliche Prüfbezüge bleiben erhalten.
 
 Stand 13.11.2026, [Leitfadenphase 6](ringdown_recovery_roadmap.md): Die
 Ergebnisdokumentation aus [PR #86](https://github.com/craexxn/ringdown-sr/pull/86)
