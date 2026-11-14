@@ -1,13 +1,15 @@
-# Protokollentwurf: erster begrenzter Rauschpilot
+# Protokoll: erster begrenzter Rauschpilot mit 144 Suchen
 
 Stand 14.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
-Konkreter methodischer Entwurf vor Implementierung und wissenschaftlicher
-Ausführung. **Arbeitsannahme: 144 Suchaufrufe.** Die Umfangsoptionen unten
-sind zur Entscheidung vorgelegt; dieses Dokument gibt keine Serie frei.
+**Beschlossen am 14.11.2026: 144 Suchaufrufe**, vor Implementierung getrennt
+versioniert. Die Umfangsentscheidung ist abgeschlossen; die Alternativen unten
+bleiben als Begründung erhalten. Wissenschaftliche Ausführung ist ein separater
+Schritt nach technischer Abnahme, kein Bestandteil der Protokollübernahme.
 Technische Basis ist PR89-Merge `8b9c6ef3a17fed03958a24ff36698bd47622eca5`;
 die geprüfte Manjaro-Dokumentation in PR90 hat Head
-`4e1fa18461b2b32fc2f8c39e77fd7c51b06c868a`. Der Plan wird darauf getrennt
-versioniert. Keine Änderung historischer Protokolle, Originalauswahlen oder
+`4e1fa18461b2b32fc2f8c39e77fd7c51b06c868a` und ist mit PR90 als
+`3aa02bcfadc536adb1a4dd2477176dd4c211d8e3` übernommen. Dieser Plan bleibt
+vor Implementierung eigenständig gebunden. Keine Änderung historischer Protokolle, Originalauswahlen oder
 Bewertungsregeln.
 
 ## Fragestellung und begrenzte Aussage
@@ -31,17 +33,18 @@ weiterverwendet; damit werden Signalvariation und Rauschwirkung zunächst getren
 | Variante | Feste Signale | Rauschmodelle | Blöcke je Signal/Modell | SR-Aufrufe | Paketausgaben |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Kleiner Machbarkeitseinstieg | 1 | 2 | 3 | 72 | 18 |
-| **Arbeitsannahme, empfohlen** | **1** | **2** | **6** | **144** | **36** |
+| **Beschlossen** | **1** | **2** | **6** | **144** | **36** |
 | Breiterer Signalvergleich | 2 | 2 | 6 | 288 | 72 |
 
 Jeder Block umfasst drei Gewichtungsarme mit jeweils vier neuen Suchen.
 Die 144er-Variante liefert zwölf unabhängige Dreiervergleiche und 144.000
 geplante äußere Iterationen. Die zwölf Suchmitglieder eines Blocks sind keine
-zwölf unabhängigen Rauschrealisierungen. Bei der 72er-Variante gelten nur die
-Blöcke 1–3; die Präzision sinkt deutlich. Für 288 Aufrufe käme `confirm_high`
-aus derselben früheren Bestätigung hinzu; seine vollständigen Eingaben und
-neuen Seeds wären vor Fixierung dieser Variante zusätzlich zu speichern.
-Die folgenden konkreten Vorgaben beschreiben die empfohlene 144er-Variante.
+zwölf unabhängigen Rauschrealisierungen. Die kleinere Alternative mit nur
+Blöcken 1–3 wurde wegen der geringeren Replikation nicht gewählt. Die größere
+Alternative mit zusätzlichem `confirm_high` wurde für diesen begrenzten ersten
+Pilot zurückgestellt. Sie ist kein automatischer Anschlussauftrag.
+Die folgenden konkreten Vorgaben beschreiben ausschließlich die beschlossene
+144er-Variante.
 
 Die Zahl sechs ist eine begrenzte Ressourcenentscheidung, keine Powerrechnung
 oder Literaturvorgabe. Schon die maximal mögliche Monte-Carlo-Standardabweichung
@@ -280,9 +283,11 @@ AR(1), derselbe Pegel und Hintergrundumfang, aber eigene technische Seeds,
 drei einzelne Worker mit je **zehn äußeren Iterationen**, lokal unverändert
 300/5. Er prüft Datenfluss, vollständige Kovarianz, Replay und Ressourcen;
 Kurvenklasse, Familie und Signalfehler sind keine Abnahmekriterien und werden
-nicht zur Auswahl des wissenschaftlichen Plans verwendet. Technische Seeds
-und Eingaben sind vor diesem Vorlauf zusätzlich festzulegen und von der
-wissenschaftlichen Tabelle auszuschließen. Keine Hochrechnung als garantierte
+nicht zur Auswahl des wissenschaftlichen Plans verwendet. Technische Wurzeln:
+Messrauschen `2026111411`, Hintergrund `2026111412`, Suchseed `2026111413`
+gemeinsam in den drei getrennten Workern. Diese Werte sind außerhalb der
+historischen Ausschlussliste und der wissenschaftlichen Tabelle; konkrete
+Eingaben und Zustände werden vor dem Vorlauf gebunden. Keine Hochrechnung als garantierte
 1.000er-Laufzeit, da JIT und Suchkosten nicht linear sein müssen.
 
 Aktuelle Betriebsfristen bleiben zunächst 1.800 s je wissenschaftlichem Worker,
@@ -330,7 +335,7 @@ unverändert; kein bestehender Aufruf wird stillschweigend umgedeutet.
 
 Vor dem ersten wissenschaftlichen Suchaufruf müssen vorliegen:
 
-- bestätigter Umfang und getrennt versionierter endgültiger Protokollcommit;
+- der beschlossene Umfang und sein getrennt versionierter endgültiger Protokollcommit;
 - konkrete vollständige Eingaben, Hintergrundmatrizen, ausgewählte Kovarianzen,
   Referenzwerte und Raster mit SHA-256, soweit erzeugbar; andernfalls vorab
   gebundene zulässige Vorbereitungsfehler samt betroffenen `not_run`-Armen.

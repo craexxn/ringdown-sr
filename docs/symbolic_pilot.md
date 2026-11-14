@@ -423,8 +423,8 @@ nachführen. GitHub-Uploads bleiben optional.
 zeigt den allgemeinen Auftragsweg. Seine zwölf vollständigen 1.000er-Suchen
 sind **kein freigegebener wissenschaftlicher Rauschversuch**. Signal-, Rausch-,
 Hintergrund- und Seedblöcke, Endpunkte und Anschlussregel sind zuvor separat
-festzulegen. Der [Rauschpilot-Protokollentwurf](noise_pilot_plan.md) konkretisiert
-dies mit einem noch zu bestätigenden Umfang; seine Serien- und Zusatzraster-
+festzulegen. Das [beschlossene Rauschpilot-Protokoll](noise_pilot_plan.md) konkretisiert
+dies mit 144 Suchen; seine Serien- und Zusatzraster-
 Anbindung ist noch nicht implementiert. Dieser Implementierungsschritt startet
 diesen Auftrag nicht.
 

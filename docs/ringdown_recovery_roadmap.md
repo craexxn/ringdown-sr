@@ -795,11 +795,12 @@ Sicherung im [Index](results_index.md#technische-profilübernahme-vom-14112026).
 ## 7. Rauschpilot und Hauptversuchsplanung
 
 Konkretisierung vom 14.11.2026: Der getrennt versionierte
-[Protokollentwurf](noise_pilot_plan.md) setzt den bestehenden Rahmen in eine
-begrenzte Matrix um. Arbeitsannahme sind 144 neue Suchen: `confirm_mid`,
+[beschlossene Plan](noise_pilot_plan.md) setzt den bestehenden Rahmen in eine
+begrenzte Matrix um. Festgelegt sind 144 neue Suchen: `confirm_mid`,
 weißes und AR(1)-Rauschen bei sigma/A=0,05, sechs unabhängige Blöcke je Modell,
-drei Arme mit je vier 1.000er-Suchen bei lokal 300/5. Die Umfangsoptionen
-72/144/288 sind noch zur Entscheidung vorgelegt. Mehr Wiederholungen je
+drei Arme mit je vier 1.000er-Suchen bei lokal 300/5. Die Alternative mit
+72 Aufrufen wurde wegen geringerer Replikation nicht gewählt; 288 Aufrufe
+sind für den ersten Pilot zurückgestellt. Mehr Wiederholungen je
 Bedingung haben zunächst Vorrang vor zusätzlichen Pegeln. Ein bekanntes Signal
 und eine feste Hintergrundmenge ergeben einen explorativen Pilot, keine neue
 unabhängige Bestätigung oder allgemeine Erfolgswahrscheinlichkeit.
@@ -860,9 +861,9 @@ Untersuchung der Grenzen freier SR. Keine unbeschränkte Parametersuche.
   vom 13.11.2026 mit neuen festen Signalen, Seeds und unveränderter strenger
   Originalfamilienregel im [neuen Bestätigungsplan](restart_budget_confirmation_plan.md);
   technische Abnahme und spätere wissenschaftliche Ausführung getrennt führen.
-- Konkrete Rausch-, Hintergrund- und Gewichtungsbedingungen stehen im
-  [Protokollentwurf](noise_pilot_plan.md); Umfangsentscheidung und endgültige
-  Bindung vor Implementierung beziehungsweise wissenschaftlicher Ausführung
+- Konkrete Rausch-, Hintergrund- und Gewichtungsbedingungen und der Umfang
+  von 144 Suchen sind im [Protokoll](noise_pilot_plan.md) beschlossen. Endgültige
+  Quellen-/Eingabenbindung vor wissenschaftlicher Ausführung
   sind dort ausdrücklich von bereits implementierten Regeln getrennt.
 
 ## Literatur und Übertragungsgrenzen

@@ -1,14 +1,16 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: technischer Manjaro-Vorlauf bestätigt, Rauschpilot konkret entworfen
+## Aktuell: technischer Manjaro-Vorlauf bestätigt, Rauschpilot mit 144 Suchen beschlossen
 
 Ergänzung vom 14.11.2026: Auf `codex/noise-pilot-protocol` ab dem geprüften
 PR90-Head `4e1fa18461b2b32fc2f8c39e77fd7c51b06c868a` entsteht der
-[Rauschpilot-Protokollentwurf](noise_pilot_plan.md) für Leitfadenphase 7.
-PR90 bleibt ein eigener Dokumentationsnachtrag; keine eigenständige Übernahme.
-Arbeitsannahme 144 Suchen, ein festes bekanntes Signal, zwei Rauschmodelle,
-ein Pegel und sechs unabhängige Dreiervergleiche je Modell. Umfangsoptionen
-72/144/288 sind vorgelegt, noch keine Ausführungsfreigabe.
+[Rauschpilot-Protokoll](noise_pilot_plan.md) für Leitfadenphase 7.
+PR90 ist nach grüner Dokumentations-CI und gezieltem KI-Review als
+`3aa02bcfadc536adb1a4dd2477176dd4c211d8e3` übernommen.
+Am 14.11.2026 sind 144 Suchen beschlossen: ein festes bekanntes Signal,
+zwei Rauschmodelle, ein Pegel und sechs unabhängige Dreiervergleiche je Modell.
+Die Alternativen 72/288 bleiben abgewogen und ungewählt; keine wissenschaftliche
+Ausführung durch die Planübernahme.
 
 Methodik, Signal-/Rauschparameter, Hintergrundrollen, alle 72 Seedzahlen,
 Diagnoserasterregel, Endpunkte, Ausfälle, Kosten und Anschlussentscheidung
@@ -32,8 +34,9 @@ gemeinsame Eingabenvorbereitung, Abschnitts-/Gesamtbindung und vollständige
 Aufrufkosten fehlen noch. Auch eine belastbare Laufzeitmessung gewichteter
 1.000er-Suchen mit 128 Punkten fehlt. Ein separater begrenzter technischer
 Vorlauf ist vorgesehen; keine wissenschaftliche Serie gestartet.
-Nächster Schritt: Umfang festhalten, Protokoll vor Implementierung getrennt
-versionieren und die im Entwurf abgegrenzten Laufwegergänzungen umsetzen.
+Nächster Schritt: PR91 auf die übernommene PR90-Basis abgleichen, den beschlossenen
+Plan nach Dokumentations-CI übernehmen und die abgegrenzten Laufwegergänzungen
+in einem eigenen Implementierungs-PR umsetzen.
 
 ### Übernommene Profilroute und ihr technischer Nachweis
 
