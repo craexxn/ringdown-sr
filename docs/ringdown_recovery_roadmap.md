@@ -575,7 +575,7 @@ Struktursuche und Konstantenoptimierung müssen dieselbe Gewichtung verwenden.
 
 ## 5. Suchprofil in den tatsächlichen späteren Laufweg übernehmen
 
-Beim Codeabgleich auf main 46da82ec7bfe24614e0b3fc3203258535343d848 verwendete
+Beim historischen Codeabgleich auf main 46da82ec7bfe24614e0b3fc3203258535343d848 verwendete
 `src/ringdown_sr/symbolic.py` im allgemeinen Suchprofil lokal 20/2 und
 ausgeschaltete Häufigkeitsschalter. Die jüngsten rauschfreien Spezialversuche
 verwendeten 300/5 und eingeschaltete Schalter. Dies ist bei Übernahme erneut
@@ -741,6 +741,49 @@ Innenbereichssignale und marginale Binomialintervalle bestätigen keinen ganzen
 Parameterkasten oder eine wahre Erfolgswahrscheinlichkeit von mindestens 80 %.
 Die alte negative Bestätigung, gemischten Entwicklungsbefunde und
 `not_assessed` für neue Parameterübereinstimmungen bleiben unverändert.
+
+### Profilübernahme beschlossen am 14.11.2026
+
+Nach Übernahme der Ergebnisdokumentation in PR #88 auf `1f2cb1e` wird der
+Anschluss aus Phase 5 umgesetzt. Der allgemeine Schema-3-Weg verwendete bisher
+eine Suche je Gewichtungsarm und lokal 20/2. Deshalb erhält der allgemeine
+Laufweg einen ausdrücklich gewählten Schema-4-Paketauftrag: vier frische
+1.000er-Suchen bei lokal 300/5, eingeschalteten Häufigkeitsschaltern,
+allgemeiner Grammatik, `should_simplify=false`, ohne Größen-Warmup und in
+ursprünglicher Zeit t. Alte Aufträge und Archive bleiben unverändert.
+
+Jeder Gewichtungsarm erhält denselben vorab gespeicherten Viererseedblock,
+aber eigene Prozesse. Je Paket wird genau eine unveränderte Originalauswahl
+nach tatsächlichem Trainingsverlust, Komplexität und Mitgliedsposition gewählt.
+Trainingsverluste unterschiedlicher Gewichtungsarme werden nicht zur Armwahl
+verglichen. Die feste Kovarianz bestimmt weiterhin sowohl Struktursuche als
+auch Konstantenoptimierung. Der reine MSE-Replay des Spezialtreibers darf
+nicht unbesehen auf gewichtete Verluste übertragen werden; native
+Residuenreduktion und Baumvorhersage sind getrennt numerisch abzusichern.
+
+Die Abnahme verwendet kleine technische Suchbudgets, feste analytische
+Gewichtungsfälle und saubere Beobachtungen mit einer separat festgelegten
+positiv definiten Testkovarianz. Diese technische Gewichtungsmatrix behauptet
+kein vorhandenes Rauschen und umgeht nicht die positive Varianzvorgabe der
+bestehenden Datengenerierung. Reduzierte Budgets werden ausdrücklich
+gespeichert und sind kein wissenschaftlicher R-Erfolgsnachweis. Details,
+Prüfstand und Bedienung stehen im bestehenden
+[Pilotdokument](symbolic_pilot.md#bestätigtes-r-profil-im-allgemeinen-laufweg-schema-4)
+und [Fortsetzungsstand](representation_implementation_status.md).
+
+Dies öffnet keinen dritten Suchhebel. Der Bestätigungsbefund bleibt auf seine
+drei festen Signale begrenzt. Nach technischer Abnahme folgt die begrenzte
+Rauschpilotplanung mit getrennten Rausch-, Hintergrund- und Suchzufallsquellen;
+keine wissenschaftliche Ausführung wird durch diesen Implementierungsschritt
+vorweggenommen.
+
+Technischer Stand: [PR #89](https://github.com/craexxn/ringdown-sr/pull/89)
+implementiert diesen Paketweg. Auf `609bc29` bestehen lokal 3.896 Pythonfälle,
+sechs kleine native Worker und neun analytische Gewichtungs-/Optimiererfälle;
+KI-basiertes Review und gezielte Nachprüfungen ohne offene Befunde. Die
+vollständige Ready-CI bleibt vor Übernahme erforderlich. Der dokumentierte
+Manjaro-Vorlauf ist eine zusätzliche technische Kontrolle; das wissenschaftliche
+Rauschpilotprotokoll und seine Ausführung bleiben separate nächste Schritte.
 
 ## 7. Rauschpilot und Hauptversuchsplanung
 

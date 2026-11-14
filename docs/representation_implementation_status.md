@@ -1,6 +1,85 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Bestätigung 001 vollständig geprüft, praktische R-Grenze erreicht
+## Aktuell: Profilübernahme in den allgemeinen gewichteten Laufweg
+
+Stand 14.11.2026, [Leitfadenphase 5](ringdown_recovery_roadmap.md): Die
+Bestätigungsergebnisse sind mit [PR #88](https://github.com/craexxn/ringdown-sr/pull/88)
+nach gezieltem KI-basiertem Review und erfolgreicher
+[Dokumentations-CI 43574313216](https://github.com/craexxn/ringdown-sr/actions/runs/43574313216)
+als `1f2cb1e2b1e1c3442f0372ec17f0aad129c91428` übernommen. Mergebaum und
+geprüfter Head `8d0cb40974fba1070256a5f1ac0fd9d09381c744` sind bytegleich.
+Wissenschaftlicher Ausführungsstand bleibt `6bc0282`.
+
+Auf `codex/confirmed-weighted-profile` ab diesem Merge ist die ausdrückliche
+[Schema-4-Profilübernahme](symbolic_pilot.md#bestätigtes-r-profil-im-allgemeinen-laufweg-schema-4)
+als [PR #89](https://github.com/craexxn/ringdown-sr/pull/89) implementiert.
+Implementierungs- und lokaler technischer Prüfstand ist
+`609bc29745a354b212a8015a378b36800c2979c7`.
+Beschlossen sind vier vollständig frische 1.000er-Suchen je
+Gewichtungsarm, lokal 300/5, beide Häufigkeitsschalter und unveränderte
+Originalauswahl. Native Gewichtung, Paketwahl, Herkunft, Kosten, Fehlergrenzen
+und lesende Prüfung gehören gemeinsam zur technischen Abnahme. Schema 1–3
+behalten ihre bisherigen Defaults und Formate.
+
+Die neue Route bindet die feste volle Kovarianz in Struktur- und
+Konstantensuche. Die native Endfront wird vollständig mit Verlusten,
+Komplexität und exakten ursprünglichen Float64-Formelbäumen geprüft. Zulässige
+numerische Ausfälle behalten ihren Platz und sämtliche bekannten Kosten;
+fehlende Messwerte bleiben unbekannt. Herkunftswidersprüche und Unterbrechungen
+sperren die Freigabe, einschließlich Änderungen nach dem äußeren Abschluss.
+Der gewichtete Replay prüft getrennte Vorhersage- und Rückwärtsfehlernachweise;
+eine Aussage über Vorwärtsgenauigkeit bei beliebiger Konditionierung folgt
+daraus nicht. Seine Prüfprodukte verwenden ein festes Speicherlayout.
+
+- **Gezielte Prüfung:** 238 gebündelte Profil-, Paket-, historische Adapter-
+  und gewichtete Replayfälle bestanden; die Schema-4-Routingprüfungen verwenden
+  echte Datengenerierung, Kovarianzschätzung und Referenzfits und ersetzen
+  ausschließlich die native Suche. Ruff, Formatprüfung von 331 Dateien sowie
+  Dokumentationsprüfung für 108 Markdown-Dateien samt lokalen Linkzielen bestehen.
+- **Numerische Gegenprüfung:** AR(1)-Fenster mit 2.049 Punkten, `rho=0.7` und
+  `sigma=0.1` ohne Suche nachgerechnet; Faktor-/Whiteningnachweise bestehen auch
+  mit subnormal kleinen entfernten Faktoreinträgen. Kein Verändern der Kovarianz.
+  Unabhängige Prüfung von 21.162 gerichteten Hilfsfällen und 5.760 Produktfällen;
+  alle 2.822 akzeptierten Zertifikate gegen exakte Bruchrechnung bestätigt.
+  Die technische Zweipunktkontrolle deckte zusätzlich eine zu enge skalare
+  Reduktionsschranke auf. Die neue versionsgebundene Hülle berücksichtigt
+  Quadrat-/Summenphase, beide Quadratwurzeln, Division und Quadrieren exakt;
+  681 unabhängige Grenzprüfungen bestanden. Historische Verlustverträge,
+  native Verluste, Suchbudgets und Seeds bleiben unverändert.
+- **KI-basiertes Implementierungsreview:** vollständiger Vergleich gegen
+  `1f2cb1e` und gezieltes Nachreview auf `00db3c6` abgeschlossen; das abschließende
+  numerische Delta ist auf `609bc29` anhand identischer Modul-/Testhashes
+  zugeordnet und separat ohne Befund geprüft. Alle vier
+  ursprünglichen P2-Gruppen behoben, keine verbleibenden korrekturbedürftigen
+  Befunde im geprüften Umfang. Zehn zusätzliche Fehlerbelegfälle, drei
+  Endfront-/Formelmanipulationen und zwölf späte Abschlussgegenfälle geprüft.
+  Tatsächliche Quellenbindung: 166 Dateien einschließlich aller 58 Python-
+  Paketquellen und des eingefrorenen MPFR-Plans.
+- **Lokale technische Abnahme:** vollständige Python-Suite mit **3.896 Fällen
+  in 378,31 s** auf dem sauberen `609bc29` bestanden. Technischer Vorlauf 003:
+  alle sechs kleinen nativen Worker und neun analytischen Kontrollen bestanden,
+  34 exportierte Endfrontkandidaten geprüft. Vollständiges Viererpaket mit
+  voller Kovarianz sowie diagonale und gewöhnliche Einzelkontrolle; keine
+  wissenschaftlichen 1.000er-Suchen. Der separate lesende CLI-Aufruf besteht
+  ebenfalls. Die Ready-Voll-CI bleibt vor Übernahme erforderlich;
+  ein erfolgreicher Draft-`prepare` ersetzt diese nicht.
+- **Technisches Nachweispaket:** `confirmed-profile-technical-003.tar.gz`,
+  545.347 Bytes, SHA-256
+  `a940ca819cef12ba1c23f5d9ecf57e5d7fcd678ef4fc4693ec7ba7f26479fd08`.
+  Vollständiger Cloud-Vorlauf samt lesendem Prüfprotokoll; TAR und SHA-256
+  geprüft. Arbeitskopie vorhanden; gemeinsame Archivablage und unabhängige
+  Zweitkopie sind im [Index](results_index.md) weiterhin offen.
+- **Bedienung:** drei neue Bash-Blöcke für einen isolierten Manjaro-Checkout,
+  sechs technische Suchen sowie lesende Verifikation und anschließende
+  Archivierung syntaxgeprüft; konkrete Befehle im bestehenden Pilotdokument.
+
+Es wurde keine neue wissenschaftliche Suche oder Rauschserie gestartet.
+Der nächste wissenschaftliche
+Schritt ist erst nach technischer Abnahme ein vorab festgelegter begrenzter
+Rauschpilot. Offene Archivkopien und Sicherungsnachweise im
+[Ergebnisindex](results_index.md) bleiben unverändert offen.
+
+## Bestätigung 001 vom 14.11.2026: vollständig geprüft, praktische R-Grenze erreicht
 
 Stand 14.11.2026, [Leitfadenphase 6](ringdown_recovery_roadmap.md):
 [PR #87](https://github.com/craexxn/ringdown-sr/pull/87) ist nach vollständiger

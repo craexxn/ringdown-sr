@@ -400,7 +400,7 @@ def _import_tree(node, backend):
     return factory(node["operator_index"], *children)
 
 
-def worker(directory: Path) -> None:
+def worker(directory: Path, *, hooks=None) -> None:
     """Internal process entry point, invoked only through the pinned launcher."""
     if os.environ.get("PYTHON_JULIACALL_PROJECT") != str(ROOT / "julia"):
         raise RuntimeError("Run this worker through scripts/run_python.py.")
@@ -415,7 +415,10 @@ def worker(directory: Path) -> None:
     )
     _write_json(directory / "metadata.json", metadata)
     try:
-        _worker_search(directory, metadata, started)
+        if hooks is None:
+            _worker_search(directory, metadata, started)
+        else:
+            _worker_search(directory, metadata, started, hooks=hooks)
     except BaseException as error:
         metadata.update(
             failed_during=metadata["phase"],
@@ -425,13 +428,21 @@ def worker(directory: Path) -> None:
         )
         _write_json(directory / "metadata.json", metadata)
         raise
+    finally:
+        if hooks is not None:
+            hooks.close()
 
 
-def _worker_search(directory: Path, metadata: dict, started: float) -> None:
+def _worker_search(
+    directory: Path, metadata: dict, started: float, *, hooks=None
+) -> None:
     request = json.loads((directory / "request.json").read_text())
-    if set(request) != {"format", "budget"} or request["format"] != FORMAT:
-        raise ValueError("Unsupported search-arm request.")
-    budget = SearchBudget(**request["budget"])
+    if hooks is None:
+        if set(request) != {"format", "budget"} or request["format"] != FORMAT:
+            raise ValueError("Unsupported search-arm request.")
+        budget = SearchBudget(**request["budget"])
+    else:
+        budget = hooks.read_request(request)
     with np.load(directory / "inputs.npz", allow_pickle=False) as inputs:
         if set(inputs.files) not in (
             {"time_s", "observed"},
@@ -464,7 +475,11 @@ def _worker_search(directory: Path, metadata: dict, started: float) -> None:
     backend.bind_context(
         array(time_values), array(target), None if matrix is None else array(matrix)
     )
-    parameters = search_parameters(budget)
+    if hooks is not None:
+        hooks.configure(jl, budget, matrix)
+    parameters = (
+        search_parameters(budget) if hooks is None else hooks.parameters(budget)
+    )
     model = pysr.PySRRegressor(
         **parameters, output_directory=str(directory / "pysr"), run_id="search"
     )
@@ -481,6 +496,8 @@ def _worker_search(directory: Path, metadata: dict, started: float) -> None:
         ),
         active_julia_project=str(jl.seval("Base.active_project()")),
     )
+    if hooks is not None:
+        hooks.before_fit(metadata, jl, budget)
     _write_json(directory / "metadata.json", metadata)
     before_fit = time.perf_counter()
     model.fit(
@@ -496,6 +513,8 @@ def _worker_search(directory: Path, metadata: dict, started: float) -> None:
     search_calls = int(backend.CALLS[()])
     options = backend.LAST_OPTIONS[()]
     dataset = backend.LAST_DATASET[()]
+    if hooks is not None:
+        hooks.after_fit(jl, options, search_calls)
     baseline = float(dataset.baseline_loss)
     use_baseline = bool(dataset.use_baseline)
     normalization = baseline if use_baseline and baseline >= 0.01 else 0.01
@@ -526,9 +545,9 @@ def _worker_search(directory: Path, metadata: dict, started: float) -> None:
         prediction, replay_loss = backend.replay(restored, options)
         prediction = np.asarray(prediction, dtype=np.float64)
         python_prediction = evaluate_tree(tree, time_values)
-        prediction_replay = _verify_prediction_replay(
-            tree, time_values, python_prediction, prediction
-        )
+        prediction_replay = (
+            _verify_prediction_replay if hooks is None else hooks.prediction_replay
+        )(tree, time_values, python_prediction, prediction)
         residual = target - prediction
         python_residual = target - python_prediction
         python_loss = (
@@ -537,7 +556,8 @@ def _worker_search(directory: Path, metadata: dict, started: float) -> None:
             else loss_object.mean_squared(python_residual)
         )
         raw_loss = float(member.loss)
-        loss_replay = _verify_loss_replay(
+        extra = {} if hooks is None else hooks.candidate_arguments(jl, residual, matrix)
+        loss_replay = (_verify_loss_replay if hooks is None else hooks.loss_replay)(
             target,
             prediction,
             python_prediction,
@@ -547,6 +567,7 @@ def _worker_search(directory: Path, metadata: dict, started: float) -> None:
             python_loss,
             loss_object,
             prediction_check=prediction_replay,
+            **extra,
         )
         complexity = int(jl.SymbolicRegression.compute_complexity(member.tree, options))
         if complexity != int(row["complexity"]):
@@ -565,6 +586,11 @@ def _worker_search(directory: Path, metadata: dict, started: float) -> None:
                 "prediction_replay": prediction_replay,
                 **({"loss_replay": loss_replay} if loss_replay is not None else {}),
                 "units_status": "accepted_by_backend_wildcard_checker",
+                **(
+                    {}
+                    if hooks is None
+                    else hooks.candidate_fields(extra, float(row["loss"]))
+                ),
             }
         )
     selected = select_candidate(candidates)
@@ -605,6 +631,8 @@ def _worker_search(directory: Path, metadata: dict, started: float) -> None:
         environment_after_search=_environment_snapshot("after_search", julia_used=True),
     )
     _write_json(directory / "metadata.json", metadata)
+    if hooks is not None:
+        hooks.finish(metadata)
     checksums = {
         path.relative_to(directory).as_posix(): hashlib.sha256(
             path.read_bytes()

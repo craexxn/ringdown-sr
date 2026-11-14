@@ -1,6 +1,6 @@
 # Dreiarm-Pilot mit freier symbolischer Regression
 
-Stand: 22.10.2026. Schema 3 verbindet die bestehende
+Schema-3-Stand: 22.10.2026. Schema 3 verbindet die bestehende
 [Schema-2-Pipeline](estimated_covariance_pilot.md) mit dem
 [Suchadapter](symbolic_adapter.md). Die Budgets und die angezeigte
 Beispielkurve sind technische Kontrollvorgaben. Wissenschaftliche
@@ -209,3 +209,224 @@ und Verluste unterscheiden sich zwischen den Rechnern. Die Ursache ist
 noch nicht bestimmt; die lokalen Audits belegen keine identischen
 Suchergebnisse über Rechner hinweg. Details und Grenzen stehen im
 [Portabilitätsprotokoll](portability.md).
+
+## Bestätigtes R-Profil im allgemeinen Laufweg: Schema 4
+
+Beschluss vom 14.11.2026, [Leitfadenphase 5](ringdown_recovery_roadmap.md).
+Die [rauschfreie Bestätigung](restart_budget_confirmation_results_manjaro_001.md)
+begründet die bewusste Übernahme des R-Profils in den allgemeinen Laufweg.
+Sie validiert weder Gewichtungsvergleiche unter Rauschen noch den gesamten
+Parameterkasten. Die folgenden Vorgaben betreffen die technische Übernahme;
+ein wissenschaftliches Rauschpilotprotokoll ist noch gesondert festzulegen.
+
+### Auftrag und unveränderte Auswahlgrenzen
+
+Schema 4 verwendet die bestehende Schema-2-Datengenerierung mit demselben
+binären Eingabeübergang. Es ersetzt die einzelne Schema-3-Suche je Arm durch
+vier vollständig neue Worker. Die Schema-1–3-Aufträge, Formate und Defaults
+bleiben unverändert. Der neue Auftrag enthält anstelle von `[symbolic_search]`:
+
+```toml
+[confirmed_search]
+profile = "r4x1000-local300x5-v1"
+seeds = [2026111401, 2026111402, 2026111403, 2026111404]
+```
+
+Die vier unterschiedlichen Seeds werden vor Beginn gespeichert; derselbe
+Block gilt für die drei getrennten Gewichtungsarme. Die Beispielseeds
+definieren keine wissenschaftliche Bestätigungsstichprobe. Das Profil legt
+1.000 äußere Iterationen, 300 lokale Optimiereriterationen und fünf zusätzliche
+lokale Neustarts fest. Vier globale Neustarts sind vier neue SR-Suchen.
+Beide Häufigkeitsschalter sind eingeschaltet; allgemeine Grammatik,
+`should_simplify=false`, kein Größen-Warmup, ursprüngliches t und die übrigen
+gebundenen Einstellungen gelten gemeinsam.
+
+Innerhalb jedes Workers bleibt die native Originalauswahl erhalten.
+Das Paket wählt unter diesen vier Originalausgaben nach tatsächlichem
+Trainingsverlust, danach Komplexität und schließlich Mitgliedsposition.
+Ein Paket liefert genau eine Ausgabe. Keine Auswahl nach Signalwahrheit,
+Kurvenklasse, Familie oder zusätzlichen Diagnosepunkten; kein Vergleich
+roher Trainingsverluste zwischen unterschiedlichen Gewichtungen.
+
+Alle geplanten Mitglieder einschließlich zulässiger numerischer Ausfälle
+und Zeitüberschreitungen bleiben im Paket und in den Kosten. Fehlende
+Kostenbelege bedeuten unbekannte Kosten. Unterbrechungen, Herkunftswidersprüche,
+Aufrufwächterfehler und unbekannte Fehler verhindern die Freigabe. Ein
+Timeout darf einen bereits aufgezeichneten Integritätsfehler nicht verdecken.
+Die lesende Prüfung muss dieselben Grenzen wie die Ausführung anwenden.
+
+Die Betriebsgrenzen betragen 1.800 Sekunden je Worker und 7.800 Sekunden
+je vollständigem Paket einschließlich Vorbereitung und Abschluss. Sie sind
+keine wissenschaftlichen Erfolgsschwellen und keine Laufzeitvorhersage.
+Der reduzierte technische Paketcheck erhält 1.200 Sekunden; die reine
+Paketverifikation 600 Sekunden. Eine späte Überschreitung darf keine
+veröffentlichte Freigabe bestehen lassen.
+
+### Gewichtung und technische Abnahme
+
+Die feste vollständige Kovarianz bleibt im nativen `FixedWindowLoss` gebunden:
+für die Bewertung von Strukturen und für sämtliche Konstantenoptimierungen.
+Die drei Arme verwenden gewöhnliche MSE, wahres `Q/N` beziehungsweise
+geschätztes `Q/N`. Keine Diagonalisierung, Residuenanpassung der Kovarianz oder
+nachträgliche Gewichtung erst bei der Paketwahl.
+
+Der historische MSE-Replay des Spezialtreibers ist für Kovarianzverlust
+nicht definiert. Im neuen Profil werden deshalb Baumvorhersage und
+Residuenreduktion getrennt geprüft. Nahezu exakte Formeln dürfen nicht allein
+wegen kleiner zulässiger Vorhersagerundungen im Python-Replay scheitern;
+eine pauschale absolute Verlusttoleranz wäre dafür kein ausreichender Nachweis.
+Der gewichtete Vertrag prüft die tatsächlich verwendeten nativen und
+Python-Choleskyfaktoren über den Rückwärtsfehler `L Lᵀ − C` gegen die originale
+Matrix. Jede Weißung wird gegen ihren eigenen Residualvektor über `L z − r`
+geprüft; anschließend wird die Reduktion `Σ z²/N` exakt rational nachgerechnet.
+Auch die zur Prüfung berechneten Matrixprodukte und Schranken benötigen
+Rundungsfehlerhüllen. Die Baumvorhersagen werden separat durch den bestehenden
+MPFR-Intervallnachweis gebunden. Native Front-, Reimport- und Tabellenverluste
+behalten ihren strikten relativen Abgleich; die Paketwahl verwendet weiterhin
+den unveränderten nativen Trainingsverlust.
+
+Für `u=2^-53` und `γ_k=k·u/(1−k·u)` schließt die Nachrechnung den Fehler eines
+Skalarprodukts mit `N` Summanden durch `γ_N·|A|·|B| + α_N` ein. Dabei ist
+`α_N=N·2^-1075/(1−N·u)` der aus IEEE-Rundung abgeleitete Anteil für allmählichen
+Unterlauf. Gerichtete Float64-Schranken um Produkt, Betrag, Subtraktion und
+Schrankenrechnung müssen den tatsächlichen Rückwärtsfehler komponentenweise
+unter `γ_(2N+2)·|A|·|B| + 2α_N` nachweisen. NumPy-/BLAS-Kontrollen prüfen, dass
+subnormale Operanden und Produkte nicht einfach zu null gesetzt werden.
+Der Maschinenunterlaufanteil verändert keine Kovarianzeinträge und ist keine
+frei gewählte absolute Verlusttoleranz.
+
+Für die anschließend exakt rational überprüfte skalare Reduktion werden alle
+Rundungsschritte berücksichtigt. Mit `q=Σ z²/N` muss der tatsächliche Verlust
+im Intervall `q·[(1−γ_N)(1−u)^5/(1+u)^2, (1+γ_N)(1+u)^5/(1−u)^2]` liegen.
+Die Faktoren stammen aus Quadrat-/Summenphase, Quadratwurzel der Summe,
+Quadratwurzel von N, Division und abschließendem Quadrieren. Damit wird die
+tatsächliche Ausgabe gegen ein ausdrücklich festgelegtes Rechenmodell geprüft;
+es wird keine universelle Fehlergarantie für beliebige BLAS-Implementierungen
+behauptet. Nichtverschwindende Quadrate müssen weiterhin im normalen
+Float64-Bereich bleiben; Extremskalen können abgelehnt werden.
+
+Diese neue Versionsgrenze gilt für gewöhnliche und gewichtete Verluste des
+bestätigten Profils. Die historische `duration_replay`-Regel bleibt unverändert.
+Die technische Zweipunktkontrolle zeigte deren Grenze: Schon `z=[3,27]` ergibt
+bei gültiger Norm-/Divisions-/Quadratrechnung `368.99999999999983` statt exakt
+369, etwas außerhalb von `γ_4`. Beim tatsächlich geprüften nativen Gegenfall
+sind Front-, Callback- und Reimportverlust bitgleich. Die Korrektur betrifft
+ausschließlich die begründete Prüfhülle; Kovarianz, native Verluste, Auswahl,
+Suchbudgets und Seeds werden nicht verändert.
+
+Dies ist ein Nachweis kleiner Rückwärtsfehler des numerischen Rechenwegs.
+Bei schlecht konditionierter Kovarianz folgt daraus keine enge Vorwärtsschranke
+zum mathematisch exakten `rᵀ C⁻¹ r/N` und keine behauptete Übereinstimmung
+beliebiger unabhängiger Implementierungen. Diese Grenze darf nicht als
+bewiesene Genauigkeit verschleiert werden. Numerische Unter-/Überläufe und
+nicht belegbare Schranken verhindern die Freigabe; keine neue Regularisierung,
+feste absolute Fehlertoleranz oder stillschweigende Änderung der historischen
+Verlustverträge.
+
+Die begrenzte technische Prüfung verwendet saubere, fest gespeicherte
+Beobachtungen mit separat gewählter positiv definiter Testkovarianz direkt
+über dieselbe allgemeine Paket-API. Sie behauptet kein Rauschen in diesen
+Daten und ändert nicht die positive Varianzvorgabe der Schema-2-Erzeugung.
+Ein vollständiges kleines Viererpaket sowie gewöhnliche und diagonale
+Kontrollen prüfen die neue Route. Analytische Referenzen müssen zeigen,
+dass die Nebendiagonalen die Strukturrangfolge und das Konstantenoptimum
+tatsächlich beeinflussen. Reduzierte äußere Budgets sind ausdrücklich als
+technisch gekennzeichnet; lokal 300/5 und die übrigen Profileinstellungen
+bleiben erhalten. Keine bestimmte gefundene Formel oder Kurvenklasse ist
+ein technisches Bestehenskriterium.
+
+Implementierung, konkrete Prüfbefehle und tatsächlich ausgeführte Nachweise
+werden im [Fortsetzungsstand](representation_implementation_status.md)
+nachgeführt. Originalarchive bleiben gemäß [Archivregel](results_archiving.md)
+unverändert; technische Nachweise erhalten eigene Ausgaben und Prüfsummen.
+
+### Begrenzter technischer Manjaro-Lauf
+
+Erst nach vollständiger Abnahme des Implementierungsstands aus
+[PR #89](https://github.com/craexxn/ringdown-sr/pull/89) starten. Die folgenden
+Befehle holen dessen tatsächlichen Head in einen eigenen unveränderlichen
+Checkout. Aus dem bisherigen Repository ausführen; vorhandene Arbeitsbäume
+oder Ausgabeordner nicht überschreiben:
+
+```bash
+bash <<'BASH'
+set -euo pipefail
+git fetch origin refs/pull/89/head
+task_commit=$(git rev-parse FETCH_HEAD)
+git worktree add --detach ../ringdown-confirmed-profile-run "$task_commit"
+cd ../ringdown-confirmed-profile-run
+test -z "$(git status --porcelain)"
+env -u VIRTUAL_ENV uv sync --locked --dev --python 3.12.14
+git rev-parse HEAD
+BASH
+```
+
+Danach im neuen Arbeitsbaum den **technischen** Vorlauf starten. Dieser führt
+neun feste native Rang-/Optimiererreferenzen und sechs kleine Suchworker aus:
+ein vollständiges Viererpaket mit voller Kovarianz, einen diagonalen und einen
+ungewichteten Worker. Die Suchdaten sind der feste saubere Zweipunktfall
+`t=[0,1]`, `y=[1,0]`; die volle Testkovarianz ist `[[2.5,1.5],[1.5,4.5]]`.
+Jeder Suchworker erhält nur eine äußere Iteration bei ansonsten unverändertem
+Profil einschließlich lokal 300/5. Das ist eine technische Funktionsprüfung,
+keine wissenschaftliche Ringdown-Rekonstruktionsserie.
+
+```bash
+cd ../ringdown-confirmed-profile-run
+env -u VIRTUAL_ENV OPENBLAS_CORETYPE=Haswell \
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+  uv run --locked python scripts/check_confirmed_profile.py \
+  --output results/confirmed-profile-technical-manjaro-001
+```
+
+Erwartete Dateien sind `analytic.json`, das Viererpaket unter `full/` mit
+seinen vier `member-*/`-Ordnern, ursprünglichen Eingaben, Vorbereitung,
+nativen Fronten, Herkunfts-/Kostenbelegen und freigegebenem `completion/`,
+sowie die Einzelkontrollen `diagonal/` und `ordinary/`. Keine bestimmte
+gefundene Formel ist Voraussetzung. Einrichtung und JIT gehören zum
+technischen Aufwand; die Workerlogs können längere Zeit ohne neue Ausgabe
+bleiben. Bei Abbruch bleiben Teilstände erhalten; für eine Wiederholung eine
+neue Lauf-ID verwenden.
+
+Nach erfolgreichem Abschluss im selben sauberen Ausführungscheckout separat
+**lesend verifizieren und erst danach archivieren**:
+
+```bash
+bash <<'BASH'
+set -euo pipefail
+task_run=confirmed-profile-technical-manjaro-001
+env -u VIRTUAL_ENV OPENBLAS_CORETYPE=Haswell \
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+  uv run --locked python scripts/check_confirmed_profile.py \
+  --verify "results/$task_run" | tee "results/$task_run-verification.log"
+task_archive="$task_run.tar.gz"
+test ! -e "results/$task_archive"
+tar -czf "results/$task_archive" -C results \
+  "$task_run" "$task_run-verification.log"
+tar -tzf "results/$task_archive" > /dev/null
+cd results
+sha256sum "$task_archive" > "$task_archive.sha256"
+sha256sum -c "$task_archive.sha256"
+BASH
+```
+
+Originalarchiv und SHA-256 im gemeinsamen Archivordner sowie auf dem
+unabhängigen Sicherungsziel erhalten; beide Kopien am Hash prüfen und den
+bestätigten Ablage-/Sicherungsstand im [Ergebnisindex](results_index.md)
+nachführen. GitHub-Uploads bleiben optional.
+
+### Späterer Schema-4-Pilot und lesende Prüfung
+
+[`configs/pilot_confirmed_ar1.toml`](../configs/pilot_confirmed_ar1.toml)
+zeigt den allgemeinen Auftragsweg. Seine zwölf vollständigen 1.000er-Suchen
+sind **kein freigegebener wissenschaftlicher Rauschversuch**. Signal-, Rausch-,
+Hintergrund- und Seedblöcke, Endpunkte und Anschlussregel sind zuvor separat
+festzulegen. Dieser Implementierungsschritt startet diesen Auftrag nicht.
+
+Ein später tatsächlich vorhandener Schema-4-Lauf wird über
+`uv run --locked ringdown-sr verify-confirmed AUSGABEORDNER` lesend geprüft.
+Eine gültige Verifikation liefert Exitcode 0 auch dann, wenn dokumentierte
+numerische Ausfälle den Pilotstatus `comparison_failed` ergeben. Der eigentliche
+Lauf liefert dafür Exitcode 1; Integritätsfehler sperren die Freigabe. Der
+Schema-3-Verifikator und die bisherigen Zusatzbewertungsexporte werden nicht
+auf die neuen Mehrmitgliedsdateien umgedeutet. Neue physikalische
+Parameterübereinstimmungen bleiben `not_assessed`.

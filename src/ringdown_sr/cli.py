@@ -28,8 +28,21 @@ def main(argv: list[str] | None = None) -> int:
     assess.add_argument("source", type=Path)
     assess.add_argument("--output", type=Path, required=True)
     assess.add_argument("--timeout-seconds", type=float, default=300)
+    verified = subcommands.add_parser(
+        "verify-confirmed", help="Schema-4-Pilot vollständig lesend verifizieren"
+    )
+    verified.add_argument("source", type=Path)
     args = parser.parse_args(argv)
     try:
+        if args.command == "verify-confirmed":
+            from ringdown_sr.confirmed_pilot import verify_confirmed_pilot
+
+            report = verify_confirmed_pilot(args.source)
+            print(f"Schema-4-Verifikation: {report['pilot_status']}")
+            print(
+                "Drei Gewichtungsarme und zwölf geplante Mitglieder geprüft; keine neuen Suchen."
+            )
+            return 0
         if args.command == "assess":
             from ringdown_sr.future_assessment import export_assessment
 
@@ -54,9 +67,10 @@ def main(argv: list[str] | None = None) -> int:
             file=sys.stderr,
         )
         return 2
-    result = json.loads(
-        (outcome.output_directory / "result.json").read_text(encoding="utf-8")
-    )
+    result_path = outcome.output_directory / "result.json"
+    if not result_path.is_file():
+        result_path = outcome.output_directory / "completion" / "assessment_report.json"
+    result = json.loads(result_path.read_text(encoding="utf-8"))
     print(f"Status: {outcome.status}")
     print(f"Ergebnisse: {outcome.output_directory.resolve()}")
     if args.assessment_output is not None:
@@ -64,7 +78,7 @@ def main(argv: list[str] | None = None) -> int:
     if outcome.status != "success":
         print(f"Fehler: {result['error']['message']}", file=sys.stderr)
         return 1
-    if result["schema_version"] == 3:
+    if result["schema_version"] in (3, 4):
         print(f"Gewähltes Alpha: {result['covariance_estimation']['alpha_selected']:g}")
         for name, label in (
             ("ordinary", "SR mit gewöhnlicher MSE"),
