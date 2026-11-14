@@ -5,8 +5,8 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 13.11.2026; aktuelle main-Basis `11c844d` nach
-[PR #86](https://github.com/craexxn/ringdown-sr/pull/86).
+Fortsetzungsstand: 14.11.2026; aktuelle main-Basis `6bc0282` nach
+[PR #87](https://github.com/craexxn/ringdown-sr/pull/87).
 Der Budgetvergleich wurde auf `680af98` nach PR #85 wissenschaftlich ausgeführt;
 seine aktuelle Quellenprüfung steht im
 [Ergebnisbericht](docs/restart_budget_results_manjaro_001.md).
@@ -122,14 +122,24 @@ als vorläufiger Kandidat; L: 2 × 2.000 als aktive Kontrolle, beide in t bei
 300/5. R muss mindestens 8/10 A-Ausgaben mit gültiger Originalfamilie auf jedem
 Signal erreichen; L wird getrennt berichtet. Keine automatische Armwahl,
 Kombination mit 4 × 500 oder weitere Budgetstaffel. Der
-[Manjaro-Laufweg](docs/restart_budget_confirmation.md) ist implementiert und
-lokal geprüft: 3.656 Pythonfälle, zwölf kleine native Worker sowie Einzel- und
-Gesamtverifikation bestanden. Vollständige Ready-CI für PR #87 und Übernahme
-stehen aus; die wissenschaftliche Serie wurde nicht gestartet. Drei feste neue
+[Manjaro-Laufweg](docs/restart_budget_confirmation.md) ist nach vollständiger
+[Ready-CI](https://github.com/craexxn/ringdown-sr/actions/runs/43394100165)
+mit 3.656 Pythonfällen und sämtlichen nativen Prüfblöcken übernommen.
+Die [wissenschaftliche Bestätigung 001](docs/restart_budget_confirmation_results_manjaro_001.md)
+ist auf `6bc0282` ausgeführt: R erreicht **10/10, 10/10 und 9/10** gemeinsame
+A-/Originalfamilienerfolge und erfüllt damit die vorab festgelegte praktische
+Grenze; L erreicht **9/10, 7/10 und 7/10** und verfehlt sie getrennt.
+R liefert auf allen drei Signalen 10/10 A-Kurven, L 9/10, 9/10 und 8/10.
+Keine Ausfälle; die vollständigen wissenschaftlichen Abschnittsaufrufe dauern
+zusammen rund **19 h 5 min 51 s**. Wissenschaftliche Gesamtverifikation und
+technischer Vorlauf sind vollständig lesend bestätigt; alle zwölf Verify-Exporte
+sind bytegleich zum Original. Prüfstand und Aussagegrenzen stehen im Ergebnisbericht.
+Drei feste neue
 Innenbereichsfälle bestätigen weder den ganzen Parameterkasten noch erneut
 die zuvor schwierige Randkombination. U bleibt offen. Die bewusste
-Profilübernahme in den allgemeinen gewichteten Laufweg bleibt vor einem
-späteren Rauschpilot gesondert zu prüfen.
+Profilübernahme in den allgemeinen gewichteten Laufweg und dessen rauschfreie
+Prüfung sind der nächste abgegrenzte Schritt vor einem späteren Rauschpilot;
+keine zusätzliche Budgetstaffel oder automatische Ausführung daraus ableiten.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
 Ausführungsschritt. Umsetzung und Nachweise stehen im

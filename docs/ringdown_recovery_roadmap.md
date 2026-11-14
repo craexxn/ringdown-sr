@@ -6,7 +6,7 @@ Ready-Wechsel und führt native Kontrollen seriell aus. Die wissenschaftlichen
 Phasen und Kriterien bleiben erhalten; tatsächlicher Prüf- und Übernahmestand
 im [Fortsetzungsstand](representation_implementation_status.md).
 
-Aktueller Ergebnisabgleich vom 13.11.2026: Die
+Aktueller Ergebnisabgleich vom 14.11.2026: Die
 [unabhängige Bestätigung](restart_confirmation_results_manjaro_001.md) aus Phase 6
 ist einschließlich technischem Vorlauf auf main `c3da991` ausgeführt und vollständig
 lesend geprüft. 150 frische Suchen; R erreicht 8/10, 10/10 und 4/10 gemeinsame
@@ -31,9 +31,13 @@ drei neue feste Signaldefinitionen mit je zehn gepaarten Blöcken für
 4 × 1.000 als Kandidaten und 2 × 2.000 als aktive Kontrolle, 180 frische Suchen.
 Das [Protokoll](restart_budget_confirmation_plan.md) ist vor Implementierung
 festgelegt; seine öffentliche Commitbindung ist `352b7b5`. Der neue Laufweg ist
-implementiert und lokal technisch geprüft. Vollständige Ready-CI für PR #87,
-Übernahme und wissenschaftliche Ausführung stehen aus. Keine automatische weitere
-Suchintervention und kein unmittelbarer Rauschpilot. Historische
+nach vollständiger Ready-CI mit PR #87 als `6bc0282` übernommen. Die
+[wissenschaftliche Bestätigung 001](restart_budget_confirmation_results_manjaro_001.md)
+ist auf diesem Stand ausgeführt: R erreicht 10/10, 10/10 und 9/10 gemeinsame
+A-/Originalfamilienerfolge, L getrennt 9/10, 7/10 und 7/10. R erfüllt damit
+die vorab festgelegte praktische Grenze auf allen drei neuen Innenbereichsfällen;
+die vollständige eigene lesende Verifikation samt technischem Vorlauf ist bestanden.
+Keine automatische weitere Suchintervention und kein unmittelbarer Rauschpilot. Historische
 Protokolle, Seeds, Eingaben und Entscheidungsregeln bleiben eingefroren. Profilübernahme in
 den allgemeinen gewichteten Laufweg bleibt vor einem späteren Rauschpilot
 gesondert zu prüfen. Die folgenden datierten Einordnungen erhalten ihre Historie.
@@ -707,6 +711,36 @@ Die bewusste Profilübernahme nach Phase 5 in den allgemeinen gewichteten Laufwe
 bleibt vor dem Rauschpilot erforderlich: Gewichtung sowohl in Struktursuche als
 auch Konstantenoptimierung. Diese rauschfreie Bestätigung prüft diesen späteren
 gewichteten Laufweg nicht.
+
+### Bestätigungsbefund und Anschluss vom 14.11.2026
+
+Der [Originalbefund](restart_budget_confirmation_results_manjaro_001.md) umfasst
+alle 180 frischen Suchen, 60 verlustbasiert ausgewählte Paketausgaben und keine
+Ausfälle. R: 4 × 1.000 erreicht auf `confirm_low`, `confirm_mid`, `confirm_high`
+jeweils 10/10 A-Kurven und 10/10, 10/10, 9/10 gemeinsame Originalfamilienerfolge.
+L: 2 × 2.000 erreicht 9/10, 9/10, 8/10 A-Kurven und 9/10, 7/10, 7/10 gemeinsame
+Erfolge. Die praktische Hauptgrenze ist für R erfüllt, für L nicht; dies ist
+keine statistische Überlegenheitsentscheidung und keine Auswahl zwischen Armen.
+Die vollständige eigene lesende Verifikation und alle zwölf bytegleichen
+wissenschaftlichen/technischen Verify-Exporte bestätigen diesen Befund.
+
+Nach dieser abgeschlossenen Quellenprüfung folgt der bereits vorgesehene abgegrenzte
+Schritt aus Phase 5: den tatsächlichen allgemeinen Laufweg erneut gegen den
+bestätigten Spezialtreiber abgleichen und das gewählte R-Profil bewusst übernehmen.
+Dazu gehören ursprüngliche Zeit t, vier vollständig frische 1.000er-Suchen,
+lokal 300/5, beide Häufigkeitsschalter, allgemeine Grammatik,
+`should_simplify=false` und genau eine verlustbasierte Paketausgabe. Zuerst dort
+rauschfrei kontrollieren; bei gewichteten Läufen muss dieselbe Gewichtung
+Struktursuche und Konstantenoptimierung bestimmen. Diese Ergebnisdokumentation
+implementiert oder startet weder die Profilübernahme noch den Rauschpilot.
+
+Keine zusätzliche Iterationsstaffel, Kombination mit 4 × 500, nachträgliche
+Formelbereinigung oder weitere Seedrunde auf diesen Bestätigungsfällen.
+Kosten bleiben gemessen und getrennt vom praktischen Kriterium. Drei feste
+Innenbereichssignale und marginale Binomialintervalle bestätigen keinen ganzen
+Parameterkasten oder eine wahre Erfolgswahrscheinlichkeit von mindestens 80 %.
+Die alte negative Bestätigung, gemischten Entwicklungsbefunde und
+`not_assessed` für neue Parameterübereinstimmungen bleiben unverändert.
 
 ## 7. Rauschpilot und Hauptversuchsplanung
 
