@@ -146,8 +146,13 @@ Review und vollständiger [Ready-CI](https://github.com/craexxn/ringdown-sr/acti
 Der technische Manjaro-Vorlauf auf `8b9c6ef` ist am Originalarchiv lesend
 bestätigt: sechs kleine Suchworker und neun analytische Kontrollen, keine
 wissenschaftliche Rauschserie. Alte Schema-1–3-Aufträge behalten ihre Bedeutung.
-Der nächste Schritt ist das eigene vorab festgelegte Rauschpilot-Protokoll;
-keine zusätzliche Budgetstaffel oder automatische Ausführung daraus ableiten.
+Der [konkrete Rauschpilot-Entwurf](docs/noise_pilot_plan.md) liegt vor:
+als Arbeitsannahme ein bekanntes Signal, weißes und AR(1)-Rauschen bei
+sigma/A=0,05, je sechs unabhängige Blöcke und drei Gewichtungsarme,
+insgesamt 144 Suchaufrufe. Die Umfangsentscheidung ist noch offen;
+keine wissenschaftliche Ausführung. Vorher fehlen die begrenzte Serienanbindung
+einschließlich Zusatzbewertung und ein technischer Ressourcencheck mit 128 Punkten.
+Keine zusätzliche Budgetstaffel oder automatische Ausführung daraus ableiten.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
 Ausführungsschritt. Umsetzung und Nachweise stehen im

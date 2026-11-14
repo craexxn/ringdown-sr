@@ -1,6 +1,32 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Profilübernahme übernommen, technischer Manjaro-Vorlauf bestätigt
+## Aktuell: technischer Manjaro-Vorlauf bestätigt, Rauschpilot konkret entworfen
+
+Ergänzung vom 14.11.2026: Auf `codex/noise-pilot-protocol` ab dem geprüften
+PR90-Head `4e1fa18461b2b32fc2f8c39e77fd7c51b06c868a` entsteht der
+[Rauschpilot-Protokollentwurf](noise_pilot_plan.md) für Leitfadenphase 7.
+PR90 bleibt ein eigener Dokumentationsnachtrag; keine eigenständige Übernahme.
+Arbeitsannahme 144 Suchen, ein festes bekanntes Signal, zwei Rauschmodelle,
+ein Pegel und sechs unabhängige Dreiervergleiche je Modell. Umfangsoptionen
+72/144/288 sind vorgelegt, noch keine Ausführungsfreigabe.
+
+Methodik, Signal-/Rauschparameter, Hintergrundrollen, alle 72 Seedzahlen,
+Diagnoserasterregel, Endpunkte, Ausfälle, Kosten und Anschlussentscheidung
+sind konkret beschrieben. Die Seedtabelle wurde ohne Fits/Suchen deterministisch
+erzeugt und gegen den versionierten Bestand abgeglichen. Literatur zu
+Simulationsplanung, SR-Benchmarks und Kovarianzschrumpfung wurde erneut geprüft;
+konkrete Mengen und sechs Wiederholungen bleiben begrenzte Projektvorgaben.
+
+Die vorhandene Schema-4-Ausführung einzelner Dreiervergleiche ist kein fertiger
+Serientreiber: Zusatzraster und bestehende Zusatzbewertungen für Schema 4,
+gemeinsame Eingabenvorbereitung, Abschnitts-/Gesamtbindung und vollständige
+Aufrufkosten fehlen noch. Auch eine belastbare Laufzeitmessung gewichteter
+1.000er-Suchen mit 128 Punkten fehlt. Ein separater begrenzter technischer
+Vorlauf ist vorgesehen; keine wissenschaftliche Serie gestartet.
+Nächster Schritt: Umfang festhalten, Protokoll vor Implementierung getrennt
+versionieren und die im Entwurf abgegrenzten Laufwegergänzungen umsetzen.
+
+### Übernommene Profilroute und ihr technischer Nachweis
 
 Stand 14.11.2026, [Leitfadenphase 5](ringdown_recovery_roadmap.md): Die
 Bestätigungsergebnisse sind mit [PR #88](https://github.com/craexxn/ringdown-sr/pull/88)
