@@ -145,7 +145,7 @@ In einem zweiten Terminal desselben Arbeitsverzeichnisses, ohne zusätzliche
 Pakete oder Codeänderung:
 
 ```bash
-watch -n 10 'cat results/noise-pilot-manjaro-001/series/run_state.json; find results/noise-pilot-manjaro-001/series/cases -name run_state.json -exec sh -c '\''printf "\n%s\n" "$1"; cat "$1"'\'' sh {} \;'
+watch -n 10 'cat results/noise-pilot-manjaro-001/series/run_state.json; find results/noise-pilot-manjaro-001/series/cases -name run_state.json -print -exec cat {} \;'
 ```
 
 Die Anzeige liest nur Statusdateien. Ihr Abbruch mit Strg+C beendet allein
