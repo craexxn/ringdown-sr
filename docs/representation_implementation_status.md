@@ -1,6 +1,44 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Profilübernahme übernommen, technischer Manjaro-Vorlauf bestätigt
+## Aktuell: technischer Manjaro-Vorlauf bestätigt, Rauschpilot mit 144 Suchen beschlossen
+
+Ergänzung vom 14.11.2026: Auf `codex/noise-pilot-protocol` ab dem geprüften
+PR90-Head `4e1fa18461b2b32fc2f8c39e77fd7c51b06c868a` entsteht der
+[Rauschpilot-Protokoll](noise_pilot_plan.md) für Leitfadenphase 7.
+PR90 ist nach grüner Dokumentations-CI und gezieltem KI-Review als
+`3aa02bcfadc536adb1a4dd2477176dd4c211d8e3` übernommen.
+Am 14.11.2026 sind 144 Suchen beschlossen: ein festes bekanntes Signal,
+zwei Rauschmodelle, ein Pegel und sechs unabhängige Dreiervergleiche je Modell.
+Die Alternativen 72/288 bleiben abgewogen und ungewählt; keine wissenschaftliche
+Ausführung durch die Planübernahme.
+
+Methodik, Signal-/Rauschparameter, Hintergrundrollen, alle 72 Seedzahlen,
+Diagnoserasterregel, Endpunkte, Ausfälle, Kosten und Anschlussentscheidung
+sind konkret beschrieben. Die Seedtabelle wurde ohne Fits/Suchen deterministisch
+erzeugt und gegen den versionierten Bestand abgeglichen. Literatur zu
+Simulationsplanung, SR-Benchmarks und Kovarianzschrumpfung wurde erneut geprüft;
+konkrete Mengen und sechs Wiederholungen bleiben begrenzte Projektvorgaben.
+
+Prüfnachweise des Entwurfs: Dokumentation und lokale Dateiziele für 109
+Markdown-Dateien sowie Diffprüfung bestanden. Unabhängige numerische
+Nachrechnung bestätigt Signalhexwerte, Pegel, Umfang und Unsicherheitsangaben;
+alle 72 Seeds aus 1.766 ausgeschlossenen Bestandstokens exakt reproduziert,
+48 anfängliche Messrausch-/Hintergrundzustände ohne Kollision. KI-basiertes
+Methodenreview und gezielte technische Planprüfung durchgeführt; der fehlende
+Zehn-Iterationenmodus und die differenzierte Behandlung von Vorbereitungs-/
+Referenzfit-Ausfällen sind ausdrücklich als Implementierungsarbeiten erfasst.
+
+Die vorhandene Schema-4-Ausführung einzelner Dreiervergleiche ist kein fertiger
+Serientreiber: Zusatzraster und bestehende Zusatzbewertungen für Schema 4,
+gemeinsame Eingabenvorbereitung, Abschnitts-/Gesamtbindung und vollständige
+Aufrufkosten fehlen noch. Auch eine belastbare Laufzeitmessung gewichteter
+1.000er-Suchen mit 128 Punkten fehlt. Ein separater begrenzter technischer
+Vorlauf ist vorgesehen; keine wissenschaftliche Serie gestartet.
+Nächster Schritt: PR91 auf die übernommene PR90-Basis abgleichen, den beschlossenen
+Plan nach Dokumentations-CI übernehmen und die abgegrenzten Laufwegergänzungen
+in einem eigenen Implementierungs-PR umsetzen.
+
+### Übernommene Profilroute und ihr technischer Nachweis
 
 Stand 14.11.2026, [Leitfadenphase 5](ringdown_recovery_roadmap.md): Die
 Bestätigungsergebnisse sind mit [PR #88](https://github.com/craexxn/ringdown-sr/pull/88)

@@ -794,6 +794,27 @@ Sicherung im [Index](results_index.md#technische-profilübernahme-vom-14112026).
 
 ## 7. Rauschpilot und Hauptversuchsplanung
 
+Konkretisierung vom 14.11.2026: Der getrennt versionierte
+[beschlossene Plan](noise_pilot_plan.md) setzt den bestehenden Rahmen in eine
+begrenzte Matrix um. Festgelegt sind 144 neue Suchen: `confirm_mid`,
+weißes und AR(1)-Rauschen bei sigma/A=0,05, sechs unabhängige Blöcke je Modell,
+drei Arme mit je vier 1.000er-Suchen bei lokal 300/5. Die Alternative mit
+72 Aufrufen wurde wegen geringerer Replikation nicht gewählt; 288 Aufrufe
+sind für den ersten Pilot zurückgestellt. Mehr Wiederholungen je
+Bedingung haben zunächst Vorrang vor zusätzlichen Pegeln. Ein bekanntes Signal
+und eine feste Hintergrundmenge ergeben einen explorativen Pilot, keine neue
+unabhängige Bestätigung oder allgemeine Erfolgswahrscheinlichkeit.
+
+Die Literaturgrundlage ist im Entwurf mit ihrem jeweiligen Geltungsbereich
+benannt. Die bestehende Kovarianzmethode bleibt erhalten; die Mengen
+64/128/256 werden als ein bewusst datenarmes Szenario eingeordnet. Primärmaß
+ist der amplitudennormierte Fehler zur sauberen Wahrheit nach unveränderter
+Auswahl. Ausfälle, Zusatzraster und Strukturbeweise bleiben getrennt.
+Vor einer wissenschaftlichen Serie fehlen noch die vollständige Eingaben-/
+Serienbindung, Schema-4-Zusatzbewertung und ein technischer Ressourcencheck
+mit 128 Punkten. Der Zweipunkt-Vorlauf ersetzt diese Abnahme nicht.
+Der Entwurf startet keine Suche und ändert keine historische Bewertung.
+
 Zunächst wenige Signale und Rauschbedingungen wählen. Rauschrealisierungen,
 Hintergrunddaten und Suchseeds als unterschiedliche Zufallsquellen behandeln.
 Mehrere Suchseeds auf einer einzigen Rauschrealisierung belegen keine allgemeine
@@ -840,7 +861,10 @@ Untersuchung der Grenzen freier SR. Keine unbeschränkte Parametersuche.
   vom 13.11.2026 mit neuen festen Signalen, Seeds und unveränderter strenger
   Originalfamilienregel im [neuen Bestätigungsplan](restart_budget_confirmation_plan.md);
   technische Abnahme und spätere wissenschaftliche Ausführung getrennt führen.
-- Konkrete Rausch-, Hintergrund- und Gewichtungsbedingungen des kleinen Piloten.
+- Konkrete Rausch-, Hintergrund- und Gewichtungsbedingungen und der Umfang
+  von 144 Suchen sind im [Protokoll](noise_pilot_plan.md) beschlossen. Endgültige
+  Quellen-/Eingabenbindung vor wissenschaftlicher Ausführung
+  sind dort ausdrücklich von bereits implementierten Regeln getrennt.
 
 ## Literatur und Übertragungsgrenzen
 

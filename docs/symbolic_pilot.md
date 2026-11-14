@@ -423,7 +423,10 @@ nachführen. GitHub-Uploads bleiben optional.
 zeigt den allgemeinen Auftragsweg. Seine zwölf vollständigen 1.000er-Suchen
 sind **kein freigegebener wissenschaftlicher Rauschversuch**. Signal-, Rausch-,
 Hintergrund- und Seedblöcke, Endpunkte und Anschlussregel sind zuvor separat
-festzulegen. Dieser Implementierungsschritt startet diesen Auftrag nicht.
+festzulegen. Das [beschlossene Rauschpilot-Protokoll](noise_pilot_plan.md) konkretisiert
+dies mit 144 Suchen; seine Serien- und Zusatzraster-
+Anbindung ist noch nicht implementiert. Dieser Implementierungsschritt startet
+diesen Auftrag nicht.
 
 Ein später tatsächlich vorhandener Schema-4-Lauf wird über
 `uv run --locked ringdown-sr verify-confirmed AUSGABEORDNER` lesend geprüft.
