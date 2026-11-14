@@ -2,6 +2,7 @@
 
 import copy
 from fractions import Fraction
+from itertools import product
 
 import numpy as np
 import pytest
@@ -216,6 +217,37 @@ def test_mutated_covariance_wrong_shape_and_failed_factor_are_never_cached(monke
     with pytest.raises(ValueError, match="shape"):
         replay.verify_loss_replay(**args)
     assert len(factor_checks) == 3
+
+
+def test_native_whitening_certificate_is_independent_of_array_layout():
+    # The first two-point native technical worker exposed different BLAS
+    # reduction paths for Julia's Fortran matrix and the reader's C-order copy.
+    factor = np.array(
+        [[1.5811388300841898, 0.0], [0.9486832980505138, 1.8973665961010275]]
+    )
+    whitened = np.array([0.24987520050204687, -0.44375454319404756])
+    residual = np.array([0.39508738218885875, -0.6049126178111413])
+    expected = replay._product_certificate(factor, whitened, residual)
+    for factor_order, whitening_order, residual_order in product("CF", repeat=3):
+        result = replay._product_certificate(
+            np.array(factor, order=factor_order),
+            np.array(whitened, order=whitening_order),
+            np.array(residual, order=residual_order),
+        )
+        assert result == expected
+
+
+def test_cached_and_uncached_factor_certificates_share_a_canonical_layout():
+    covariance = np.array([[2.5, 1.5], [1.5, 4.5]])
+    factor = CovarianceLoss(covariance)._factor
+    replay._FACTOR_CACHE.clear()
+    expected = replay._factor_certificate(covariance, factor)
+    for covariance_order, factor_order in product("CF", repeat=2):
+        c_layout = np.array(covariance, order=covariance_order)
+        f_layout = np.array(factor, order=factor_order)
+        assert replay._factor_certificate(c_layout, f_layout) == expected
+        replay._FACTOR_CACHE.clear()
+        assert replay._factor_certificate(c_layout, f_layout) == expected
 
 
 def test_product_certificate_encloses_exact_rational_residual_with_cancellation():

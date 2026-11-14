@@ -128,6 +128,12 @@ def _product_certificate(a, b, target):
     original and verifier roundoff. This is a measured backward-error contract,
     not an assertion of exact Cholesky bits or a forward error bound for Q.
     """
+    # Julia exports matrices in Fortran order, while archive readers commonly
+    # copy them in C order. BLAS can use different reduction paths for those
+    # layouts; canonical operands make the serialized proof reproducible.
+    a = np.ascontiguousarray(a, dtype=np.float64)
+    b = np.ascontiguousarray(b, dtype=np.float64)
+    target = np.ascontiguousarray(target, dtype=np.float64)
     terms = a.shape[1]
     _check_gradual_underflow()
     _product_domain(a, b, terms)

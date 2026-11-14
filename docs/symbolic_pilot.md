@@ -325,3 +325,94 @@ Implementierung, konkrete Prüfbefehle und tatsächlich ausgeführte Nachweise
 werden im [Fortsetzungsstand](representation_implementation_status.md)
 nachgeführt. Originalarchive bleiben gemäß [Archivregel](results_archiving.md)
 unverändert; technische Nachweise erhalten eigene Ausgaben und Prüfsummen.
+
+### Begrenzter technischer Manjaro-Lauf
+
+Erst nach vollständiger Abnahme des Implementierungsstands aus
+[PR #89](https://github.com/craexxn/ringdown-sr/pull/89) starten. Die folgenden
+Befehle holen dessen tatsächlichen Head in einen eigenen unveränderlichen
+Checkout. Aus dem bisherigen Repository ausführen; vorhandene Arbeitsbäume
+oder Ausgabeordner nicht überschreiben:
+
+```bash
+bash <<'BASH'
+set -euo pipefail
+git fetch origin refs/pull/89/head
+task_commit=$(git rev-parse FETCH_HEAD)
+git worktree add --detach ../ringdown-confirmed-profile-run "$task_commit"
+cd ../ringdown-confirmed-profile-run
+test -z "$(git status --porcelain)"
+env -u VIRTUAL_ENV uv sync --locked --dev --python 3.12.14
+git rev-parse HEAD
+BASH
+```
+
+Danach im neuen Arbeitsbaum den **technischen** Vorlauf starten. Dieser führt
+neun feste native Rang-/Optimiererreferenzen und sechs kleine Suchworker aus:
+ein vollständiges Viererpaket mit voller Kovarianz, einen diagonalen und einen
+ungewichteten Worker. Die Suchdaten sind der feste saubere Zweipunktfall
+`t=[0,1]`, `y=[1,0]`; die volle Testkovarianz ist `[[2.5,1.5],[1.5,4.5]]`.
+Jeder Suchworker erhält nur eine äußere Iteration bei ansonsten unverändertem
+Profil einschließlich lokal 300/5. Das ist eine technische Funktionsprüfung,
+keine wissenschaftliche Ringdown-Rekonstruktionsserie.
+
+```bash
+cd ../ringdown-confirmed-profile-run
+env -u VIRTUAL_ENV OPENBLAS_CORETYPE=Haswell \
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+  uv run --locked python scripts/check_confirmed_profile.py \
+  --output results/confirmed-profile-technical-manjaro-001
+```
+
+Erwartete Dateien sind `analytic.json`, das Viererpaket unter `full/` mit
+seinen vier `member-*/`-Ordnern, ursprünglichen Eingaben, Vorbereitung,
+nativen Fronten, Herkunfts-/Kostenbelegen und freigegebenem `completion/`,
+sowie die Einzelkontrollen `diagonal/` und `ordinary/`. Keine bestimmte
+gefundene Formel ist Voraussetzung. Einrichtung und JIT gehören zum
+technischen Aufwand; die Workerlogs können längere Zeit ohne neue Ausgabe
+bleiben. Bei Abbruch bleiben Teilstände erhalten; für eine Wiederholung eine
+neue Lauf-ID verwenden.
+
+Nach erfolgreichem Abschluss im selben sauberen Ausführungscheckout separat
+**lesend verifizieren und erst danach archivieren**:
+
+```bash
+bash <<'BASH'
+set -euo pipefail
+task_run=confirmed-profile-technical-manjaro-001
+env -u VIRTUAL_ENV OPENBLAS_CORETYPE=Haswell \
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+  uv run --locked python scripts/check_confirmed_profile.py \
+  --verify "results/$task_run" | tee "results/$task_run-verification.log"
+task_archive="$task_run.tar.gz"
+test ! -e "results/$task_archive"
+tar -czf "results/$task_archive" -C results \
+  "$task_run" "$task_run-verification.log"
+tar -tzf "results/$task_archive" > /dev/null
+cd results
+sha256sum "$task_archive" > "$task_archive.sha256"
+sha256sum -c "$task_archive.sha256"
+BASH
+```
+
+Originalarchiv und SHA-256 im gemeinsamen Archivordner sowie auf dem
+unabhängigen Sicherungsziel erhalten; beide Kopien am Hash prüfen und den
+bestätigten Ablage-/Sicherungsstand im [Ergebnisindex](results_index.md)
+nachführen. GitHub-Uploads bleiben optional.
+
+### Späterer Schema-4-Pilot und lesende Prüfung
+
+[`configs/pilot_confirmed_ar1.toml`](../configs/pilot_confirmed_ar1.toml)
+zeigt den allgemeinen Auftragsweg. Seine zwölf vollständigen 1.000er-Suchen
+sind **kein freigegebener wissenschaftlicher Rauschversuch**. Signal-, Rausch-,
+Hintergrund- und Seedblöcke, Endpunkte und Anschlussregel sind zuvor separat
+festzulegen. Dieser Implementierungsschritt startet diesen Auftrag nicht.
+
+Ein später tatsächlich vorhandener Schema-4-Lauf wird über
+`uv run --locked ringdown-sr verify-confirmed AUSGABEORDNER` lesend geprüft.
+Eine gültige Verifikation liefert Exitcode 0 auch dann, wenn dokumentierte
+numerische Ausfälle den Pilotstatus `comparison_failed` ergeben. Der eigentliche
+Lauf liefert dafür Exitcode 1; Integritätsfehler sperren die Freigabe. Der
+Schema-3-Verifikator und die bisherigen Zusatzbewertungsexporte werden nicht
+auf die neuen Mehrmitgliedsdateien umgedeutet. Neue physikalische
+Parameterübereinstimmungen bleiben `not_assessed`.

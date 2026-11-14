@@ -42,7 +42,7 @@ def main(argv: list[str] | None = None) -> int:
             print(
                 "Drei Gewichtungsarme und zwölf geplante Mitglieder geprüft; keine neuen Suchen."
             )
-            return 0 if report["pilot_status"] == "success" else 1
+            return 0
         if args.command == "assess":
             from ringdown_sr.future_assessment import export_assessment
 

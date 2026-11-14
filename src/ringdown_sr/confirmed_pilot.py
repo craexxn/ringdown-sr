@@ -390,7 +390,14 @@ def _assemble(root, consumed, *, complete_state=True):
 
 
 def _run_confirmed_pilot(
-    config, original, source_filename, output_directory, owned, *, technical=False
+    config,
+    original,
+    source_filename,
+    output_directory,
+    owned,
+    closing_checks,
+    *,
+    technical=False,
 ):
     """Run three fresh packages; never convert integrity errors into fit failures."""
     if not isinstance(config, ConfirmedPilotConfig) or parse_config(original) != config:
@@ -490,14 +497,18 @@ def _run_confirmed_pilot(
         report = publication.export_transaction(
             output / "completion", build, seconds=VERIFY_SECONDS
         )
-        initial.check()
-        closing[-1].check()
-        publication.verify_bytes(
-            output / "completion", _publication_bytes(report), locked=False
-        )
-        _root_inventory(output)
-        initial.check()
-        closing[-1].check()
+        expected = _publication_bytes(report)
+
+        def final_check():
+            initial.check()
+            closing[-1].check()
+            publication.verify_bytes(output / "completion", expected, locked=False)
+            _root_inventory(output)
+            initial.check()
+            closing[-1].check()
+
+        closing_checks.append(final_check)
+        final_check()
         return PilotRun(output, report["pilot_status"])
     except BaseException as error:
         if (output / "completion").is_dir() and not (
@@ -522,6 +533,7 @@ def run_confirmed_pilot(
     if signal.getitimer(signal.ITIMER_REAL) != (0.0, 0.0):
         raise RuntimeError("An existing alarm must not be replaced.")
     owned = []
+    closing_checks = []
 
     def interrupted(signum, frame):
         raise InterruptedError("Confirmed pilot interrupted by signal " + str(signum))
@@ -537,8 +549,11 @@ def run_confirmed_pilot(
                 source_filename,
                 output_directory,
                 owned,
+                closing_checks,
                 technical=technical,
             )
+        # Restoring caller signal handlers is part of the owned transaction.
+        closing_checks[0]()
         return outcome
     except BaseException as error:
         if owned:

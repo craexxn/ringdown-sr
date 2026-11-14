@@ -327,7 +327,7 @@ def run_confirmed_package(
     _write_json(output / "run_state.json", state)
     seconds = TECHNICAL_SECONDS if technical else PACKAGE_SECONDS
     started = time.monotonic()
-    closing, completed = [], False
+    closing, published, completed = [], [], False
 
     def build(consumed):
         closing.append(consumed)
@@ -415,7 +415,24 @@ def run_confirmed_package(
         _write_json(output / "run_state.json", state)
         raw = costs.hold_inventory(consumed, output, restarts.raw_files(output))
         report = _report(output, preparation, arrays, records, environment)
-        return report, _summary(report), {"raw_checksums.json": sources.json_bytes(raw)}
+        summary = _summary(report)
+        payloads = {"raw_checksums.json": sources.json_bytes(raw)}
+        documents = {
+            **payloads,
+            publication.REPORT: sources.json_bytes(report),
+            publication.SUMMARY: summary.encode(),
+        }
+        # Retain expected bytes before export; a post-export read could already
+        # observe changed closing documents and accidentally bless that change.
+        published.append(
+            {
+                **documents,
+                publication.MANIFEST: sources.json_bytes(
+                    {name: sources.sha256(raw) for name, raw in documents.items()}
+                ),
+            }
+        )
+        return report, summary, payloads
 
     with ExitStack() as stack:
 
@@ -432,6 +449,12 @@ def run_confirmed_package(
                 output / "completion", build, seconds=seconds
             )
             completed = True
+            restarts.freeze_files(closing[0], output / "completion", published[0])
+            closing[0].callbacks.append(
+                lambda: publication.verify_bytes(
+                    output / "completion", published[0], locked=False
+                )
+            )
             closing[0].check()
             if time.monotonic() - started >= seconds:
                 raise TimeoutError("Whole confirmed package exceeded its deadline.")

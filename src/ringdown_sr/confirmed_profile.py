@@ -1,12 +1,16 @@
 """Opt-in R-profile members with bound full-window objectives and strict replay."""
 
+import ast
+import csv
 import importlib
+import io
 import math
 import os
 import resource
 import subprocess
 import sys
 import time
+import tomllib
 from dataclasses import asdict
 from pathlib import Path
 
@@ -17,9 +21,12 @@ from . import symbolic
 from . import time_budget_profile as native
 from .constant_diagnostic import backend_seed
 from .losses import CovarianceLoss
+from .parameter_export import _node_count
 from .pilot import _json_bytes, _provenance, _sha256, _write_json
+from .prediction_reference import PLAN as PREDICTION_PLAN
 from .prediction_reference import verify_prediction
 from .representation_profiles import plugin_field_record, plugin_records
+from .structure import _validated_tree
 
 ROOT = symbolic.ROOT
 FORMAT = "ringdown-sr-confirmed-member-1"
@@ -48,6 +55,7 @@ SOURCE_FILES = (
     "julia/test/confirmed_profile.jl",
     native.PLAN,
     native.CONFIGURATION,
+    PREDICTION_PLAN,
     *("julia/src/" + name for name in NATIVE_FILES),
 )
 PREPARED_FILES = ("request.json", "inputs.npz", "metadata_initial.json", *NATIVE_FILES)
@@ -114,6 +122,87 @@ def checked_request(document):
 
 def parameters(budget):
     return {**native.profile_parameters(budget, "iterations"), "should_simplify": False}
+
+
+def checked_environment(environment):
+    """Verify loaded BLAS roles and pinned scientific package versions."""
+    from .seed_driver_crosscheck import environment_key
+
+    probe = native.load_module(
+        ROOT / "scripts/probe_symbolic_numerics.py", "confirmed_blas_probe"
+    )
+    blas = probe.verify_blas_control(environment, "Haswell", require_julia=True)
+    if (
+        environment.get("python_version")
+        != (ROOT / ".python-version").read_text().strip()
+        or environment.get("python_implementation") != "CPython"
+        or environment.get("array_dtype") != "float64"
+        or environment.get("julia_used") is not True
+        or environment.get("thread_environment")
+        != {
+            key: "1"
+            for key in (
+                "OMP_NUM_THREADS",
+                "OPENBLAS_NUM_THREADS",
+                "MKL_NUM_THREADS",
+                "NUMEXPR_NUM_THREADS",
+            )
+        }
+    ):
+        raise ValueError("Changed confirmed-worker Python/thread environment.")
+    pinned = {
+        entry["name"]: entry.get("version")
+        for entry in tomllib.loads((ROOT / "uv.lock").read_text())["package"]
+    }
+    packages = {
+        name.lower(): version for name, version in environment["packages"].items()
+    }
+    for name in (
+        "numpy",
+        "scipy",
+        "pysr",
+        "juliacall",
+        "gmpy2",
+        "sympy",
+        "threadpoolctl",
+    ):
+        if packages.get(name) != pinned.get(name) or not pinned.get(name):
+            raise ValueError("Changed confirmed-worker scientific package: " + name)
+    return environment_key(environment), blas
+
+
+def numerical_environment(metadata, runtime, *, completed):
+    if runtime is None or metadata.get("environment", {}).get("julia_used") is not True:
+        if completed or metadata.get("failed_during", metadata.get("phase")) in {
+            "fit",
+            "replay",
+            "success",
+        }:
+            raise ValueError("Missing actual fitted-worker numerical environment.")
+        return None
+    before, blas = checked_environment(metadata["environment"])
+    if _json_bytes(metadata.get("confirmed_blas_control")) != _json_bytes(blas):
+        raise ValueError("Changed actual worker BLAS evidence.")
+    julia_version = tomllib.loads((ROOT / "julia/Manifest.toml").read_text())[
+        "julia_version"
+    ]
+    if (
+        metadata.get("julia_version") != julia_version
+        or metadata.get("symbolic_regression_version") != "2.5.1"
+    ):
+        raise ValueError("Changed actual native package versions.")
+    if completed:
+        after, after_blas = checked_environment(metadata["environment_after_search"])
+        if _json_bytes(before) != _json_bytes(after) or _json_bytes(
+            metadata.get("confirmed_blas_control_after")
+        ) != _json_bytes(after_blas):
+            raise ValueError("Numerical environment changed during confirmed fit.")
+    return {
+        "runtime": runtime,
+        "environment": before,
+        "julia_version": julia_version,
+        "symbolic_regression_version": "2.5.1",
+    }
 
 
 def prepared_files(directory):
@@ -217,6 +306,7 @@ class WorkerHooks:
         self.directory = Path(directory)
         self.request, self.arrays, self.manifest = verify_prepared(directory)
         self.module = self.original = self.guard = self.runtime = self.factor = None
+        self.jl = None
 
     def read_request(self, document):
         if document != self.request:
@@ -233,6 +323,7 @@ class WorkerHooks:
         return verify_loss_replay(*args, **kwargs)
 
     def configure(self, jl, budget, matrix):
+        self.jl = jl
         verify_prepared(self.directory)
         for name in NATIVE_FILES[2:]:
             jl.include(str(self.directory / name))
@@ -248,6 +339,9 @@ class WorkerHooks:
     def before_fit(self, metadata, jl, budget):
         verify_prepared(self.directory)
         metadata["worker_adapter_source_sha256"] = source_hashes()
+        _, metadata["confirmed_blas_control"] = checked_environment(
+            metadata["environment"]
+        )
         if metadata["worker_provenance"] != self.manifest["provenance"]:
             raise ValueError("Worker provenance differs from preparation.")
         self.runtime = native.checked_runtime(jl)
@@ -262,6 +356,10 @@ class WorkerHooks:
         jl.SearchBudgetClock.configure()
 
     def after_fit(self, jl, options, calls):
+        if read(
+            self.directory, "backend_sources.json"
+        ) != native.checked_backend_sources(jl):
+            raise ValueError("Actual native backend sources changed during fit.")
         if self.guard is None or self.module.SymbolicRegression is not self.guard:
             raise ValueError("Missing actual confirmed-profile invocation guard.")
         if self.runtime != native.checked_runtime(jl):
@@ -316,6 +414,15 @@ class WorkerHooks:
         }
 
     def finish(self, metadata):
+        if read(
+            self.directory, "backend_sources.json"
+        ) != native.checked_backend_sources(self.jl):
+            raise ValueError("Actual native backend sources changed during replay.")
+        _, metadata["confirmed_blas_control_after"] = checked_environment(
+            metadata["environment_after_search"]
+        )
+        numerical_environment(metadata, self.runtime, completed=True)
+        _write_json(self.directory / "metadata.json", metadata)
         verify_prepared(self.directory)
         if (
             metadata.get("worker_provenance") != _provenance()
@@ -513,6 +620,95 @@ def _native_completion(directory, request):
     return record
 
 
+def verify_front(directory, candidates):
+    """Bind every exported row to the final native front without deserialization."""
+    raw = (Path(directory) / "pysr/search/hall_of_fame.csv").read_text(encoding="utf-8")
+    table = csv.DictReader(io.StringIO(raw), strict=True)
+    if table.fieldnames != ["Complexity", "Loss", "Equation"]:
+        raise ValueError("Changed native hall-of-fame table contract.")
+    rows = list(table)
+    if len(rows) != len(candidates):
+        raise ValueError(
+            "Exported candidate inventory differs from the native end front."
+        )
+    for candidate, row in zip(candidates, rows, strict=True):
+        _validated_tree(candidate["tree"])
+        if (
+            set(row) != {"Complexity", "Loss", "Equation"}
+            or type(candidate.get("complexity")) is not int
+            or candidate["complexity"] != _node_count(candidate["tree"])
+            or row["Complexity"] != str(candidate["complexity"])
+            or type(candidate.get("loss")) not in (int, float)
+            or not math.isfinite(candidate["loss"])
+            or candidate["loss"] < 0
+            or float(row["Loss"]).hex() != float(candidate["loss"]).hex()
+            or row["Equation"] != candidate.get("display_equation")
+            or _json_bytes(equation_tree(row["Equation"]))
+            != _json_bytes(candidate["tree"])
+        ):
+            raise ValueError(
+                "Exported loss, equation or complexity differs from the native end front."
+            )
+
+
+def equation_tree(equation):
+    """Read only the bounded native display grammar; never evaluate source text."""
+    if type(equation) is not str or len(equation) > 4096:
+        raise ValueError("Invalid native equation length.")
+    try:
+        root = ast.parse(equation, mode="eval").body
+    except (SyntaxError, ValueError, RecursionError) as error:
+        raise ValueError("Invalid native equation syntax.") from error
+    count = 0
+    binary = {ast.Add: "+", ast.Sub: "-", ast.Mult: "*", ast.Div: "/"}
+
+    def number(node, sign=1):
+        if not isinstance(node, ast.Constant) or type(node.value) not in (int, float):
+            raise ValueError("Only numeric constants may have a unary sign.")
+        value = sign * float(node.value)
+        if not math.isfinite(value):
+            raise ValueError("Native constants must be finite Float64 values.")
+        return {"kind": "constant", "value_hex": value.hex()}
+
+    def visit(node):
+        nonlocal count
+        count += 1
+        if count > 20:
+            raise ValueError("Native equation exceeds the bound of 20 nodes.")
+        if isinstance(node, ast.Constant):
+            return number(node)
+        if isinstance(node, ast.UnaryOp) and type(node.op) in {ast.UAdd, ast.USub}:
+            return number(node.operand, -1 if isinstance(node.op, ast.USub) else 1)
+        if isinstance(node, ast.Name) and node.id == "t":
+            return {"kind": "variable", "index": 1}
+        if isinstance(node, ast.BinOp) and type(node.op) in binary:
+            operator = binary[type(node.op)]
+            return {
+                "kind": "operator",
+                "arity": 2,
+                "operator_index": symbolic.BINARY.index(operator) + 1,
+                "operator": operator,
+                "children": [visit(node.left), visit(node.right)],
+            }
+        if (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Name)
+            and node.func.id in symbolic.UNARY
+            and len(node.args) == 1
+            and not node.keywords
+        ):
+            return {
+                "kind": "operator",
+                "arity": 1,
+                "operator_index": symbolic.UNARY.index(node.func.id) + 1,
+                "operator": node.func.id,
+                "children": [visit(node.args[0])],
+            }
+        raise ValueError("Native equation contains an unsupported syntax node.")
+
+    return visit(root)
+
+
 def verify_member(directory):
     """Re-read the original member without importing Julia or performing a fit."""
     from .weighted_replay import candidate_evidence
@@ -546,6 +742,10 @@ def verify_member(directory):
     ):
         raise ValueError("Invalid confirmed-member terminal outcome.")
     completed = outcome.get("status") == "completed"
+    if not completed and outcome["status"] != failure_status(
+        metadata, timed_out=outcome["timed_out"]
+    ):
+        raise ValueError("Changed numerical failure classification.")
     _verify_origin(
         metadata,
         read(directory, "metadata_initial.json"),
@@ -576,8 +776,21 @@ def verify_member(directory):
         raise ValueError("Invalid observed fit wall cost.")
     runtime_path = directory / "native_runtime.json"
     runtime = read(directory, runtime_path.name) if runtime_path.exists() else None
+    native_required = completed or metadata.get(
+        "failed_during", metadata.get("phase")
+    ) in {"fit", "replay", "success"}
+    backend_path = directory / "backend_sources.json"
+    if (native_required and (runtime is None or not backend_path.is_file())) or (
+        backend_path.exists()
+        and read(directory, backend_path.name)
+        != native.configuration()["reviewed_backend_sources"]
+    ):
+        raise ValueError(
+            "Missing or contradictory actual native runtime/source evidence."
+        )
     if runtime is not None:
         native.validate_runtime(runtime)
+    environment = numerical_environment(metadata, runtime, completed=completed)
     candidates, selected = [], None
     if completed:
         if (
@@ -602,6 +815,7 @@ def verify_member(directory):
         ):
             raise ValueError("Changed original candidate result contract.")
         candidates = result["candidates"]
+        verify_front(directory, candidates)
         for candidate in candidates:
             if (
                 type(candidate.get("loss")) not in (int, float)
@@ -661,10 +875,6 @@ def verify_member(directory):
         ):
             raise ValueError("Missing completed fit wall cost.")
     else:
-        if outcome.get("status") != failure_status(
-            metadata, timed_out=outcome.get("timed_out") is True
-        ):
-            raise ValueError("Changed numerical failure classification.")
         if not outcome.get("timed_out") and (
             type(outcome.get("returncode")) is not int or outcome["returncode"] <= 0
         ):
@@ -697,7 +907,7 @@ def verify_member(directory):
         "selected": None if selected is None else candidates[selected],
         "candidates": candidates,
         "costs": costs,
-        "numerical_environment": runtime,
+        "numerical_environment": environment,
         "provenance": manifest["provenance"],
         "seed": request["seed"],
         "technical": request["technical"],

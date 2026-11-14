@@ -517,6 +517,56 @@ def test_late_mutation_revokes_a_previously_written_success(
     )
 
 
+@pytest.mark.parametrize("phase", ["after_export", "stack_close"])
+@pytest.mark.parametrize(
+    "artifact",
+    [
+        publication.REPORT,
+        publication.SUMMARY,
+        publication.MANIFEST,
+        "raw_checksums.json",
+        publication.LOCK,
+    ],
+)
+def test_changed_closing_documents_revoke_success_through_outer_teardown(
+    monkeypatch, tmp_path, phase, artifact
+):
+    fake_native(monkeypatch)
+    output = tmp_path / "package"
+    completion = output / "completion"
+
+    def change():
+        (completion / artifact).write_text("{}\n")
+
+    if phase == "after_export":
+        original = publication.export_transaction
+
+        def mutate(*args, **kwargs):
+            result = original(*args, **kwargs)
+            change()
+            return result
+
+        monkeypatch.setattr(publication, "export_transaction", mutate)
+    else:
+        # The publication internals keep their original ExitStack; only the
+        # outer package teardown changes a closing artifact after publication.
+        original_stack = search.ExitStack
+
+        class MutatingStack(original_stack):
+            def close(self):
+                super().close()
+                change()
+
+        monkeypatch.setattr(search, "ExitStack", MutatingStack)
+    with pytest.raises(ValueError, match="changed|inventory"):
+        run_package(tmp_path)
+    assert (completion / publication.LOCK).exists()
+    report = search.sources.read_json((completion / publication.REPORT).read_bytes())
+    assert report["status"] == "failed" and "selected_candidate" not in report
+    state = search.sources.read_json((output / "run_state.json").read_bytes())
+    assert state["status"] == "aborted"
+
+
 def test_read_only_verifier_sees_late_lock_reappearance(monkeypatch, tmp_path):
     fake_native(monkeypatch)
     output = run_package(tmp_path).output_directory

@@ -161,6 +161,7 @@ def test_numerical_package_failure_retains_all_other_calls_and_unknown_costs(
     assert report["symbolic_arms"]["ordinary"]["costs"]["fit_wall_seconds"] is None
     assert report["symbolic_arms"]["known_covariance"]["status"] == "success"
     assert report["symbolic_arms"]["estimated_covariance"]["status"] == "success"
+    assert main(["verify-confirmed", str(outcome.output_directory)]) == 0
 
 
 @pytest.mark.parametrize(
@@ -333,3 +334,40 @@ def test_read_verification_catches_change_during_last_release_check(
     monkeypatch.setattr(pilot.publication, "verify_bytes", verify)
     with pytest.raises(ValueError, match="Consumed file changed"):
         pilot.verify_confirmed_pilot(root)
+
+
+@pytest.mark.parametrize(
+    "artifact", ["config.toml", "completion/assessment_summary.md"]
+)
+def test_outer_handler_teardown_mutation_revokes_pilot(
+    tmp_path, native_boundary, monkeypatch, artifact
+):
+    original = signal.signal
+    caller_handler = signal.getsignal(signal.SIGTERM)
+    mutated = []
+
+    def restore(sig, handler):
+        current = signal.getsignal(sig)
+        previous = original(sig, handler)
+        if (
+            sig == signal.SIGTERM
+            and handler == caller_handler
+            and getattr(current, "__qualname__", "")
+            == "run_confirmed_pilot.<locals>.interrupted"
+            and not mutated
+        ):
+            root = tmp_path / "pilot"
+            assert (root / "completion/assessment_checksums.json").exists()
+            assert not (root / "completion/ASSESSMENT_LOCKED").exists()
+            (root / artifact).write_bytes(b"changed while restoring outer handlers")
+            mutated.append(artifact)
+        return previous
+
+    monkeypatch.setattr(signal, "signal", restore)
+    with pytest.raises(ValueError):
+        execute(tmp_path)
+    assert mutated == [artifact]
+    completion = tmp_path / "pilot/completion"
+    assert (completion / "ASSESSMENT_LOCKED").exists()
+    assert not (completion / "assessment_checksums.json").exists()
+    assert read(tmp_path / "pilot/run_state.json")["status"] == "aborted"
