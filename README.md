@@ -5,8 +5,8 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 14.11.2026; aktuelle main-Basis `1f2cb1e` nach
-[PR #88](https://github.com/craexxn/ringdown-sr/pull/88).
+Fortsetzungsstand: 14.11.2026; aktuelle main-Basis `8b9c6ef` nach
+[PR #89](https://github.com/craexxn/ringdown-sr/pull/89).
 Der Budgetvergleich wurde auf `680af98` nach PR #85 wissenschaftlich ausgeführt;
 seine aktuelle Quellenprüfung steht im
 [Ergebnisbericht](docs/restart_budget_results_manjaro_001.md).
@@ -140,12 +140,13 @@ die zuvor schwierige Randkombination. U bleibt offen. Die bewusste
 Profilübernahme in den allgemeinen gewichteten Laufweg und dessen rauschfreie
 technische Prüfung sind als ausdrücklich wählbarer
 [Schema-4-Paketweg](docs/symbolic_pilot.md#bestätigtes-r-profil-im-allgemeinen-laufweg-schema-4)
-in [PR #89](https://github.com/craexxn/ringdown-sr/pull/89) implementiert;
-3.896 Pythonfälle, sechs kleine native Worker und neun analytische Kontrollen
-sind lokal bestanden. KI-basiertes Review ohne offene Befunde; die vollständige
-Ready-CI bleibt vor Übernahme erforderlich. Alte Schema-1–3-Aufträge behalten
-ihre Bedeutung. Der spätere
-Rauschpilot benötigt ein eigenes vorab festgelegtes Versuchsprotokoll;
+mit [PR #89](https://github.com/craexxn/ringdown-sr/pull/89) nach KI-basiertem
+Review und vollständiger [Ready-CI](https://github.com/craexxn/ringdown-sr/actions/runs/43601849555)
+übernommen: 3.896 Pythonfälle und sämtliche nativen Prüfblöcke bestanden.
+Der technische Manjaro-Vorlauf auf `8b9c6ef` ist am Originalarchiv lesend
+bestätigt: sechs kleine Suchworker und neun analytische Kontrollen, keine
+wissenschaftliche Rauschserie. Alte Schema-1–3-Aufträge behalten ihre Bedeutung.
+Der nächste Schritt ist das eigene vorab festgelegte Rauschpilot-Protokoll;
 keine zusätzliche Budgetstaffel oder automatische Ausführung daraus ableiten.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater

@@ -777,13 +777,20 @@ Rauschpilotplanung mit getrennten Rausch-, Hintergrund- und Suchzufallsquellen;
 keine wissenschaftliche Ausführung wird durch diesen Implementierungsschritt
 vorweggenommen.
 
-Technischer Stand: [PR #89](https://github.com/craexxn/ringdown-sr/pull/89)
-implementiert diesen Paketweg. Auf `609bc29` bestehen lokal 3.896 Pythonfälle,
-sechs kleine native Worker und neun analytische Gewichtungs-/Optimiererfälle;
-KI-basiertes Review und gezielte Nachprüfungen ohne offene Befunde. Die
-vollständige Ready-CI bleibt vor Übernahme erforderlich. Der dokumentierte
-Manjaro-Vorlauf ist eine zusätzliche technische Kontrolle; das wissenschaftliche
-Rauschpilotprotokoll und seine Ausführung bleiben separate nächste Schritte.
+Technischer Stand, ergänzt am 14.11.2026:
+[PR #89](https://github.com/craexxn/ringdown-sr/pull/89) ist nach KI-basiertem
+Review und vollständiger [Ready-CI](https://github.com/craexxn/ringdown-sr/actions/runs/43601849555)
+als `8b9c6ef` übernommen. Auf `609bc29` bestanden zuvor lokal 3.896 Pythonfälle,
+sechs kleine native Worker und neun analytische Gewichtungs-/Optimiererfälle.
+Der technische Manjaro-Vorlauf auf dem tatsächlichen Merge ist inzwischen am
+Originalarchiv lesend bestätigt: sechs kleine Suchworker und neun analytische
+Kontrollen, ursprüngliche Dateien unverändert. Damit ist die zusätzliche
+technische Kontrolle abgeschlossen. Sie ist keine wissenschaftliche Rauschserie
+und erweitert die Aussagegrenzen der unabhängigen Bestätigung nicht.
+Das wissenschaftliche Rauschpilotprotokoll ist der nächste abgegrenzte Schritt;
+seine Ausführung bleibt separat. Prüfnachweise im
+[Fortsetzungsstand](representation_implementation_status.md), Archiv und offene
+Sicherung im [Index](results_index.md#technische-profilübernahme-vom-14112026).
 
 ## 7. Rauschpilot und Hauptversuchsplanung
 
