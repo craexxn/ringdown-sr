@@ -30,9 +30,37 @@ führt weder neue Suchen noch Nachfits aus. Vollständige Aufrufkosten und
 späte Widerrufsprüfungen gehören zur technischen Abnahme. Keine wissenschaftliche
 Serie ist gestartet; noch kein wissenschaftliches Ergebnis oder Archiv dafür.
 
-Prüfstand der Implementierung wird nach gebündelten lokalen Prüfungen und
-gezieltem KI-basiertem Review ergänzt; vor Übernahme ist die vollständige
-Ready-CI erforderlich. Nächster Ausführungsschritt nach Übernahme: ausschließlich
+Implementierungs-PR: [PR #92](https://github.com/craexxn/ringdown-sr/pull/92),
+als Draft entwickelt, nach lokalen Prüfungen für die Ready-Vollprüfung vorgesehen.
+Tatsächlicher lokaler technischer Prüfstand ist der saubere
+Checkout `451352ef0921fd767e41a4f139cdc1424865a4ff`; spätere Änderungen der
+Manjaro-Setupanleitung verändern dessen Paket-/Skriptquellen nicht. Alle zwölf
+wissenschaftlichen Eingaben wurden ohne Fits/Suchen vorbereitet und lesend
+nachgerechnet; 173 Quellen sind gebunden. Die Vorbereitung dauerte lokal
+2,575 Sekunden; dies ist eine technische Ressourcenbeobachtung dieses Rechners.
+
+Der echte technische N128-Vorlauf bestand: drei Zehnerworker mit gewöhnlicher,
+bekannter und geschätzter voller Kovarianz, lokal 300/5. Workerzeiten
+63,145 / 60,637 / 64,526 Sekunden; vollständiger Aufruf 192,006 Sekunden.
+Der zusätzliche CLI-Verifikationsaufruf bestätigte alle 103 Originaldateien
+bytegleich. Keine dieser Zeiten ist eine Manjaro- oder Tausenderlaufprognose;
+keine wissenschaftliche Signalqualität wurde als Abnahmekriterium verwendet.
+Die CI-Jobfrist bleibt bei 120 Minuten: der zusätzliche gemessene Vorlauf
+benötigte hier rund 3,2 Minuten, ohne Änderung wissenschaftlicher Betriebsfristen.
+
+Gezieltes KI-basiertes Nachreview gegen Basis `899bf09` und PR92-Head
+`334052e69b9486dec657db1c94c81ae28a18a4ce`: keine korrekturbedürftigen Befunde
+im geprüften Umfang. 189 gezielte Repositorytests und elf zusätzliche
+Gegenprüfungen bestanden, einschließlich unabhängiger Kovarianznachrechnung,
+Ausfallgrenzen und manipulierter Gesamtzeiten. Diese Tests ersetzen keine
+wissenschaftliche Serie. Der gebündelte vollständige Pythonlauf auf dem
+sauberen technischen Prüfstand bestand mit **4.119 Fällen in 428,86 Sekunden**.
+Ruff, Formatprüfung, Dokumentationsprüfung aller 110 Markdown-Dateien,
+Diffprüfung und die Shellsyntax der sechs dokumentierten Befehlsblöcke sind
+bestanden. Nach dem technischen Prüfstand änderten sich ausschließlich die
+Manjaro-Anleitung und diese Statusangaben, keine Laufzeitquellen oder Tests.
+Vor Übernahme bleibt die vollständige Ready-CI erforderlich; deren Start
+ist keine abgeschlossene CI-Abnahme. Nächster Ausführungsschritt nach Übernahme: ausschließlich
 der technische Manjaro-N128-Vorlauf und seine lesende Verifikation. Dessen
 Ressourcenbefund ist vor dem separaten 144er-Lauf einzuordnen. Bestehende Archive
 und offene Sicherungsnachweise bleiben im [Ergebnisindex](results_index.md).

@@ -150,9 +150,9 @@ Das [Rauschpilot-Protokoll](docs/noise_pilot_plan.md) ist mit 144 Suchen beschlo
 ein bekanntes Signal, weißes und AR(1)-Rauschen bei
 sigma/A=0,05, je sechs unabhängige Blöcke und drei Gewichtungsarme,
 insgesamt 144 Suchaufrufe. Die wissenschaftliche Ausführung bleibt separat.
-Der [Serienlaufweg](docs/noise_pilot.md) mit gemeinsamer Vorbereitung,
-Zusatzbewertung und lesendem Gesamtabschluss wird jetzt technisch abgenommen.
-Vor wissenschaftlichem Start bleiben die vollständige CI und der separate
+Der [Serienlaufweg](docs/noise_pilot.md) in PR #92 ist lokal mit 4.119
+Pythonfällen, drei echten N128-Zehnerworkern und KI-basiertem Review geprüft.
+Vor Übernahme und wissenschaftlichem Start bleiben die vollständige CI sowie der separate
 technische Manjaro-Ressourcencheck mit 128 Punkten erforderlich.
 Keine zusätzliche Budgetstaffel oder automatische Ausführung daraus ableiten.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
