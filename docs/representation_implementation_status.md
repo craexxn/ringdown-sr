@@ -1,8 +1,8 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Protokoll mit 144 Suchen übernommen, Serienlaufweg in technischer Abnahme
+## Aktuell: Manjaro-N128-Vorlauf bestätigt, 144er-Rauschpilot startbereit
 
-Ergänzung vom 14.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md):
+Aktueller Abgleich vom 15.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md):
 PR90 ist nach erfolgreicher Dokumentations-CI `43622947853` als
 `3aa02bcfadc536adb1a4dd2477176dd4c211d8e3` übernommen. Das am 14.11.2026
 beschlossene [144er-Protokoll](noise_pilot_plan.md) ist mit PR91 nach
@@ -13,8 +13,8 @@ Protokollhead `27367a707b0f78c2d8e4ec397e0af6d958f5c527` und CI-Checkout
 (`6acd5bb5aa3481d4ec3987811dd8b5b033d035ce`). Der Protokollhead bleibt die
 unveränderliche Laufzeitbindung; Alternativen 72/288 sind nicht gewählt.
 
-Auf `codex/noise-pilot-series` ab diesem main entsteht der
-[Serienlaufweg mit Manjaro-Befehlen](noise_pilot.md). Getrennte Module binden
+Der auf `codex/noise-pilot-series` entwickelte
+[Serienlaufweg mit Manjaro-Befehlen](noise_pilot.md) ist übernommen. Getrennte Module binden
 sämtliche Eingaben vor Fits/Suchen, führen die bestehende Schema-4-Paketroute
 in fester Reihenfolge aus und ergänzen die bestehenden Bewertungsverträge.
 Zwölf Dreiervergleiche liefern 36 Paketausgaben aus 144 geplanten Suchen.
@@ -31,7 +31,15 @@ späte Widerrufsprüfungen gehören zur technischen Abnahme. Keine wissenschaftl
 Serie ist gestartet; noch kein wissenschaftliches Ergebnis oder Archiv dafür.
 
 Implementierungs-PR: [PR #92](https://github.com/craexxn/ringdown-sr/pull/92),
-als Draft entwickelt, nach lokalen Prüfungen für die Ready-Vollprüfung vorgesehen.
+als Draft entwickelt und am 15.11.2026 nach vollständiger
+[Ready-CI 43630369106](https://github.com/craexxn/ringdown-sr/actions/runs/43630369106)
+als `eb663a0bf008f7c8697ef7ec5386b3e11545a19f` übernommen. Alle drei Jobs
+bestanden: 4.119 Pythonfälle, sämtliche nativen Prüfblöcke einschließlich
+des neuen N128-Vorlaufs und Abschlussprüfung. Die Joblogs bestätigen
+CI-Checkout `0d6c3515dab305e2511d3751c6e3a822f30a5ba4`; dessen Baum
+`9798aa38745b356655f1fc1dc2a6a9a826f9a393` entspricht PR-Head `297e3df`
+und tatsächlichem Merge. Die Mergeeltern sind Basis `899bf09` und der
+geprüfte Head; der komplette CI-Nachweis wurde vor Übernahme abgeglichen.
 Tatsächlicher lokaler technischer Prüfstand ist der saubere
 Checkout `451352ef0921fd767e41a4f139cdc1424865a4ff`; spätere Änderungen der
 Manjaro-Setupanleitung verändern dessen Paket-/Skriptquellen nicht. Alle zwölf
@@ -59,11 +67,78 @@ Ruff, Formatprüfung, Dokumentationsprüfung aller 110 Markdown-Dateien,
 Diffprüfung und die Shellsyntax der sechs dokumentierten Befehlsblöcke sind
 bestanden. Nach dem technischen Prüfstand änderten sich ausschließlich die
 Manjaro-Anleitung und diese Statusangaben, keine Laufzeitquellen oder Tests.
-Vor Übernahme bleibt die vollständige Ready-CI erforderlich; deren Start
-ist keine abgeschlossene CI-Abnahme. Nächster Ausführungsschritt nach Übernahme: ausschließlich
-der technische Manjaro-N128-Vorlauf und seine lesende Verifikation. Dessen
-Ressourcenbefund ist vor dem separaten 144er-Lauf einzuordnen. Bestehende Archive
-und offene Sicherungsnachweise bleiben im [Ergebnisindex](results_index.md).
+Die vollständige CI und Übernahme sind inzwischen oben belegt. Auch der
+zusätzliche Manjaro-N128-Vorlauf ist inzwischen am Original lesend bestätigt;
+der folgende Abschnitt hält seine getrennten Gerätebelege fest.
+
+### Technischer Manjaro-N128-Nachweis vom 15.11.2026
+
+Original `noise-pilot-technical-manjaro-001.tar.gz` am 15.11.2026 empfangen:
+**1.429.764 Bytes**, SHA-256
+`f56e6b1f87d8971a7d7c3a6c6f08d05ea23f495f20ba2f93a30f9575a0898f40`.
+103 reguläre Dateien, 13 Verzeichnisse, 4.112.593 entpackte Dateibytes;
+keine Links, doppelten Namen oder Pfadüberschreitungen. Archivhash, Manifest-
+prüfsummen, Quellen und Originaldateien wurden selbst geprüft. Ausführungs-
+und neuer lesender Prüfcommit sind beide
+`eb663a0bf008f7c8697ef7ec5386b3e11545a19f`; sämtliche 173 gebundenen Quellen
+einschließlich aller 63 Python-Paketquellen stimmen mit Git überein.
+
+Die tatsächliche Eltern-/Workerherkunft ist sauber und konsistent.
+Python 3.12.14, Julia 1.13.1, PySR 2.6.0 und SymbolicRegression 2.5.1;
+Manjaro auf Intel i7-1165G7, Affinität `[0]`, Julia-/GC-/BLAS-Threads jeweils
+1, interaktive Threads 0 und Haswell-BLAS vor/nach der Suche belegt.
+Der technische Aufruf lief am 15.11.2026 ungefähr 07:26:26–07:29:08 Uhr
+Europe/Vienna; die Originalmetadaten behalten ihre UTC-Zeitstempel.
+
+Alle drei getrennten Worker verwendeten dieselben 128 Zeit-/Beobachtungswerte
+und Suchseed `2026111413`, jeweils zehn **tatsächlich abgeschlossene** äußere
+Runden und 20 verarbeitete Populationszyklen. Lokales Profil 300/5,
+Häufigkeitsschalter an, `should_simplify=false`; je genau ein frischer
+`equation_search`-Aufruf, Returncode 0, kein Timeout. Die bekannten und
+unabhängig geschätzten Kovarianzen sind unterschiedliche volle symmetrische
+128×128-Matrizen mit jeweils 16.256 nichtnull Nebendiagonaleinträgen.
+Hintergrund 64/128/256, gewähltes Alpha 0,5; kein Refit oder Auswahl anhand
+technischer Signalqualität. Alle 14 HOF-CSV-Zeilen stimmen mit den gespeicherten
+Endfronten überein. Bekannte AR(1)-Matrix, empirische Hintergrundmatrix und
+Shrinkage wurden zusätzlich unabhängig nachgerechnet.
+
+| Arm | Endfrontkandidaten | Workerzeit / s | Fitzeit / s | Native Schleife / s | Verlustcallbacks im Fit |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| ordinary | 6 | 71,168 | 33,066 | 1,886 | 383.195 |
+| known_covariance | 3 | 43,354 | 29,100 | 2,295 | 261.835 |
+| estimated_covariance | 5 | 44,559 | 30,812 | 5,715 | 500.669 |
+| Summe | 14 | 159,082 | 92,978 | — | 1.145.699 |
+
+Vollständiger gespeicherter Aufruf **161,847171981 s**; CPU user 142,216728 s,
+system 3,696123 s. Darin enthalten: 1,148646 s Inputvorbereitung und die
+Workerzeiten. Fit-/Schleifenzeiten sind wiederum darin enthalten; nicht
+addieren. Der gewöhnliche Worker enthält den belegten Julia-Installationsstart.
+Der Messumfang endet nach Veröffentlichung und Wiederherstellung der
+Signalhandler; Schreiben der Zeitdatei und letzte Wächter sind ausgenommen.
+Ein separates ursprüngliches CLI-Verifikationsprotokoll und dessen Laufzeit
+liegen nicht im Archiv; diese historische Prüfzeit bleibt unbekannt.
+
+Eigener lesender Aufruf am Original auf dem sauberen Ausführungscommit:
+`uv run --locked python scripts/check_noise_pilot.py --verify <Originalordner>`.
+Ergebnis: `Noise-pilot preflight passed: three N=128 ten-iteration workers and read-only replay.`
+Alle 103 Laufdateien und das Originalarchiv blieben bytegleich. Der Nachweis
+verlangte keine neuen Fits oder Suchen; native Worker wurden nicht wiederholt.
+Eine zusätzliche getrennte KI-basierte Archivgegenprüfung bestätigte
+Manifeste, tatsächliche Quellen, volle Kovarianzen, Iterationen und Kosten.
+
+**Ressourcenentscheidung vor wissenschaftlicher Ausführung, 15.11.2026:**
+Die technische Startvoraussetzung ist erfüllt. Alle Worker bleiben deutlich
+unter 600 s; kein konkreter Anlass zur Änderung der beschlossenen
+1.800/7.800/25.200-s-Betriebsfristen. Drei Zehnerworker beweisen weder Laufzeit
+noch Erfolgsrate der 144 Tausenderläufe; keine lineare Hochrechnung als Garantie.
+Nächster Schritt ist ausschließlich die bereits beschlossene 144er-Serie
+mit unverändertem Protokoll auf demselben sauberen `eb663a0` und in derselben
+numerischen Umgebung. Ein neuer Dokumentationscommit darf diesen
+Ausführungscheckout nicht ersetzen. Alle zwölf wissenschaftlichen Eingaben
+werden vor den Fits/Suchen neu vorbereitet; technische Seeds werden nicht
+als wissenschaftliche Wiederholungen gezählt. Ein Start der Serie ist noch
+nicht belegt. Gemeinsame Archivablage und unabhängige hashgeprüfte Zweitkopie
+bleiben im [Ergebnisindex](results_index.md#technischer-rauschpilot-vorlauf-vom-15112026) offen.
 
 ### Übernommene Profilroute und ihr technischer Nachweis
 

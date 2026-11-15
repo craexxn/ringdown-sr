@@ -810,13 +810,18 @@ benannt. Die bestehende Kovarianzmethode bleibt erhalten; die Mengen
 64/128/256 werden als ein bewusst datenarmes Szenario eingeordnet. Primärmaß
 ist der amplitudennormierte Fehler zur sauberen Wahrheit nach unveränderter
 Auswahl. Ausfälle, Zusatzraster und Strukturbeweise bleiben getrennt.
-Umsetzungsstand vom 14.11.2026: PR90/91 sind übernommen. Die vollständige
-Eingaben-/Serienbindung, Zusatzbewertung und der technische N128-Modus werden
-im abgegrenzten [Implementierungslaufweg](noise_pilot.md) abgenommen. Vor einer
-wissenschaftlichen Serie bleiben vollständige technische CI, erfolgreicher
-Manjaro-N128-Vorlauf und dessen Ressourcenprüfung erforderlich. Der frühere
-Zweipunkt-Vorlauf ersetzt diese Abnahme nicht. Der Plan startet keine Suche
-und ändert keine historische Bewertung.
+Stand vom 15.11.2026: PR90/91 und der vollständige
+[Implementierungslaufweg aus PR92](noise_pilot.md) sind übernommen; vollständige
+CI bestanden. Der Manjaro-N128-Vorlauf ist am Original lesend bestätigt:
+drei erfolgreiche Zehnerworker bei lokal 300/5, vollständiger Aufruf
+161,847 Sekunden, keine neuen Suchen bei der Nachprüfung. Der Ressourcenbefund
+begründet keine Friständerung. Die 144er-Serie ist der nächste separate
+Ausführungsschritt auf unverändertem `eb663a0`; ein Start ist noch nicht
+belegt. Gerätebelege, Kosten und Grenzen stehen im
+[Fortsetzungsstand](representation_implementation_status.md#technischer-manjaro-n128-nachweis-vom-15112026).
+Der Vorlauf ist kein wissenschaftlicher Robustheits- oder Laufzeitnachweis
+für Tausenderläufe. Das eingefrorene Protokoll und historische Bewertungen
+bleiben unverändert.
 
 Zunächst wenige Signale und Rauschbedingungen wählen. Rauschrealisierungen,
 Hintergrunddaten und Suchseeds als unterschiedliche Zufallsquellen behandeln.

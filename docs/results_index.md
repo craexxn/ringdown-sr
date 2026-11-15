@@ -1,6 +1,6 @@
 # Ergebnisindex und Archivierungsstand
 
-Stand: 14.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
+Stand: 15.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
 nachträglichen Bewertungen; [Ablagerichtlinie](results_archiving.md).
 Serien sind die Indexeinheit, ihre Zellen/Wiederholungen bleiben im Originalbericht.
 Die Aufstellung ist keine Behauptung, dass alle jemals lokal erzeugten Ergebnisse
@@ -57,9 +57,11 @@ Umwidmung der belegten 001-IDs für neue Läufe und kein Sicherungsnachweis aus
 der bloßen Verfügbarkeit der Arbeitskopie.
 
 Der [144er-Rauschpilot](noise_pilot_plan.md) ist beschlossen und sein
-[Serienlaufweg](noise_pilot.md) in technischer Abnahme. Weder der neue
-Manjaro-N128-Vorlauf noch die wissenschaftliche Serie sind als ausgeführt
-belegt. Vorgesehene IDs sind keine vorhandenen Archive oder Sicherungsnachweise.
+[Serienlaufweg](noise_pilot.md) mit PR92 übernommen. Der technische
+Manjaro-N128-Vorlauf ist am Originalarchiv lesend bestätigt; drei erfolgreiche
+Zehnerworker, keine wissenschaftliche Serie. Deren Start ist noch nicht belegt.
+Der [Nachweis unten](#technischer-rauschpilot-vorlauf-vom-15112026) trennt
+Original, Prüfung und weiterhin offene Sicherung.
 
 ## Archivablage
 
@@ -523,6 +525,25 @@ Originalarchiv: `confirmed-profile-technical-manjaro-001.tar.gz`,
 Arbeitskopie liegt vor. Dauerhafte Ablage im gemeinsamen Archivordner sowie
 unabhängige hashgeprüfte Zweitkopie sind weiterhin nicht bestätigt; keine
 weiteren Laufdateien werden für diesen technischen Nachweis benötigt.
+
+### Technischer Rauschpilot-Vorlauf vom 15.11.2026
+
+`noise-pilot-technical-manjaro-001`, tatsächlich ausgeführt und selbst lesend
+geprüft auf `eb663a0bf008f7c8697ef7ec5386b3e11545a19f`. Drei abgeschlossene
+N128-Zehnerworker mit gewöhnlicher, bekannter und geschätzter Gewichtung;
+keine wissenschaftliche Serie. Vollständiger Aufruf 161,847 s, 103 Originaldateien
+nach lesender Verifikation bytegleich. Details und Ressourcenentscheidung im
+[Fortsetzungsstand](representation_implementation_status.md#technischer-manjaro-n128-nachweis-vom-15112026).
+
+Originalarchiv: `noise-pilot-technical-manjaro-001.tar.gz`, **1.429.764 Bytes**,
+SHA-256 `f56e6b1f87d8971a7d7c3a6c6f08d05ea23f495f20ba2f93a30f9575a0898f40`.
+Am 15.11.2026 empfangen; TAR, vollständige Manifeste und SHA-256 geprüft.
+103 reguläre Dateien, 4.112.593 entpackte Dateibytes. Übermittelte Arbeitskopie
+vorhanden; keine weiteren Laufdateien für die technische Abnahme benötigt.
+Das separate historische CLI-Verifikationsprotokoll samt Prüfzeit fehlt;
+diese Zeit bleibt unbekannt, die neue eigene lesende Prüfung ist belegt.
+Ablage im gemeinsamen Archivordner und unabhängige hashgeprüfte Zweitkopie
+weiterhin unbestätigt; [Ablagezuordnung](#archivablage). GitHub-Upload optional.
 
 ### Priorisierte fehlende Belege
 

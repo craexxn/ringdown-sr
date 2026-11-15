@@ -1,6 +1,6 @@
 # Laufweg für den begrenzten Rauschpilot
 
-Stand 14.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
+Stand 15.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
 Der [vor Implementierung beschlossene Plan](noise_pilot_plan.md) ist an Commit
 `27367a707b0f78c2d8e4ec397e0af6d958f5c527` und SHA-256
 `2a8e521b7729a668832ca02b0c8dd587d46ddec4010d7657d71e7b4d4d295fb8`
@@ -8,6 +8,13 @@ gebunden. PR91 ist als `899bf09756a0aa899827896fcf462afbd8752421` übernommen.
 Der Plan bleibt unverändert; sein Abschnitt „Noch nicht implementiert“
 beschreibt den Zustand zum Protokollbeschluss. Aktueller technischer Prüf- und
 Übernahmestand: [Fortsetzungsstand](representation_implementation_status.md).
+PR92 ist als `eb663a0bf008f7c8697ef7ec5386b3e11545a19f` übernommen.
+Der technische Manjaro-N128-Vorlauf wurde am Originalarchiv lesend bestätigt:
+drei erfolgreiche Worker, vollständiger Aufruf 161,847 s. Die
+[Ressourcenprüfung vom 15.11.2026](representation_implementation_status.md#technischer-manjaro-n128-nachweis-vom-15112026)
+ergab keinen Anlass zur Friständerung. Die 144er-Serie ist damit startbereit,
+aber noch nicht als ausgeführt belegt; Protokoll und Erfolgskriterien bleiben
+unverändert.
 
 ## Umsetzung und Aussagegrenzen
 
@@ -54,14 +61,20 @@ unbekannter Worker-CPU nach hartem Abbruch kennzeichnet
 wird nicht als vollständige CPU-Zeit ausgegeben. Ein abgebrochener Aufruf
 behält seine Teilkosten; fehlende Werte werden nicht null.
 
-## Manjaro: erst nach technischer Abnahme des Implementierungs-PRs
+## Manjaro: bestätigten Ausführungsstand erhalten
 
-Für den endgültigen Stand einen eigenen sauberen Checkout verwenden. Nach
-Übernahme des Implementierungs-PRs im vorhandenen Repository:
+Der bereits geprüfte Manjaro-Checkout und seine numerische Umgebung bleiben
+für die wissenschaftliche Serie unverändert. Dort mit Schritt 2 fortfahren;
+kein `git pull`, Commitwechsel oder erneutes `uv sync`. Auch ein neuer reiner
+Dokumentationscommit würde die verlangte exakte Commitgleichheit zum
+technischen Vorlauf aufheben.
+
+Nur zur erstmaligen Einrichtung eines eigenen sauberen Checkouts, wenn noch
+kein solcher Laufweg besteht, im vorhandenen Repository:
 
 ```bash
 git fetch origin main &&
-git worktree add --detach ../ringdown-noise-pilot-run origin/main &&
+git worktree add --detach ../ringdown-noise-pilot-run eb663a0bf008f7c8697ef7ec5386b3e11545a19f &&
 cd ../ringdown-noise-pilot-run &&
 test -f scripts/check_noise_pilot.py &&
 test -z "$(git status --porcelain)" &&
@@ -77,6 +90,10 @@ Umgebung wird nicht aktiviert. Einmalig erforderlicher Julia-Download und
 JIT-Kompilation sind keine wissenschaftliche Suche.
 
 ### 1. Begrenzter technischer N128-Vorlauf
+
+`noise-pilot-technical-manjaro-001` ist abgeschlossen und verifiziert. Den
+bestehenden Originalordner erhalten; diesen Schritt nicht erneut ausführen.
+Der dokumentierte ursprüngliche Laufweg bleibt nachvollziehbar:
 
 ```bash
 bash <<'BASH'
@@ -113,7 +130,7 @@ notwendige Friständerung benötigt einen begründeten Beschluss vor dem Start.
 
 ### 2. Wissenschaftliche Serie als separater Ausführungsschritt
 
-Erst nach erfolgreichem Manjaro-Vorlauf und dessen Ressourcenprüfung. Dieselbe
+Manjaro-Vorlauf und Ressourcenprüfung sind für `eb663a0` bestanden. Dieselbe
 Umgebung und derselbe Checkout bleiben bestehen. Der folgende Block bereitet
 alle Fälle vor und führt anschließend sämtliche 144 geplanten Suchen ohne
 interaktive Zwischenentscheidungen aus. Er überschreibt keine vorhandene ID.
@@ -121,9 +138,13 @@ interaktive Zwischenentscheidungen aus. Er überschreibt keine vorhandene ID.
 ```bash
 bash <<'BASH'
 set -euo pipefail
+cd "$HOME/Projects/ringdown-noise-pilot-run"
+test "$(git rev-parse HEAD)" = eb663a0bf008f7c8697ef7ec5386b3e11545a19f
+test -z "$(git status --porcelain)"
 unset VIRTUAL_ENV
 export OPENBLAS_CORETYPE=Haswell
 export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+test -d results/noise-pilot-technical-manjaro-001
 test ! -e results/noise-pilot-manjaro-001
 uv run --locked python scripts/run_noise_pilot.py prepare \
   --output results/noise-pilot-manjaro-001/inputs
@@ -145,6 +166,7 @@ In einem zweiten Terminal desselben Arbeitsverzeichnisses, ohne zusätzliche
 Pakete oder Codeänderung:
 
 ```bash
+cd "$HOME/Projects/ringdown-noise-pilot-run" &&
 watch -n 10 'cat results/noise-pilot-manjaro-001/series/run_state.json; find results/noise-pilot-manjaro-001/series/cases -name run_state.json -print -exec cat {} \;'
 ```
 
@@ -154,6 +176,7 @@ Die Anzeige liest nur Statusdateien. Ihr Abbruch mit Strg+C beendet allein
 ### 4. Nach erfolgreichem Abschluss lesend verifizieren
 
 ```bash
+cd "$HOME/Projects/ringdown-noise-pilot-run" &&
 env OPENBLAS_CORETYPE=Haswell \
   OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
   uv run --locked python scripts/run_noise_pilot.py verify \
@@ -177,6 +200,7 @@ wissenschaftlichen Serie erhalten:
 ```bash
 bash <<'BASH'
 set -euo pipefail
+cd "$HOME/Projects/ringdown-noise-pilot-run"
 test ! -e results/noise-pilot-manjaro-001.tar.gz
 tar -czf results/noise-pilot-manjaro-001.tar.gz -C results \
   noise-pilot-manjaro-001 noise-pilot-technical-manjaro-001
