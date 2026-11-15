@@ -787,8 +787,8 @@ Originalarchiv lesend bestätigt: sechs kleine Suchworker und neun analytische
 Kontrollen, ursprüngliche Dateien unverändert. Damit ist die zusätzliche
 technische Kontrolle abgeschlossen. Sie ist keine wissenschaftliche Rauschserie
 und erweitert die Aussagegrenzen der unabhängigen Bestätigung nicht.
-Das wissenschaftliche Rauschpilotprotokoll ist der nächste abgegrenzte Schritt;
-seine Ausführung bleibt separat. Prüfnachweise im
+Das wissenschaftliche Rauschpilotprotokoll ist inzwischen beschlossen und
+mit PR91 übernommen; seine Ausführung bleibt separat. Prüfnachweise im
 [Fortsetzungsstand](representation_implementation_status.md), Archiv und offene
 Sicherung im [Index](results_index.md#technische-profilübernahme-vom-14112026).
 
@@ -805,15 +805,18 @@ Bedingung haben zunächst Vorrang vor zusätzlichen Pegeln. Ein bekanntes Signal
 und eine feste Hintergrundmenge ergeben einen explorativen Pilot, keine neue
 unabhängige Bestätigung oder allgemeine Erfolgswahrscheinlichkeit.
 
-Die Literaturgrundlage ist im Entwurf mit ihrem jeweiligen Geltungsbereich
+Die Literaturgrundlage ist im Protokoll mit ihrem jeweiligen Geltungsbereich
 benannt. Die bestehende Kovarianzmethode bleibt erhalten; die Mengen
 64/128/256 werden als ein bewusst datenarmes Szenario eingeordnet. Primärmaß
 ist der amplitudennormierte Fehler zur sauberen Wahrheit nach unveränderter
 Auswahl. Ausfälle, Zusatzraster und Strukturbeweise bleiben getrennt.
-Vor einer wissenschaftlichen Serie fehlen noch die vollständige Eingaben-/
-Serienbindung, Schema-4-Zusatzbewertung und ein technischer Ressourcencheck
-mit 128 Punkten. Der Zweipunkt-Vorlauf ersetzt diese Abnahme nicht.
-Der Entwurf startet keine Suche und ändert keine historische Bewertung.
+Umsetzungsstand vom 14.11.2026: PR90/91 sind übernommen. Die vollständige
+Eingaben-/Serienbindung, Zusatzbewertung und der technische N128-Modus werden
+im abgegrenzten [Implementierungslaufweg](noise_pilot.md) abgenommen. Vor einer
+wissenschaftlichen Serie bleiben vollständige technische CI, erfolgreicher
+Manjaro-N128-Vorlauf und dessen Ressourcenprüfung erforderlich. Der frühere
+Zweipunkt-Vorlauf ersetzt diese Abnahme nicht. Der Plan startet keine Suche
+und ändert keine historische Bewertung.
 
 Zunächst wenige Signale und Rauschbedingungen wählen. Rauschrealisierungen,
 Hintergrunddaten und Suchseeds als unterschiedliche Zufallsquellen behandeln.

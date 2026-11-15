@@ -56,6 +56,11 @@ Verifikation sind vollständig lesend bestätigt; alle zwölf Verify-Exporte byt
 Umwidmung der belegten 001-IDs für neue Läufe und kein Sicherungsnachweis aus
 der bloßen Verfügbarkeit der Arbeitskopie.
 
+Der [144er-Rauschpilot](noise_pilot_plan.md) ist beschlossen und sein
+[Serienlaufweg](noise_pilot.md) in technischer Abnahme. Weder der neue
+Manjaro-N128-Vorlauf noch die wissenschaftliche Serie sind als ausgeführt
+belegt. Vorgesehene IDs sind keine vorhandenen Archive oder Sicherungsnachweise.
+
 ## Archivablage
 
 Die gemeinsamen Ablagehinweise werden einmal hier gepflegt. Die Dateinamen in

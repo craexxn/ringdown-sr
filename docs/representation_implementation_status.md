@@ -1,42 +1,69 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: technischer Manjaro-Vorlauf bestätigt, Rauschpilot mit 144 Suchen beschlossen
+## Aktuell: Protokoll mit 144 Suchen übernommen, Serienlaufweg in technischer Abnahme
 
-Ergänzung vom 14.11.2026: Auf `codex/noise-pilot-protocol` ab dem geprüften
-PR90-Head `4e1fa18461b2b32fc2f8c39e77fd7c51b06c868a` entsteht der
-[Rauschpilot-Protokoll](noise_pilot_plan.md) für Leitfadenphase 7.
-PR90 ist nach grüner Dokumentations-CI und gezieltem KI-Review als
-`3aa02bcfadc536adb1a4dd2477176dd4c211d8e3` übernommen.
-Am 14.11.2026 sind 144 Suchen beschlossen: ein festes bekanntes Signal,
-zwei Rauschmodelle, ein Pegel und sechs unabhängige Dreiervergleiche je Modell.
-Die Alternativen 72/288 bleiben abgewogen und ungewählt; keine wissenschaftliche
-Ausführung durch die Planübernahme.
+Ergänzung vom 14.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md):
+PR90 ist nach erfolgreicher Dokumentations-CI `43622947853` als
+`3aa02bcfadc536adb1a4dd2477176dd4c211d8e3` übernommen. Das am 14.11.2026
+beschlossene [144er-Protokoll](noise_pilot_plan.md) ist mit PR91 nach
+[Dokumentations-CI 43627504504](https://github.com/craexxn/ringdown-sr/actions/runs/43627504504)
+als `899bf09756a0aa899827896fcf462afbd8752421` übernommen. Geprüfter
+Protokollhead `27367a707b0f78c2d8e4ec397e0af6d958f5c527` und CI-Checkout
+`6e24148af25eee764f2291632124a6c0005d77a6` sind baumgleich
+(`6acd5bb5aa3481d4ec3987811dd8b5b033d035ce`). Der Protokollhead bleibt die
+unveränderliche Laufzeitbindung; Alternativen 72/288 sind nicht gewählt.
 
-Methodik, Signal-/Rauschparameter, Hintergrundrollen, alle 72 Seedzahlen,
-Diagnoserasterregel, Endpunkte, Ausfälle, Kosten und Anschlussentscheidung
-sind konkret beschrieben. Die Seedtabelle wurde ohne Fits/Suchen deterministisch
-erzeugt und gegen den versionierten Bestand abgeglichen. Literatur zu
-Simulationsplanung, SR-Benchmarks und Kovarianzschrumpfung wurde erneut geprüft;
-konkrete Mengen und sechs Wiederholungen bleiben begrenzte Projektvorgaben.
+Auf `codex/noise-pilot-series` ab diesem main entsteht der
+[Serienlaufweg mit Manjaro-Befehlen](noise_pilot.md). Getrennte Module binden
+sämtliche Eingaben vor Fits/Suchen, führen die bestehende Schema-4-Paketroute
+in fester Reihenfolge aus und ergänzen die bestehenden Bewertungsverträge.
+Zwölf Dreiervergleiche liefern 36 Paketausgaben aus 144 geplanten Suchen.
+Kovarianz-/Datenfehler erhalten explizite `not_run`-Mitglieder; bekannte
+numerische Referenzfit-Ausfälle verhindern keine gültigen SR-Arme.
+Ein technischer N128-Modus mit drei einzelnen Zehnerworkern besitzt ein eigenes
+Format; alte Ein-Iterations- und wissenschaftliche Tausenderaufrufe bleiben erhalten.
 
-Prüfnachweise des Entwurfs: Dokumentation und lokale Dateiziele für 109
-Markdown-Dateien sowie Diffprüfung bestanden. Unabhängige numerische
-Nachrechnung bestätigt Signalhexwerte, Pegel, Umfang und Unsicherheitsangaben;
-alle 72 Seeds aus 1.766 ausgeschlossenen Bestandstokens exakt reproduziert,
-48 anfängliche Messrausch-/Hintergrundzustände ohne Kollision. KI-basiertes
-Methodenreview und gezielte technische Planprüfung durchgeführt; der fehlende
-Zehn-Iterationenmodus und die differenzierte Behandlung von Vorbereitungs-/
-Referenzfit-Ausfällen sind ausdrücklich als Implementierungsarbeiten erfasst.
+Methodik, alle wissenschaftlichen und technischen Seeds, Raster, Auswahl,
+Ausfälle, Kosten und Anschlussregel sind bereits beschlossen. Die Eingaben
+werden einschließlich hochpräziser Signalreferenzen vorab geprüft. Verifikation
+führt weder neue Suchen noch Nachfits aus. Vollständige Aufrufkosten und
+späte Widerrufsprüfungen gehören zur technischen Abnahme. Keine wissenschaftliche
+Serie ist gestartet; noch kein wissenschaftliches Ergebnis oder Archiv dafür.
 
-Die vorhandene Schema-4-Ausführung einzelner Dreiervergleiche ist kein fertiger
-Serientreiber: Zusatzraster und bestehende Zusatzbewertungen für Schema 4,
-gemeinsame Eingabenvorbereitung, Abschnitts-/Gesamtbindung und vollständige
-Aufrufkosten fehlen noch. Auch eine belastbare Laufzeitmessung gewichteter
-1.000er-Suchen mit 128 Punkten fehlt. Ein separater begrenzter technischer
-Vorlauf ist vorgesehen; keine wissenschaftliche Serie gestartet.
-Nächster Schritt: PR91 auf die übernommene PR90-Basis abgleichen, den beschlossenen
-Plan nach Dokumentations-CI übernehmen und die abgegrenzten Laufwegergänzungen
-in einem eigenen Implementierungs-PR umsetzen.
+Implementierungs-PR: [PR #92](https://github.com/craexxn/ringdown-sr/pull/92),
+als Draft entwickelt, nach lokalen Prüfungen für die Ready-Vollprüfung vorgesehen.
+Tatsächlicher lokaler technischer Prüfstand ist der saubere
+Checkout `451352ef0921fd767e41a4f139cdc1424865a4ff`; spätere Änderungen der
+Manjaro-Setupanleitung verändern dessen Paket-/Skriptquellen nicht. Alle zwölf
+wissenschaftlichen Eingaben wurden ohne Fits/Suchen vorbereitet und lesend
+nachgerechnet; 173 Quellen sind gebunden. Die Vorbereitung dauerte lokal
+2,575 Sekunden; dies ist eine technische Ressourcenbeobachtung dieses Rechners.
+
+Der echte technische N128-Vorlauf bestand: drei Zehnerworker mit gewöhnlicher,
+bekannter und geschätzter voller Kovarianz, lokal 300/5. Workerzeiten
+63,145 / 60,637 / 64,526 Sekunden; vollständiger Aufruf 192,006 Sekunden.
+Der zusätzliche CLI-Verifikationsaufruf bestätigte alle 103 Originaldateien
+bytegleich. Keine dieser Zeiten ist eine Manjaro- oder Tausenderlaufprognose;
+keine wissenschaftliche Signalqualität wurde als Abnahmekriterium verwendet.
+Die CI-Jobfrist bleibt bei 120 Minuten: der zusätzliche gemessene Vorlauf
+benötigte hier rund 3,2 Minuten, ohne Änderung wissenschaftlicher Betriebsfristen.
+
+Gezieltes KI-basiertes Nachreview gegen Basis `899bf09` und PR92-Head
+`334052e69b9486dec657db1c94c81ae28a18a4ce`: keine korrekturbedürftigen Befunde
+im geprüften Umfang. 189 gezielte Repositorytests und elf zusätzliche
+Gegenprüfungen bestanden, einschließlich unabhängiger Kovarianznachrechnung,
+Ausfallgrenzen und manipulierter Gesamtzeiten. Diese Tests ersetzen keine
+wissenschaftliche Serie. Der gebündelte vollständige Pythonlauf auf dem
+sauberen technischen Prüfstand bestand mit **4.119 Fällen in 428,86 Sekunden**.
+Ruff, Formatprüfung, Dokumentationsprüfung aller 110 Markdown-Dateien,
+Diffprüfung und die Shellsyntax der sechs dokumentierten Befehlsblöcke sind
+bestanden. Nach dem technischen Prüfstand änderten sich ausschließlich die
+Manjaro-Anleitung und diese Statusangaben, keine Laufzeitquellen oder Tests.
+Vor Übernahme bleibt die vollständige Ready-CI erforderlich; deren Start
+ist keine abgeschlossene CI-Abnahme. Nächster Ausführungsschritt nach Übernahme: ausschließlich
+der technische Manjaro-N128-Vorlauf und seine lesende Verifikation. Dessen
+Ressourcenbefund ist vor dem separaten 144er-Lauf einzuordnen. Bestehende Archive
+und offene Sicherungsnachweise bleiben im [Ergebnisindex](results_index.md).
 
 ### Übernommene Profilroute und ihr technischer Nachweis
 

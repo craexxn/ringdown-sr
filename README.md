@@ -5,8 +5,8 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 14.11.2026; aktuelle main-Basis `3aa02bc` nach
-[PR #90](https://github.com/craexxn/ringdown-sr/pull/90).
+Fortsetzungsstand: 14.11.2026; aktuelle main-Basis `899bf09` nach
+[PR #91](https://github.com/craexxn/ringdown-sr/pull/91).
 Der Budgetvergleich wurde auf `680af98` nach PR #85 wissenschaftlich ausgeführt;
 seine aktuelle Quellenprüfung steht im
 [Ergebnisbericht](docs/restart_budget_results_manjaro_001.md).
@@ -150,8 +150,10 @@ Das [Rauschpilot-Protokoll](docs/noise_pilot_plan.md) ist mit 144 Suchen beschlo
 ein bekanntes Signal, weißes und AR(1)-Rauschen bei
 sigma/A=0,05, je sechs unabhängige Blöcke und drei Gewichtungsarme,
 insgesamt 144 Suchaufrufe. Die wissenschaftliche Ausführung bleibt separat.
-Vorher fehlen die begrenzte Serienanbindung
-einschließlich Zusatzbewertung und ein technischer Ressourcencheck mit 128 Punkten.
+Der [Serienlaufweg](docs/noise_pilot.md) in PR #92 ist lokal mit 4.119
+Pythonfällen, drei echten N128-Zehnerworkern und KI-basiertem Review geprüft.
+Vor Übernahme bleibt die vollständige CI erforderlich; vor wissenschaftlichem
+Start zusätzlich der separate technische Manjaro-Ressourcencheck mit 128 Punkten.
 Keine zusätzliche Budgetstaffel oder automatische Ausführung daraus ableiten.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater

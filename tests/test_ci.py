@@ -51,6 +51,7 @@ def test_only_allowed_prose_can_skip_the_technical_suite(paths):
         "docs/seed_driver_crosscheck_plan.md",
         "docs/global_restart_comparison_plan.md",
         "docs/restart_budget_confirmation_plan.md",
+        "docs/noise_pilot_plan.md",
         "data/transfer_check_inputs.npz",
         "data/transfer_check_inputs.json",
         "docs/reference.npz",
@@ -707,6 +708,7 @@ def test_all_original_commands_options_error_wrappers_and_order_are_preserved():
         "Verify restart budgets on two tiny signals and twelve workers",
         "Verify budget confirmation on two tiny signals and twelve workers",
         "Verify confirmed weighted profile and six tiny workers",
+        "Verify noise pilot with three bounded technical workers",
     }
     ordered = []
     for group in ("native-a", "native-b", "native-c"):
@@ -718,6 +720,61 @@ def test_all_original_commands_options_error_wrappers_and_order_are_preserved():
         for raw in workflow_steps(jobs["native"])
     ]
     assert [name for name in actual if name in ordered] == ordered
+
+
+@pytest.mark.parametrize("run_exit, verify_exit", [(0, 0), (1, 0), (0, 1)])
+def test_noise_pilot_ci_propagates_run_and_read_only_verification_failures(
+    tmp_path, run_exit, verify_exit
+):
+    _, jobs = workflow_jobs()
+    step = next(
+        step
+        for step in workflow_steps(jobs["native"])
+        if "- name: Verify noise pilot with three bounded technical workers" in step
+    )
+    shell = "\n".join(
+        line.removeprefix("          ")
+        for line in step.split("        run: |\n", 1)[1].splitlines()
+    )
+    uv = tmp_path / "uv"
+    uv.write_text(
+        '#!/bin/sh\nprintf "%s\\n" "$*" >> "$TEST_UV_CALLS"\n'
+        'case "$*" in\n'
+        '"run --locked python scripts/check_noise_pilot.py --output '
+        'results/ci-noise-pilot-001")\n'
+        "  mkdir -p results/ci-noise-pilot-001\n"
+        '  printf "technical worker evidence\\n" > '
+        "results/ci-noise-pilot-001/worker.log\n"
+        '  exit "$NOISE_RUN_EXIT" ;;\n'
+        '"run --locked python scripts/check_noise_pilot.py --verify '
+        'results/ci-noise-pilot-001")\n'
+        '  exit "$NOISE_VERIFY_EXIT" ;;\n'
+        "*) exit 99 ;;\nesac\n"
+    )
+    uv.chmod(0o755)
+    calls = tmp_path / "calls.log"
+    result = subprocess.run(
+        ["bash", "-e", "-c", shell],
+        cwd=tmp_path,
+        env={
+            **os.environ,
+            "PATH": str(tmp_path) + os.pathsep + os.environ["PATH"],
+            "TEST_UV_CALLS": str(calls),
+            "NOISE_RUN_EXIT": str(run_exit),
+            "NOISE_VERIFY_EXIT": str(verify_exit),
+        },
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == int(bool(run_exit or verify_exit))
+    invoked = calls.read_text().splitlines()
+    assert len(invoked) == (1 if run_exit else 2)
+    assert "--output results/ci-noise-pilot-001" in invoked[0]
+    if not run_exit:
+        assert "--verify results/ci-noise-pilot-001" in invoked[1]
+    if run_exit or verify_exit:
+        assert "technical worker evidence" in result.stdout
 
 
 def test_workflow_requires_early_success_and_all_native_results_without_bypasses():

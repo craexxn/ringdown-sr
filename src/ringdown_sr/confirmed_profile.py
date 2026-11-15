@@ -30,6 +30,10 @@ from .structure import _validated_tree
 
 ROOT = symbolic.ROOT
 FORMAT = "ringdown-sr-confirmed-member-1"
+NOISE_TECHNICAL_FORMAT = "ringdown-sr-noise-technical-member-1"
+NOISE_TECHNICAL_ITERATIONS = 10
+NOISE_PLAN = "docs/noise_pilot_plan.md"
+NOISE_PLAN_SHA256 = "2a8e521b7729a668832ca02b0c8dd587d46ddec4010d7657d71e7b4d4d295fb8"
 PROFILE = "r4x1000-local300x5-v1"
 WORKER_LIMIT_SECONDS = 1800
 NATIVE_FILES = (
@@ -87,9 +91,16 @@ def read(directory, name):
     return sources.read_json((Path(directory) / name).read_bytes())
 
 
-def source_hashes():
+def source_hashes(*, request=None):
     """Bind every imported package source and every script reachable by guards."""
     names = {*SOURCE_FILES}
+    if request is not None:
+        checked_request(request)
+        if request["format"] == NOISE_TECHNICAL_FORMAT:
+            raw = (ROOT / NOISE_PLAN).read_bytes()
+            if _sha256(raw) != NOISE_PLAN_SHA256:
+                raise ValueError("Changed frozen noise-pilot technical plan.")
+            names.add(NOISE_PLAN)
     names.update(
         path.relative_to(ROOT).as_posix()
         for path in (ROOT / "src/ringdown_sr").glob("*.py")
@@ -104,15 +115,23 @@ def checked_request(document):
     if (
         not isinstance(document, dict)
         or set(document) != {"format", "profile", "seed", "technical", "budget"}
-        or document["format"] != FORMAT
+        or document["format"] not in (FORMAT, NOISE_TECHNICAL_FORMAT)
         or document["profile"] != PROFILE
         or type(document["technical"]) is not bool
         or type(document["seed"]) is not int
         or not 0 < document["seed"] < 2**31
     ):
         raise ValueError("Invalid confirmed-profile request.")
+    noise_technical = document["format"] == NOISE_TECHNICAL_FORMAT
+    if noise_technical and not document["technical"]:
+        raise ValueError("Noise-pilot technical format cannot request science.")
     expected = symbolic.SearchBudget(
-        seed=document["seed"], niterations=1 if document["technical"] else 1000
+        seed=document["seed"],
+        niterations=NOISE_TECHNICAL_ITERATIONS
+        if noise_technical
+        else 1
+        if document["technical"]
+        else 1000,
     )
     symbolic.SearchBudget(**document["budget"])
     if _json_bytes(document["budget"]) != _json_bytes(asdict(expected)):
@@ -235,7 +254,29 @@ def prepare_member(
             symbolic.SearchBudget(seed=seed, niterations=1 if technical else 1000)
         ),
     }
+    return _prepare_member(directory, time_s, observed, covariance, request)
+
+
+def prepare_noise_technical_member(
+    directory, time_s, observed, *, covariance=None, seed
+):
+    """Prepare only the separately versioned ten-iteration noise-pilot probe."""
+    request = {
+        "format": NOISE_TECHNICAL_FORMAT,
+        "profile": PROFILE,
+        "seed": seed,
+        "technical": True,
+        "budget": asdict(
+            symbolic.SearchBudget(seed=seed, niterations=NOISE_TECHNICAL_ITERATIONS)
+        ),
+    }
+    return _prepare_member(directory, time_s, observed, covariance, request)
+
+
+def _prepare_member(directory, time_s, observed, covariance, request):
+    directory = Path(directory)
     checked_request(request)
+    bound_sources = source_hashes(request=request)
     times, target, matrix = symbolic._inputs(time_s, observed, covariance)
     arrays = {"time_s": times, "observed": target}
     if matrix is not None:
@@ -244,14 +285,14 @@ def prepare_member(
     np.savez(directory / "inputs.npz", **arrays)
     _write_json(directory / "request.json", request)
     initial = symbolic._initial_metadata()
-    initial.update(format=FORMAT, adapter_source_sha256=source_hashes())
+    initial.update(format=request["format"], adapter_source_sha256=bound_sources)
     _write_json(directory / "metadata_initial.json", initial)
     _write_json(directory / "metadata.json", initial)
     for name in NATIVE_FILES:
         (directory / name).write_bytes((ROOT / "julia/src" / name).read_bytes())
     manifest = {
-        "format": FORMAT,
-        "sources": source_hashes(),
+        "format": request["format"],
+        "sources": bound_sources,
         "provenance": initial["provenance"],
         "input_fingerprints": {
             key: sources.fingerprint(value) for key, value in arrays.items()
@@ -266,16 +307,18 @@ def prepare_member(
 
 def verify_prepared(directory):
     directory = Path(directory)
+    request = read(directory, "request.json")
+    checked_request(request)
     manifest = read(directory, "prepared.json")
-    if manifest.get("format") != FORMAT or manifest.get("sources") != source_hashes():
+    if manifest.get("format") != request["format"] or manifest.get(
+        "sources"
+    ) != source_hashes(request=request):
         raise ValueError("Changed confirmed-profile source binding.")
     if set(manifest.get("files", {})) != set(PREPARED_FILES) or any(
         _sha256((directory / name).read_bytes()) != digest
         for name, digest in manifest["files"].items()
     ):
         raise ValueError("Changed confirmed-profile preparation.")
-    request = read(directory, "request.json")
-    checked_request(request)
     with np.load(directory / "inputs.npz", allow_pickle=False) as saved:
         if set(saved.files) not in (
             {"time_s", "observed"},
@@ -292,7 +335,8 @@ def verify_prepared(directory):
         raise ValueError("Changed confirmed-profile input bits.")
     initial = read(directory, "metadata_initial.json")
     if (
-        initial.get("provenance") != manifest["provenance"]
+        initial.get("format") != request["format"]
+        or initial.get("provenance") != manifest["provenance"]
         or initial.get("adapter_source_sha256") != manifest["sources"]
     ):
         raise ValueError("Unbound parent provenance.")
@@ -338,7 +382,7 @@ class WorkerHooks:
 
     def before_fit(self, metadata, jl, budget):
         verify_prepared(self.directory)
-        metadata["worker_adapter_source_sha256"] = source_hashes()
+        metadata["worker_adapter_source_sha256"] = source_hashes(request=self.request)
         _, metadata["confirmed_blas_control"] = checked_environment(
             metadata["environment"]
         )
@@ -424,10 +468,9 @@ class WorkerHooks:
         numerical_environment(metadata, self.runtime, completed=True)
         _write_json(self.directory / "metadata.json", metadata)
         verify_prepared(self.directory)
-        if (
-            metadata.get("worker_provenance") != _provenance()
-            or metadata.get("worker_adapter_source_sha256") != source_hashes()
-        ):
+        if metadata.get("worker_provenance") != _provenance() or metadata.get(
+            "worker_adapter_source_sha256"
+        ) != source_hashes(request=self.request):
             raise ValueError("Confirmed-profile provenance changed during consumption.")
 
     def close(self):
@@ -468,6 +511,10 @@ def _verify_origin(metadata, initial, manifest, *, completed):
     if (
         metadata.get("provenance") != initial["provenance"]
         or metadata.get("adapter_source_sha256") != manifest["sources"]
+        or (
+            manifest.get("format") == NOISE_TECHNICAL_FORMAT
+            and metadata.get("format") != NOISE_TECHNICAL_FORMAT
+        )
     ):
         raise ValueError("Changed parent provenance or adapter.")
     phase = metadata.get("failed_during", metadata.get("phase"))
@@ -483,7 +530,7 @@ def _verify_origin(metadata, initial, manifest, *, completed):
 
 def run_member(directory, *, deadline):
     directory = Path(directory).resolve()
-    verify_prepared(directory)
+    request, _, _ = verify_prepared(directory)
     started = time.monotonic()
     if not math.isfinite(deadline) or deadline <= started:
         raise TimeoutError("Confirmed-profile deadline expired before worker start.")
@@ -538,7 +585,7 @@ def run_member(directory, *, deadline):
             raise ValueError("Confirmed-profile worker interrupted by signal.")
         status = failure_status(metadata, timed_out=timed_out)
     outcome = {
-        "format": FORMAT,
+        "format": request["format"],
         "status": status,
         "returncode": code,
         "timed_out": timed_out,
@@ -735,7 +782,7 @@ def verify_member(directory):
             "cpu_user_seconds",
             "cpu_system_seconds",
         }
-        or outcome.get("format") != FORMAT
+        or outcome.get("format") != request["format"]
         or outcome.get("status") not in {"completed", "fit_error", "timeout"}
         or type(outcome.get("returncode")) is not int
         or type(outcome.get("timed_out")) is not bool
@@ -902,6 +949,14 @@ def verify_member(directory):
     ):
         raise ValueError("Member evidence changed during read-only verification.")
     return {
+        **(
+            {
+                "format": NOISE_TECHNICAL_FORMAT,
+                "requested_iterations": NOISE_TECHNICAL_ITERATIONS,
+            }
+            if request["format"] == NOISE_TECHNICAL_FORMAT
+            else {}
+        ),
         "status": outcome["status"],
         "selected_index": selected,
         "selected": None if selected is None else candidates[selected],
