@@ -19,11 +19,21 @@ Prüfkosten und Aussagegrenzen stehen im
 [Fortsetzungsstand](representation_implementation_status.md), Archivhash und
 offener Sicherungsstand im [Ergebnisindex](results_index.md).
 
-**Nächster Schritt ist der separate wissenschaftliche Start ab Abschnitt 3
-im unveränderten, bereits geprüften Manjaro-Worktree.** Setup und Vorlauf für
-diesen Lauf nicht wiederholen. Noch keine wissenschaftliche Suche dieser
-Studie ist gestartet. Die folgenden Befehle ändern keine Methodenparameter;
-ein späterer Dokumentationscommit ersetzt den gebundenen Ausführungsstand nicht.
+**Versuch `noise-background-manjaro-001` ist nach einem belegten Suspend
+gesperrt.** Beim Zuklappen schlief Manjaro am 16.11.2026 von 14:34:25 bis
+14:37:30 Uhr CET. In AR(1)-Block 1, E64, Mitglied 4 kehrte der Fit zurück;
+der anschließende Uhrenabgleich verweigerte korrekt die Freigabe. Die
+übermittelten Fehler- und Kostenbelege stehen im Fortsetzungsstand; eine
+vollständige Prüfung der wissenschaftlichen Originaldateien steht noch aus.
+
+Zuerst Versuch 001 vollständig erhalten und separat archivieren. Abschnitt 3
+bereitet einen neuen, ausschließlich manuell zu startenden Versuch 002 mit
+Schlafsperre vor. Keine Fortsetzung oder nachträgliche Freigabe von 001,
+keine Wiederverwendung seiner Paketausgaben in 002. Grund ist der belegte
+Betriebsabbruch, keine Auswahl anhand der Signalqualität. Seeds, Reihenfolge,
+Budgets, Fristen und Uhrenwächter bleiben unverändert. Setup und technischen
+Vorlauf nicht wiederholen; ein späterer Dokumentationscommit ersetzt den
+gebundenen Ausführungsstand nicht. Versuch 002 ist noch nicht gestartet.
 
 ## Umfang und feste Grenzen
 
@@ -142,11 +152,16 @@ und zu versionieren. Der Vorlaufblock startet die Serie deshalb nicht automatisc
 
 ## 3. Nach bestätigtem Ressourcenbefund die gesamte Serie starten
 
-Der technische Vorlauf und seine Ressourcenbewertung sind abgeschlossen.
-Dieser separate Block bereitet zuerst alle 26 Fälle vor und arbeitet dann
-alle 520 geplanten Suchen ohne interaktive Zwischenwahl ab. Im selben sauberen
-Worktree mit unveränderter numerischer Umgebung ausführen; den technischen
-Originalordner erhalten. `--no-sync` verhindert eine erneute Umgebungsanpassung.
+Der technische Vorlauf und seine Ressourcenbewertung bleiben bestätigt.
+Der ursprüngliche Start von Versuch 001 ist oben als gesperrt eingeordnet.
+Die folgenden Blöcke sind getrennte manuelle Schritte; Archivierung startet
+keine neue Suche. Versuch 001 samt Kosten und Originalen bleibt erhalten und
+wird später getrennt von einem neuen Versuch ausgewiesen.
+
+Zuerst den beendeten Versuch 001 einschließlich seiner Eingaben, Teilresultate,
+Abbruchdateien und des technischen Originals archivieren. Die bekannte
+Fehlerursache rechtfertigt keine Umwandlung in einen gewöhnlichen numerischen
+Ausfall. Ein TAR-/Hashcheck ist keine vollständige fachliche Nachprüfung.
 
 ```bash
 bash <<'BASH'
@@ -154,10 +169,62 @@ set -euo pipefail
 test "$(git rev-parse HEAD)" = 'bd42634b888c2dbaa5a92726b9a1f9851c766a48'
 test -z "$(git status --porcelain)"
 unset VIRTUAL_ENV
+uv run --locked --no-sync python - <<'PY'
+import json
+from pathlib import Path
+
+root = Path('results/noise-background-manjaro-001')
+for path in (root / 'series/run_state.json', root / 'series-call.json'):
+    record = json.loads(path.read_text())
+    if record.get('status') != 'aborted':
+        raise SystemExit(f'Expected an aborted run: {path}')
+print('Abbruchstatus vorhanden; Originale werden unverändert archiviert.')
+PY
+task_archive=results/noise-background-manjaro-001-aborted.tar.gz
+test ! -e "$task_archive"
+test ! -e "$task_archive.sha256"
+tar -czf "$task_archive" -C results \
+  noise-background-manjaro-001 noise-background-preflight-manjaro-001
+tar -tzf "$task_archive" > /dev/null
+cd results
+sha256sum noise-background-manjaro-001-aborted.tar.gz \
+  > noise-background-manjaro-001-aborted.tar.gz.sha256
+sha256sum -c noise-background-manjaro-001-aborted.tar.gz.sha256
+BASH
+```
+
+Ein neuer Versuch 002 erhält dieselben 26 festen Fälle und alle 520 geplanten
+Suchen, ohne interaktive Zwischenwahl und ohne Übernahme von Ergebnissen aus
+001. Im selben sauberen Worktree mit unveränderter numerischer Umgebung
+ausführen. `--no-sync` verhindert eine erneute Umgebungsanpassung.
+
+Den Laptop am Netzteil mit geöffnetem Deckel stehen lassen. Zusätzlich hält
+`systemd-inhibit` während Vorbereitung und Serie eine Sperre für
+`sleep:idle:handle-lid-switch`. Die explizite Deckelsperre ist erforderlich,
+weil logind eine reine Schlafsperre beim Zuklappen standardmäßig ignorieren
+kann (`LidSwitchIgnoreInhibited=yes`). Der Befehl erwirbt die Sperre vor dem
+Start; bei einem Fehler keine ungeschützte Ersatzvariante ausführen.
+Erzwungener Suspend oder Stromverlust werden dadurch nicht ausgeschlossen.
+Die Sperre ändert weder Zeitquellen noch Methodenparameter und endet mit dem
+Aufruf. Grundlagen: [systemd-inhibit](https://www.freedesktop.org/software/systemd/man/latest/systemd-inhibit.html),
+[logind.conf](https://www.freedesktop.org/software/systemd/man/latest/logind.conf.html).
+
+```bash
+systemd-inhibit --what=sleep:idle:handle-lid-switch --mode=block \
+  --who=ringdown-sr --why='Hintergrundstudie ohne Suspend' \
+  --no-ask-password bash <<'BASH'
+set -euo pipefail
+test "$(git rev-parse HEAD)" = 'bd42634b888c2dbaa5a92726b9a1f9851c766a48'
+test -z "$(git status --porcelain)"
+unset VIRTUAL_ENV
 export OPENBLAS_CORETYPE=Haswell
 export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
-task_study=results/noise-background-manjaro-001
+task_study=results/noise-background-manjaro-002
 task_technical=results/noise-background-preflight-manjaro-001/technical
+(
+  cd results
+  sha256sum -c noise-background-manjaro-001-aborted.tar.gz.sha256
+)
 test -d "$task_technical"
 test ! -e "$task_study"
 test ! -e "$task_study.tar.gz"
@@ -185,7 +252,10 @@ Laufzeiten. Auch eine späte Fristverletzung widerruft die Veröffentlichung.
 
 ## 4. Lesende Fortschrittsanzeige mit zehn Sekunden Abstand
 
-In einem zweiten Terminal im selben Laufverzeichnis starten. Der Monitor
+In einem zweiten Terminal ausdrücklich in `ringdown-noise-background-run`
+wechseln. Alle Pfade sind relativ zu diesem Verzeichnis. Der Monitor für den
+vorbereiteten Versuch 002 liest dessen eigenen Serienordner; für eine Diagnose
+von 001 den Pfad ausdrücklich auf 001 setzen. Der Monitor
 ändert keine Laufdateien und benötigt nur Python 3. Er zeigt abgeschlossene
 Fallverarbeitung, den aktiven Arm und dessen Mitgliedsstatus. Ein abgeschlossener
 Fall kann zulässige Ausfälle enthalten; `finished` bedeutet zunächst nur, dass
@@ -200,7 +270,7 @@ import json
 from pathlib import Path
 import time
 
-root = Path("results/noise-background-manjaro-001/series")
+root = Path("results/noise-background-manjaro-002/series")
 
 def read(path):
     try:
@@ -238,7 +308,8 @@ PY
 
 ## 5. Nach Abschluss lesend verifizieren, grafisch auswerten und archivieren
 
-Der folgende Block stoppt bei jedem Fehler. Erst nach erfolgreicher
+Der folgende Block gilt für den vollständigen Versuch 002 und stoppt bei jedem Fehler.
+Für den gesperrten Versuch 001 nicht verwenden. Erst nach erfolgreicher
 Gesamtverifikation und Plotveröffentlichung wird das Archiv erzeugt. Vorhandene
 Exports oder Archive nicht überschreiben; für eine spätere zusätzliche
 Nachprüfung einen neuen Exportpfad verwenden.
@@ -251,7 +322,7 @@ test -z "$(git status --porcelain)"
 unset VIRTUAL_ENV
 export OPENBLAS_CORETYPE=Haswell
 export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
-task_study=results/noise-background-manjaro-001
+task_study=results/noise-background-manjaro-002
 task_preflight=results/noise-background-preflight-manjaro-001
 test -f "$task_study/series/completion/assessment_report.json"
 test ! -e "$task_study/verification"
@@ -269,11 +340,11 @@ uv run --locked --no-sync python scripts/run_noise_background.py plots \
   --output "$task_study/series" \
   --export "$task_study/plots"
 tar -czf "$task_study.tar.gz" -C results \
-  noise-background-manjaro-001 noise-background-preflight-manjaro-001
+  noise-background-manjaro-002 noise-background-preflight-manjaro-001
 tar -tzf "$task_study.tar.gz" > /dev/null
 cd results
-sha256sum noise-background-manjaro-001.tar.gz > noise-background-manjaro-001.tar.gz.sha256
-sha256sum -c noise-background-manjaro-001.tar.gz.sha256
+sha256sum noise-background-manjaro-002.tar.gz > noise-background-manjaro-002.tar.gz.sha256
+sha256sum -c noise-background-manjaro-002.tar.gz.sha256
 BASH
 ```
 

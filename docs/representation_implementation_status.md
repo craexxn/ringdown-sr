@@ -1,6 +1,6 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Hintergrundlaufweg übernommen, Manjaro-Vorlauf bestätigt
+## Aktuell: wissenschaftlicher Hintergrundversuch nach Suspend gesperrt
 
 Stand 16.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md):
 Das Protokoll ist mit [PR #94](https://github.com/craexxn/ringdown-sr/pull/94)
@@ -30,12 +30,61 @@ sein Baum `884c6406a078eef36b8d7e8177a68f596ea028b8` ist identisch mit
 Head und übernommenem Merge. Die native Logspanne beträgt 89 min 20 s.
 
 Auch der neue Manjaro-N128-Vorlauf samt Ressourcenbewertung ist unten am
-Originalarchiv bestätigt. Die [konkreten wissenschaftlichen Startbefehle](noise_background.md#3-nach-bestätigtem-ressourcenbefund-die-gesamte-serie-starten)
-sind der nächste getrennte Schritt: gleicher sauberer Ausführungscommit
-`bd42634` und dieselbe numerische Umgebung, unveränderte Methoden und Fristen.
+Originalarchiv bestätigt. Die danach übermittelte Ausgabe des
+[wissenschaftlichen Startblocks](noise_background.md#3-nach-bestätigtem-ressourcenbefund-die-gesamte-serie-starten)
+belegt 26 vorbereitete Eingaben und einen begonnenen, gesperrten
+Ausführungsversuch. Der gebundene Ausführungscommit bleibt `bd42634`;
+Methoden, numerische Umgebung und Fristen werden nicht geändert.
 Der reine Dokumentationsbranch `codex/noise-background-manjaro-preflight`
-ersetzt diesen Laufcheckout nicht. Keine wissenschaftliche Suche dieser Studie
-ist gestartet; gemeinsame Archivablage und unabhängige Zweitkopie bleiben offen.
+ersetzt diesen Laufcheckout nicht. Noch kein verifiziertes wissenschaftliches
+Ergebnis und kein wissenschaftliches Originalarchiv übermittelt; gemeinsame
+Archivablage und unabhängige Zweitkopie bleiben offen.
+
+**Übermittelter Ausführungsnachtrag vom 16.11.2026:** Der Elterntrace endet
+über Fall, Paket, Mitglied und Fehlerklassifikation mit
+`Unclassified worker failure or integrity violation.` Betroffen ist
+`ar1-01/estimated_64/member-04`, `phase=failed`, `failed_during=replay`.
+Nach Rückkehr von `model.fit` meldet `SearchBudgetClock.record` bei `after_fit`
+den Juliafehler `Native wall clock changed relative to the monotonic clock.`
+Übermittelter Workerstart: `2026-11-16T13:33:42.551961+00:00`
+(14:33:42 CET). `before_fit` 13:33:53.595049 UTC und `after_fit`
+13:43:05.889766 UTC ergeben 552,294717 s Kalenderzeit; übermittelte monotone
+Fitzeit `fit_wall_seconds=368.39018024300094`, Differenz **183,904536757 s**.
+`failed_at` liegt bei 13:43:06.034351 UTC.
+
+Das Zuklappen des Laptops zum Tragen ist als Auslöser bestätigt.
+Das übermittelte UTC-Systemjournal belegt System-Suspend ab 13:34:25 UTC
+mit eingefrorenem `user.slice` bis zur Rückkehr um 13:37:30 UTC
+(14:34:25–14:37:30 CET), innerhalb dieses Fits. Damit ist eine Unterbrechung
+belegt, die von der monotonen Fitzeit nicht erfasst wird; der Integritätswächter
+sperrt den Lauf korrekt. Der erst um 14:11:39 UTC protokollierte
+`timesyncd`-Serverkontakt liegt nach dem Abbruch und belegt keine NTP-Ursache.
+
+| Übermittelte Abbruchmessung | Monotone Zeit / s | CPU user / s | CPU system / s |
+| --- | ---: | ---: | ---: |
+| Serie | 4.674,278524944002 | 4.636,851258 | 19,230079 |
+| Fall `ar1-01` | 4.670,669358621002 | 4.633,596022 | 18,890126 |
+
+Die Serie meldet `status=aborted`; beide Aufrufdateien melden
+`cpu_measurement_complete=false` und den Umfang
+`entry_through_abort_excluding_failure_record_write`. Der Fall ist in der
+Serie enthalten; die Zeiten nicht addieren. Die monotonen Zeiten schließen
+den Suspend aus und sind keine gesamten Kalenderdauern; die Vollständigkeit
+der CPU-Messungen ist nicht bestätigt. Die exakte Zahl abgeschlossener
+Suchrunden bleibt unbekannt.
+Diese Angaben stammen aus übermittelten Metadaten-/Logauszügen; die
+wissenschaftlichen Originaldateien liegen zur eigenen Prüfung noch nicht vor.
+
+**Nächster abgegrenzter Schritt:** Vorhandenen Versuch 001 unverändert
+bewahren, Originale und Teilkosten lesend prüfen. Der Laufweg enthält nun
+getrennte Befehle zur Archivierung von 001 und für einen manuell zu startenden
+Versuch 002 mit `systemd-inhibit --what=sleep:idle:handle-lid-switch`.
+002 ist noch nicht gestartet. Keine automatische Wiederholung oder Fortsetzung
+von 001, kein Umbuchen als numerischer Fehler und keine Änderung von
+Uhrenwächter, Methoden oder Fristen. Ein neuer Versuch verwendet dasselbe
+vollständige eingefrorene Protokoll ohne Übernahme der Teilresultate aus 001;
+Grund ist ausschließlich der belegte Betriebsabbruch.
+Der vollständig bestätigte technische Vorlauf bleibt davon unberührt.
 
 Prüfnachweise vom 16.11.2026:
 
@@ -154,12 +203,14 @@ und 245,764 s für den gespeicherten Gesamtaufruf liegen unter den technischen
 wissenschaftlichen Fristen: 1.800 s je Worker, 7.800 s je Paket, 40.800 s je
 Fall und 1.075.200 s für die Serie; Vorbereitung 2.400 s, Verifikation 14.400 s.
 Fünf Zehnerworker belegen weder Laufzeit noch Speicherbedarf oder Erfolgsrate
-der 520 Tausendersuchen. Nächster Schritt ist die beschlossene Serie mit
-26 frisch vorbereiteten wissenschaftlichen Eingaben im selben sauberen
-Ausführungscheckout und derselben Umgebung; ein Dokumentationscommit darf
-diesen Stand nicht ersetzen. Technische Seeds zählen nicht als wissenschaftliche
-Wiederholungen. Noch kein wissenschaftlicher Start und kein wissenschaftliches
-Originalarchiv dieser Studie; Archivablage und unabhängige Zweitkopie weiter offen.
+der 520 Tausendersuchen. Zum Zeitpunkt dieser technischen Abnahme war die
+beschlossene Serie mit 26 frisch vorbereiteten wissenschaftlichen Eingaben
+im selben sauberen Ausführungscheckout und derselben Umgebung der nächste
+Schritt; ein Dokumentationscommit darf diesen Stand nicht ersetzen.
+Technische Seeds zählen nicht als wissenschaftliche Wiederholungen.
+Der anschließend gemeldete, nach Suspend gesperrte Ausführungsversuch ist
+oben getrennt zugeordnet. Noch kein wissenschaftliches Originalarchiv
+übermittelt; Archivablage und unabhängige Zweitkopie weiter offen.
 
 ## Übernommenes Protokoll der begrenzten Hintergrundstudie
 
@@ -204,11 +255,12 @@ Methodenänderung. Der historische Pilotplan bleibt bytegleich.
 Der damalige nächste Schritt, getrennte Protokollübernahme, ist mit PR94
 abgeschlossen; Implementierung, vollständige Ready-CI, autorisierte PR95-
 Übernahme und neuer Manjaro-N128-Vorlauf mit Ressourcenbewertung sind oben
-zugeordnet. Die neuen konkreten Laufbefehle sind vorbereitet; die bisherigen
-144er-Befehle führen diesen Vergleich nicht aus. Wissenschaftliche Ausführung
-und Archivierung bleiben
-getrennte Schritte. Rund 46,14 extrapolierte Worker-Stunden sind eine unsichere
-Aufwandsorientierung, keine gemessene Laufzeit dieser noch nicht gestarteten Serie.
+zugeordnet. Der inzwischen gemeldete wissenschaftliche Ausführungsversuch
+ist oben mit Sperrgrund und bekannten Teilkosten dokumentiert; die bisherigen
+144er-Befehle führen diesen Vergleich nicht aus. Ausführung, lesende Prüfung
+und Archivierung bleiben getrennte Schritte. Rund 46,14 extrapolierte
+Worker-Stunden sind eine unsichere Aufwandsorientierung, keine gemessene
+Gesamtlaufzeit der Studie.
 
 ## Abgeschlossener 144er-Rauschpilot vollständig lesend bestätigt
 

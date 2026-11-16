@@ -875,11 +875,22 @@ lesend bestätigt. Gesamtaufruf 245,764 s, längster Worker 49,237 s;
 die Ressourcenbewertung begründet keine Änderung der eingefrorenen Fristen.
 Details und Grenzen stehen im
 [Fortsetzungsstand](representation_implementation_status.md#technischer-manjaro-n128-nachweis-vom-16112026).
-Die konkreten wissenschaftlichen Startbefehle sind vorbereitet; noch keine
-wissenschaftliche Suche dieser Studie gestartet. Nächster Schritt ist die
-beschlossene 520er-Serie auf demselben sauberen Ausführungscommit und in
-derselben numerischen Umgebung; der Dokumentationsbranch ersetzt diesen
-Checkout nicht. Die alte 144er-Serie war bereits wissenschaftliche Ausführung;
+Der anschließend übermittelte wissenschaftliche Versuch ist nach Vorbereitung
+aller 26 Eingaben begonnen und bei `ar1-01/estimated_64/member-04` durch den
+Uhrenintegritätswächter gesperrt. Ein System-Suspend innerhalb des Fits ist
+im übermittelten Journal belegt; Kalender- und monotone Fitzeit unterscheiden
+sich um 183,904537 s. Übermittelte Serienabbruchzeit 4.674,278525 s monoton,
+ohne Suspend und mit unvollständiger CPU-Messung; Einzelheiten oben im
+Fortsetzungsstand. Kein verifiziertes wissenschaftliches Ergebnis oder
+Originalarchiv übermittelt. Nächster Schritt ist die unveränderte Bewahrung
+des Versuchs, lesende Prüfung der Originale und Teilkosten sowie Vorbereitung
+eines Betriebswegs mit Suspend-Sperre. Der Laufweg enthält dafür getrennte
+Archivierungsbefehle und einen noch nicht gestarteten manuellen Versuch 002
+unter unverändertem Protokoll; keine Teilresultate aus 001 übernehmen.
+Kein automatischer Neustart, keine Umklassifikation
+zum numerischen Fehler und keine Änderung von Methoden, Uhrenwächter oder
+Fristen; der Dokumentationsbranch ersetzt den Ausführungscheckout nicht.
+Die alte 144er-Serie war bereits wissenschaftliche Ausführung;
 der technische Vorlauf für die neue Studie liefert keine neuen Qualitätsnachweise
 oder Laufzeit-/Speichergarantie. Gemeinsame Archivablage und Zweitkopie bleiben offen.
 

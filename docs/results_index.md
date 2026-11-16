@@ -72,10 +72,21 @@ ist nach vollständiger Ready-CI mit PR95 als
 mit fünf N128-Zehnerworkern, separatem Replay und Plot-/Formelprüfung ist
 am Originalarchiv lesend bestätigt. Prüfstände und Ressourcenentscheidung
 stehen im [Fortsetzungsstand](representation_implementation_status.md).
-Wissenschaftliche Startbefehle auf demselben sauberen Ausführungscommit sind
-vorbereitet; es existieren noch kein wissenschaftlicher Lauf oder
-wissenschaftliches Originalarchiv dieser Studie;
-keine Umwidmung alter Pilotarchive. Spätere wissenschaftliche Plot-/Formel-
+Ein danach gemeldeter wissenschaftlicher Ausführungsversuch mit 26
+vorbereiteten Eingaben ist nach einem belegten System-Suspend im Fit von
+`ar1-01/estimated_64/member-04` durch den Uhrenintegritätswächter gesperrt.
+Übermittelte monotone Fitzeit 368,390180243 s, Serienabbruchzeit
+4.674,278524944 s; Suspend nicht enthalten, CPU-Messung unvollständig.
+Die vollständigen wissenschaftlichen Originaldateien sind noch nicht
+übermittelt, Suchrundenzahl und verifizierter wissenschaftlicher Befund
+bleiben offen. Die vorhandenen Auszüge, Kosten und Messgrenzen sind im
+Fortsetzungsstand zugeordnet. Originale unverändert bewahren und lesend
+prüfen; kein automatischer Neustart oder Umbuchen als numerischer Fehler.
+Der Laufweg bereitet die Archivierung von 001 und einen getrennten Versuch 002
+mit Schlaf- und Deckelsperre vor; weder dessen Start noch ein neues Archiv
+ist bisher belegt. Der Abbruch und seine Kosten bleiben auch nach einer
+späteren Wiederholung separat erhalten.
+Keine Umwidmung alter Pilotarchive. Spätere wissenschaftliche Plot-/Formel-
 Exporte werden mit dem Original und seinen Prüfsummen verknüpft.
 
 Lokales Implementierungsprüfpaket vom 16.11.2026:
@@ -625,9 +636,11 @@ Formel- und Datenbindungen bestätigt; kein erneuter Fit oder Suchaufruf.
 keine weiteren Laufdateien. Dauerhafte gemeinsame Archivablage und unabhängige
 hashgeprüfte Zweitkopie weiterhin unbestätigt; [Ablagezuordnung](#archivablage).
 Die Ressourcenprüfung gibt keinen Anlass zur Änderung eingefrorener Fristen,
-belegt aber keine Laufzeit oder wissenschaftliche Qualität der noch nicht
-gestarteten 520er-Serie. Wissenschaftlicher Start und spätere Archivierung
-bleiben getrennt; GitHub-Upload optional.
+belegt aber keine Gesamtlaufzeit oder wissenschaftliche Qualität der 520er-Serie.
+Der anschließend gemeldete, nach Suspend gesperrte wissenschaftliche Versuch
+und seine noch fehlenden Originalbelege sind oben getrennt zugeordnet.
+Ausführung, lesende Prüfung und Archivierung bleiben getrennt;
+GitHub-Upload optional.
 
 ### Priorisierte fehlende Belege
 
