@@ -227,7 +227,16 @@ def _tiny_render(monkeypatch):
         plots,
         "_overview_payloads",
         lambda report, prepared: {
-            "overview.json": sources.json_bytes(report["summary"])
+            **{
+                f"{model}-{kind}.{ext}": b"Overview fixture"
+                for model in ("ar1", "white")
+                for kind in ("errors-contrasts", "costs-failures", "covariance")
+                for ext in ("csv", "png", "svg")
+            },
+            **{
+                f"{model}-errors-contrasts.json": sources.json_bytes(report["summary"])
+                for model in ("ar1", "white")
+            },
         },
     )
 
@@ -433,6 +442,7 @@ def test_technical_export_uses_all_five_original_workers_without_quality_selecti
     exported = plots.export_technical(artifacts.technical, artifacts.output)
     assert exported["planned_outputs"] == len(exported["outputs"]) == 5
     assert exported["scientific_success_assessed"] is False
+    assert plots.verify_export(artifacts.output) == exported
     assert calls == ["technical_read_only_verify"]
     assert all(
         value["identity"]["seed"] == spec["search_seeds"][0]
@@ -542,5 +552,57 @@ def test_plot_cost_verification_rejects_invalid_values_or_binding(
     record = json.loads(timing.read_bytes())
     record[field] = value
     timing.write_bytes(sources.json_bytes(record))
+    with pytest.raises(ValueError):
+        plots.verify_export(artifacts.output)
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "remove_csv",
+        "remove_png",
+        "remove_overview",
+        "metadata_seed",
+        "csv",
+        "formula",
+        "overview",
+        "image",
+    ],
+)
+def test_resealed_manifest_cannot_replace_report_bound_plot_payloads(
+    artifacts, monkeypatch, mutation
+):
+    _tiny_render(monkeypatch)
+    plots.export(
+        artifacts.preparation, artifacts.technical, artifacts.series, artifacts.output
+    )
+    manifest_path = artifacts.output / publication.MANIFEST
+    manifest = json.loads(manifest_path.read_bytes())
+    stem = "ar1-01-estimated_1024"
+    if mutation.startswith("remove_"):
+        name = {
+            "remove_csv": stem + ".csv",
+            "remove_png": stem + ".png",
+            "remove_overview": "white-errors-contrasts.json",
+        }[mutation]
+        (artifacts.output / name).unlink()
+        del manifest[name]
+    else:
+        name = {
+            "metadata_seed": stem + ".json",
+            "csv": stem + ".csv",
+            "formula": stem + ".formula.txt",
+            "overview": "ar1-costs-failures.csv",
+            "image": stem + ".png",
+        }[mutation]
+        path = artifacts.output / name
+        if mutation == "metadata_seed":
+            value = json.loads(path.read_bytes())
+            value["identity"]["seed"] += 1
+            path.write_bytes(sources.json_bytes(value))
+        else:
+            path.write_bytes(path.read_bytes() + b"changed")
+        manifest[name] = sources.sha256(path.read_bytes())
+    manifest_path.write_bytes(sources.json_bytes(manifest))
     with pytest.raises(ValueError):
         plots.verify_export(artifacts.output)

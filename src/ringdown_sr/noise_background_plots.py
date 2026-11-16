@@ -759,6 +759,92 @@ def _verify_call(record, report_raw):
         raise ValueError("Plot export exceeded its complete-call deadline.")
 
 
+def _verify_payload_binding(report, payloads):
+    """Require the promised slots and bind each table/formula to its metadata."""
+    technical = report.get("technical")
+    if type(technical) is not bool:
+        raise ValueError("Plot export lacks its scientific/technical identity.")
+    specs = inputs.case_specs(technical=technical)
+    slots = {f"{spec['id']}-{arm}": (spec, arm) for spec in specs for arm in ARMS}
+    outputs = report.get("outputs")
+    if (
+        type(outputs) is not dict
+        or set(outputs) != set(slots)
+        or type(report.get("planned_outputs")) is not int
+        or report["planned_outputs"] != len(slots)
+    ):
+        raise ValueError("Plot output inventory differs from the frozen planned slots.")
+    required = {publication.REPORT, publication.SUMMARY, publication.MANIFEST}
+    required.update(
+        f"{stem}.{suffix}"
+        for stem in slots
+        for suffix in ("csv", "json", "formula.txt", "png", "svg")
+    )
+    if not technical:
+        for model in assessment.PLANNED_BLOCKS:
+            for kind in ("errors-contrasts", "costs-failures", "covariance"):
+                required.update(
+                    f"{model}-{kind}.{ext}" for ext in ("csv", "png", "svg")
+                )
+            required.add(f"{model}-errors-contrasts.json")
+    if set(payloads) != required or payloads[publication.SUMMARY] != SUMMARY.encode():
+        raise ValueError("Plot payload inventory or summary is incomplete or changed.")
+    data_names = required - {
+        publication.REPORT,
+        publication.SUMMARY,
+        publication.MANIFEST,
+    }
+    if report.get("payload_sha256") != {
+        name: sources.sha256(payloads[name]) for name in sorted(data_names)
+    }:
+        raise ValueError("Plot payloads contradict their original completion report.")
+    for stem, (spec, arm) in slots.items():
+        declared = outputs[stem]
+        raw = payloads[stem + ".json"]
+        metadata = sources.read_json(raw)
+        if (
+            type(declared) is not dict
+            or set(declared) != {"identity", "status", "metadata_sha256"}
+            or declared["metadata_sha256"] != sources.sha256(raw)
+            or metadata.get("format") != FORMAT
+            or metadata.get("technical") is not technical
+            or metadata.get("status") != declared["status"]
+            or metadata.get("identity") != declared["identity"]
+            or metadata.get("series") != report.get("source")
+        ):
+            raise ValueError(
+                "Plot metadata contradicts its original completion report."
+            )
+        identity = metadata["identity"]
+        if type(identity) is not dict or any(
+            identity.get(key) != value
+            for key, value in {
+                "case": spec["id"],
+                "model": spec["noise_model"],
+                "block": spec["block"],
+                "arm": arm,
+            }.items()
+        ):
+            raise ValueError("Plot metadata has a different case or arm identity.")
+        table = payloads[stem + ".csv"]
+        if metadata.get("points_csv_sha256") != sources.sha256(table):
+            raise ValueError("Plot CSV differs from its bound numerical data.")
+        rows = list(csv.DictReader(io.StringIO(table.decode())))
+        if (
+            type(metadata.get("point_count")) is not int
+            or len(rows) != metadata["point_count"]
+        ):
+            raise ValueError("Plot CSV point count differs from its metadata.")
+        candidate = metadata.get("candidate")
+        equation = (
+            candidate["display_equation"]
+            if candidate is not None
+            else "Keine Originalformel verfügbar: " + str(metadata.get("reason"))
+        )
+        if payloads[stem + ".formula.txt"] != equation.encode():
+            raise ValueError("Plot formula differs from the unchanged original text.")
+
+
 def _verify_export(root, consumed):
     root = Path(root).absolute()
     if root != root.resolve() or not root.is_dir():
@@ -786,6 +872,7 @@ def _verify_export(root, consumed):
     report = sources.read_json(report_raw)
     if report.get("format") != FORMAT or report.get("status") != "completed":
         raise ValueError("Plot export is incomplete or revoked.")
+    _verify_payload_binding(report, expected)
     timing = _timing_path(root)
     if timing.is_symlink() or not timing.is_file():
         raise ValueError("Plot-export cost sidecar is missing or unsafe.")
@@ -819,6 +906,12 @@ def _transaction(output, build):
     def assemble(consumed):
         active.append(consumed)
         report, payloads = build(consumed)
+        report = {
+            **report,
+            "payload_sha256": {
+                name: sources.sha256(raw) for name, raw in sorted(payloads.items())
+            },
+        }
         expected = {
             **payloads,
             publication.REPORT: sources.json_bytes({**report, "status": "completed"}),
