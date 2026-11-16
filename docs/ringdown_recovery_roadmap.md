@@ -837,14 +837,39 @@ Zusatzraster und Definitionsnachweis bleiben getrennte notwendige Diagnosen.
 Die geschätzte AR(1)-Matrix stammt aus M_train/N=0,5 mit starkem
 Shrinkage; daraus folgt keine isolierte Kausaldiagnose des SR-Ergebnisses.
 
-Gemäß eingefrorener Anschlussregel folgt die gesonderte Hauptstudienplanung
-zu Hintergrundmenge und Gewichtung. Relevante Effektgröße, Präzisionsziel,
-neue unabhängige Fälle und Rechenumfang sind vor weiteren wissenschaftlichen
-Suchen zu beschließen. Die sechs beobachteten Differenzen liefern nur eine
-unsichere Streuungsschätzung; keine Fallzahl allein aus dem beobachteten kleinen
-Mittelwert ableiten. Weder neue Suchbudgetstaffel noch Grammatikänderung oder
-Zeitkoordinatenoptimierung aus dem Pilot ableiten. Die historische rauschfreie
-8/10-Grenze und die beschreibenden D-Klassen bilden keine neue Pilot-Freigaberegel.
+**Anschlussentscheidung vom 16.11.2026:** Nach Übernahme des Ergebnisnachtrags
+mit PR93 folgt zunächst die [begrenzte Hintergrundstudie](noise_background_plan.md):
+20 frische AR(1)-Blöcke als Hauptfrage und sechs frische white-Kontrollblöcke,
+**520 Suchen und 130 Paketausgaben**. Pro Block O/K einmal neu und E bei
+64/256/1.024 Trainingsfenstern. Kleine Trainingsmengen sind exakte Präfixe des
+1.024er-Pools; unabhängige Validierung 128 und Kontrolle 256 bleiben konstant.
+Bekanntes Signal, Pegel, Schätzer und Profil 4 × 1.000 bei lokal 300/5 bleiben
+fest. Keine historische Kontrollwiederverwendung, keine neue Suchbudgetstaffel,
+Grammatikänderung oder Zeitkoordinatenoptimierung.
+
+Künftig primär E1024 minus O des RMSE/A auf einem neuen vorab gebundenen
+unregelmäßigen Raster; sekundär E1024 minus E64. Der geänderte Endpunkt folgt
+aus den nachgewiesenen Zwischenpunktspitzen und gilt ausschließlich prospektiv.
+Historischer Trainingsendpunkt und alle 144er-Bewertungen bleiben erhalten.
+Deskriptive Effekte, Streuung, approximative Unsicherheit und geplante Ausfallnenner
+getrennt berichten; kein automatischer Sieger, kein binärer Bestehensmarker,
+keine Übertragung von 8/10. Die Fallzahl ist eine Ressourcen-/Präzisionsabwägung,
+keine Powergarantie aus sechs Pilotpaaren. Eine spätere konfirmatorische
+Effekt-/Äquivalenzaussage benötigt eigene Grenzen und Fallzahlplanung.
+
+Ergebnisse ab diesem Beschluss mit **Plot und vollständiger Originalformel**
+samt zugeordneten Quelldaten liefern, bei Serien für alle geplanten Ausgaben.
+Native Trainingsvorhersage und lesenden Replay an festgelegten Rastern
+unterscheiden; auch Ausfälle, Definitionslücken und Spitzen sichtbar lassen.
+Keine geglättete Ersatzformel und keine Plotbewertung als Suchauswahl verwenden.
+
+Zuerst den Methodenplan getrennt festschreiben und prüfen, danach den begrenzten
+Laufweg mit bestehenden Adaptern umsetzen. Lokale Tests, gezieltes KI-Review,
+vollständige erforderliche CI und neuer Manjaro-Vorlauf mit fünf Zehnerworkern
+gehen der separaten wissenschaftlichen Ausführung voraus. Der aktuelle Plan
+belegt weder Implementierung noch Start; der Fortsetzungsstand führt diese
+Schritte getrennt. Die alte 144er-Serie war bereits wissenschaftliche Ausführung;
+der technische Vorlauf für die neue Studie liefert keine neuen Qualitätsnachweise.
 
 Zunächst wenige Signale und Rauschbedingungen wählen. Rauschrealisierungen,
 Hintergrunddaten und Suchseeds als unterschiedliche Zufallsquellen behandeln.
@@ -862,8 +887,8 @@ Trainingsverluste sind kein gemeinsamer Qualitätsmaßstab zwischen Verfahren.
 A-D bleibt eine beschreibende Skala; rauschfreies A ist unter Rauschen kein
 automatisches allgemeines Bestehenskriterium.
 
-Anschließend die Hauptstudie zur Hintergrunddatenmenge und Kovarianzgewichtung
-anhand der Pilotergebnisse konkretisieren; den
+Die beschlossene begrenzte Hintergrundstudie konkretisiert diesen nächsten
+Schritt; bei ihrer Umsetzung weiterhin den
 [Kovarianzplan](covariance_method_plan.md) und
 [SR-Methodenplan](symbolic_regression_method_plan.md) berücksichtigen.
 

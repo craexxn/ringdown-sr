@@ -1,6 +1,56 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: 144er-Rauschpilot vollständig lesend bestätigt
+## Aktuell: begrenzte Hintergrundstudie beschlossen, noch nicht implementiert
+
+Stand 16.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md):
+Der [neue Methodenplan](noise_background_plan.md) legt 20 frische AR(1)-Blöcke
+und sechs frische white-Kontrollblöcke fest: **520 Suchen, 130 Paketausgaben**.
+Je Block O/K einmal neu sowie E64/E256/E1024 mit exakt geschachtelten
+Trainingsdaten; Validierung 128 und Kontrolle 256 bleiben fest. Bestätigtes
+4 × 1.000-Profil bei lokal 300/5, bekanntes Signal und Pegel unverändert.
+Primärer Kontrast E1024 minus O auf einem neuen vorab gespeicherten
+unregelmäßigen Raster; E1024 minus E64 sekundär. Keine automatische Wahl des
+besten Arms, neue Erfolgsgrenze oder Änderung des historischen Pilotendpunkts.
+Alle zukünftigen Ergebnisse mit Plot, unveränderter Originalformel und
+nachprüfbaren Plotdaten; Ausfälle und Spitzen sichtbar erhalten.
+
+Arbeitsbranch `codex/noise-background-protocol`, Basis
+`d1140178b2996c2bbf0bfa7e7ee98ced39dc856a`. PR93 ist auf ausdrücklichen Auftrag
+nach vollständiger Dokumentations-CI `43813136337` übernommen. Seine Eltern
+sind `eb663a0` und geprüfter Head `44be8ec`; Mergebaum
+`27ab2bf97b5917f9df2d888d5a4264fb3686505d` entspricht dem tatsächlich geprüften
+CI-Checkout `5ed865169ff691979705653052703f9e3a44e5d1`.
+
+Der neue Plan enthält vollständige Seeds, Reihenfolge, Eingabe-/Rasterbindung,
+Auswahl, Ausfälle, deskriptive Unsicherheit und Betriebsfristen. Seedprüfung:
+156 eindeutige neue Werte, Ausschluss von 2.119 historischen Dezimaltokens;
+109 verschiedene Daten-/Raster-Anfangszustände einschließlich technischer
+Rollen, auch gegenüber den alten Pilotrollen kollisionsfrei. Die historische
+72er-Seedtabelle samt Ausschlusshash wurde exakt reproduziert. Keine neuen
+Mess-/Hintergrunddaten, Fits oder wissenschaftlichen Suchen erzeugt.
+
+Protokoll-PR: [PR #94](https://github.com/craexxn/ringdown-sr/pull/94).
+Gezieltes KI-basiertes Methodenreview und unabhängige Zahlen-/Statusprüfung
+gegen Basis `d1140178b2996c2bbf0bfa7e7ee98ced39dc856a` auf Head
+`590649a14636d5ff7a30a3bfd6d1e5b04c26e82b`: keine korrekturbedürftigen
+Befunde im geprüften Umfang. Seeds, gepaarte Endpunkte, Ausfälle und
+Fristenarithmetik nachgerechnet; Student-t-Quantile zusätzlich unabhängig
+über die Beta-Verteilungsfunktion geprüft. Dokumentationsprüfung aller
+112 Markdown-Dateien und Diffprüfung bestanden. Danach ausschließlich
+GitHub-Mathematikdarstellung und dieser Prüfnachtrag ergänzt; keine
+Methodenänderung. Der historische Pilotplan bleibt bytegleich.
+
+Nächster abgegrenzter Schritt: getrennte Protokollübernahme, danach den
+fünfarmigen Laufweg samt lesender Verifikation und Plotexport mit vorhandenen
+Adaptern implementieren. Vor dem wissenschaftlichen Start
+fehlen lokale/nativ-technische Prüfungen, KI-Review, vollständige Ready-CI,
+autorisierte Übernahme und ein neuer Manjaro-N128-Vorlauf mit fünf Zehnerworkern.
+Erst dann konkrete neue Laufbefehle; die bisherigen 144er-Befehle führen diesen
+Vergleich nicht aus. Wissenschaftliche Ausführung und Archivierung bleiben
+getrennte Schritte. Rund 46,14 extrapolierte Worker-Stunden sind eine unsichere
+Aufwandsorientierung, keine gemessene Laufzeit dieser noch nicht gestarteten Serie.
+
+## Abgeschlossener 144er-Rauschpilot vollständig lesend bestätigt
 
 Abgleich vom 16.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md):
 Der [wissenschaftliche Manjaro-Lauf 001](noise_pilot_results_manjaro_001.md)
@@ -27,10 +77,10 @@ Definitionsnachweis und Trainingsfehler allein erfassen diese Spitze nicht.
 Vollständiger Serienaufruf 47.491,474 s, historische separate
 Verifikation 96,010 s; enthaltene Teilzeiten nicht nochmals addieren.
 
-Nächster abgegrenzter Schritt: gesonderte Hauptstudienplanung für Hintergrundmenge
-und Gewichtung mit relevanter Effektgröße, gewünschter Präzision und neuen
-unabhängigen Fällen. Kein neuer Suchhebel und kein automatischer Laufauftrag.
-Protokoll, Implementierung und Bewertungsregeln bleiben unverändert.
+Der daraus abgeleitete nächste Schritt ist inzwischen oben als begrenzte
+Hintergrundstudie konkretisiert. Das historische 144er-Protokoll, seine
+Implementierung und Bewertungsregeln bleiben unverändert; keine neue
+Suchintervention und keine automatische Anschlussausführung.
 Archivablage und unabhängige hashgeprüfte Zweitkopie bleiben im
 [Ergebnisindex](results_index.md#wissenschaftlicher-rauschpilot-manjaro-001) offen.
 

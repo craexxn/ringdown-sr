@@ -64,6 +64,12 @@ ist nun vollständig lesend bestätigt: 144 abgeschlossene Suchen, 36 Paketausga
 keine Ausfälle. Die beiden [Archiveinträge unten](#wissenschaftlicher-rauschpilot-manjaro-001)
 trennen technischen Vorlauf, wissenschaftlichen Befund und weiterhin offene Sicherung.
 
+Die am 16.11.2026 beschlossene [520er-Hintergrundstudie](noise_background_plan.md)
+ist bislang ausschließlich geplant. Es existieren noch kein wissenschaftlicher
+Lauf, Ausführungscommit oder Originalarchiv dieser Studie; deshalb kein neuer
+Ergebniseintrag und keine Umwidmung alter Pilotarchive. Spätere Plot-/Formel-
+Exporte werden mit dem Original und seinen Prüfsummen verknüpft.
+
 ## Archivablage
 
 Die gemeinsamen Ablagehinweise werden einmal hier gepflegt. Die Dateinamen in
