@@ -1,6 +1,6 @@
 # Laufweg für den begrenzten Rauschpilot
 
-Stand 15.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
+Stand 16.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
 Der [vor Implementierung beschlossene Plan](noise_pilot_plan.md) ist an Commit
 `27367a707b0f78c2d8e4ec397e0af6d958f5c527` und SHA-256
 `2a8e521b7729a668832ca02b0c8dd587d46ddec4010d7657d71e7b4d4d295fb8`
@@ -12,9 +12,12 @@ PR92 ist als `eb663a0bf008f7c8697ef7ec5386b3e11545a19f` übernommen.
 Der technische Manjaro-N128-Vorlauf wurde am Originalarchiv lesend bestätigt:
 drei erfolgreiche Worker, vollständiger Aufruf 161,847 s. Die
 [Ressourcenprüfung vom 15.11.2026](representation_implementation_status.md#technischer-manjaro-n128-nachweis-vom-15112026)
-ergab keinen Anlass zur Friständerung. Die 144er-Serie ist damit startbereit,
-aber noch nicht als ausgeführt belegt; Protokoll und Erfolgskriterien bleiben
-unverändert.
+ergab keinen Anlass zur Friständerung. Der [wissenschaftliche Lauf 001](noise_pilot_results_manjaro_001.md)
+ist inzwischen vollständig lesend bestätigt: 144 abgeschlossene Suchen,
+36 Paketausgaben, keine Ausfälle. Protokoll und Bewertungsregeln bleiben
+unverändert. Die folgenden Befehle dokumentieren den ausgeführten Laufweg;
+bestehende 001-Ordner/Archive erhalten und nicht erneut ausführen. Weitere
+wissenschaftliche Serien benötigen einen gesonderten Plan und Auftrag.
 
 ## Umsetzung und Aussagegrenzen
 
@@ -64,8 +67,9 @@ behält seine Teilkosten; fehlende Werte werden nicht null.
 ## Manjaro: bestätigten Ausführungsstand erhalten
 
 Der bereits geprüfte Manjaro-Checkout und seine numerische Umgebung bleiben
-für die wissenschaftliche Serie unverändert. Dort mit Schritt 2 fortfahren;
-kein `git pull`, Commitwechsel oder erneutes `uv sync`. Auch ein neuer reiner
+für die historische Reproduzierbarkeit erhalten. Der dokumentierte Schritt 2
+ist für Lauf 001 bereits abgeschlossen. Kein `git pull`, Commitwechsel oder
+erneutes `uv sync` in diesem Ausführungscheckout. Auch ein neuer reiner
 Dokumentationscommit würde die verlangte exakte Commitgleichheit zum
 technischen Vorlauf aufheben.
 
@@ -130,8 +134,9 @@ notwendige Friständerung benötigt einen begründeten Beschluss vor dem Start.
 
 ### 2. Wissenschaftliche Serie als separater Ausführungsschritt
 
-Manjaro-Vorlauf und Ressourcenprüfung sind für `eb663a0` bestanden. Dieselbe
-Umgebung und derselbe Checkout bleiben bestehen. Der folgende Block bereitet
+Historischer Laufweg, inzwischen abgeschlossen: Manjaro-Vorlauf und
+Ressourcenprüfung waren für `eb663a0` bestanden. Dieselbe Umgebung und derselbe
+Checkout blieben bestehen. Der folgende Block bereitet
 alle Fälle vor und führt anschließend sämtliche 144 geplanten Suchen ohne
 interaktive Zwischenentscheidungen aus. Er überschreibt keine vorhandene ID.
 

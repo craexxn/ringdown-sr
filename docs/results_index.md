@@ -1,6 +1,6 @@
 # Ergebnisindex und Archivierungsstand
 
-Stand: 15.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
+Stand: 16.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
 nachträglichen Bewertungen; [Ablagerichtlinie](results_archiving.md).
 Serien sind die Indexeinheit, ihre Zellen/Wiederholungen bleiben im Originalbericht.
 Die Aufstellung ist keine Behauptung, dass alle jemals lokal erzeugten Ergebnisse
@@ -59,9 +59,10 @@ der bloßen Verfügbarkeit der Arbeitskopie.
 Der [144er-Rauschpilot](noise_pilot_plan.md) ist beschlossen und sein
 [Serienlaufweg](noise_pilot.md) mit PR92 übernommen. Der technische
 Manjaro-N128-Vorlauf ist am Originalarchiv lesend bestätigt; drei erfolgreiche
-Zehnerworker, keine wissenschaftliche Serie. Deren Start ist noch nicht belegt.
-Der [Nachweis unten](#technischer-rauschpilot-vorlauf-vom-15112026) trennt
-Original, Prüfung und weiterhin offene Sicherung.
+Zehnerworker. Auch der [wissenschaftliche Lauf 001](noise_pilot_results_manjaro_001.md)
+ist nun vollständig lesend bestätigt: 144 abgeschlossene Suchen, 36 Paketausgaben,
+keine Ausfälle. Die beiden [Archiveinträge unten](#wissenschaftlicher-rauschpilot-manjaro-001)
+trennen technischen Vorlauf, wissenschaftlichen Befund und weiterhin offene Sicherung.
 
 ## Archivablage
 
@@ -544,6 +545,31 @@ Das separate historische CLI-Verifikationsprotokoll samt Prüfzeit fehlt;
 diese Zeit bleibt unbekannt, die neue eigene lesende Prüfung ist belegt.
 Ablage im gemeinsamen Archivordner und unabhängige hashgeprüfte Zweitkopie
 weiterhin unbestätigt; [Ablagezuordnung](#archivablage). GitHub-Upload optional.
+
+### Wissenschaftlicher Rauschpilot Manjaro 001
+
+`noise-pilot-manjaro-001`, wissenschaftlich ausgeführt und vollständig lesend
+geprüft auf `eb663a0bf008f7c8697ef7ec5386b3e11545a19f`. 144 abgeschlossene
+Tausendersuchen, 36 Paketausgaben aus zwölf Dreiervergleichen, keine Ausfälle.
+Vollständiger Serienaufruf 47.491,474 s; historische separate Verifikation
+96,010 s. Wissenschaftliche Einzelwerte, Kosten und Einordnung im
+[Ergebnisbericht](noise_pilot_results_manjaro_001.md).
+
+Originalarchiv `noise-pilot-manjaro-001.tar.gz`: **92.167.501 Bytes**, SHA-256
+`86a099ebe193669c945abbb918e8b18dd15b21b6341da44622bc1f6efdc69688`.
+Am 16.11.2026 aus vier gelieferten Teilen in Reihenfolge 000–003 bytegetreu
+zusammengesetzt; Original-SHA und TAR geprüft. 4.916 reguläre Dateien,
+469.279.570 entpackte Dateibytes. Enthält wissenschaftliche Inputs, Serie,
+separaten Verify-Export samt Aufrufmessungen sowie den technischen Originalordner;
+dessen 103 Dateien sind bytegleich zum bereits geprüften technischen Original.
+Alle 4.916 Dateien und Archivbytes nach eigener Prüfung unverändert; vier
+neue Verify-Exportdateien bytegleich zum gelieferten Export.
+
+Übermittelte Arbeitskopie vorhanden; für diese abgeschlossene Serie fehlen
+keine Laufdateien. Dauerhafte gemeinsame Archivablage und unabhängige
+hashgeprüfte Zweitkopie weiterhin unbestätigt; [Ablagezuordnung](#archivablage).
+Die vier Transportteile ersetzen keinen Nachweis einer unabhängigen Sicherung.
+GitHub-Upload bleibt optional.
 
 ### Priorisierte fehlende Belege
 

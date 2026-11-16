@@ -1,8 +1,42 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Manjaro-N128-Vorlauf bestätigt, 144er-Rauschpilot startbereit
+## Aktuell: 144er-Rauschpilot vollständig lesend bestätigt
 
-Aktueller Abgleich vom 15.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md):
+Abgleich vom 16.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md):
+Der [wissenschaftliche Manjaro-Lauf 001](noise_pilot_results_manjaro_001.md)
+ist auf dem sauberen PR92-Merge `eb663a0bf008f7c8697ef7ec5386b3e11545a19f`
+ausgeführt und vollständig lesend bestätigt. Alle 144 Worker beenden je 1.000
+äußere Iterationen; 36 Originalpaketausgaben, keine Ausfälle oder Timeouts.
+Das aus vier Teilen zusammengesetzte Originalarchiv hat SHA-256
+`86a099ebe193669c945abbb918e8b18dd15b21b6341da44622bc1f6efdc69688`.
+Alle 4.916 Originaldateien blieben unverändert; vier eigene Verify-Exportdateien
+sind bytegleich zum mitgelieferten Export. Getrennte KI-basierte Gegenprüfungen
+bestätigten Integrität/Kosten und die wissenschaftlichen Nachrechnungen; Details,
+Einzelwerte und Aussagegrenzen stehen im Ergebnisbericht.
+
+Mittlerer primärer Fehler E_A für gewöhnliche / bekannte / geschätzte Gewichtung:
+white 0,016240 / 0,016659 / 0,016658; AR(1) 0,024122 / 0,024056 / 0,027415.
+Der mittlere primäre Kontrast geschätzt minus gewöhnlich ist damit in beiden
+Modellen positiv; keine automatische Armwahl oder neue Erfolgsgrenze.
+Alle 36 Ausgaben sind D nach der unveränderten rauschfreien Skala; kein gültiges
+Originalfamilienmitglied nachgewiesen, 34 Nachweise ungeklärt und zwei Originale
+wegen Definitionslücken nachweislich keine Mitglieder. Parameter bleiben
+`not_assessed`. Die vorhandenen Zusatzraster zeigen bei AR(1)/Block 5/bekannter
+Kovarianz Maximalfehler bis 1,83038 A trotz Trainings-RMSE/A 0,01400;
+Definitionsnachweis und Trainingsfehler allein erfassen diese Spitze nicht.
+Vollständiger Serienaufruf 47.491,474 s, historische separate
+Verifikation 96,010 s; enthaltene Teilzeiten nicht nochmals addieren.
+
+Nächster abgegrenzter Schritt: gesonderte Hauptstudienplanung für Hintergrundmenge
+und Gewichtung mit relevanter Effektgröße, gewünschter Präzision und neuen
+unabhängigen Fällen. Kein neuer Suchhebel und kein automatischer Laufauftrag.
+Protokoll, Implementierung und Bewertungsregeln bleiben unverändert.
+Archivablage und unabhängige hashgeprüfte Zweitkopie bleiben im
+[Ergebnisindex](results_index.md#wissenschaftlicher-rauschpilot-manjaro-001) offen.
+
+### Technische Umsetzung und Übernahme
+
+Technischer Übernahmestand vom 15.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md):
 PR90 ist nach erfolgreicher Dokumentations-CI `43622947853` als
 `3aa02bcfadc536adb1a4dd2477176dd4c211d8e3` übernommen. Das am 14.11.2026
 beschlossene [144er-Protokoll](noise_pilot_plan.md) ist mit PR91 nach
@@ -27,8 +61,9 @@ Methodik, alle wissenschaftlichen und technischen Seeds, Raster, Auswahl,
 Ausfälle, Kosten und Anschlussregel sind bereits beschlossen. Die Eingaben
 werden einschließlich hochpräziser Signalreferenzen vorab geprüft. Verifikation
 führt weder neue Suchen noch Nachfits aus. Vollständige Aufrufkosten und
-späte Widerrufsprüfungen gehören zur technischen Abnahme. Keine wissenschaftliche
-Serie ist gestartet; noch kein wissenschaftliches Ergebnis oder Archiv dafür.
+späte Widerrufsprüfungen gehören zur technischen Abnahme. Zum damaligen
+Implementierungsabschluss war noch keine wissenschaftliche Serie gestartet;
+der inzwischen bestätigte Lauf ist oben getrennt zugeordnet.
 
 Implementierungs-PR: [PR #92](https://github.com/craexxn/ringdown-sr/pull/92),
 als Draft entwickelt und am 15.11.2026 nach vollständiger
@@ -136,8 +171,9 @@ mit unverändertem Protokoll auf demselben sauberen `eb663a0` und in derselben
 numerischen Umgebung. Ein neuer Dokumentationscommit darf diesen
 Ausführungscheckout nicht ersetzen. Alle zwölf wissenschaftlichen Eingaben
 werden vor den Fits/Suchen neu vorbereitet; technische Seeds werden nicht
-als wissenschaftliche Wiederholungen gezählt. Ein Start der Serie ist noch
-nicht belegt. Gemeinsame Archivablage und unabhängige hashgeprüfte Zweitkopie
+als wissenschaftliche Wiederholungen gezählt. Zum Zeitpunkt dieser technischen
+Abnahme war ihr Start noch nicht belegt; der spätere wissenschaftliche Befund
+steht oben und im Ergebnisbericht. Gemeinsame Archivablage und unabhängige hashgeprüfte Zweitkopie
 bleiben im [Ergebnisindex](results_index.md#technischer-rauschpilot-vorlauf-vom-15112026) offen.
 
 ### Übernommene Profilroute und ihr technischer Nachweis

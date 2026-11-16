@@ -816,12 +816,35 @@ CI bestanden. Der Manjaro-N128-Vorlauf ist am Original lesend bestätigt:
 drei erfolgreiche Zehnerworker bei lokal 300/5, vollständiger Aufruf
 161,847 Sekunden, keine neuen Suchen bei der Nachprüfung. Der Ressourcenbefund
 begründet keine Friständerung. Die 144er-Serie ist der nächste separate
-Ausführungsschritt auf unverändertem `eb663a0`; ein Start ist noch nicht
-belegt. Gerätebelege, Kosten und Grenzen stehen im
+Ausführungsschritt auf unverändertem `eb663a0`; am 15.11.2026 war ihr Start
+noch nicht belegt. Der nachgereichte wissenschaftliche Befund folgt unten.
+Gerätebelege, Kosten und Grenzen des Vorlaufs stehen im
 [Fortsetzungsstand](representation_implementation_status.md#technischer-manjaro-n128-nachweis-vom-15112026).
 Der Vorlauf ist kein wissenschaftlicher Robustheits- oder Laufzeitnachweis
 für Tausenderläufe. Das eingefrorene Protokoll und historische Bewertungen
 bleiben unverändert.
+
+**Auswertung und nächste Planung, ergänzt am 16.11.2026:** Der separate
+[144er-Pilot 001](noise_pilot_results_manjaro_001.md) ist inzwischen vollständig
+lesend bestätigt: 36 Paketausgaben, keine Ausfälle, rund 13 h 12 min Serienzeit.
+Geschätzte Gewichtung erreicht gegenüber gewöhnlicher MSE keinen kleineren
+mittleren primären Rekonstruktionsfehler: Delta +0,000418 bei white und
++0,003293 bei AR(1), jeweils sechs vollständige Paare. Das ist eine Beschreibung
+dieses Piloten, kein allgemeiner Nachweis einer Unterlegenheit oder Gleichwertigkeit.
+Die bekannte Kovarianz bringt unter AR(1) ebenfalls keinen deutlichen mittleren
+Gewinn und zeigt in Block 5 eine nachgerechnete Zwischenpunktspitze bis 1,83 A;
+Zusatzraster und Definitionsnachweis bleiben getrennte notwendige Diagnosen.
+Die geschätzte AR(1)-Matrix stammt aus M_train/N=0,5 mit starkem
+Shrinkage; daraus folgt keine isolierte Kausaldiagnose des SR-Ergebnisses.
+
+Gemäß eingefrorener Anschlussregel folgt die gesonderte Hauptstudienplanung
+zu Hintergrundmenge und Gewichtung. Relevante Effektgröße, Präzisionsziel,
+neue unabhängige Fälle und Rechenumfang sind vor weiteren wissenschaftlichen
+Suchen zu beschließen. Die sechs beobachteten Differenzen liefern nur eine
+unsichere Streuungsschätzung; keine Fallzahl allein aus dem beobachteten kleinen
+Mittelwert ableiten. Weder neue Suchbudgetstaffel noch Grammatikänderung oder
+Zeitkoordinatenoptimierung aus dem Pilot ableiten. Die historische rauschfreie
+8/10-Grenze und die beschreibenden D-Klassen bilden keine neue Pilot-Freigaberegel.
 
 Zunächst wenige Signale und Rauschbedingungen wählen. Rauschrealisierungen,
 Hintergrunddaten und Suchseeds als unterschiedliche Zufallsquellen behandeln.
