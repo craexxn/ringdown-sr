@@ -170,6 +170,7 @@ Dies ist eine begrenzte Prüfung, kein vollständiger Markdown-Parser.
 sowie `docs/iteration_time_budget_plan.md`, `docs/restart_confirmation_plan.md`
 und `docs/time_coordinate_plan.md`, `docs/restart_budget_plan.md`,
 `docs/restart_budget_confirmation_plan.md`, `docs/noise_pilot_plan.md`
+und `docs/noise_background_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -247,6 +248,22 @@ Suchen wird in Actions gestartet; sämtliche bisherigen Prüfblöcke bleiben
 erhalten. Die Frist des nativen Jobs bleibt zunächst bei 120 Minuten; die
 Laufzeit des neuen Vorlaufs muss vor Ready gegen die verbleibende Reserve
 geprüft werden. Dies ändert keine wissenschaftliche Workerfrist.
+
+Die Hintergrundstudie ergänzt `scripts/check_noise_background.py`: fünf
+frische N128-Worker mit zehn äußeren Iterationen bei lokal 300/5, je einer
+für O/K/E64/E256/E1024. Ein gemeinsamer technischer AR(1)-Fall bindet den
+1.024er-Trainingspool samt Präfixen und die getrennten 128/256 Fenster.
+Nach dem Lauf folgen ein eigener `--verify`-Aufruf und der rein lesende
+`run_noise_background.py technical-plots`-Export mit Originalformeln und
+zugeordneten Plotdaten. Jeder der drei Schritte sperrt bei einem Fehler den
+Job; vorhandene Workerlogs bleiben sichtbar. Die Ausgaben
+`results/ci-noise-background-001` und `results/ci-noise-background-plots-001`
+sind getrennt. Alle bisherigen Prüfblöcke bleiben erhalten; keine der
+520 wissenschaftlichen Suchen wird in Actions gestartet. Der neu konsumierte
+Hintergrundplan gehört zum vollen CI-Scope. Die native Jobfrist bleibt
+zunächst bei 120 Minuten; ihre Reserve ist anhand des neuen technischen
+Laufs vor Ready zu prüfen. Implementierung und Workflowanbindung allein
+belegen noch keine erfolgreiche native Prüfung.
 
 Die Frist ausschließlich des seriellen `native`-Jobs wurde mit PR85 auf 90 Minuten
 gesetzt. Der damals zuletzt vollständig geprüfte native PR83-Lauf

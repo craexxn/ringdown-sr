@@ -65,8 +65,9 @@ keine Ausfälle. Die beiden [Archiveinträge unten](#wissenschaftlicher-rauschpi
 trennen technischen Vorlauf, wissenschaftlichen Befund und weiterhin offene Sicherung.
 
 Die am 16.11.2026 beschlossene [520er-Hintergrundstudie](noise_background_plan.md)
-ist bislang ausschließlich geplant. Es existieren noch kein wissenschaftlicher
-Lauf, Ausführungscommit oder Originalarchiv dieser Studie; deshalb kein neuer
+ist mit PR94 als Protokoll übernommen; der [getrennte Laufweg](noise_background.md)
+ist in Entwicklung. Es existieren noch kein wissenschaftlicher Lauf,
+freigegebener Ausführungscommit oder Originalarchiv dieser Studie; deshalb kein neuer
 Ergebniseintrag und keine Umwidmung alter Pilotarchive. Spätere Plot-/Formel-
 Exporte werden mit dem Original und seinen Prüfsummen verknüpft.
 

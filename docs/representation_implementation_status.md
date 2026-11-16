@@ -1,6 +1,31 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: begrenzte Hintergrundstudie beschlossen, noch nicht implementiert
+## Aktuell: fünfarmiger Hintergrundlaufweg in Entwicklung
+
+Stand 16.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md):
+Das Protokoll ist mit [PR #94](https://github.com/craexxn/ringdown-sr/pull/94)
+auf ausdrücklichen Auftrag als `8b8b3569dd78ca2282704d2799d81fe1d73bfb42`
+übernommen. Der [neue Laufweg](noise_background.md) entsteht auf
+`codex/noise-background-study` mit diesem Merge als Basis. Unveränderte
+Laufzeitbindung des Plans: Commit `0c4b52868d8cc9809f38db02fe066ab540bcfeb3`,
+SHA-256 `d3bb289cf4a2ac75a31f88c34721ca72da348c5af6d9d6a3917d4a6cc90f52f7`.
+
+Die Umsetzung trennt Eingabevorbereitung, fünfarmige Serie, lesende
+Gesamtverifikation und grafischen Export. Ein neuer technischer N128-Vorlauf
+mit fünf Zehnerworkern prüft sämtliche Hintergrundstufen. Die CI-Anbindung
+ergänzt diesen Lauf, separate Verifikation und technischen Plotexport;
+der nun konsumierte Plan gehört zum vollständigen CI-Scope. Bestehende
+Prüfblöcke und eingefrorene wissenschaftliche Budgets bleiben erhalten.
+
+Lokale Prüfungen, native Abnahme, KI-basiertes Implementierungsreview,
+vollständige Ready-CI und Übernahme des Implementierungsstands stehen noch aus.
+Ein eigener Manjaro-Vorlauf samt Ressourcenbewertung ist danach ebenfalls
+erforderlich. Die dokumentierten Befehle besitzen noch keinen freigegebenen
+Ausführungscommit und belegen keinen gestarteten wissenschaftlichen Lauf.
+Nächster abgegrenzter Schritt ist die gebündelte Implementierungsprüfung;
+erst nach technischer Übernahme folgt der neue Manjaro-Vorlauf.
+
+## Übernommenes Protokoll der begrenzten Hintergrundstudie
 
 Stand 16.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md):
 Der [neue Methodenplan](noise_background_plan.md) legt 20 frische AR(1)-Blöcke
@@ -14,7 +39,7 @@ besten Arms, neue Erfolgsgrenze oder Änderung des historischen Pilotendpunkts.
 Alle zukünftigen Ergebnisse mit Plot, unveränderter Originalformel und
 nachprüfbaren Plotdaten; Ausfälle und Spitzen sichtbar erhalten.
 
-Arbeitsbranch `codex/noise-background-protocol`, Basis
+Protokollentwicklung auf `codex/noise-background-protocol`, Basis
 `d1140178b2996c2bbf0bfa7e7ee98ced39dc856a`. PR93 ist auf ausdrücklichen Auftrag
 nach vollständiger Dokumentations-CI `43813136337` übernommen. Seine Eltern
 sind `eb663a0` und geprüfter Head `44be8ec`; Mergebaum
@@ -40,9 +65,9 @@ Fristenarithmetik nachgerechnet; Student-t-Quantile zusätzlich unabhängig
 GitHub-Mathematikdarstellung und dieser Prüfnachtrag ergänzt; keine
 Methodenänderung. Der historische Pilotplan bleibt bytegleich.
 
-Nächster abgegrenzter Schritt: getrennte Protokollübernahme, danach den
-fünfarmigen Laufweg samt lesender Verifikation und Plotexport mit vorhandenen
-Adaptern implementieren. Vor dem wissenschaftlichen Start
+Der damalige nächste Schritt, getrennte Protokollübernahme, ist mit PR94
+abgeschlossen; die anschließende Implementierung ist oben zugeordnet.
+Vor dem wissenschaftlichen Start
 fehlen lokale/nativ-technische Prüfungen, KI-Review, vollständige Ready-CI,
 autorisierte Übernahme und ein neuer Manjaro-N128-Vorlauf mit fünf Zehnerworkern.
 Erst dann konkrete neue Laufbefehle; die bisherigen 144er-Befehle führen diesen

@@ -52,6 +52,7 @@ def test_only_allowed_prose_can_skip_the_technical_suite(paths):
         "docs/global_restart_comparison_plan.md",
         "docs/restart_budget_confirmation_plan.md",
         "docs/noise_pilot_plan.md",
+        "docs/noise_background_plan.md",
         "data/transfer_check_inputs.npz",
         "data/transfer_check_inputs.json",
         "docs/reference.npz",
@@ -709,6 +710,7 @@ def test_all_original_commands_options_error_wrappers_and_order_are_preserved():
         "Verify budget confirmation on two tiny signals and twelve workers",
         "Verify confirmed weighted profile and six tiny workers",
         "Verify noise pilot with three bounded technical workers",
+        "Verify background study with five bounded technical workers and plots",
     }
     ordered = []
     for group in ("native-a", "native-b", "native-c"):
@@ -775,6 +777,66 @@ def test_noise_pilot_ci_propagates_run_and_read_only_verification_failures(
         assert "--verify results/ci-noise-pilot-001" in invoked[1]
     if run_exit or verify_exit:
         assert "technical worker evidence" in result.stdout
+
+
+@pytest.mark.parametrize("failed_stage", [None, "run", "verify", "plots"])
+def test_background_ci_stops_on_run_verification_or_plot_failure(
+    tmp_path, failed_stage
+):
+    _, jobs = workflow_jobs()
+    step = next(
+        step
+        for step in workflow_steps(jobs["native"])
+        if "- name: Verify background study with five bounded technical workers and plots"
+        in step
+    )
+    shell = "\n".join(
+        line.removeprefix("          ")
+        for line in step.split("        run: |\n", 1)[1].splitlines()
+    )
+    uv = tmp_path / "uv"
+    uv.write_text(
+        '#!/bin/sh\nprintf "%s\\n" "$*" >> "$TEST_UV_CALLS"\n'
+        'case "$*" in\n'
+        '"run --locked python scripts/check_noise_background.py --output '
+        'results/ci-noise-background-001")\n'
+        "  mkdir -p results/ci-noise-background-001\n"
+        '  printf "background worker evidence\\n" > '
+        "results/ci-noise-background-001/worker.log\n"
+        "  stage=run ;;\n"
+        '"run --locked python scripts/check_noise_background.py --verify '
+        'results/ci-noise-background-001") stage=verify ;;\n'
+        '"run --locked python scripts/run_noise_background.py technical-plots '
+        "--technical results/ci-noise-background-001 "
+        '--export results/ci-noise-background-plots-001") stage=plots ;;\n'
+        "*) exit 99 ;;\nesac\n"
+        'test "$stage" != "$FAILED_STAGE"\n'
+    )
+    uv.chmod(0o755)
+    calls = tmp_path / "calls.log"
+    result = subprocess.run(
+        ["bash", "-e", "-c", shell],
+        cwd=tmp_path,
+        env={
+            **os.environ,
+            "PATH": str(tmp_path) + os.pathsep + os.environ["PATH"],
+            "TEST_UV_CALLS": str(calls),
+            "FAILED_STAGE": failed_stage or "none",
+        },
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == int(failed_stage is not None)
+    invoked = calls.read_text().splitlines()
+    assert len(invoked) == {None: 3, "run": 1, "verify": 2, "plots": 3}[failed_stage]
+    assert "--output results/ci-noise-background-001" in invoked[0]
+    if len(invoked) > 1:
+        assert "--verify results/ci-noise-background-001" in invoked[1]
+    if len(invoked) > 2:
+        assert "technical-plots" in invoked[2]
+    if failed_stage:
+        assert "background worker evidence" in result.stdout
 
 
 def test_workflow_requires_early_success_and_all_native_results_without_bypasses():
