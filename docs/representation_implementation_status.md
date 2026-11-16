@@ -29,9 +29,20 @@ Rollen, auch gegenüber den alten Pilotrollen kollisionsfrei. Die historische
 72er-Seedtabelle samt Ausschlusshash wurde exakt reproduziert. Keine neuen
 Mess-/Hintergrunddaten, Fits oder wissenschaftlichen Suchen erzeugt.
 
-Nächster abgegrenzter Schritt: Protokoll getrennt versionieren, gezielt prüfen
-und danach den fünfarmigen Laufweg samt lesender Verifikation und Plotexport
-mit vorhandenen Adaptern implementieren. Vor dem wissenschaftlichen Start
+Protokoll-PR: [PR #94](https://github.com/craexxn/ringdown-sr/pull/94).
+Gezieltes KI-basiertes Methodenreview und unabhängige Zahlen-/Statusprüfung
+gegen Basis `d1140178b2996c2bbf0bfa7e7ee98ced39dc856a` auf Head
+`590649a14636d5ff7a30a3bfd6d1e5b04c26e82b`: keine korrekturbedürftigen
+Befunde im geprüften Umfang. Seeds, gepaarte Endpunkte, Ausfälle und
+Fristenarithmetik nachgerechnet; Student-t-Quantile zusätzlich unabhängig
+über die Beta-Verteilungsfunktion geprüft. Dokumentationsprüfung aller
+112 Markdown-Dateien und Diffprüfung bestanden. Danach ausschließlich
+GitHub-Mathematikdarstellung und dieser Prüfnachtrag ergänzt; keine
+Methodenänderung. Der historische Pilotplan bleibt bytegleich.
+
+Nächster abgegrenzter Schritt: getrennte Protokollübernahme, danach den
+fünfarmigen Laufweg samt lesender Verifikation und Plotexport mit vorhandenen
+Adaptern implementieren. Vor dem wissenschaftlichen Start
 fehlen lokale/nativ-technische Prüfungen, KI-Review, vollständige Ready-CI,
 autorisierte Übernahme und ein neuer Manjaro-N128-Vorlauf mit fünf Zehnerworkern.
 Erst dann konkrete neue Laufbefehle; die bisherigen 144er-Befehle führen diesen

@@ -55,9 +55,9 @@ geschlossenes Intervall [0,127/4096] s. Keine Zeitnormalisierung.
 
 Die saubere Referenz lautet
 
-\[
+$$
 s(t)=A\exp(-t/\tau)\cos(2\pi f t+\phi).
-\]
+$$
 
 Maßgeblich sind die Binary64-Parameter, nicht ihre verkürzte Dezimaldarstellung:
 
@@ -223,11 +223,11 @@ abbrechen. Die bisherigen 889 regulären Zwischenpunkte ebenfalls erhalten.
 
 Für jede ausgewählte Originalformel lautet der **neue primäre Fehler**
 
-\[
+$$
 E_{b,a}=\frac{1}{|A|}\sqrt{\frac{1}{1024}
  \sum_{j=1}^{1024}\left[\widehat s_{b,a}(t_j^*)-s(t_j^*)\right]^2},
 \qquad \Delta_b=E_{b,E1024}-E_{b,O}.
-\]
+$$
 
 Negative Delta bedeuten weniger Fehler durch E1024 in diesem Block. Dies ist
 eine Bewertung an unbenutzten Zeiten im bekannten Fenster, keine unabhängige
@@ -247,11 +247,11 @@ Ausreißerentfernung, Winsorisierung oder zusätzliche Ersatzseeds.
 Nur bei vollständigen Paaren eines Kontrasts seine Monte-Carlo-Unsicherheit
 für den geplanten Vergleich ergänzen:
 
-\[
+$$
 \overline\Delta=\frac{1}{n}\sum_b\Delta_b,\quad
 \operatorname{MCSE}=\frac{s_\Delta}{\sqrt n},\quad
 I_{95}=\overline\Delta\ \pm\ t_{0.975,n-1}\operatorname{MCSE}.
-\]
+$$
 
 Das Student-t-Intervall ist eine **approximative, marginale** Präzisionsangabe
 für den Mittelwert, keine exakte Garantie bei schiefen Verteilungen/Spitzen,
