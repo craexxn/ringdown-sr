@@ -166,11 +166,17 @@ der geschätzten Gewichtung; sechs Blöcke je Modell erlauben keinen allgemeinen
 strengen rauschfreien Skala D; diese Skala ist keine Pilot-Bestehensgrenze.
 Eine Ausgabe des Arms mit bekannter Kovarianz zeigt zwischen Trainingspunkten einen Fehler
 bis 1,83 A trotz kleinem Trainingsfehler; die Zusatzraster bleiben wesentlich.
-Nächster Schritt ist ein gesonderter Hauptstudienplan zu Hintergrundmenge,
-Gewichtung und gewünschter Präzision; keine automatische Anschlussserie.
-Keine zusätzliche Budgetstaffel oder automatische Ausführung daraus ableiten.
-Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
-ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater
+Der Ergebnisnachtrag ist mit [PR #93](https://github.com/craexxn/ringdown-sr/pull/93)
+nach grüner Dokumentations-CI als `d114017` übernommen. Am 16.11.2026 ist die
+[begrenzte Hintergrundstudie](docs/noise_background_plan.md) mit **20 neuen
+AR(1)- und sechs weißen Kontrollblöcken, 520 Suchen** beschlossen: O/K einmal
+je Block, geschätzte Gewichtung bei 64/256/1.024 Trainingsfenstern; Profil
+4 × 1.000 bei lokal 300/5 unverändert. Primär künftig E1024 minus O auf einem
+neuen vorab gebundenen unregelmäßigen Raster; der historische Pilot bleibt
+unverändert. Das Protokoll wird getrennt festgeschrieben; Implementierung,
+technische Abnahme und neuer Manjaro-Vorlauf stehen noch aus. Ergebnisse
+künftig mit **Plot, vollständiger Originalformel und zugeordneten Plotdaten**.
+Das Zusatzraster bestimmt weder Suchauswahl noch vorzeitiges Ende. Wissenschaftliche Suchläufe bleiben ein separater
 Ausführungsschritt. Umsetzung und Nachweise stehen im
 [Fortsetzungsstand](docs/representation_implementation_status.md).
 

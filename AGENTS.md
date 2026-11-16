@@ -70,6 +70,11 @@ der [Fortsetzungsstand in der README](README.md#projektstatus).
 - Technische Funktionsfähigkeit und wissenschaftliche Validierung
   ausdrücklich unterscheiden.
 - Ergebnisse, Laufzeiten und Testerfolge niemals erfinden.
+- Ergebnisse auch grafisch mit Plot und vollständiger unveränderter Originalformel
+  samt Einheiten, Fallzuordnung und nachprüfbaren Plotdaten ausgeben.
+  Bei Serien alle geplanten Ausgaben einschließlich Ausfällen berücksichtigen;
+  Originalarchive erhalten, grafische Auswertung separat binden. Keine geglättete
+  Ersatzformel, keine versteckten Spitzen und keine Plotbewertung zur Suchauswahl.
 - Wissenschaftliche Ergebnisse gemäß [Archivierungsrichtlinie](docs/results_archiving.md)
   sichern und im [Ergebnisindex](docs/results_index.md) auffindbar halten.
   Vorhandene Originalmetadaten verwenden; Ausführung, Dokumentation,
