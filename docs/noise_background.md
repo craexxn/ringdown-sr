@@ -9,16 +9,21 @@ gebunden. PR94 ist als `8b8b3569dd78ca2282704d2799d81fe1d73bfb42`
 den Stand des Protokollbeschlusses; aktuelle Umsetzung und Prüfbelege stehen
 im [Fortsetzungsstand](representation_implementation_status.md).
 
-Der neue Laufweg ist in [PR #95](https://github.com/craexxn/ringdown-sr/pull/95)
-lokal geprüft: fünf echte technische Worker, lesender Replay, Plotexport und
-gezielte KI-basierte Reviews bestanden. Die genauen Prüfstände und der
-korrigierte CSV-Formelexport stehen im Fortsetzungsstand. Vollständige Ready-CI
-und Übernahme des Implementierungsstands fehlen noch. Ein neuer technischer
-Manjaro-Vorlauf und dessen Ressourcenbewertung fehlen ebenfalls. Die folgenden
-Befehle beschreiben den vorgesehenen Ablauf; **noch keine wissenschaftliche
-Startfreigabe**. Der Setup-Platzhalter muss durch den tatsächlich freigegebenen
-Implementierungscommit ersetzt werden. Weder der Protokollmerge noch die
-bisherigen 144er-Pilotbefehle führen die neue Studie aus.
+Der neue Laufweg ist mit [PR #95](https://github.com/craexxn/ringdown-sr/pull/95)
+nach vollständiger Ready-CI ausdrücklich freigegeben und als
+`bd42634b888c2dbaa5a92726b9a1f9851c766a48` übernommen. Der technische
+Manjaro-Vorlauf `noise-background-preflight-manjaro-001` ist einschließlich
+aller fünf Worker, Originalformeln, Punktdaten und Plots lesend bestätigt.
+Die Ressourcenbelege geben keinen Anlass zur Änderung der festgelegten Fristen;
+Prüfkosten und Aussagegrenzen stehen im
+[Fortsetzungsstand](representation_implementation_status.md), Archivhash und
+offener Sicherungsstand im [Ergebnisindex](results_index.md).
+
+**Nächster Schritt ist der separate wissenschaftliche Start ab Abschnitt 3
+im unveränderten, bereits geprüften Manjaro-Worktree.** Setup und Vorlauf für
+diesen Lauf nicht wiederholen. Noch keine wissenschaftliche Suche dieser
+Studie ist gestartet. Die folgenden Befehle ändern keine Methodenparameter;
+ein späterer Dokumentationscommit ersetzt den gebundenen Ausführungsstand nicht.
 
 ## Umfang und feste Grenzen
 
@@ -53,19 +58,15 @@ sind kein Nachweis des Funktionsverlaufs zwischen den Punkten.
 
 ## 1. Nach technischer Übernahme einen festen Manjaro-Checkout einrichten
 
-Im bestehenden Repository starten. Der folgende Platzhalter ist absichtlich
-kein Git-Commit und wird vor Freigabe durch den geprüften vollständigen
-Implementierungs-Mergecommit ersetzt. Das Beispiel bricht bis dahin ab.
-Ein vorhandenes Laufverzeichnis nicht überschreiben.
+Dieser Schritt ist für `noise-background-preflight-manjaro-001` bereits
+abgeschlossen. Die Befehle dokumentieren den festen Ausführungsstand für eine
+neue Einrichtung. Im bestehenden Repository starten; ein vorhandenes
+Laufverzeichnis nicht überschreiben.
 
 ```bash
 bash <<'BASH'
 set -euo pipefail
-task_commit='FREIGEGEBENEN_IMPLEMENTIERUNGSCOMMIT_EINTRAGEN'
-if [[ ! "$task_commit" =~ ^[0-9a-f]{40}$ ]]; then
-  printf '%s\n' 'Zuerst den freigegebenen vollständigen Implementierungscommit eintragen.' >&2
-  exit 1
-fi
+task_commit='bd42634b888c2dbaa5a92726b9a1f9851c766a48'
 git fetch origin main
 git cat-file -e "$task_commit^{commit}"
 git worktree add --detach ../ringdown-noise-background-run "$task_commit"
@@ -100,6 +101,7 @@ lokal, per Review und vollständiger CI abgenommen und übernommen sein.
 bash <<'BASH'
 set -euo pipefail
 test -f scripts/check_noise_background.py
+test "$(git rev-parse HEAD)" = 'bd42634b888c2dbaa5a92726b9a1f9851c766a48'
 test -z "$(git status --porcelain)"
 unset VIRTUAL_ENV
 export OPENBLAS_CORETYPE=Haswell
@@ -140,14 +142,16 @@ und zu versionieren. Der Vorlaufblock startet die Serie deshalb nicht automatisc
 
 ## 3. Nach bestätigtem Ressourcenbefund die gesamte Serie starten
 
-Noch ausstehender separater wissenschaftlicher Ausführungsschritt. Nur nach
-erfolgreichem Schritt 2 und dokumentierter Ressourcenbewertung verwenden.
-Alle 26 Fälle werden zuerst vorbereitet, dann alle 520 geplanten Suchen ohne
-interaktive Zwischenwahl abgearbeitet. Den technischen Originalordner erhalten.
+Der technische Vorlauf und seine Ressourcenbewertung sind abgeschlossen.
+Dieser separate Block bereitet zuerst alle 26 Fälle vor und arbeitet dann
+alle 520 geplanten Suchen ohne interaktive Zwischenwahl ab. Im selben sauberen
+Worktree mit unveränderter numerischer Umgebung ausführen; den technischen
+Originalordner erhalten. `--no-sync` verhindert eine erneute Umgebungsanpassung.
 
 ```bash
 bash <<'BASH'
 set -euo pipefail
+test "$(git rev-parse HEAD)" = 'bd42634b888c2dbaa5a92726b9a1f9851c766a48'
 test -z "$(git status --porcelain)"
 unset VIRTUAL_ENV
 export OPENBLAS_CORETYPE=Haswell
@@ -156,10 +160,12 @@ task_study=results/noise-background-manjaro-001
 task_technical=results/noise-background-preflight-manjaro-001/technical
 test -d "$task_technical"
 test ! -e "$task_study"
-uv run --locked python scripts/check_noise_background.py --verify "$task_technical"
-uv run --locked python scripts/run_noise_background.py prepare \
+test ! -e "$task_study.tar.gz"
+test ! -e "$task_study.tar.gz.sha256"
+uv run --locked --no-sync python scripts/check_noise_background.py --verify "$task_technical"
+uv run --locked --no-sync python scripts/run_noise_background.py prepare \
   --output "$task_study/inputs"
-uv run --locked python scripts/run_noise_background.py run \
+uv run --locked --no-sync python scripts/run_noise_background.py run \
   --inputs "$task_study/inputs" \
   --technical "$task_technical" \
   --output "$task_study/series"
@@ -187,7 +193,8 @@ der betreffende Worker beendet ist. Die Erfolgsbewertung steht erst im verifizie
 Abschluss. Strg+C in diesem zweiten Terminal beendet ausschließlich den Monitor.
 
 ```bash
-python3 - <<'PY'
+unset VIRTUAL_ENV
+uv run --locked --no-sync python - <<'PY'
 from datetime import datetime
 import json
 from pathlib import Path
@@ -239,6 +246,7 @@ Nachprüfung einen neuen Exportpfad verwenden.
 ```bash
 bash <<'BASH'
 set -euo pipefail
+test "$(git rev-parse HEAD)" = 'bd42634b888c2dbaa5a92726b9a1f9851c766a48'
 test -z "$(git status --porcelain)"
 unset VIRTUAL_ENV
 export OPENBLAS_CORETYPE=Haswell
@@ -249,12 +257,13 @@ test -f "$task_study/series/completion/assessment_report.json"
 test ! -e "$task_study/verification"
 test ! -e "$task_study/plots"
 test ! -e "$task_study.tar.gz"
-uv run --locked python scripts/run_noise_background.py verify \
+test ! -e "$task_study.tar.gz.sha256"
+uv run --locked --no-sync python scripts/run_noise_background.py verify \
   --inputs "$task_study/inputs" \
   --technical "$task_preflight/technical" \
   --output "$task_study/series" \
   --export "$task_study/verification"
-uv run --locked python scripts/run_noise_background.py plots \
+uv run --locked --no-sync python scripts/run_noise_background.py plots \
   --inputs "$task_study/inputs" \
   --technical "$task_preflight/technical" \
   --output "$task_study/series" \

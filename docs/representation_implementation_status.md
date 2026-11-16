@@ -1,12 +1,12 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: fünfarmiger Hintergrundlaufweg lokal geprüft
+## Aktuell: Hintergrundlaufweg übernommen, Manjaro-Vorlauf bestätigt
 
 Stand 16.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md):
 Das Protokoll ist mit [PR #94](https://github.com/craexxn/ringdown-sr/pull/94)
 auf ausdrücklichen Auftrag als `8b8b3569dd78ca2282704d2799d81fe1d73bfb42`
-übernommen. Der [neue Laufweg](noise_background.md) entsteht auf
-`codex/noise-background-study` mit diesem Merge als Basis. Unveränderte
+übernommen. Der [neue Laufweg](noise_background.md) wurde auf
+`codex/noise-background-study` mit diesem Merge als Basis entwickelt. Unveränderte
 Laufzeitbindung des Plans: Commit `0c4b52868d8cc9809f38db02fe066ab540bcfeb3`,
 SHA-256 `d3bb289cf4a2ac75a31f88c34721ca72da348c5af6d9d6a3917d4a6cc90f52f7`.
 
@@ -17,13 +17,25 @@ ergänzt diesen Lauf, separate Verifikation und technischen Plotexport;
 der nun konsumierte Plan gehört zum vollständigen CI-Scope. Bestehende
 Prüfblöcke und eingefrorene wissenschaftliche Budgets bleiben erhalten.
 
-Implementierungs-PR: [PR #95](https://github.com/craexxn/ringdown-sr/pull/95),
-zunächst als Draft entwickelt. Lokale technische Abnahme und gezielte
-KI-basierte Reviews sind abgeschlossen; vollständige Ready-CI und Übernahme
-stehen noch aus. Ein eigener Manjaro-Vorlauf samt Ressourcenbewertung ist
-danach erforderlich. Die dokumentierten Befehle besitzen noch keinen
-freigegebenen Ausführungscommit; keine wissenschaftliche Suche dieser Studie
-ist gestartet. Nächster abgegrenzter Schritt ist die vollständige Ready-CI.
+Implementierungs-PR [PR #95](https://github.com/craexxn/ringdown-sr/pull/95)
+ist nach lokaler technischer Abnahme, gezielten KI-basierten Reviews und
+vollständiger Ready-CI ausdrücklich freigegeben und als
+`bd42634b888c2dbaa5a92726b9a1f9851c766a48` übernommen. Seine Eltern sind
+`8b8b3569dd78ca2282704d2799d81fe1d73bfb42` und geprüfter Head
+`5cb688d1867c4692f28e644fc3ecc241d66180b9`.
+Die [Ready-CI 43828824819](https://github.com/craexxn/ringdown-sr/actions/runs/43828824819)
+besteht mit allen drei Jobs einschließlich **4.364 Pythonfällen in 464,79 s**.
+Tatsächlicher CI-Checkout: `ed99643773ab4dc9c92745b2a803d436ee3bc5d7`;
+sein Baum `884c6406a078eef36b8d7e8177a68f596ea028b8` ist identisch mit
+Head und übernommenem Merge. Die native Logspanne beträgt 89 min 20 s.
+
+Auch der neue Manjaro-N128-Vorlauf samt Ressourcenbewertung ist unten am
+Originalarchiv bestätigt. Die [konkreten wissenschaftlichen Startbefehle](noise_background.md#3-nach-bestätigtem-ressourcenbefund-die-gesamte-serie-starten)
+sind der nächste getrennte Schritt: gleicher sauberer Ausführungscommit
+`bd42634` und dieselbe numerische Umgebung, unveränderte Methoden und Fristen.
+Der reine Dokumentationsbranch `codex/noise-background-manjaro-preflight`
+ersetzt diesen Laufcheckout nicht. Keine wissenschaftliche Suche dieser Studie
+ist gestartet; gemeinsame Archivablage und unabhängige Zweitkopie bleiben offen.
 
 Prüfnachweise vom 16.11.2026:
 
@@ -65,8 +77,89 @@ Prüfnachweise vom 16.11.2026:
   und sind keine Manjaro- oder Tausenderlaufprognose.
 - Ruff und Formatprüfung aller 363 Pythondateien, Dokumentationsprüfung aller
   113 Markdown-Dateien und Diffprüfung bestanden. Historischer Pilotplan und
-  eingefrorener Hintergrundplan sind unverändert. Die vollständige Ready-CI
-  prüft anschließend den endgültigen PR-Stand einschließlich Exportfix.
+  eingefrorener Hintergrundplan sind unverändert. Die oben belegte vollständige
+  Ready-CI hat den endgültigen PR-Stand einschließlich Exportfix geprüft.
+
+### Technischer Manjaro-N128-Nachweis vom 16.11.2026
+
+Original `noise-background-preflight-manjaro-001.tar.gz`:
+**5.778.824 Bytes**, SHA-256
+`c23b99472a27e3732234d56ba8e16ef8a89807d99c03a52ff14bcb1b26df8ae9`.
+206 reguläre Dateien; Archivhash, Manifeste, tatsächliche Herkunft und Kosten
+wurden selbst lesend geprüft. Ausführungs- und neuer lesender Prüfcommit sind
+beide `bd42634b888c2dbaa5a92726b9a1f9851c766a48`.
+Alle 181 gebundenen Softwarequellen einschließlich der 69 Python-Paketdateien
+stimmen mit diesem Git-Stand überein; Eltern- und Workerherkunft sind sauber.
+
+Manjaro mit Intel i7-1165G7, Python 3.12.14, Julia 1.13.1, PySR 2.6.0,
+SymbolicRegression 2.5.1, PythonCall/JuliaCall 0.9.36, NumPy 2.5.3 und
+SciPy 1.18.1. Tatsächlich gebundene Affinität `[0]`, Julia-/GC-/BLAS-Threads
+jeweils 1, interaktive Threads 0; Haswell-BLAS vor und nach jedem Worker.
+Die mitgelieferten Geräteprotokolle belegen Ruff, Formatprüfung aller 363
+Pythondateien, Dokumentationsprüfung aller 113 Markdown-Dateien,
+**4.364 Pythonfälle in 629,28 s** und die technische Umgebungsprüfung.
+Diese übermittelten Tests wurden bei der Archivprüfung nicht erneut ausgeführt.
+
+Fünf getrennte frische `equation_search`-Aufrufe für O/K/E64/E256/E1024:
+je N=128, zehn tatsächlich abgeschlossene äußere Runden und 20
+Populationszyklen, lokal 300/5, Häufigkeitsschalter an und
+`should_simplify=false`. Gemeinsamer technischer Pythonseed `2026111613`,
+nativer Suchseed `369735138`; keine Timeouts. Die Armfolge wird aus den
+Originalausgaben bestätigt; technische Signalqualität ist kein Abnahmekriterium.
+
+| Arm | Endfrontkandidaten | Workerzeit / s | Fitzeit / s | Native Schleife / s | Verlustcallbacks im Fit |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| O | 5 | 47,996 | 32,834 | 3,345 | 317.583 |
+| K | 5 | 48,049 | 32,168 | 2,907 | 142.974 |
+| E64 | 5 | 49,229 | 33,335 | 3,965 | 251.349 |
+| E256 | 1 | 47,422 | 31,829 | 1,032 | 80.076 |
+| E1024 | 4 | 49,237 | 33,284 | 4,058 | 268.692 |
+| Summe | 20 | 241,933 | 163,452 | — | 1.060.674 |
+
+Vollständiger gespeicherter technischer Aufruf **245,763572306 s**, CPU user
+240,661293 s, system 4,058227 s; am 16.11.2026 etwa 11:15:59–11:20:05 Uhr
+Europe/Vienna. Die 1,212264 s Eingabevorbereitung und Workerzeiten sind darin
+enthalten, Fit-/Schleifenzeiten wiederum in den Workern; nicht addieren.
+Der Messumfang endet nach Veröffentlichung und Wiederherstellung der
+Signalhandler, vor Zeitdatei und letzten Wächtern. Julia-Einrichtung und der
+vollständige Python-Testlauf liegen davor. Der separate ursprüngliche Plotexport
+benötigt **5,110615889 s**, CPU user 4,672823 s, system 0,411641 s.
+Das ursprüngliche separate CLI-Verifikationslog belegt Erfolg, aber keine Dauer;
+diese historische Prüfzeit bleibt unbekannt.
+
+GNU `time` misst den äußeren Prozess mit 246,38 s, CPU user 241,21 s und
+system 4,12 s, Exitcode 0. Gemeldetes Maximum RSS: **1.588.460 KiB
+(1,515 GiB)**; dies ist kein aggregierter gleichzeitiger Prozessbaumpeak.
+Die `/proc/meminfo`-Momentaufnahmen davor/danach zeigen 6.485.996/6.567.708 KiB
+verfügbaren RAM bei 16.083.100 KiB insgesamt und jeweils 8 KiB belegten Swap;
+GNU `time` meldet null Swaps. Daraus folgt keine kontinuierliche Messung des
+Speicherbedarfs oder eine RAM-Garantie für die wissenschaftliche Serie.
+
+Eigener separater technischer CLI-Replay auf dem sauberen Ausführungscommit:
+**4,035072807 s**, CPU user 3,536911 s, system 0,505971 s.
+Die eigene Plot-Nachprüfung bestätigt alle fünf Ausgaben in **0,108375014 s**,
+einschließlich exakter Bindungen von Grafiken, unveränderten Originalformeln
+und numerischen Punktdaten. Sämtliche **206 Originaldateien bleiben bytegleich**;
+keine neuen Fits oder Suchen, keine Ausführung archivierter Programme.
+Getrennte KI-basierte Gegenprüfungen bestätigen Herkunft und Ressourcen sowie
+alle 20 nativen Endfrontformeln und 10.205 exportierten Plotpunkte
+(je Arm 128 Trainings-, 889 Diagnose- und 1.024 unregelmäßige Punkte).
+Archivzuordnung und offene Sicherung stehen im
+[Ergebnisindex](results_index.md#technischer-hintergrundstudien-vorlauf-vom-16112026).
+
+**Ressourcenentscheidung vor wissenschaftlicher Ausführung, 16.11.2026:**
+Die technische Startvoraussetzung ist erfüllt. Höchstens 49,237 s je Worker
+und 245,764 s für den gespeicherten Gesamtaufruf liegen unter den technischen
+600/7.200-s-Fristen. Kein konkreter Anlass zur Änderung der eingefrorenen
+wissenschaftlichen Fristen: 1.800 s je Worker, 7.800 s je Paket, 40.800 s je
+Fall und 1.075.200 s für die Serie; Vorbereitung 2.400 s, Verifikation 14.400 s.
+Fünf Zehnerworker belegen weder Laufzeit noch Speicherbedarf oder Erfolgsrate
+der 520 Tausendersuchen. Nächster Schritt ist die beschlossene Serie mit
+26 frisch vorbereiteten wissenschaftlichen Eingaben im selben sauberen
+Ausführungscheckout und derselben Umgebung; ein Dokumentationscommit darf
+diesen Stand nicht ersetzen. Technische Seeds zählen nicht als wissenschaftliche
+Wiederholungen. Noch kein wissenschaftlicher Start und kein wissenschaftliches
+Originalarchiv dieser Studie; Archivablage und unabhängige Zweitkopie weiter offen.
 
 ## Übernommenes Protokoll der begrenzten Hintergrundstudie
 
@@ -109,13 +202,11 @@ GitHub-Mathematikdarstellung und dieser Prüfnachtrag ergänzt; keine
 Methodenänderung. Der historische Pilotplan bleibt bytegleich.
 
 Der damalige nächste Schritt, getrennte Protokollübernahme, ist mit PR94
-abgeschlossen; die anschließende Implementierung ist oben zugeordnet.
-Vor dem wissenschaftlichen Start
-fehlen nach den oben zugeordneten lokalen Prüfungen und KI-Reviews noch
-vollständige Ready-CI, autorisierte Übernahme und ein neuer Manjaro-N128-Vorlauf
-mit fünf Zehnerworkern samt Ressourcenbewertung.
-Erst dann konkrete neue Laufbefehle; die bisherigen 144er-Befehle führen diesen
-Vergleich nicht aus. Wissenschaftliche Ausführung und Archivierung bleiben
+abgeschlossen; Implementierung, vollständige Ready-CI, autorisierte PR95-
+Übernahme und neuer Manjaro-N128-Vorlauf mit Ressourcenbewertung sind oben
+zugeordnet. Die neuen konkreten Laufbefehle sind vorbereitet; die bisherigen
+144er-Befehle führen diesen Vergleich nicht aus. Wissenschaftliche Ausführung
+und Archivierung bleiben
 getrennte Schritte. Rund 46,14 extrapolierte Worker-Stunden sind eine unsichere
 Aufwandsorientierung, keine gemessene Laufzeit dieser noch nicht gestarteten Serie.
 
