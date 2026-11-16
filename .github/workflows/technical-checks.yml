@@ -381,6 +381,31 @@ jobs:
             exit 1
           fi
 
+      - name: Verify background study with five bounded technical workers and plots
+        run: |
+          if ! env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/check_noise_background.py \
+            --output results/ci-noise-background-001; then
+            find results -path '*ci-noise-background-001*' -type f -name '*.log' -print -exec tail -n 100 {} \;
+            exit 1
+          fi
+          if ! env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/check_noise_background.py \
+            --verify results/ci-noise-background-001; then
+            find results -path '*ci-noise-background-001*' -type f -name '*.log' -print -exec tail -n 100 {} \;
+            exit 1
+          fi
+          if ! env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/run_noise_background.py technical-plots \
+            --technical results/ci-noise-background-001 \
+            --export results/ci-noise-background-plots-001; then
+            find results -path '*ci-noise-background-001*' -type f -name '*.log' -print -exec tail -n 100 {} \;
+            exit 1
+          fi
+
   technical-checks:
     name: ${{ github.event_name == 'workflow_dispatch' && 'manual-technical-checks' || 'technical-checks' }}
     needs: [prepare, native]
