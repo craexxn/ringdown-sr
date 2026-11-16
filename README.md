@@ -5,8 +5,9 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 14.11.2026; aktuelle main-Basis `899bf09` nach
-[PR #91](https://github.com/craexxn/ringdown-sr/pull/91).
+Fortsetzungsstand: 16.11.2026; wissenschaftlicher Ausführungs- und Prüfstand
+des Rauschpiloten `eb663a0` nach
+[PR #92](https://github.com/craexxn/ringdown-sr/pull/92).
 Der Budgetvergleich wurde auf `680af98` nach PR #85 wissenschaftlich ausgeführt;
 seine aktuelle Quellenprüfung steht im
 [Ergebnisbericht](docs/restart_budget_results_manjaro_001.md).
@@ -149,11 +150,24 @@ wissenschaftliche Rauschserie. Alte Schema-1–3-Aufträge behalten ihre Bedeutu
 Das [Rauschpilot-Protokoll](docs/noise_pilot_plan.md) ist mit 144 Suchen beschlossen:
 ein bekanntes Signal, weißes und AR(1)-Rauschen bei
 sigma/A=0,05, je sechs unabhängige Blöcke und drei Gewichtungsarme,
-insgesamt 144 Suchaufrufe. Die wissenschaftliche Ausführung bleibt separat.
-Der [Serienlaufweg](docs/noise_pilot.md) in PR #92 ist lokal mit 4.119
-Pythonfällen, drei echten N128-Zehnerworkern und KI-basiertem Review geprüft.
-Vor Übernahme bleibt die vollständige CI erforderlich; vor wissenschaftlichem
-Start zusätzlich der separate technische Manjaro-Ressourcencheck mit 128 Punkten.
+insgesamt 144 Suchaufrufe. Die wissenschaftliche Ausführung ist inzwischen belegt.
+Der [Serienlaufweg](docs/noise_pilot.md) ist mit PR #92 nach vollständiger CI
+(4.119 Pythonfälle und sämtliche nativen Prüfblöcke) übernommen. Der technische
+Manjaro-N128-Vorlauf ist am Originalarchiv lesend bestätigt: drei erfolgreiche
+Zehnerworker, vollständiger Aufruf 161,847 Sekunden, 103 Dateien unverändert.
+Der [wissenschaftliche Pilot 001](docs/noise_pilot_results_manjaro_001.md) ist
+auf `eb663a0` vollständig lesend bestätigt: 144 abgeschlossene Tausendersuchen,
+36 Paketausgaben, keine Ausfälle, Serienaufruf **13 h 11 min 31 s**.
+Mittlerer amplitudennormierter Rekonstruktionsfehler in Prozent für gewöhnliche /
+bekannte / geschätzte Gewichtung: **1,624 / 1,666 / 1,666** bei weißem und
+**2,412 / 2,406 / 2,742** bei AR(1)-Rauschen. Kein beobachteter mittlerer Vorteil
+der geschätzten Gewichtung; sechs Blöcke je Modell erlauben keinen allgemeinen
+Überlegenheits- oder Gleichwertigkeitsnachweis. Alle 36 Ausgaben sind auf der
+strengen rauschfreien Skala D; diese Skala ist keine Pilot-Bestehensgrenze.
+Eine Ausgabe des Arms mit bekannter Kovarianz zeigt zwischen Trainingspunkten einen Fehler
+bis 1,83 A trotz kleinem Trainingsfehler; die Zusatzraster bleiben wesentlich.
+Nächster Schritt ist ein gesonderter Hauptstudienplan zu Hintergrundmenge,
+Gewichtung und gewünschter Präzision; keine automatische Anschlussserie.
 Keine zusätzliche Budgetstaffel oder automatische Ausführung daraus ableiten.
 Das unregelmäßige Zusatzraster begleitet bereits die Entwicklung; es dient
 ausschließlich der Diagnose. Wissenschaftliche Suchläufe bleiben ein separater

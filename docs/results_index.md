@@ -1,6 +1,6 @@
 # Ergebnisindex und Archivierungsstand
 
-Stand: 14.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
+Stand: 16.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
 nachträglichen Bewertungen; [Ablagerichtlinie](results_archiving.md).
 Serien sind die Indexeinheit, ihre Zellen/Wiederholungen bleiben im Originalbericht.
 Die Aufstellung ist keine Behauptung, dass alle jemals lokal erzeugten Ergebnisse
@@ -57,9 +57,12 @@ Umwidmung der belegten 001-IDs für neue Läufe und kein Sicherungsnachweis aus
 der bloßen Verfügbarkeit der Arbeitskopie.
 
 Der [144er-Rauschpilot](noise_pilot_plan.md) ist beschlossen und sein
-[Serienlaufweg](noise_pilot.md) in technischer Abnahme. Weder der neue
-Manjaro-N128-Vorlauf noch die wissenschaftliche Serie sind als ausgeführt
-belegt. Vorgesehene IDs sind keine vorhandenen Archive oder Sicherungsnachweise.
+[Serienlaufweg](noise_pilot.md) mit PR92 übernommen. Der technische
+Manjaro-N128-Vorlauf ist am Originalarchiv lesend bestätigt; drei erfolgreiche
+Zehnerworker. Auch der [wissenschaftliche Lauf 001](noise_pilot_results_manjaro_001.md)
+ist nun vollständig lesend bestätigt: 144 abgeschlossene Suchen, 36 Paketausgaben,
+keine Ausfälle. Die beiden [Archiveinträge unten](#wissenschaftlicher-rauschpilot-manjaro-001)
+trennen technischen Vorlauf, wissenschaftlichen Befund und weiterhin offene Sicherung.
 
 ## Archivablage
 
@@ -523,6 +526,50 @@ Originalarchiv: `confirmed-profile-technical-manjaro-001.tar.gz`,
 Arbeitskopie liegt vor. Dauerhafte Ablage im gemeinsamen Archivordner sowie
 unabhängige hashgeprüfte Zweitkopie sind weiterhin nicht bestätigt; keine
 weiteren Laufdateien werden für diesen technischen Nachweis benötigt.
+
+### Technischer Rauschpilot-Vorlauf vom 15.11.2026
+
+`noise-pilot-technical-manjaro-001`, tatsächlich ausgeführt und selbst lesend
+geprüft auf `eb663a0bf008f7c8697ef7ec5386b3e11545a19f`. Drei abgeschlossene
+N128-Zehnerworker mit gewöhnlicher, bekannter und geschätzter Gewichtung;
+keine wissenschaftliche Serie. Vollständiger Aufruf 161,847 s, 103 Originaldateien
+nach lesender Verifikation bytegleich. Details und Ressourcenentscheidung im
+[Fortsetzungsstand](representation_implementation_status.md#technischer-manjaro-n128-nachweis-vom-15112026).
+
+Originalarchiv: `noise-pilot-technical-manjaro-001.tar.gz`, **1.429.764 Bytes**,
+SHA-256 `f56e6b1f87d8971a7d7c3a6c6f08d05ea23f495f20ba2f93a30f9575a0898f40`.
+Am 15.11.2026 empfangen; TAR, vollständige Manifeste und SHA-256 geprüft.
+103 reguläre Dateien, 4.112.593 entpackte Dateibytes. Übermittelte Arbeitskopie
+vorhanden; keine weiteren Laufdateien für die technische Abnahme benötigt.
+Das separate historische CLI-Verifikationsprotokoll samt Prüfzeit fehlt;
+diese Zeit bleibt unbekannt, die neue eigene lesende Prüfung ist belegt.
+Ablage im gemeinsamen Archivordner und unabhängige hashgeprüfte Zweitkopie
+weiterhin unbestätigt; [Ablagezuordnung](#archivablage). GitHub-Upload optional.
+
+### Wissenschaftlicher Rauschpilot Manjaro 001
+
+`noise-pilot-manjaro-001`, wissenschaftlich ausgeführt und vollständig lesend
+geprüft auf `eb663a0bf008f7c8697ef7ec5386b3e11545a19f`. 144 abgeschlossene
+Tausendersuchen, 36 Paketausgaben aus zwölf Dreiervergleichen, keine Ausfälle.
+Vollständiger Serienaufruf 47.491,474 s; historische separate Verifikation
+96,010 s. Wissenschaftliche Einzelwerte, Kosten und Einordnung im
+[Ergebnisbericht](noise_pilot_results_manjaro_001.md).
+
+Originalarchiv `noise-pilot-manjaro-001.tar.gz`: **92.167.501 Bytes**, SHA-256
+`86a099ebe193669c945abbb918e8b18dd15b21b6341da44622bc1f6efdc69688`.
+Am 16.11.2026 aus vier gelieferten Teilen in Reihenfolge 000–003 bytegetreu
+zusammengesetzt; Original-SHA und TAR geprüft. 4.916 reguläre Dateien,
+469.279.570 entpackte Dateibytes. Enthält wissenschaftliche Inputs, Serie,
+separaten Verify-Export samt Aufrufmessungen sowie den technischen Originalordner;
+dessen 103 Dateien sind bytegleich zum bereits geprüften technischen Original.
+Alle 4.916 Dateien und Archivbytes nach eigener Prüfung unverändert; vier
+neue Verify-Exportdateien bytegleich zum gelieferten Export.
+
+Übermittelte Arbeitskopie vorhanden; für diese abgeschlossene Serie fehlen
+keine Laufdateien. Dauerhafte gemeinsame Archivablage und unabhängige
+hashgeprüfte Zweitkopie weiterhin unbestätigt; [Ablagezuordnung](#archivablage).
+Die vier Transportteile ersetzen keinen Nachweis einer unabhängigen Sicherung.
+GitHub-Upload bleibt optional.
 
 ### Priorisierte fehlende Belege
 
