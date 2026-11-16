@@ -1,5 +1,6 @@
 """Run a single free symbolic search in an isolated pinned Python/Julia process."""
 
+import csv
 import hashlib
 import json
 import math
@@ -433,6 +434,23 @@ def worker(directory: Path, *, hooks=None) -> None:
             hooks.close()
 
 
+def _native_front_rows(directory):
+    """Read original equation text without the dataframe's numeric inference."""
+    path = Path(directory) / "pysr/search/hall_of_fame.csv"
+    with path.open(encoding="utf-8", newline="") as stream:
+        table = csv.DictReader(stream, strict=True)
+        if table.fieldnames != ["Complexity", "Loss", "Equation"]:
+            raise ValueError("Changed native hall-of-fame table contract.")
+        rows = list(table)
+    if any(
+        set(row) != {"Complexity", "Loss", "Equation"}
+        or any(type(value) is not str or not value for value in row.values())
+        for row in rows
+    ):
+        raise ValueError("Incomplete native hall-of-fame row.")
+    return rows
+
+
 def _worker_search(
     directory: Path, metadata: dict, started: float, *, hooks=None
 ) -> None:
@@ -532,11 +550,14 @@ def _worker_search(
     hof = model.julia_state_[1]
     members = jl.SymbolicRegression.calculate_pareto_frontier(hof)
     rows = model.equations_
-    if len(members) != len(rows):
-        raise ValueError("Python and Julia Pareto fronts do not match.")
+    native_rows = _native_front_rows(directory)
+    if len(members) != len(rows) or len(members) != len(native_rows):
+        raise ValueError("Python, Julia and native CSV Pareto fronts do not match.")
     candidates = []
     loss_object = None if matrix is None else CovarianceLoss(matrix)
-    for member, (_, row) in zip(members, rows.iterrows(), strict=True):
+    for member, (_, row), native_row in zip(
+        members, rows.iterrows(), native_rows, strict=True
+    ):
         root = jl.SymbolicRegression.get_tree(member.tree)
         tree = _export_tree(root, options)
         restored = _import_tree(tree, backend)
@@ -572,12 +593,19 @@ def _worker_search(
         complexity = int(jl.SymbolicRegression.compute_complexity(member.tree, options))
         if complexity != int(row["complexity"]):
             raise ValueError("Python and Julia complexities do not match.")
+        if (
+            native_row["Complexity"] != str(complexity)
+            or not math.isfinite(raw_loss)
+            or raw_loss < 0
+            or float(native_row["Loss"]).hex() != raw_loss.hex()
+        ):
+            raise ValueError("Native CSV row differs from the exported member.")
         candidates.append(
             {
                 "complexity": complexity,
                 "loss": raw_loss,
                 "tree": tree,
-                "display_equation": str(row["equation"]),
+                "display_equation": native_row["Equation"],
                 "library_score": library_score(float(row["score"])),
                 "prediction": prediction.tolist(),
                 "residual": residual.tolist(),

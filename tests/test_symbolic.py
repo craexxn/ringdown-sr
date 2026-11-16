@@ -1,5 +1,7 @@
 """Check search policy, process contracts, tree order and selection independently."""
 
+import csv
+import io
 import json
 import math
 import os
@@ -350,12 +352,13 @@ def worker_failure_runtime(monkeypatch):
 
     class Model:
         def __init__(self, **kwargs):
+            self.directory = Path(kwargs["output_directory"]) / kwargs["run_id"]
             self.equations_ = pd.DataFrame(
                 {
                     "loss": [state.get("loss", 0.2)],
                     "complexity": [state.get("complexity", 1)],
                     "score": [0.0],
-                    "equation": ["fixed test tree"],
+                    "equation": [state.get("equation", "fixed test tree")],
                 }
             )
             self.julia_state_ = (None, "hof")
@@ -369,6 +372,19 @@ def worker_failure_runtime(monkeypatch):
             state["source"] = "changed-during-fit"
             if state["fail_fit"]:
                 raise RuntimeError("injected fit failure")
+            self.directory.mkdir(parents=True)
+            with (self.directory / "hall_of_fame.csv").open("w", newline="") as stream:
+                writer = csv.writer(stream)
+                writer.writerow(["Complexity", "Loss", "Equation"])
+                writer.writerow(
+                    [
+                        state.get("native_complexity", state.get("complexity", 1)),
+                        state.get("native_loss", state.get("loss", 0.2)),
+                        state.get("native_equation", "fixed test tree"),
+                    ]
+                )
+                if state.get("extra_native_row"):
+                    writer.writerow([2, 0.1, "t"])
 
     monkeypatch.setitem(
         sys.modules, "pysr", SimpleNamespace(__version__="2.6.0", PySRRegressor=Model)
@@ -549,3 +565,102 @@ def test_interrupt_stops_owned_worker_and_its_child(tmp_path, monkeypatch):
     ):
         time.sleep(0.01)
     assert not stat.exists() or stat.read_text().split()[2] == "Z"
+
+
+@pytest.mark.parametrize(
+    "equations",
+    [
+        ["0.02227957360447647"],
+        ["-0.0", "1.2345678901234567e-100"],
+        ["0.02227957360447647", "cos(t * 1234.5678901234567)"],
+    ],
+)
+def test_native_csv_equations_remain_original_text(tmp_path, equations):
+    directory = tmp_path / "pysr/search"
+    directory.mkdir(parents=True)
+    with (directory / "hall_of_fame.csv").open("w", newline="") as stream:
+        writer = csv.writer(stream)
+        writer.writerow(["Complexity", "Loss", "Equation"])
+        for index, equation in enumerate(equations):
+            writer.writerow([index + 1, 0.2 / (index + 1), equation])
+    rows = symbolic._native_front_rows(tmp_path)
+    assert [row["Equation"] for row in rows] == equations
+
+
+@pytest.mark.parametrize(
+    "csv_text",
+    [
+        "Loss,Complexity,Equation\n0.2,1,t\n",
+        "Complexity,Loss,Equation\n1,0.2\n",
+        "Complexity,Loss,Equation\n1,0.2,t,extra\n",
+        "Complexity,Loss,Equation\n1,0.2,\n",
+    ],
+)
+def test_incomplete_native_csv_equation_binding_is_rejected(tmp_path, csv_text):
+    directory = tmp_path / "pysr/search"
+    directory.mkdir(parents=True)
+    (directory / "hall_of_fame.csv").write_text(csv_text)
+    with pytest.raises(ValueError):
+        symbolic._native_front_rows(tmp_path)
+
+
+@pytest.mark.parametrize(
+    "mutation,error",
+    [
+        ({}, None),
+        ({"native_loss": "next_float"}, "Native CSV row"),
+        ({"native_complexity": 2}, "Native CSV row"),
+        ({"extra_native_row": True}, "Pareto fronts"),
+    ],
+)
+def test_worker_preserves_native_constant_text_and_exact_row_binding(
+    tmp_path, monkeypatch, worker_failure_runtime, mutation, error
+):
+    import pandas as pd
+
+    state = worker_failure_runtime
+    original_text = "0.02227957360447647"
+    value = float(original_text)
+    raw_loss = value * value
+    parsed = pd.read_csv(io.StringIO("Equation\n" + original_text + "\n"))
+    inferred = parsed.iloc[0]["Equation"]
+    assert str(inferred) != original_text  # The observed PySR dtype-inference defect.
+    state.update(
+        loss=raw_loss,
+        complexity=1,
+        equation=inferred,
+        native_equation=original_text,
+        **mutation,
+    )
+    if state.get("native_loss") == "next_float":
+        state["native_loss"] = np.nextafter(raw_loss, np.inf)
+    state["member"].loss = raw_loss
+    state["backend"].replay = lambda *args: (np.array([value, value]), raw_loss)
+    tree = constant(value)
+    monkeypatch.setattr(symbolic, "_export_tree", lambda *args: tree)
+    monkeypatch.setattr(symbolic, "_import_tree", lambda *args: "restored tree")
+
+    def launch(command, **kwargs):
+        if error is None:
+            symbolic.worker(Path(command[-1]))
+            return subprocess.CompletedProcess(command, 0)
+        with pytest.raises(ValueError, match=error):
+            symbolic.worker(Path(command[-1]))
+        return subprocess.CompletedProcess(command, 17)
+
+    monkeypatch.setattr(symbolic, "_run_worker", launch)
+    run = symbolic.run_search_arm(
+        [0.0, 1.0], [0.0, 0.0], output=tmp_path / "constant-front"
+    )
+    if error is not None:
+        assert run.status == "failed"
+        assert not (run.output_directory / "result.json").exists()
+        return
+    assert run.status == "success"
+    result = json.loads((run.output_directory / "result.json").read_text())
+    candidate = result["candidates"][0]
+    assert candidate["display_equation"] == original_text
+    assert candidate["tree"] == tree
+    assert candidate["loss"].hex() == raw_loss.hex()
+    assert candidate["prediction"] == [value, value]
+    assert result["selected_index"] == 0
