@@ -9,9 +9,11 @@ gebunden. PR94 ist als `8b8b3569dd78ca2282704d2799d81fe1d73bfb42`
 den Stand des Protokollbeschlusses; aktuelle Umsetzung und Prüfbelege stehen
 im [Fortsetzungsstand](representation_implementation_status.md).
 
-Der neue Laufweg befindet sich in Entwicklung. Lokale/native Abnahme,
-KI-basiertes Implementierungsreview, vollständige Ready-CI und Übernahme des
-Implementierungsstands sind noch nicht belegt. Ein neuer technischer
+Der neue Laufweg ist in [PR #95](https://github.com/craexxn/ringdown-sr/pull/95)
+lokal geprüft: fünf echte technische Worker, lesender Replay, Plotexport und
+gezielte KI-basierte Reviews bestanden. Die genauen Prüfstände und der
+korrigierte CSV-Formelexport stehen im Fortsetzungsstand. Vollständige Ready-CI
+und Übernahme des Implementierungsstands fehlen noch. Ein neuer technischer
 Manjaro-Vorlauf und dessen Ressourcenbewertung fehlen ebenfalls. Die folgenden
 Befehle beschreiben den vorgesehenen Ablauf; **noch keine wissenschaftliche
 Startfreigabe**. Der Setup-Platzhalter muss durch den tatsächlich freigegebenen

@@ -66,10 +66,25 @@ trennen technischen Vorlauf, wissenschaftlichen Befund und weiterhin offene Sich
 
 Die am 16.11.2026 beschlossene [520er-Hintergrundstudie](noise_background_plan.md)
 ist mit PR94 als Protokoll übernommen; der [getrennte Laufweg](noise_background.md)
-ist in Entwicklung. Es existieren noch kein wissenschaftlicher Lauf,
-freigegebener Ausführungscommit oder Originalarchiv dieser Studie; deshalb kein neuer
-Ergebniseintrag und keine Umwidmung alter Pilotarchive. Spätere Plot-/Formel-
+ist in PR95 lokal technisch geprüft; Prüfstände, fünf kleine Worker und getrennte
+Plot-/Formelprüfung stehen im [Fortsetzungsstand](representation_implementation_status.md).
+Es existieren noch kein wissenschaftlicher Lauf,
+freigegebener Ausführungscommit oder wissenschaftliches Originalarchiv dieser Studie;
+keine Umwidmung alter Pilotarchive. Spätere wissenschaftliche Plot-/Formel-
 Exporte werden mit dem Original und seinen Prüfsummen verknüpft.
+
+Lokales Implementierungsprüfpaket vom 16.11.2026:
+`noise-background-local-preflight-002.tar.gz`, SHA-256
+`278bebe181fc9bc9f6ed5916f4f82aa76ef4b8511414400ef2ce0ab697eaf3bc`.
+Es enthält ausschließlich den technischen N128-Vorlauf auf
+`cfa2ff54ae773f4c33a42c6f8847b592a6f568b1`, seine fünf Zehnerworker sowie
+separate Plots, unveränderte Originalformeln, Punktdaten und Exportkosten.
+Alle 165 Originaldateien blieben bei Replay und Plotexport unverändert;
+keine wissenschaftliche Serie oder Manjaro-Abnahme. Das Paket liegt bisher
+nur im lokalen Arbeitsbereich unter `results/`; gemeinsame Archivablage und
+unabhängige Zweitkopie sind nicht bestätigt. Der zuvor gesperrte technische
+Vorlauf 001 bleibt unverändert im Arbeitsbereich erhalten; sein Befund und
+seine Abbruchkosten stehen im Fortsetzungsstand, er ist nicht Teil dieses Pakets.
 
 ## Archivablage
 

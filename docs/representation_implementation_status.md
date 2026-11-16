@@ -1,6 +1,6 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: fünfarmiger Hintergrundlaufweg in Entwicklung
+## Aktuell: fünfarmiger Hintergrundlaufweg lokal geprüft
 
 Stand 16.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md):
 Das Protokoll ist mit [PR #94](https://github.com/craexxn/ringdown-sr/pull/94)
@@ -17,13 +17,56 @@ ergänzt diesen Lauf, separate Verifikation und technischen Plotexport;
 der nun konsumierte Plan gehört zum vollständigen CI-Scope. Bestehende
 Prüfblöcke und eingefrorene wissenschaftliche Budgets bleiben erhalten.
 
-Lokale Prüfungen, native Abnahme, KI-basiertes Implementierungsreview,
-vollständige Ready-CI und Übernahme des Implementierungsstands stehen noch aus.
-Ein eigener Manjaro-Vorlauf samt Ressourcenbewertung ist danach ebenfalls
-erforderlich. Die dokumentierten Befehle besitzen noch keinen freigegebenen
-Ausführungscommit und belegen keinen gestarteten wissenschaftlichen Lauf.
-Nächster abgegrenzter Schritt ist die gebündelte Implementierungsprüfung;
-erst nach technischer Übernahme folgt der neue Manjaro-Vorlauf.
+Implementierungs-PR: [PR #95](https://github.com/craexxn/ringdown-sr/pull/95),
+zunächst als Draft entwickelt. Lokale technische Abnahme und gezielte
+KI-basierte Reviews sind abgeschlossen; vollständige Ready-CI und Übernahme
+stehen noch aus. Ein eigener Manjaro-Vorlauf samt Ressourcenbewertung ist
+danach erforderlich. Die dokumentierten Befehle besitzen noch keinen
+freigegebenen Ausführungscommit; keine wissenschaftliche Suche dieser Studie
+ist gestartet. Nächster abgegrenzter Schritt ist die vollständige Ready-CI.
+
+Prüfnachweise vom 16.11.2026:
+
+- Vollständiger lokaler Pythonlauf auf `19724eeead4797b8d3037638ce3eea46e41f49ff`:
+  **4.353 bestanden in 607,48 Sekunden**. Ein vorheriger Lauf während einer
+  Quellenänderung wurde durch die Herkunftsprüfung gesperrt und ist kein
+  vollständiger Erfolgsnachweis. Nach dem unten beschriebenen Exportfix
+  bestehen zusätzlich 192 gezielte Fälle einschließlich elf neuer Regressionen.
+- KI-basiertes Kernreview auf `dd950f20973f68388ccf9ca63ece7d4a7ecba10f` gegen
+  die PR-Basis: 91 Prüfungen, darunter 35 zusätzliche Gegenfälle und unabhängige
+  bitgleiche Nachrechnung aller 26 Rausch-/Hintergrundblöcke. Methoden-/Plotreview:
+  zunächst 296 Repositoryfälle; ein P2 zur unvollständigen Plot-Nachprüfung
+  wurde behoben. Das Nachreview auf `19724ee` besteht mit 31 Plottests und
+  sieben eigenen Gegenprüfungen. Abschlussbericht, vollständiges Inventar,
+  Grafiken, Daten und Originalformeln sind nun gemeinsam gebunden.
+- Der erste echte technische Vorlauf `noise-background-technical-001` brach
+  nach vier Workern korrekt ab: Bei einer reinen Konstantenfront wandelte
+  PySR/Pandas den CSV-Formeltext `0.02227957360447647` in
+  `0.0222795736044764` um. Die strenge Frontprüfung verweigerte die Freigabe;
+  Originale und gemessene Abbruchkosten von 242,260 Sekunden bleiben erhalten.
+  Der allgemeine Export liest den ursprünglichen Text jetzt direkt aus der
+  nativen CSV und bindet Zeilenzahl, Komplexität und Verlustbits exakt an die
+  nativen Mitglieder. Auswahl, Baum, Vorhersagen und Prüftoleranzen bleiben
+  unverändert. Gezieltes KI-Nachreview des Fixes auf
+  `cfa2ff54ae773f4c33a42c6f8847b592a6f568b1` gegen `19724ee`:
+  **161 Prüfungen einschließlich 16 zusätzlicher Gegenfälle bestanden**;
+  der reale Fehlfall wurde ausschließlich in einer Speicherkopie nachgerechnet.
+- Auf dem sauberen technischen Prüfstand `cfa2ff54ae773f4c33a42c6f8847b592a6f568b1`
+  wurden alle 26 wissenschaftlichen Eingaben ohne Fits/Suchen vorbereitet und
+  lesend bestätigt: 55 unveränderte Dateien, 181 gebundene Quellen einschließlich
+  aller 69 Python-Paketdateien. Gemessene Vorbereitung: 9,399 Sekunden.
+- Neuer echter N128-Vorlauf `noise-background-technical-002`: fünf erfolgreiche
+  Zehnerworker bei lokal 300/5, vollständiger Aufruf **304,637 Sekunden**.
+  Workerzeiten O/K/E64/E256/E1024: 61,286 / 57,875 / 58,000 / 63,374 / 59,172
+  Sekunden. Separater CLI-Replay und Export aller fünf Grafiken, Originalformeln
+  und Punktdaten bestehen; sämtliche **165 Originaldateien bleiben bytegleich**.
+  Auch die separate Plot-Nachprüfung besteht; gemessener Plotexport 5,250 Sekunden.
+  Diese kleinen technischen Läufe belegen keine wissenschaftliche Signalqualität
+  und sind keine Manjaro- oder Tausenderlaufprognose.
+- Ruff und Formatprüfung aller 363 Pythondateien, Dokumentationsprüfung aller
+  113 Markdown-Dateien und Diffprüfung bestanden. Historischer Pilotplan und
+  eingefrorener Hintergrundplan sind unverändert. Die vollständige Ready-CI
+  prüft anschließend den endgültigen PR-Stand einschließlich Exportfix.
 
 ## Übernommenes Protokoll der begrenzten Hintergrundstudie
 
@@ -68,8 +111,9 @@ Methodenänderung. Der historische Pilotplan bleibt bytegleich.
 Der damalige nächste Schritt, getrennte Protokollübernahme, ist mit PR94
 abgeschlossen; die anschließende Implementierung ist oben zugeordnet.
 Vor dem wissenschaftlichen Start
-fehlen lokale/nativ-technische Prüfungen, KI-Review, vollständige Ready-CI,
-autorisierte Übernahme und ein neuer Manjaro-N128-Vorlauf mit fünf Zehnerworkern.
+fehlen nach den oben zugeordneten lokalen Prüfungen und KI-Reviews noch
+vollständige Ready-CI, autorisierte Übernahme und ein neuer Manjaro-N128-Vorlauf
+mit fünf Zehnerworkern samt Ressourcenbewertung.
 Erst dann konkrete neue Laufbefehle; die bisherigen 144er-Befehle führen diesen
 Vergleich nicht aus. Wissenschaftliche Ausführung und Archivierung bleiben
 getrennte Schritte. Rund 46,14 extrapolierte Worker-Stunden sind eine unsichere

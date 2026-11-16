@@ -866,10 +866,11 @@ Keine geglättete Ersatzformel und keine Plotbewertung als Suchauswahl verwenden
 **Umsetzung, ergänzt am 16.11.2026:** Der Methodenplan ist mit PR94 getrennt
 übernommen und bleibt unverändert. Der [fünfarmige Laufweg](noise_background.md)
 mit bestehenden Adaptern, lesender Verifikation und gebundenem Plotexport ist
-in Entwicklung. Lokale Tests, gezieltes KI-Review, vollständige erforderliche
-CI und neuer Manjaro-Vorlauf mit fünf Zehnerworkern gehen der separaten
-wissenschaftlichen Ausführung voraus. Implementierungsabnahme, Übernahme und
-Ressourcenbewertung sind noch offen; der Fortsetzungsstand führt diese Schritte
+in [PR #95](https://github.com/craexxn/ringdown-sr/pull/95) lokal einschließlich
+fünf nativer Zehnerworker und gezielter KI-Reviews geprüft. Vollständige
+erforderliche CI und neuer Manjaro-Vorlauf gehen der separaten wissenschaftlichen
+Ausführung voraus. Abschließende CI-Abnahme, Übernahme und Ressourcenbewertung
+sind noch offen; der Fortsetzungsstand führt diese Schritte
 getrennt. Die alte 144er-Serie war bereits wissenschaftliche Ausführung;
 der technische Vorlauf für die neue Studie liefert keine neuen Qualitätsnachweise.
 

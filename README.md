@@ -176,8 +176,10 @@ neuen vorab gebundenen unregelmäßigen Raster; der historische Pilot bleibt
 unverändert. Das Protokoll ist mit [PR #94](https://github.com/craexxn/ringdown-sr/pull/94)
 als `8b8b356` übernommen. Der getrennte
 [fünfarmige Laufweg](docs/noise_background.md) mit lesender Verifikation und
-Plotexport ist in Entwicklung; technische Abnahme, Implementierungsübernahme
-und neuer Manjaro-Vorlauf stehen noch aus. Ergebnisse künftig mit **Plot,
+Plotexport ist in [PR #95](https://github.com/craexxn/ringdown-sr/pull/95)
+lokal mit fünf nativen Zehnerworkern, lesendem Replay und KI-basierten Reviews
+geprüft. Vollständige Ready-CI, Implementierungsübernahme und neuer
+Manjaro-Vorlauf stehen noch aus. Ergebnisse künftig mit **Plot,
 vollständiger Originalformel und zugeordneten Plotdaten**. Das Zusatzraster
 bestimmt weder Suchauswahl noch vorzeitiges Ende. Wissenschaftliche Suchläufe
 bleiben ein separater Ausführungsschritt. Umsetzung und Nachweise stehen im
