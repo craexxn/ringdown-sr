@@ -66,11 +66,27 @@ trennen technischen Vorlauf, wissenschaftlichen Befund und weiterhin offene Sich
 
 Die am 16.11.2026 beschlossene [520er-Hintergrundstudie](noise_background_plan.md)
 ist mit PR94 als Protokoll übernommen; der [getrennte Laufweg](noise_background.md)
-ist in PR95 lokal technisch geprüft; Prüfstände, fünf kleine Worker und getrennte
-Plot-/Formelprüfung stehen im [Fortsetzungsstand](representation_implementation_status.md).
-Es existieren noch kein wissenschaftlicher Lauf,
-freigegebener Ausführungscommit oder wissenschaftliches Originalarchiv dieser Studie;
-keine Umwidmung alter Pilotarchive. Spätere wissenschaftliche Plot-/Formel-
+ist nach vollständiger Ready-CI mit PR95 als
+`bd42634b888c2dbaa5a92726b9a1f9851c766a48` übernommen. Der neue
+[technische Manjaro-Vorlauf](#technischer-hintergrundstudien-vorlauf-vom-16112026)
+mit fünf N128-Zehnerworkern, separatem Replay und Plot-/Formelprüfung ist
+am Originalarchiv lesend bestätigt. Prüfstände und Ressourcenentscheidung
+stehen im [Fortsetzungsstand](representation_implementation_status.md).
+Ein danach gemeldeter wissenschaftlicher Ausführungsversuch mit 26
+vorbereiteten Eingaben ist nach einem belegten System-Suspend im Fit von
+`ar1-01/estimated_64/member-04` durch den Uhrenintegritätswächter gesperrt.
+Übermittelte monotone Fitzeit 368,390180243 s, Serienabbruchzeit
+4.674,278524944 s; Suspend nicht enthalten, CPU-Messung unvollständig.
+Die vollständigen wissenschaftlichen Originaldateien sind noch nicht
+übermittelt, Suchrundenzahl und verifizierter wissenschaftlicher Befund
+bleiben offen. Die vorhandenen Auszüge, Kosten und Messgrenzen sind im
+Fortsetzungsstand zugeordnet. Originale unverändert bewahren und lesend
+prüfen; kein automatischer Neustart oder Umbuchen als numerischer Fehler.
+Der Laufweg bereitet die Archivierung von 001 und einen getrennten Versuch 002
+mit Schlaf- und Deckelsperre vor; weder dessen Start noch ein neues Archiv
+ist bisher belegt. Der Abbruch und seine Kosten bleiben auch nach einer
+späteren Wiederholung separat erhalten.
+Keine Umwidmung alter Pilotarchive. Spätere wissenschaftliche Plot-/Formel-
 Exporte werden mit dem Original und seinen Prüfsummen verknüpft.
 
 Lokales Implementierungsprüfpaket vom 16.11.2026:
@@ -80,8 +96,8 @@ Es enthält ausschließlich den technischen N128-Vorlauf auf
 `cfa2ff54ae773f4c33a42c6f8847b592a6f568b1`, seine fünf Zehnerworker sowie
 separate Plots, unveränderte Originalformeln, Punktdaten und Exportkosten.
 Alle 165 Originaldateien blieben bei Replay und Plotexport unverändert;
-keine wissenschaftliche Serie oder Manjaro-Abnahme. Das Paket liegt bisher
-nur im lokalen Arbeitsbereich unter `results/`; gemeinsame Archivablage und
+keine wissenschaftliche Serie oder Manjaro-Abnahme. Das Paket wurde damals
+nur im lokalen Arbeitsbereich unter `results/` abgelegt; gemeinsame Archivablage und
 unabhängige Zweitkopie sind nicht bestätigt. Der zuvor gesperrte technische
 Vorlauf 001 bleibt unverändert im Arbeitsbereich erhalten; sein Befund und
 seine Abbruchkosten stehen im Fortsetzungsstand, er ist nicht Teil dieses Pakets.
@@ -592,6 +608,39 @@ keine Laufdateien. Dauerhafte gemeinsame Archivablage und unabhängige
 hashgeprüfte Zweitkopie weiterhin unbestätigt; [Ablagezuordnung](#archivablage).
 Die vier Transportteile ersetzen keinen Nachweis einer unabhängigen Sicherung.
 GitHub-Upload bleibt optional.
+
+### Technischer Hintergrundstudien-Vorlauf vom 16.11.2026
+
+`noise-background-preflight-manjaro-001`, tatsächlich ausgeführt und selbst
+lesend geprüft auf `bd42634b888c2dbaa5a92726b9a1f9851c766a48`.
+Fünf abgeschlossene N128-Zehnerworker für O/K/E64/E256/E1024 bei lokal 300/5;
+keine wissenschaftliche Serie. Gespeicherter vollständiger technischer Aufruf
+245,763572306 s, eigener separater CLI-Replay 4,035072807 s. Das ursprüngliche
+separate Verifikationslog belegt Erfolg ohne Dauer; diese historische Prüfzeit
+bleibt unbekannt. Alle 206 Originaldateien blieben bei der eigenen Prüfung
+bytegleich. Ressourcenentscheidung und Messgrenzen im
+[Fortsetzungsstand](representation_implementation_status.md#technischer-manjaro-n128-nachweis-vom-16112026).
+
+Originalarchiv: `noise-background-preflight-manjaro-001.tar.gz`,
+**5.778.824 Bytes**, SHA-256
+`c23b99472a27e3732234d56ba8e16ef8a89807d99c03a52ff14bcb1b26df8ae9`.
+Am 16.11.2026 empfangen; SHA-256, TAR, vollständige Manifeste und
+Quellenbindung geprüft. 206 reguläre Dateien, 15.596.675 entpackte Dateibytes.
+Enthält Geräte-/Testprotokolle, technische Originale und einen separaten
+Plotexport aller fünf Arme mit unveränderten vollständigen Originalformeln
+und numerischen Punktdaten. Originalkosten des Plotexports 5,110615889 s;
+eigene lesende Nachprüfung aller fünf Ausgaben 0,108375014 s. Alle Grafik-,
+Formel- und Datenbindungen bestätigt; kein erneuter Fit oder Suchaufruf.
+
+Übermittelte Arbeitskopie vorhanden; für diese technische Abnahme fehlen
+keine weiteren Laufdateien. Dauerhafte gemeinsame Archivablage und unabhängige
+hashgeprüfte Zweitkopie weiterhin unbestätigt; [Ablagezuordnung](#archivablage).
+Die Ressourcenprüfung gibt keinen Anlass zur Änderung eingefrorener Fristen,
+belegt aber keine Gesamtlaufzeit oder wissenschaftliche Qualität der 520er-Serie.
+Der anschließend gemeldete, nach Suspend gesperrte wissenschaftliche Versuch
+und seine noch fehlenden Originalbelege sind oben getrennt zugeordnet.
+Ausführung, lesende Prüfung und Archivierung bleiben getrennt;
+GitHub-Upload optional.
 
 ### Priorisierte fehlende Belege
 

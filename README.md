@@ -176,10 +176,17 @@ neuen vorab gebundenen unregelmäßigen Raster; der historische Pilot bleibt
 unverändert. Das Protokoll ist mit [PR #94](https://github.com/craexxn/ringdown-sr/pull/94)
 als `8b8b356` übernommen. Der getrennte
 [fünfarmige Laufweg](docs/noise_background.md) mit lesender Verifikation und
-Plotexport ist in [PR #95](https://github.com/craexxn/ringdown-sr/pull/95)
-lokal mit fünf nativen Zehnerworkern, lesendem Replay und KI-basierten Reviews
-geprüft. Vollständige Ready-CI, Implementierungsübernahme und neuer
-Manjaro-Vorlauf stehen noch aus. Ergebnisse künftig mit **Plot,
+Plotexport ist nach lokalen Prüfungen, KI-basierten Reviews und vollständiger
+Ready-CI mit [PR #95](https://github.com/craexxn/ringdown-sr/pull/95) als
+`bd42634` übernommen. Der technische Manjaro-Vorlauf mit fünf nativen
+N128-Zehnerworkern ist am Originalarchiv lesend bestätigt; seine Ressourcen
+begründen keine Änderung der eingefrorenen Fristen. Der danach gemeldete
+wissenschaftliche Ausführungsversuch wurde nach Vorbereitung aller 26 Eingaben
+durch den Integritätswächter gesperrt: Ein belegter System-Suspend während
+eines Fits ließ Kalender- und monotone Uhr auseinanderlaufen. Originaldateien
+und Teilkosten sind zu bewahren und lesend zu prüfen; kein automatischer Neustart oder
+Umbuchen als numerischer Fehler. Ein verifiziertes wissenschaftliches Ergebnis
+liegt noch nicht vor. Ergebnisse künftig mit **Plot,
 vollständiger Originalformel und zugeordneten Plotdaten**. Das Zusatzraster
 bestimmt weder Suchauswahl noch vorzeitiges Ende. Wissenschaftliche Suchläufe
 bleiben ein separater Ausführungsschritt. Umsetzung und Nachweise stehen im

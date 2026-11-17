@@ -866,13 +866,33 @@ Keine geglättete Ersatzformel und keine Plotbewertung als Suchauswahl verwenden
 **Umsetzung, ergänzt am 16.11.2026:** Der Methodenplan ist mit PR94 getrennt
 übernommen und bleibt unverändert. Der [fünfarmige Laufweg](noise_background.md)
 mit bestehenden Adaptern, lesender Verifikation und gebundenem Plotexport ist
-in [PR #95](https://github.com/craexxn/ringdown-sr/pull/95) lokal einschließlich
-fünf nativer Zehnerworker und gezielter KI-Reviews geprüft. Vollständige
-erforderliche CI und neuer Manjaro-Vorlauf gehen der separaten wissenschaftlichen
-Ausführung voraus. Abschließende CI-Abnahme, Übernahme und Ressourcenbewertung
-sind noch offen; der Fortsetzungsstand führt diese Schritte
-getrennt. Die alte 144er-Serie war bereits wissenschaftliche Ausführung;
-der technische Vorlauf für die neue Studie liefert keine neuen Qualitätsnachweise.
+nach lokalen Prüfungen, gezielten KI-Reviews und vollständiger Ready-CI
+mit [PR #95](https://github.com/craexxn/ringdown-sr/pull/95) ausdrücklich
+freigegeben und als `bd42634b888c2dbaa5a92726b9a1f9851c766a48` übernommen.
+Der neue Manjaro-Vorlauf ist mit fünf nativen N128-Zehnerworkern, separatem
+Replay sowie allen fünf Plots, Originalformeln und Punktdaten am Originalarchiv
+lesend bestätigt. Gesamtaufruf 245,764 s, längster Worker 49,237 s;
+die Ressourcenbewertung begründet keine Änderung der eingefrorenen Fristen.
+Details und Grenzen stehen im
+[Fortsetzungsstand](representation_implementation_status.md#technischer-manjaro-n128-nachweis-vom-16112026).
+Der anschließend übermittelte wissenschaftliche Versuch ist nach Vorbereitung
+aller 26 Eingaben begonnen und bei `ar1-01/estimated_64/member-04` durch den
+Uhrenintegritätswächter gesperrt. Ein System-Suspend innerhalb des Fits ist
+im übermittelten Journal belegt; Kalender- und monotone Fitzeit unterscheiden
+sich um 183,904537 s. Übermittelte Serienabbruchzeit 4.674,278525 s monoton,
+ohne Suspend und mit unvollständiger CPU-Messung; Einzelheiten oben im
+Fortsetzungsstand. Kein verifiziertes wissenschaftliches Ergebnis oder
+Originalarchiv übermittelt. Nächster Schritt ist die unveränderte Bewahrung
+des Versuchs, lesende Prüfung der Originale und Teilkosten sowie Vorbereitung
+eines Betriebswegs mit Suspend-Sperre. Der Laufweg enthält dafür getrennte
+Archivierungsbefehle und einen noch nicht gestarteten manuellen Versuch 002
+unter unverändertem Protokoll; keine Teilresultate aus 001 übernehmen.
+Kein automatischer Neustart, keine Umklassifikation
+zum numerischen Fehler und keine Änderung von Methoden, Uhrenwächter oder
+Fristen; der Dokumentationsbranch ersetzt den Ausführungscheckout nicht.
+Die alte 144er-Serie war bereits wissenschaftliche Ausführung;
+der technische Vorlauf für die neue Studie liefert keine neuen Qualitätsnachweise
+oder Laufzeit-/Speichergarantie. Gemeinsame Archivablage und Zweitkopie bleiben offen.
 
 Zunächst wenige Signale und Rauschbedingungen wählen. Rauschrealisierungen,
 Hintergrunddaten und Suchseeds als unterschiedliche Zufallsquellen behandeln.
