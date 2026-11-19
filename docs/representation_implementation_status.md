@@ -1,6 +1,45 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Aliasdiagnose und getrennte Anschlussfragen
+## Aktuell: Folgestudie zu Hintergrunddauer und Messraster implementiert
+
+Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
+Der vor neuen Studienbeobachtungen gebundene
+[Versuchsplan](noise_followup_plan.md) ist auf Branch
+`codex/noise-duration-sampling-study` in
+[Draft-PR #102](https://github.com/craexxn/ringdown-sr/pull/102) umgesetzt.
+Basis ist der PR101-Stand `7f52cfb2fe94ad13cda1ff28e11daa261e57bd21`;
+Vorabplancommit `a37bf90fe439619fd263d6c06d868c6ff4ea00e8`.
+Die Implementierung liegt nach diesem Plancommit im Arbeitsstand des Draft-PR;
+ein wissenschaftlicher Ausführungscommit oder Ergebnisarchiv liegt noch nicht vor.
+
+26 frische Fälle umfassen 20 AR(1)- und sechs getrennt ausgewertete weiße
+Kontrollen. Block A vergleicht auf dem Uniformraster O, K sowie Schätzung
+aus 64/4096 s kontinuierlichem Hintergrund: 104 Viererpakete, 416 Worker.
+Block B ergänzt ungleichmäßige O/K-Akquisition mit 52 neuen Viererpaketen,
+208 Workern. Seine 52 Uniform-O/K-Kontrollreferenzen stammen aus A; keine
+erneute Suche, unabhängige Stichprobe oder doppelte Anrechnung neuer Kosten.
+Zusammen sind 156 neue Pakete und 624 wissenschaftliche Worker vorgesehen.
+R mit 4 × 1.000 bei lokal 300/5 und die ursprüngliche `accuracy`-Auswahl
+bleiben unverändert. Eine bessere Kovarianzschätzung beseitigt keine
+mathematische Mehrdeutigkeit identischer gleichmäßiger Samplewerte.
+
+Implementiert sind getrennte sechs N128-Zehnerworker als technischer Vorlauf,
+eine vorgeschaltete Kovarianz-/PSD-/ACF-Diagnose ohne SR mit eigenen
+Entwicklungsfällen, vorab gebundene Eingaben beider Raster, Serienlauf und
+lesende Verifikation. Vollständige unveränderte Originalformeln, PNG/SVG,
+Punkt-CSV, gepaarte Kontraste und marginale Intervalle werden einschließlich
+Ausfällen und Kontrollreferenzen separat quellengebunden ausgegeben.
+Die gemeinsamen Start-, Test-, Archivierungs- und Fortschrittsbefehle stehen
+im [Laufweg](noise_followup.md); die Diagnose wählt keinen neuen SR-Schätzer.
+
+Gezielte Komponentenprüfungen liegen vor; der vollständige technische
+Gesamtnachweis ist noch offen. Nächster abgegrenzter Schritt ist die
+Integration mit gezieltem Review und vollständiger Ready-CI vor Verwendung
+des festen Ausführungsstands. Noch keine neue wissenschaftliche Suchserie
+ausgeführt und kein wissenschaftlicher Erfolg behauptet. Der 23.11. morgens
+bleibt ein weiches Planungsziel, keine zusätzliche Abbruchregel.
+
+## Historisch: Aliasdiagnose und getrennte Anschlussfragen
 
 Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
 Die [lesende Aliasdiagnose](noise_background_alias_diagnostic_001.md)

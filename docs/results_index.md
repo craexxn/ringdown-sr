@@ -22,6 +22,21 @@ bleiben beide gesicherten Ablageorte und die Prüfung ihrer Kopien nachzutragen.
 Technische Fixtures und ein implementierter Laufweg sind keine wissenschaftliche
 Ausführung und kein Sicherungsnachweis.
 
+Aktueller Planungs-/Implementierungsstand vom 19.11.2026: Die
+[Folgestudie zu Hintergrunddauer und Messraster](noise_followup_plan.md)
+ist in [Draft-PR #102](https://github.com/craexxn/ringdown-sr/pull/102)
+implementiert, Planbindung `a37bf90fe439619fd263d6c06d868c6ff4ea00e8`.
+Vorgesehen sind 26 frische Fälle und 624 neue Worker (A: 416, B: 208);
+die 52 gemeinsamen Uniform-O/K-Pakete aus A erscheinen in B als
+Kontrollreferenzen ohne neue Suchkosten. Getrennte Kovarianz-/PSD-/ACF-Diagnose,
+technischer Vorlauf und vollständige Abnahme sind vor den wissenschaftlichen
+Suchen zu belegen. Noch kein wissenschaftlicher Lauf oder zugehöriges
+Ergebnisarchiv nachgewiesen; daher kein neuer Archiveintrag.
+[Prüfstand](representation_implementation_status.md) und
+[Lauf-/Export-/Archivbefehle](noise_followup.md) führen die nächsten Schritte.
+Künftige Originalformeln, Plots und vollständige Punkt-CSV sind separat
+mit den jeweiligen Originalergebnissen und Kontrollreferenzen zu binden.
+
 Die [unabhängige Bestätigung 001](restart_confirmation_results_manjaro_001.md)
 ist auf `c3da991` ausgeführt und am Original vollständig lesend bestätigt:
 `confirmation-anchor-manjaro-001`, `confirmation-low-manjaro-001` und

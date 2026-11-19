@@ -6,7 +6,15 @@ Ready-Wechsel und führt native Kontrollen seriell aus. Die wissenschaftlichen
 Phasen und Kriterien bleiben erhalten; tatsächlicher Prüf- und Übernahmestand
 im [Fortsetzungsstand](representation_implementation_status.md).
 
-Aktueller Ergebnisabgleich vom 14.11.2026: Die
+Aktueller Methoden- und Umsetzungsabgleich vom 19.11.2026 zu Phase 7:
+Die [Folgestudie zu Hintergrunddauer und Messraster](noise_followup_plan.md)
+ist nach vorab gebundenem Plan in Draft-PR #102 implementiert. Sie verbindet
+eine getrennte Schätzerdiagnose ohne SR mit 416 + 208 geplanten neuen
+wissenschaftlichen Workern. Technischer Gesamtnachweis und wissenschaftliche
+Ausführung stehen noch aus; [Prüfstand](representation_implementation_status.md)
+und [Bedienung](noise_followup.md) werden getrennt geführt.
+
+Historischer Ergebnisabgleich vom 14.11.2026: Die
 [unabhängige Bestätigung](restart_confirmation_results_manjaro_001.md) aus Phase 6
 ist einschließlich technischem Vorlauf auf main `c3da991` ausgeführt und vollständig
 lesend geprüft. 150 frische Suchen; R erreicht 8/10, 10/10 und 4/10 gemeinsame
@@ -980,6 +988,30 @@ vorab geplanter Vergleich der Hintergrunddauer und Kovarianzschätzer
 empfohlen. Das ist ein Vorschlag ohne neue Seeds, Eingaben oder Ausführung.
 Eine solche bessere Schätzung würde die mathematische Rastermehrdeutigkeit
 nicht aufheben; beide Fragen sind getrennt zu untersuchen.
+
+**Anschlussbeschluss und Umsetzung vom 19.11.2026:** Der danach festgelegte
+[Folgeplan](noise_followup_plan.md), Vorabplancommit
+`a37bf90fe439619fd263d6c06d868c6ff4ea00e8`, untersucht beide Fragen getrennt
+in 26 frischen gepaarten Fällen (20 AR(1), sechs White). Eine günstige eigene
+Kovarianz-/PSD-/ACF-Diagnose ohne SR geht den wissenschaftlichen Suchen voraus;
+ihre technische Integrität und vollständige Rechenschaft bilden das Gate,
+kein günstiger Effekt und keine automatische Auswahl eines anderen Schätzers.
+Block A verwendet 416 Worker für uniforme O/K/64-s-/4096-s-Bedingungen;
+Block B 208 neue Worker für tatsächlich ungleichmäßige O/K-Messungen und
+referenziert die 52 gemeinsamen Uniform-O/K-Pakete aus A. Die Kontrollkosten
+werden nicht als neue Suchkosten gezählt. Die kontinuierliche Fortsetzung
+des korrelierten Rauschmodells ist eine ausdrücklich neue Annahme.
+
+Primär sind unter AR(1) die gepaarten Fehlerdifferenzen 4096 s minus 64 s
+und Jitter-K minus Uniform-K. Weiße Kontrollen, Ausfälle und bekannte Kosten
+werden getrennt berichtet; keine neue Bestehensgrenze oder automatische
+Armwahl. R mit 4 × 1.000 bei 300/5 und die ursprüngliche `accuracy`-Auswahl
+bleiben erhalten. Originalformeln, alle gespeicherten Punktdaten und
+Kontrastplots werden separat an ihre Quellen gebunden. Der
+[Laufweg](noise_followup.md) ist in
+[Draft-PR #102](https://github.com/craexxn/ringdown-sr/pull/102) implementiert;
+vollständige technische Abnahme und wissenschaftliche Ausführung sind offen.
+Die vorherige Aliasdiagnose und die historischen Versuchspläne bleiben erhalten.
 
 Zunächst wenige Signale und Rauschbedingungen wählen. Rauschrealisierungen,
 Hintergrunddaten und Suchseeds als unterschiedliche Zufallsquellen behandeln.

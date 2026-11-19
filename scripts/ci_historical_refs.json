@@ -1,5 +1,13 @@
 [
   {
+    "required_commit": "a37bf90fe439619fd263d6c06d868c6ff4ea00e8",
+    "durable_remote_ref": "refs/pull/102/head",
+    "files_sha256": {
+      "docs/noise_followup_plan.md": "f762ec7f4311ceea46bd736f3838c111072939d5d853552e3bec537ad86b2773",
+      "data/noise_followup_seeds.json": "045f1e4f3fde175f7e15219503e7f0a74b9f07b0d7c7f1dec08d1cd3516e7426"
+    }
+  },
+  {
     "required_commit": "1aeedcce6a0f6c5683b2c4176161e14ed83ffa6d",
     "durable_remote_ref": "refs/pull/77/head",
     "files_sha256": {
