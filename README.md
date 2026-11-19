@@ -195,6 +195,15 @@ beide Richtungen. Einzelne starke Zwischenpunktspitzen bleiben enthalten.
 Keine automatische Armwahl oder neue Suchserie; Einordnung, Grenzen und
 Anschlussvorschlag stehen im Ergebnisbericht. Ergebnisse sind mit **Plot,
 vollständiger Originalformel und zugeordneten Plotdaten** verfügbar.
+Die anschließende [lesende Kandidatenprüfung](docs/noise_background_candidates_manjaro_002.md)
+umfasst 636 gespeicherte Kandidaten aus 48 Workern der sechs auffälligen
+Ausgaben und ihrer gewöhnlich gewichteten Vergleiche. In allen sechs
+auffälligen Ausgaben enthält schon der ausgewählte Worker Alternativen mit
+kleinerem RMSE und kleineren Spitzen auf beiden Zusatzrastern. Die ursprüngliche
+Auswahl folgt korrekt dem Trainingsverlust; die diagnostisch besten gemeinsamen
+Alternativen über alle vier Worker haben 3,55–10,47 % höheren Trainingsverlust.
+Die Originalergebnisse bleiben erhalten. Vor einer langen Wiederholungsserie
+ist damit die methodische Auswahlfrage vorrangig zu klären.
 Das Zusatzraster
 bestimmt weder Suchauswahl noch vorzeitiges Ende. Wissenschaftliche Suchläufe
 bleiben ein separater Ausführungsschritt. Umsetzung und Nachweise stehen im

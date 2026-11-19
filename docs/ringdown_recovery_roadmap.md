@@ -908,12 +908,19 @@ allen 20 AR(1)-Blöcken; der primäre mittlere SR-Kontrast E1024−O ist dennoch
 16,310949 A, bleiben in allen Statistiken und Grafiken sichtbar. Dieser Befund
 begründet keine automatische Armwahl und keine weitere Hintergrundstaffel.
 
-Als nächster begrenzter Arbeitsschritt wird eine **lesende Endfrontdiagnose**
-vorgeschlagen: vorhandene Kandidaten und deren Rasterverhalten untersuchen,
-ohne neue Suche, neue Originalauswahl oder nachträgliche Erfolgszählung.
-Ein anschließender Suchzufallsvergleich bei festen Inputs und Matrizen könnte
-Suchvariation getrennt untersuchen und längere Rechnerzeit nutzen. Er wäre
-gesondert vorab zu planen; Wiederholungen allein beheben keine Rasterblindheit.
+Die danach beauftragte [lesende Endfrontdiagnose](noise_background_candidates_manjaro_002.md)
+ist am 19.11.2026 mit zuvor festgelegtem Umfang durchgeführt: 636 gespeicherte
+Kandidaten aus 48 Workern, sechs auffällige Fall-Arme und deren gewöhnlich
+gewichtete Vergleiche. Alle sechs auffälligen Ausgaben haben bereits im
+ausgewählten Worker Alternativen mit kleineren RMSE und Maximalfehlern auf
+beiden Zusatzrastern. Ihre ursprüngliche Trainingsverlustauswahl ist korrekt;
+die nachträglich anhand der Wahrheit benannten Diagnosezeugen ersetzen sie nicht.
+
+Damit ist die methodische Auswahlfrage vor einer langen Wiederholungsserie
+vorrangig zu klären. Ein Suchzufallsvergleich bei festen Inputs und Matrizen
+könnte die Streuung der bisherigen Regel weiterhin untersuchen; allein durch
+Wiederholung ist keine Behebung der Zwischenpunktfehler begründet. Ein solcher
+Lauf wäre gesondert vorab zu planen und bleibt ein Vorschlag.
 Frequenzgrenzen, Grammatik-, Auswahl- oder Samplingänderungen sind eigenständige
 Methodenänderungen. Keine neuen Seeds, Budgets oder Läufe sind damit beschlossen.
 Der eingefrorene Hintergrundplan bleibt unverändert; weitere Bedingungen erst
