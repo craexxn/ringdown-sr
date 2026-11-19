@@ -6,7 +6,8 @@ Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md):
 Für `noise-background-manjaro-002` liegen ein übermittelter Serienabschluss
 und die Erfolgsmeldung der vollständigen lesenden Verifikation vor. Der
 anschließende Plotexport bricht in der Kovarianzübersicht ab; seine Korrektur
-wird auf `codex/noise-background-plot-recovery`, Basis
+wird in [PR #97](https://github.com/craexxn/ringdown-sr/pull/97)
+auf `codex/noise-background-plot-recovery`, Basis
 `1bab305f0aad9e050c2cd0b24b2cc7ee808d6189` (PR96), bearbeitet. Dieser
 Dokumentationsmerge ersetzt den Ausführungsstand `bd42634` nicht.
 Wissenschaftliche Originaldateien von 002 sind noch nicht zur eigenen Prüfung
@@ -49,10 +50,24 @@ Lokale Prüfung dieser Korrektur am 19.11.2026: **44 Plot-/Reparaturtests
 bestanden in 42,54 s**, Ruff und Formatprüfung für 365 Pythondateien sowie
 Dokumentationsprüfung für 113 Markdown-Dateien bestanden. Alle sechs
 Bash-Blöcke im Laufweg sind syntaktisch geprüft, nicht hier ausgeführt.
-Gezieltes KI-basiertes Review und vollständige Ready-CI stehen noch aus;
-dies ist keine Freigabe eines neuen wissenschaftlichen Laufstands.
+Zusätzlicher Kompatibilitätsnachweis auf
+`9c0bde8eceb101f4b2c6d1e498ce7f8b519946ec`: Der neue Renderer wird über den
+Reparaturstarter mit dem echten unveränderten `bd42634`-Paket geladen; dessen
+strenge Verifikation des vorhandenen Manjaro-Vorlaufs besteht in **4,440 s**.
+Alle **206 Originaldateien bleiben bytegleich**. Das prüft die getrennte
+Codebindung am technischen Original, noch nicht den Export der hier nicht
+verfügbaren wissenschaftlichen Dateien von 002.
 
-**Nächster abgegrenzter Schritt:** Review und technische Prüfung der Korrektur
+Gezieltes KI-basiertes Review von PR97 auf diesem Head gegen Basis
+`1bab305f0aad9e050c2cd0b24b2cc7ee808d6189`: kein korrekturbedürftiger Befund
+im Plotfix, den Quellen-/Widerrufspfaden und den CLI-/Archivbefehlen. Vier
+zusätzliche unabhängige Gegenprüfungen bestehen: versteckte Änderungen beider
+neuen Quellen, fremder Paketimport und vorab importiertes Paket werden
+abgewiesen. Die vollständige Ready-CI ist noch ausstehend; deren aktueller
+Nachweis wird in PR97 geführt. Kein neuer wissenschaftlicher Laufstand
+und keine eigenständige Mergefreigabe.
+
+**Nächster abgegrenzter Schritt:** Die vollständige technische Prüfung der Korrektur
 abschließen, dann den getrennten Plotexport auf 002 anwenden.
 Originale, fehlgeschlagene Exporte und Aufrufkosten
 von 001 und 002 unverändert bewahren. Anschließend vollständige Archive und
