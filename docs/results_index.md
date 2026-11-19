@@ -695,6 +695,30 @@ davon getrennt. Lauf-, Fehler- und Kostenbelege stehen im
   `56fd715461ac8ab57e0121df2ae88a388f517dc0e749f79b7c665379e33ea860`;
   internes Manifest und ZIP-CRC geprüft.
 
+Die anschließend beauftragte [Kandidatenprüfung](noise_background_candidates_manjaro_002.md)
+vom 19.11.2026 ist eine getrennte lesende Diagnose desselben Originalarchivs:
+636 gespeicherte Kandidaten aus 48 Workern, sechs auffällige Fall-Arme und
+deren gewöhnlich gewichtete Vergleiche. Alle 1.298.076 Punkte, ursprünglichen
+Auswahlen, Formeln und Quellen sind unabhängig geprüft; sämtliche 18.166
+Originaldateien bleiben vor und nach der Diagnose bytegleich. Keine neuen
+Fits, Suchen, Stützstellen oder wissenschaftlichen Auswahlen. Diagnoseumfang
+vor neuer Auswertung gebunden in `scope.json`, SHA-256
+`941f81c1709731deba065c543b8d6df27c68c47ce076bf369bf320657066b84b`.
+
+- `noise-background-manjaro-002-candidates-gallery-v2.zip`:
+  280.357.455 Bytes, SHA-256
+  `2b031624e6ef6c764c63aa11621278bf08033169366780da98b03989c618780d`.
+  Alle 636 Kandidatenplots, vollständige Originalformeln und Punktdaten,
+  zwölf Frontübersichten und zwölf verkleinerte Kontaktbögen; 2.662 Dateien.
+  Interne Hashes, ZIP-CRC und lokale Links geprüft. V2 behebt ausschließlich
+  Achsenbeschnitt in Frontfiguren; V1 samt Archiv bleibt erhalten.
+- `noise-background-manjaro-002-candidates-audit.zip`:
+  1.092.966 Bytes, SHA-256
+  `3a950150fc2470da8bd8df4f531ff0ee3dfd18d8cc7bbbed2988b2e77e400f0f`.
+  Scope, reproduzierbare Auditskripte, Kandidatenmetriken/Formeln, Manifeste,
+  unabhängige numerische/visuelle Prüfung und Gesamtintegritätsbelege;
+  22 Nutzdateien plus internes Manifest, Hashes und ZIP-CRC geprüft.
+
 Für beide Versuche sind gemeinsame dauerhafte Archivablage und unabhängige
 hashgeprüfte Zweitkopie unbestätigt. Transportteile, lokale Arbeitskopien und
 die Galerie belegen keine unabhängige Sicherung. Der Abbruch von 001 und seine

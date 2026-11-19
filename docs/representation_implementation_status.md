@@ -1,6 +1,47 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Originalarchiv der Hintergrundserie 002 ausgewertet
+## Aktuell: gespeicherte Kandidaten der auffälligen Ausgaben geprüft
+
+Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
+Die beauftragte [lesende Kandidatenprüfung](noise_background_candidates_manjaro_002.md)
+ist nach einem vor Auswertung festgehaltenen Umfang durchgeführt: alle
+636 gespeicherten Kandidaten aus 48 Workern der sechs bereits besprochenen
+auffälligen Fall-Arme und der gewöhnlichen Gewichtung derselben Fälle.
+Alle 1.298.076 Punkte sind verfügbar. Eine unabhängige Gegenrechnung mit dem
+kanonischen alten Baumauswerter bestätigt 1.216.668 Zusatzrasterwerte bitgenau;
+81.408 native Trainingswerte bleiben unverändert. Die ursprüngliche Worker-
+und Paketauswahl nach Trainingsverlust und Komplexität ist exakt reproduziert.
+Alle 18.166 Originaldateien bleiben vor und nach der Diagnose bytegleich.
+Die vollständige Galerie mit 636 Kandidatenplots, Formeln und Punktdaten
+ist samt separatem Nachweispaket im [Ergebnisindex](results_index.md) gebunden.
+Zwölf Frontübersichten und Kontaktbögen sowie sechs Original-/Zeugenpaare
+in voller Auflösung sind zusätzlich visuell geprüft; Grenzen stehen im Bericht.
+
+In **allen sechs auffälligen Ausgaben** enthält bereits der ausgewählte
+Worker Alternativen mit kleineren RMSE und Maximalfehlern auf beiden
+Zusatzrastern. Die hierfür vorab definierte Diagnosegruppe liefert über
+alle vier Worker Beispiele mit 3,55–10,47 % höherem Trainingsverlust.
+Das erklärt ihre Nichtauswahl durch die bestehende Regel, beweist aber keine
+allgemeine Ursache aller Zwischenpunktfehler. Nachträglich anhand der Wahrheit
+ausgewählte Beispiele ersetzen keine wissenschaftlichen Originalausgaben.
+
+Der Dokumentationsbranch `codex/noise-background-candidate-audit` baut auf dem
+unveränderten Ergebnis-Head `2d19e7eb43944a50dbc4da129111d87a7478f0cf` aus
+[PR #98](https://github.com/craexxn/ringdown-sr/pull/98) auf. Implementierung,
+eingefrorene Protokolle und Originalauswahl bleiben erhalten. Auswertung und
+Grafiken sind separat quellengebunden; die Originalserie wird nicht wiederholt.
+Der Kandidatenbericht führt den vollständigen Umfang, numerische Gegenprüfungen,
+Kosten, Originalformeln, Punktdaten und die Grenzen der Diagnose.
+
+Nächster fachlicher Schritt ist eine begründete Planung der Auswahlfrage mit
+Informationen, die bei unbekannter Wahrheit verfügbar wären. Die zuvor
+diskutierte reine Suchseed-Wiederholung könnte weiterhin Suchvariation messen;
+eine Behebung des hier sichtbaren Auswahlproblems ist dadurch nicht begründet.
+Keine neue Auswahlregel, Seeds, Frequenzgrenzen oder wissenschaftlichen Läufe
+sind beschlossen. Dauerhafte Archivablage und unabhängige Zweitkopie bleiben
+laut [Ergebnisindex](results_index.md) offen.
+
+## Historisch: Originalarchivauswertung vor der Kandidatenprüfung
 
 Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
 Der [Ergebnisbericht](noise_background_results_manjaro_002.md) trennt den

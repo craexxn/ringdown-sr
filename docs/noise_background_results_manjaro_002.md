@@ -574,13 +574,25 @@ Zusicherung besserer SR-Ergebnisse. Auch zusätzliche Validierungsfenster
 sind derzeit kein belegter vorrangiger Engpass; die konstanten Alphas
 schließen einen solchen Einfluss jedoch nicht grundsätzlich aus.
 
-Als nächster abgegrenzter Schritt bietet sich eine **rein lesende, vorher im
-Umfang festgelegte Diagnose der gespeicherten Endfronten** an: Enthalten die
-auffälligen Fälle ausschließlich problematische Zwischenpunktformen oder
-auch andere Originalkandidaten? Die ursprüngliche Paketauswahl bleibt
-unverändert. Ein nachträglich anhand der Wahrheit ausgewählter besserer
-Kandidat wäre Entwicklungswissen und kein verbesserter wissenschaftlicher
-Erfolg der abgeschlossenen Serie.
+Die anschließend beauftragte **rein lesende Diagnose der gespeicherten
+Endfronten** ist im [Kandidatenbericht](noise_background_candidates_manjaro_002.md)
+vom 19.11.2026 dokumentiert. Ihr zuvor abgegrenzter Umfang umfasst alle
+636 Kandidaten aus 48 Workern: die sechs oben besprochenen auffälligen
+Fall-Arme und die gewöhnliche Gewichtung derselben sechs Fälle. In allen
+sechs auffälligen Ausgaben enthält bereits der ursprünglich ausgewählte
+Worker Alternativen mit kleineren RMSE und Maximalfehlern auf beiden
+Zusatzrastern. Die ursprüngliche Auswahl entspricht korrekt ihrer
+Trainingsverlustregel. Die Diagnosezeugen über alle vier Worker haben
+3,55–10,47 % höheren Trainingsverlust; sie sind anhand bekannter Wahrheit
+nachträglich ausgewählte Beispiele. Sie ersetzen keine Originalausgabe und
+belegen keinen verbesserten wissenschaftlichen Erfolg der Serie.
+
+Dieser Befund präzisiert den Anschluss: Das Fehlen weniger auffälliger
+Kandidaten im gespeicherten Bestand ist für diese sechs Ausgaben keine
+ausreichende Erklärung. Die Auswahl nach Trainingsverlust trennt hier kleine
+Trainingsfehler nicht zuverlässig von großen Zwischenpunktfehlern. Welche
+praktisch verfügbare Information eine bessere Auswahl ermöglichen könnte,
+benötigt eine eigene methodische Planung und unabhängige Prüfung.
 
 Für eine anschließende mehrtägige Rechenserie ist ein kontrollierter
 Suchzufallsvergleich auf **festen Beobachtungen und festen Kovarianzen**
