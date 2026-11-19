@@ -78,9 +78,11 @@ vorbereiteten Eingaben ist nach einem belegten System-Suspend im Fit von
 Übermittelte monotone Fitzeit 368,390180243 s, Serienabbruchzeit
 4.674,278524944 s; Suspend nicht enthalten, CPU-Messung unvollständig.
 Das inzwischen hochgeladene Abbrucharchiv 001 ist wegen der Downloadgrenze
-noch nicht selbst geprüft. Für den getrennten Versuch 002 sind der
-Serienabschluss und eine bestandene vollständige lesende Verifikation
-übermittelt; der anschließende Plotexport scheitert an einem Datenformatfehler.
+noch nicht selbst geprüft. Für den getrennten Versuch 002 liegt inzwischen
+das hashgeprüfte vollständige Archiv mit erfolgreichem repariertem Plotexport
+vor. Plot-, Statistik- und Herkunftsaudits sowie die eigene vollständige
+Serienverifikation bestehen. Der [Ergebnisbericht](noise_background_results_manjaro_002.md)
+ordnet alle 130 Originalausgaben und den begrenzten wissenschaftlichen Befund ein.
 Die [wissenschaftlichen Archiveinträge](#wissenschaftliche-hintergrundstudie-manjaro-001-und-002)
 trennen diese Belegstände. Kosten und Messgrenzen stehen im Fortsetzungsstand.
 Originale unverändert bewahren und lesend prüfen; kein automatischer Neustart
@@ -646,9 +648,10 @@ GitHub-Upload optional.
 
 Stand 19.11.2026; gebundener Manjaro-Ausführungsstand
 `bd42634b888c2dbaa5a92726b9a1f9851c766a48`, technischer Vorlauf 001 wie oben.
-Die wissenschaftlichen Originalmetadaten liegen noch nicht zur eigenen
-vollständigen Prüfung vor. Übermittelte Lauf-, Fehler- und Kostenbelege stehen
-im [Fortsetzungsstand](representation_implementation_status.md).
+Das Originalarchiv von 002 liegt zur eigenen Prüfung vor; Versuch 001 bleibt
+davon getrennt. Lauf-, Fehler- und Kostenbelege stehen im
+[Fortsetzungsstand](representation_implementation_status.md), der Fachbefund im
+[Ergebnisbericht 002](noise_background_results_manjaro_002.md).
 
 - `noise-background-manjaro-001`: Nach belegtem Suspend gesperrter Versuch,
   kein erfolgreicher wissenschaftlicher Abschluss. Das Originalarchiv
@@ -659,20 +662,43 @@ im [Fortsetzungsstand](representation_implementation_status.md).
   Dieser Hash ist **nicht an den Archivbytes bestätigt**; TAR-Inhalt und
   vollständige Teilkosten sind noch ungeprüft. Eine Übertragung in kleineren
   Teilen kann dieselben Originalarchivbytes zugänglich machen.
-- `noise-background-manjaro-002`: Laut übermittelter Aufrufdatei ist die
-  getrennte Serie nach rund 50 h 42 min abgeschlossen. Die vollständige lesende
-  Verifikation nach `verification-002` ist laut CLI-Meldung bestanden; der
-  erste fehlgeschlagene Verifikationsversuch bleibt separat erhalten. Der
-  anschließende Plotexport scheitert in der Kovarianzübersicht. Originale,
-  fehlgeschlagener Plotexport und Aufrufkosten bleiben erhalten; eine
-  wissenschaftliche Wiederholung ist daraus nicht begründet. Ein vollständiges
-  Archiv samt SHA-256 und ein erfolgreicher gebundener Export aller 130 Plots,
-  Originalformeln und Punktdaten liegen noch nicht zur eigenen Prüfung vor.
+- `noise-background-manjaro-002`: Das Originalarchiv
+  `noise-background-manjaro-002-plots-recovered.tar.gz` ist am 19.11.2026 aus
+  19 gelieferten Teilen 000–018 zusammengesetzt; sämtliche Teilprüfsummen und
+  der vollständige SHA-256 sind selbst bestätigt:
+  `b2a4ace2d9097099822ab524377537dae24d59c7ba59e137de11ae5ba3e4214d`.
+  470.474.010 Archivbytes; 18.166 reguläre Dateien, 1.931 Verzeichnisse und
+  2.027.757.507 entpackte Dateibytes, keine Links oder unsicheren Einträge.
+  Beide vollständigen Elternordner sind enthalten: wissenschaftlicher Lauf 002
+  und technischer Vorlauf 001, einschließlich Fehlversuchen und Kostensidecars.
+  520 abgeschlossene Suchen, 130 erfolgreiche Pakete, keine Timeouts;
+  vollständiger Serienaufruf 182.531,209977 s. Die eigene vollständige
+  Serienverifikation besteht in 559,396 s; alle vier Exportdateien sind
+  bytegleich zur Manjaro-Verifikation. Auch unabhängige Statistik-, Herkunfts-
+  und Plotnachprüfung bestehen. Alle 18.166 Originaldateien bleiben bytegleich.
+  Die erfolgreiche Manjaro-Verifikation `verification-002` und der reparierte
+  Export `plots-002` sind erhalten, ebenso die fehlgeschlagenen Vorgänger.
+  Alle 130 Originalformeln und 265.330 Punktwerte sind bestätigt. Renderercommit
+  `7b0417db802eb8d97aea407b2a47f715c2a53bba` ist getrennt vom unveränderten
+  Ausführungs-/Verifikationsstand `bd42634` gebunden.
+  Der technische Originalordner bleibt in 165 Dateien bytegleich zum früheren
+  Vorlaufarchiv; 205/206 Dateien seines Elternordners sind identisch. Nur die
+  äußere Monitorzeile `progress.txt` wurde nach damaliger Archivierung auf
+  den erfolgreichen Abschluss fortgeschrieben.
+  Eine separate portable Galerie mit allen 130 Plots, vollständigen Formeln,
+  Punktdaten und sechs Übersichten hat 75.143.741 Bytes und SHA-256
+  `c5c367cfb6b0349ca69d129a254eb99d493b0ce2520da852ef2345cc3311ffab`.
+  Sie ist eine abgeleitete Ansicht und ersetzt das vollständige Originalarchiv nicht.
+  Das separate Nachweispaket `noise-background-manjaro-002-audit.zip` enthält
+  die unabhängigen Audits, Skripte, CSV-Werte und den eigenen Verify-Export:
+  2.949.645 Bytes, SHA-256
+  `56fd715461ac8ab57e0121df2ae88a388f517dc0e749f79b7c665379e33ea860`;
+  internes Manifest und ZIP-CRC geprüft.
 
 Für beide Versuche sind gemeinsame dauerhafte Archivablage und unabhängige
-hashgeprüfte Zweitkopie unbestätigt. Der Fehlerbeleg des Plotexports ersetzt
-keine wissenschaftliche Ergebnisbewertung; diese folgt nach vollständiger
-Prüfung der Originale und der getrennt gebundenen grafischen Auswertung.
+hashgeprüfte Zweitkopie unbestätigt. Transportteile, lokale Arbeitskopien und
+die Galerie belegen keine unabhängige Sicherung. Der Abbruch von 001 und seine
+Teilkosten werden nicht in die abgeschlossene wissenschaftliche Serie 002 gepoolt.
 
 ### Priorisierte fehlende Belege
 

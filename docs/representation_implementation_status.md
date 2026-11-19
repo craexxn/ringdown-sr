@@ -1,6 +1,47 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Hintergrundserie 002 gemeldet abgeschlossen, Plotexport gesperrt
+## Aktuell: Originalarchiv der Hintergrundserie 002 ausgewertet
+
+Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
+Der [Ergebnisbericht](noise_background_results_manjaro_002.md) trennt den
+erfolgreichen wissenschaftlichen Lauf, die Plotreparatur und ihre Prüfungen.
+Alle 19 Transportteile und der vollständige Archivhash sind selbst bestätigt:
+`b2a4ace2d9097099822ab524377537dae24d59c7ba59e137de11ae5ba3e4214d`.
+Alle **18.166 Originaldateien bleiben nach der gesamten Prüfung bytegleich**;
+keine Fits oder Suchen gestartet. Die vollständige Serienverifikation am
+ursprünglichen sauberen `bd42634` besteht in **559,396 s** gemessenem Aufruf.
+Alle vier Verify-Exportdateien sind bytegleich zur gelieferten Manjaro-Prüfung
+`verification-002`; das schließt den vollständigen Serienbericht ein.
+
+Unabhängige Prüfungen bestätigen bereits alle 520 abgeschlossenen Worker,
+130 erfolgreiche Pakete ohne Timeout, die gebundenen Seeds/Optionen/Quellen,
+alle 130 Originalformeln und 265.330 Plotpunkte. Die 248.690 Zusatzrasterwerte
+sind bitgleich aus den Originalbäumen reproduziert; native Trainingswerte
+bleiben unverändert. Statistiken, alle acht Kontraste je Modell, Matrixdiagnosen
+und bekannte Kosten sind unabhängig nachgerechnet. Alle 130 Plots wurden
+auf Kontaktbögen gesichtet; Übersichten und die größte Spitze zusätzlich in
+voller Auflösung. Der reparierte Export stammt nachweislich von `7b0417` aus
+[PR #97](https://github.com/craexxn/ringdown-sr/pull/97); ursprüngliche
+Ausführungs- und Verifikationsquellen bleiben `bd42634`.
+
+Fachlich verbessert mehr Hintergrund die AR(1)-Matrixdiagnosen in allen
+20 Blöcken, ohne beobachteten mittleren SR-Vorteil von E1024. Primär E1024−O:
+**+0,01697744**, approximatives marginales 95%-Intervall
+**[−0,01576760; +0,04972247]**. Die größte gespeicherte Zwischenpunktspitze
+beträgt **16,310949 A**. Der Bericht erhält alle Einzelwerte, ungeklärte
+Struktur-/Domainbefunde und Kosten; keine nachträgliche Siegerwahl.
+
+Ergebnisbranch `codex/noise-background-results-manjaro-002` baut getrennt auf
+dem unveränderten PR97-Head `7b0417db802eb8d97aea407b2a47f715c2a53bba` auf.
+Hier werden nur Dokumente ergänzt; Protokolle, Implementierung und Originale
+bleiben erhalten. Die volle Ready-CI von PR97 ist weiterhin separat zu prüfen;
+kein Mergeauftrag. Nächster abgegrenzter Schritt ist die Abnahme des
+Ergebnisnachtrags. Als fachlicher Anschluss wird eine
+begrenzte lesende Endfrontdiagnose vorgeschlagen; eine neue wissenschaftliche
+Serie benötigt eine eigene vorherige Planung. Dauerhafte Archivablage und
+unabhängige Zweitkopie bleiben laut [Ergebnisindex](results_index.md) offen.
+
+## Historisch: gemeldeter Abschluss und Plotreparatur am 19.11.2026
 
 Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md):
 Für `noise-background-manjaro-002` liegen ein übermittelter Serienabschluss

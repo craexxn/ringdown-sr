@@ -182,13 +182,19 @@ Ready-CI mit [PR #95](https://github.com/craexxn/ringdown-sr/pull/95) als
 N128-Zehnerworkern ist am Originalarchiv lesend bestätigt; seine Ressourcen
 begründen keine Änderung der eingefrorenen Fristen. Versuch 001 bleibt nach
 belegtem System-Suspend gesperrt; seine Originale und Teilkosten bleiben erhalten.
-Für den getrennten Versuch 002 sind inzwischen der Serienabschluss nach rund
-**50 h 42 min** und eine bestandene vollständige lesende Verifikation
-übermittelt. Der anschließende Plotexport scheitert an einem Datenformatfehler
-der Kovarianzübersicht; die Korrektur wird getrennt vom gebundenen
-Ausführungscheckout geprüft. Eine eigene Prüfung der wissenschaftlichen
-Originalarchive und die Ergebnisbewertung stehen noch aus. Ergebnisse werden
-mit **Plot, vollständiger Originalformel und zugeordneten Plotdaten** ausgegeben.
+Der getrennte [Versuch 002](docs/noise_background_results_manjaro_002.md)
+umfasst **520 abgeschlossene Suchen, 130 Paketausgaben und rund 50 h 42 min**
+Serienzeit. Sein reparierter Plotexport, alle Originalformeln und 265.330
+Punktwerte sind am gelieferten Archiv bestätigt; die eigene vollständige
+Serienverifikation ist bestanden und ihr Export bytegleich zur Manjaro-Prüfung.
+Die AR(1)-Kovarianzschätzung verbessert sich
+mit mehr Hintergrunddaten in allen 20 Blöcken. Der mittlere primäre
+Rasterfehler von E1024 liegt dennoch bei **4,071 % von A**, gegenüber
+**2,374 %** für O; das approximative marginale Intervall der Differenz umfasst
+beide Richtungen. Einzelne starke Zwischenpunktspitzen bleiben enthalten.
+Keine automatische Armwahl oder neue Suchserie; Einordnung, Grenzen und
+Anschlussvorschlag stehen im Ergebnisbericht. Ergebnisse sind mit **Plot,
+vollständiger Originalformel und zugeordneten Plotdaten** verfügbar.
 Das Zusatzraster
 bestimmt weder Suchauswahl noch vorzeitiges Ende. Wissenschaftliche Suchläufe
 bleiben ein separater Ausführungsschritt. Umsetzung und Nachweise stehen im
