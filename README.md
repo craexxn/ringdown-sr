@@ -217,6 +217,17 @@ sind geprüft; keine neue Suche. Die Daten bleiben Entwicklungsdaten.
 Dieser Befund begründet keine Übernahme von `best` und keine anschließende
 504-Worker-Serie mit dieser Regel; eine andere Intervention ist vorher
 fachlich zu begründen.
+Die anschließende [Aliasdiagnose](docs/noise_background_alias_diagnostic_001.md)
+untersucht die Frequenzmehrdeutigkeit desselben gleichmäßigen Messrasters.
+Identische Samplewerte bleiben auch bei exakt bekannter Kovarianz
+ununterscheidbar. Eine begründete Anschlussoption ist deshalb eine getrennte
+synthetische Studie mit tatsächlich ungleichmäßigen Messzeitpunkten.
+Daneben bleibt die Hintergrunddauer offen: Die bisherigen 64/256/1024
+unabhängigen Fenster enthalten nur 2/8/32 s Samplevolumen und prüfen keinen
+Literaturvergleich von etwa 64 gegen 4096 s kontinuierlicher Rauschaufnahme.
+Vor der Festlegung des nächsten Langlaufs wird ein günstiger, getrennt
+geplanter Dauer-/Schätzervergleich empfohlen. Keine dieser Optionen ist
+bereits ein beschlossener oder gestarteter neuer Suchlauf.
 Das Zusatzraster
 bestimmt weder Suchauswahl noch vorzeitiges Ende. Wissenschaftliche Suchläufe
 bleiben ein separater Ausführungsschritt. Umsetzung und Nachweise stehen im
