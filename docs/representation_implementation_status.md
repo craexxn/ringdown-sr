@@ -1,8 +1,83 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: wissenschaftlicher Hintergrundversuch nach Suspend gesperrt
+## Aktuell: Hintergrundserie 002 gemeldet abgeschlossen, Plotexport gesperrt
 
-Stand 16.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md):
+Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md):
+Für `noise-background-manjaro-002` liegen ein übermittelter Serienabschluss
+und die Erfolgsmeldung der vollständigen lesenden Verifikation vor. Der
+anschließende Plotexport bricht in der Kovarianzübersicht ab; seine Korrektur
+wird in [PR #97](https://github.com/craexxn/ringdown-sr/pull/97)
+auf `codex/noise-background-plot-recovery`, Basis
+`1bab305f0aad9e050c2cd0b24b2cc7ee808d6189` (PR96), bearbeitet. Dieser
+Dokumentationsmerge ersetzt den Ausführungsstand `bd42634` nicht.
+Wissenschaftliche Originaldateien von 002 sind noch nicht zur eigenen Prüfung
+verfügbar; daraus folgt noch kein selbst bestätigter Ergebnisbefund.
+
+**Übermittelte Abschlussbelege vom 19.11.2026:** `series-call.json` meldet
+`status=completed`, `cpu_measurement_complete=true` und den Umfang
+`entry_through_publication_and_handler_teardown_excluding_timing_write_and_final_rechecks`.
+Gemessener Serienaufruf: **182.531,209976585 s** (50 h 42 min 11,21 s),
+CPU user 181.146,017119 s, CPU system 908,661636 s;
+`source_report_sha256=659f60e8521ba21d012ce3d2202d556e666c1f1cc8b01cf7452cc7f81dc6fdd3`.
+Diese Werte stammen aus der übermittelten Aufrufdatei, nicht aus eigener
+Nachrechnung des Originalarchivs.
+
+Die erste Verifikation endete nach 2,970853045 s mit
+`Expected an existing technical preflight without symlinks.`; der Pfad zum
+technischen Vorlauf war falsch. Dieser Fehlversuch und seine Kosten bleiben
+erhalten. Mit dem unveränderten technischen Vorlauf 001 ist die neue
+Verifikation nach `verification-002` laut übermittelter CLI-Ausgabe bestanden:
+`Background-study read-only verification passed; no fits or searches executed.`
+Ihre Laufzeit liegt noch nicht vor. Danach scheitert der Plotexport mit
+`TypeError: unhashable type: 'dict'` in `_overview_payloads`: Die gespeicherten
+Kontrollscores unter `background_check.estimated.value` und
+`background_check.true.value` enthalten jeweils einen Record mit `score` und
+weiteren Diagnosen. Der Export übergibt diesen Record statt seines numerischen
+Scores an Matplotlib. Das ist ein Darstellungsfehler nach erfolgreicher
+Verifikation, kein Anlass für neue wissenschaftliche Suchen.
+
+Die Korrektur liest nun das Zahlenfeld `score`; fehlende Diagnosen bleiben
+fehlend. Eine Regression mit real erzeugten AR(1)- und white-Eingaben
+reproduziert den ursprünglichen Fehler und prüft die Scores zusätzlich über
+eine unabhängige Matrixrechnung. Der separate Reparaturstarter lädt ausschließlich
+den korrigierten Plotter, während die vollständige Verifikation weiterhin im
+unveränderten Ausführungscheckout erfolgt. Renderer und Starter werden an ihre
+eigene Git-Version und Dateihashes gebunden; Änderungen während des Exports
+widerrufen dessen Veröffentlichung. Der [Laufweg](noise_background.md#5-nach-abschluss-lesend-verifizieren-grafisch-auswerten-und-archivieren)
+schreibt nach `plots-002` und erhält den fehlgeschlagenen Export.
+
+Lokale Prüfung dieser Korrektur am 19.11.2026: **44 Plot-/Reparaturtests
+bestanden in 42,54 s**, Ruff und Formatprüfung für 365 Pythondateien sowie
+Dokumentationsprüfung für 113 Markdown-Dateien bestanden. Alle sechs
+Bash-Blöcke im Laufweg sind syntaktisch geprüft, nicht hier ausgeführt.
+Zusätzlicher Kompatibilitätsnachweis auf
+`9c0bde8eceb101f4b2c6d1e498ce7f8b519946ec`: Der neue Renderer wird über den
+Reparaturstarter mit dem echten unveränderten `bd42634`-Paket geladen; dessen
+strenge Verifikation des vorhandenen Manjaro-Vorlaufs besteht in **4,440 s**.
+Alle **206 Originaldateien bleiben bytegleich**. Das prüft die getrennte
+Codebindung am technischen Original, noch nicht den Export der hier nicht
+verfügbaren wissenschaftlichen Dateien von 002.
+
+Gezieltes KI-basiertes Review von PR97 auf diesem Head gegen Basis
+`1bab305f0aad9e050c2cd0b24b2cc7ee808d6189`: kein korrekturbedürftiger Befund
+im Plotfix, den Quellen-/Widerrufspfaden und den CLI-/Archivbefehlen. Vier
+zusätzliche unabhängige Gegenprüfungen bestehen: versteckte Änderungen beider
+neuen Quellen, fremder Paketimport und vorab importiertes Paket werden
+abgewiesen. Die vollständige Ready-CI ist noch ausstehend; deren aktueller
+Nachweis wird in PR97 geführt. Kein neuer wissenschaftlicher Laufstand
+und keine eigenständige Mergefreigabe.
+
+**Nächster abgegrenzter Schritt:** Die vollständige technische Prüfung der Korrektur
+abschließen, dann den getrennten Plotexport auf 002 anwenden.
+Originale, fehlgeschlagene Exporte und Aufrufkosten
+von 001 und 002 unverändert bewahren. Anschließend vollständige Archive und
+alle 130 geplanten Originalausgaben samt Formeln und Punktdaten lesend prüfen,
+erst danach den wissenschaftlichen Befund und eine mögliche Anschlussstudie
+ableiten. Gemeinsame Archivablage und unabhängige Zweitkopien bleiben offen;
+der [Ergebnisindex](results_index.md) trennt die derzeit verfügbaren Belege.
+
+### Übernommener Laufweg und gesperrter Versuch 001
+
 Das Protokoll ist mit [PR #94](https://github.com/craexxn/ringdown-sr/pull/94)
 auf ausdrücklichen Auftrag als `8b8b3569dd78ca2282704d2799d81fe1d73bfb42`
 übernommen. Der [neue Laufweg](noise_background.md) wurde auf
@@ -36,9 +111,8 @@ belegt 26 vorbereitete Eingaben und einen begonnenen, gesperrten
 Ausführungsversuch. Der gebundene Ausführungscommit bleibt `bd42634`;
 Methoden, numerische Umgebung und Fristen werden nicht geändert.
 Der reine Dokumentationsbranch `codex/noise-background-manjaro-preflight`
-ersetzt diesen Laufcheckout nicht. Noch kein verifiziertes wissenschaftliches
-Ergebnis und kein wissenschaftliches Originalarchiv übermittelt; gemeinsame
-Archivablage und unabhängige Zweitkopie bleiben offen.
+ersetzt diesen Laufcheckout nicht. Der damalige Abbruch bleibt getrennt vom
+oben zugeordneten Abschlussbeleg für Versuch 002 erhalten.
 
 **Übermittelter Ausführungsnachtrag vom 16.11.2026:** Der Elterntrace endet
 über Fall, Paket, Mitglied und Fehlerklassifikation mit
@@ -75,15 +149,13 @@ Suchrunden bleibt unbekannt.
 Diese Angaben stammen aus übermittelten Metadaten-/Logauszügen; die
 wissenschaftlichen Originaldateien liegen zur eigenen Prüfung noch nicht vor.
 
-**Nächster abgegrenzter Schritt:** Vorhandenen Versuch 001 unverändert
-bewahren, Originale und Teilkosten lesend prüfen. Der Laufweg enthält nun
-getrennte Befehle zur Archivierung von 001 und für einen manuell zu startenden
-Versuch 002 mit `systemd-inhibit --what=sleep:idle:handle-lid-switch`.
-002 ist noch nicht gestartet. Keine automatische Wiederholung oder Fortsetzung
-von 001, kein Umbuchen als numerischer Fehler und keine Änderung von
-Uhrenwächter, Methoden oder Fristen. Ein neuer Versuch verwendet dasselbe
-vollständige eingefrorene Protokoll ohne Übernahme der Teilresultate aus 001;
-Grund ist ausschließlich der belegte Betriebsabbruch.
+**Getrennter Wiederholungsweg nach dem Abbruch:** Der Laufweg erhielt Befehle
+zur Archivierung von 001 und zum manuellen Start von Versuch 002 mit
+`systemd-inhibit --what=sleep:idle:handle-lid-switch`. Keine automatische
+Wiederholung oder Fortsetzung von 001, kein Umbuchen als numerischer Fehler
+und keine Änderung von Uhrenwächter, Methoden oder Fristen. Versuch 002
+verwendet dasselbe vollständige eingefrorene Protokoll ohne Übernahme der
+Teilresultate aus 001; Grund ist ausschließlich der belegte Betriebsabbruch.
 Der vollständig bestätigte technische Vorlauf bleibt davon unberührt.
 
 Prüfnachweise vom 16.11.2026:
@@ -208,9 +280,10 @@ beschlossene Serie mit 26 frisch vorbereiteten wissenschaftlichen Eingaben
 im selben sauberen Ausführungscheckout und derselben Umgebung der nächste
 Schritt; ein Dokumentationscommit darf diesen Stand nicht ersetzen.
 Technische Seeds zählen nicht als wissenschaftliche Wiederholungen.
-Der anschließend gemeldete, nach Suspend gesperrte Ausführungsversuch ist
-oben getrennt zugeordnet. Noch kein wissenschaftliches Originalarchiv
-übermittelt; Archivablage und unabhängige Zweitkopie weiter offen.
+Der anschließend gemeldete, nach Suspend gesperrte Ausführungsversuch 001
+und die Abschlussbelege für 002 sind oben getrennt zugeordnet. Die eigene
+Prüfung beider wissenschaftlicher Originalbestände, Archivablage und
+unabhängige Zweitkopien bleiben offen.
 
 ## Übernommenes Protokoll der begrenzten Hintergrundstudie
 

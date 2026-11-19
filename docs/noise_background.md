@@ -1,6 +1,6 @@
 # Laufweg für die begrenzte Hintergrundstudie
 
-Stand 16.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
+Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
 Der [beschlossene Plan](noise_background_plan.md) ist unverändert an Commit
 `0c4b52868d8cc9809f38db02fe066ab540bcfeb3` und SHA-256
 `d3bb289cf4a2ac75a31f88c34721ca72da348c5af6d9d6a3917d4a6cc90f52f7`
@@ -26,14 +26,20 @@ der anschließende Uhrenabgleich verweigerte korrekt die Freigabe. Die
 übermittelten Fehler- und Kostenbelege stehen im Fortsetzungsstand; eine
 vollständige Prüfung der wissenschaftlichen Originaldateien steht noch aus.
 
-Zuerst Versuch 001 vollständig erhalten und separat archivieren. Abschnitt 3
-bereitet einen neuen, ausschließlich manuell zu startenden Versuch 002 mit
-Schlafsperre vor. Keine Fortsetzung oder nachträgliche Freigabe von 001,
-keine Wiederverwendung seiner Paketausgaben in 002. Grund ist der belegte
-Betriebsabbruch, keine Auswahl anhand der Signalqualität. Seeds, Reihenfolge,
-Budgets, Fristen und Uhrenwächter bleiben unverändert. Setup und technischen
-Vorlauf nicht wiederholen; ein späterer Dokumentationscommit ersetzt den
-gebundenen Ausführungsstand nicht. Versuch 002 ist noch nicht gestartet.
+Versuch 002 ist inzwischen laut übermittelter Aufrufdatei vollständig beendet
+(50 h 42 min 11,21 s); seine separate lesende Gesamtverifikation nach
+`verification-002` besteht laut Terminalausgabe. Der anschließende Plotexport
+scheitert an einem Darstellungsfehler: Ein Kovarianz-Kontrollscore wird als
+gesamter Diagnoseeintrag statt als dessen Zahlenfeld `score` übergeben.
+Die Originaldateien von 002 sind hier noch nicht unabhängig geprüft.
+
+Versuch 001, beide Verifikationsversuche von 002 und den fehlgeschlagenen
+Plotexport erhalten. Abschnitt 3 dokumentiert den bereits ausgeführten,
+vollständig frischen Wiederholungsversuch und ist kein erneuter Startauftrag.
+Seeds, Reihenfolge, Budgets, Fristen und Uhrenwächter bleiben unverändert.
+Setup, technischen Vorlauf und wissenschaftliche Serie nicht wiederholen;
+der feste Ausführungscheckout bleibt auf `bd42634`. Abschnitt 5 beschreibt
+den getrennten Plot-Reparaturweg und die anschließende Archivierung.
 
 ## Umfang und feste Grenzen
 
@@ -308,15 +314,35 @@ PY
 
 ## 5. Nach Abschluss lesend verifizieren, grafisch auswerten und archivieren
 
-Der folgende Block gilt für den vollständigen Versuch 002 und stoppt bei jedem Fehler.
-Für den gesperrten Versuch 001 nicht verwenden. Erst nach erfolgreicher
-Gesamtverifikation und Plotveröffentlichung wird das Archiv erzeugt. Vorhandene
-Exports oder Archive nicht überschreiben; für eine spätere zusätzliche
-Nachprüfung einen neuen Exportpfad verwenden.
+Der ursprüngliche Abschlussblock auf `bd42634` kann die wissenschaftlichen
+Kovarianzübersichten nicht exportieren. Für den bereits verifizierten Versuch
+002 verwendet der folgende Reparaturblock deshalb einen **zusätzlichen sauberen
+Plot-Checkout**. Dessen konkret geprüften vollständigen Commit vor dem Aufruf
+einsetzen; der Platzhalter ist absichtlich gesperrt. Keine Aktualisierung des
+Ausführungscheckouts und kein erneutes `uv sync`.
+
+`recover_noise_background_plots.py` läuft mit dessen bestehender Python-Umgebung
+und unverändertem ursprünglichem Prüfcode. Ausschließlich das Plotmodul wird aus
+dem neuen Checkout geladen. Der Export bindet diesen Renderer und den
+Reparaturstarter zusätzlich an ihre Git-Version und Dateihashes; die alte
+Ausführungs- und Verifikationsherkunft bleibt erhalten. Die vollständige
+wissenschaftliche Quellenprüfung läuft erneut innerhalb des Plotexports,
+ohne Fits oder Suchen. Neue Dateien entstehen unter `plots-002`; der
+fehlgeschlagene Ordner `plots` bleibt unverändert.
+
+Der Block stoppt bei jedem Fehler und erhält vorhandene Ziele. Nach erfolgreichem
+Plotexport umfasst das neue Archiv beide vollständigen Elternordner einschließlich
+der alten Abbrüche, erfolgreichen Verifikation und sämtlicher Kostendateien.
+Transportteile von höchstens 24 MiB erlauben auch den Upload großer Archive.
 
 ```bash
-bash <<'BASH'
-set -euo pipefail
+systemd-inhibit --what=sleep:idle:handle-lid-switch --mode=block \
+  --who=ringdown-sr --why='Plot-Reparatur und Archivierung von Lauf 002' \
+  --no-ask-password bash <<'BASH'
+set -Eeuo pipefail
+trap 'printf "Abbruch in Zeile %s; vorhandene Dateien bleiben erhalten.\n" "$LINENO" >&2' ERR
+task_plot_commit='GEPRUEFTEN_VOLLSTAENDIGEN_PLOT_COMMIT_EINSETZEN'
+[[ "$task_plot_commit" =~ ^[0-9a-f]{40}$ ]]
 test "$(git rev-parse HEAD)" = 'bd42634b888c2dbaa5a92726b9a1f9851c766a48'
 test -z "$(git status --porcelain)"
 unset VIRTUAL_ENV
@@ -324,35 +350,67 @@ export OPENBLAS_CORETYPE=Haswell
 export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
 task_study=results/noise-background-manjaro-002
 task_preflight=results/noise-background-preflight-manjaro-001
+task_plot_checkout="$(dirname "$PWD")/ringdown-noise-background-plots"
+task_archive=results/noise-background-manjaro-002-plots-recovered.tar.gz
+task_parts=results/noise-background-manjaro-002-upload-002
 test -f "$task_study/series/completion/assessment_report.json"
-test ! -e "$task_study/verification"
-test ! -e "$task_study/plots"
-test ! -e "$task_study.tar.gz"
-test ! -e "$task_study.tar.gz.sha256"
-uv run --locked --no-sync python scripts/run_noise_background.py verify \
+test -f "$task_study/series-call.json"
+test -d "$task_preflight/technical"
+for task_path in "$task_plot_checkout" "$task_study/plots-002" \
+  "$task_study/plots-002-call.json" "$task_archive" \
+  "$task_archive.sha256" "$task_parts"
+do
+  if [[ -e "$task_path" || -L "$task_path" ]]; then
+    printf 'Schon vorhanden; nichts ueberschrieben: %s\n' "$task_path" >&2
+    exit 1
+  fi
+done
+
+printf '\n[1/4] Getrennten Plot-Checkout bereitstellen\n'
+git fetch origin "$task_plot_commit"
+git worktree add --detach "$task_plot_checkout" "$task_plot_commit"
+
+printf '\n[2/4] Originale pruefen und alle Plots getrennt exportieren\n'
+uv run --locked --no-sync python \
+  "$task_plot_checkout/scripts/recover_noise_background_plots.py" \
+  --execution-checkout "$PWD" \
   --inputs "$task_study/inputs" \
   --technical "$task_preflight/technical" \
-  --output "$task_study/series" \
-  --export "$task_study/verification"
-uv run --locked --no-sync python scripts/run_noise_background.py plots \
-  --inputs "$task_study/inputs" \
-  --technical "$task_preflight/technical" \
-  --output "$task_study/series" \
-  --export "$task_study/plots"
-tar -czf "$task_study.tar.gz" -C results \
+  --series "$task_study/series" \
+  --export "$task_study/plots-002"
+
+printf '\n[3/4] Vollstaendiges Archiv erzeugen und pruefen\n'
+tar -czf "$task_archive" -C results \
   noise-background-manjaro-002 noise-background-preflight-manjaro-001
-tar -tzf "$task_study.tar.gz" > /dev/null
-cd results
-sha256sum noise-background-manjaro-002.tar.gz > noise-background-manjaro-002.tar.gz.sha256
-sha256sum -c noise-background-manjaro-002.tar.gz.sha256
+tar -tzf "$task_archive" > /dev/null
+(
+  cd results
+  sha256sum noise-background-manjaro-002-plots-recovered.tar.gz \
+    > noise-background-manjaro-002-plots-recovered.tar.gz.sha256
+  sha256sum -c noise-background-manjaro-002-plots-recovered.tar.gz.sha256
+)
+
+printf '\n[4/4] Uploadteile mit jeweils hoechstens 24 MiB erzeugen\n'
+mkdir "$task_parts"
+split -b 24M -d -a 3 -- "$task_archive" \
+  "$task_parts/noise-background-manjaro-002-plots-recovered.tar.gz.part-"
+cp -- "$task_archive.sha256" "$task_parts/"
+(
+  cd "$task_parts"
+  sha256sum -- noise-background-manjaro-002-plots-recovered.tar.gz.part-* > parts.sha256
+  sha256sum -c parts.sha256
+)
+printf '\nFertig. Uploaddateien liegen unter:\n%s/%s\n' "$PWD" "$task_parts"
 BASH
 ```
 
 Erwartete wissenschaftliche Artefakte: `inputs/` und `inputs-call.json`,
 26 Fallordner unter `series/cases/` samt benachbarten `-call.json`, Originalworker
 der tatsächlich ausgeführten Arme, Fall-/Serienabschlüsse, `series-call.json`,
-`verification/` mit `verification-call.json` sowie `plots/` mit Grafiken,
-vollständigen Formeln und gebundenen Plotdaten. Ein `not_run`-Arm bekommt
+die Verifikationsordner mit ihren Aufrufdateien sowie der getrennte
+Plotexport `plots-002/` mit Grafiken, vollständigen Formeln und gebundenen
+Plotdaten samt `plots-002-call.json`. Die fehlgeschlagenen Exporte bleiben
+ebenfalls enthalten. Ein `not_run`-Arm bekommt
 keinen erfundenen Workerordner; seine vier geplanten Mitglieder bleiben im
 Fallbericht sichtbar. Das Archiv umfasst beide vollständigen Elternordner,
 einschließlich des technischen Originals und seiner gesonderten Grafiken.
