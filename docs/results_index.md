@@ -757,6 +757,32 @@ Dauerhafte Archivablage und unabhängige Zweitkopie dieser abgeleiteten Pakete
 sind weiterhin unbestätigt. Der negative Befund bleibt Entwicklungsevidenz;
 die neue Auswertung ersetzt keine ursprüngliche wissenschaftliche Auswahl.
 
+#### Lesende Aliasdiagnose auf Hintergrundserie 002
+
+Die [Aliasdiagnose vom 19.11.2026](noise_background_alias_diagnostic_001.md)
+untersucht alle 260 bereits gewählten Originalbäume und drei vorab festgelegte
+konstruierte Gegenbeispiele. Vorabplancommit
+`3033bb957ed535f7039efbb18fb53e6d1abb44ad`, Basis
+`bb14b5a29163c330f4ba38237ce55419b9fa944f`; ursprüngliche wissenschaftliche
+Ausführung weiterhin `bd42634b888c2dbaa5a92726b9a1f9851c766a48`.
+Die drei Konstruktionen zeigen nahezu gleiche Trainingswerte bei stark
+verschiedenen Zwischenpunktwerten. Sie ersetzen keine Originalauswahl und
+begründen keine automatische Normalisierung oder neue wissenschaftliche Serie.
+
+`noise-background-manjaro-002-alias-diagnostic.zip`: **2.872.144 Bytes**,
+SHA-256 `1a1e28657a9e4958ee0ba34edfe4934c7b01ce847ee4c5636f767f920e6ded24`.
+36 Nutzdateien plus internes Manifest: Scope, getrennte Auditprogramme,
+vollständiges Inventar, drei Formel-/Baumpaare, 6.123 Punktzeilen,
+HTML-Ansicht, drei PNG-/SVG-Paare und unabhängige numerische/visuelle Nachweise.
+ZIP-CRC, sämtliche Nutzdateihashes und unveränderte Quellen geprüft.
+Der unabhängige Audit besteht 87.159 Prüfungen und bestätigt alle 18.166
+Originaldateien sowie 1.048 vorherige Pilotdateien unverändert.
+Keine Fits, Suchen oder neuen wissenschaftlichen Beobachtungen.
+
+Das kompakte Paket ist getrennt vom Originalarchiv bereitgestellt und bleibt eine
+retrospektive Mechanismusdiagnose. Gemeinsame dauerhafte Archivablage und
+unabhängige hashgeprüfte Zweitkopie bleiben unbestätigt.
+
 ### Priorisierte fehlende Belege
 
 Ergänzung vom 12.11.2026: Das Bestätigungsarchiv 001 mit allen drei

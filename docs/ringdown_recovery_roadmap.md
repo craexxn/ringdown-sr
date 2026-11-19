@@ -956,6 +956,31 @@ Versuch klären, welche zusätzliche Information oder wissenschaftlich begründe
 Modellbeschränkung das erkennbare Problem adressieren soll. Die bestehenden
 Originalstudien und der negative Methodenpilot bleiben unverändert erhalten.
 
+**Anschlussdiagnose vom 19.11.2026:** Die
+[lesende Aliasuntersuchung](noise_background_alias_diagnostic_001.md)
+grenzt die Mehrdeutigkeit des gleichmäßigen Rasters an den vorhandenen
+Ausgaben ein. Für zertifizierte affine Sinus-/Kosinusphasen lassen
+Frequenzverschiebungen um ganzzahlige Vielfache der Abtastrate die
+Messwerte in reeller Arithmetik unverändert. Keine Kovarianzgewichtung
+kann solche identischen Residuen unterscheiden. Konstruierte
+Aliasrepräsentanten bleiben ausdrücklich Diagnosen, keine Ersatzmodelle.
+Ein kontrollierter Vergleich gleichmäßiger und tatsächlich ungleichmäßiger
+Akquisition bei gleichem N ist damit eine begründete Anschlussoption;
+die hierfür erforderliche kontinuierliche Fortsetzung des AR(1)-Modells
+wäre eine neue, offenzulegende Annahme. Der Bericht grenzt Restaliase,
+freie Phasen und numerische Rundung ein.
+
+Die zugleich geprüfte Literaturfrage zur langen Hintergrundaufnahme bleibt
+eigenständig: Die bisherigen unabhängigen Fenster entsprechen nur
+2/8/32 s Samplevolumen; sie sind kein Vergleich von 64 gegen rund 4096 s
+zusammenhängenden Rauschdaten. Der verlinkte Bericht ordnet den
+Dauereffekt und Unterschiede der Schätzverfahren anhand der Primärquelle ein.
+Vor einer Langlaufentscheidung wird zunächst ein günstiger, separat
+vorab geplanter Vergleich der Hintergrunddauer und Kovarianzschätzer
+empfohlen. Das ist ein Vorschlag ohne neue Seeds, Eingaben oder Ausführung.
+Eine solche bessere Schätzung würde die mathematische Rastermehrdeutigkeit
+nicht aufheben; beide Fragen sind getrennt zu untersuchen.
+
 Zunächst wenige Signale und Rauschbedingungen wählen. Rauschrealisierungen,
 Hintergrunddaten und Suchseeds als unterschiedliche Zufallsquellen behandeln.
 Mehrere Suchseeds auf einer einzigen Rauschrealisierung belegen keine allgemeine

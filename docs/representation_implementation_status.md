@@ -1,6 +1,43 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: negativer Entwicklungsbefund der gepoolten best-Auswahl
+## Aktuell: Aliasdiagnose und getrennte Anschlussfragen
+
+Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
+Die [lesende Aliasdiagnose](noise_background_alias_diagnostic_001.md)
+inventarisiert alle 260 zuvor gewählten Originalbäume mit 342
+trigonometrischen Knoten. 229 Phasen sind exakt affin zertifiziert,
+113 bleiben ausdrücklich ungeklärt. Die drei vorab festgelegten
+Beispiele zeigen nahezu identische Trainingswerte bei stark verschiedenen
+Zusatzrasterwerten. Die konstruierten Repräsentanten sind ausschließlich
+Diagnoseartefakte und ersetzen keine historische Formel oder Auswahl.
+
+Arbeitsbranch `codex/noise-background-alias-analysis`, Basis
+`bb14b5a29163c330f4ba38237ce55419b9fa944f`, Vorabplancommit
+`3033bb957ed535f7039efbb18fb53e6d1abb44ad`,
+[PR #101](https://github.com/craexxn/ringdown-sr/pull/101).
+Hauptauswertung, drei vollständige PNG-/SVG-Paare, Originalformeln und
+6.123 Punktzeilen liegen vor. Die unabhängige Gegenrechnung besteht
+87.159 Prüfungen und bestätigt sämtliche 18.166 Originaldateien sowie
+1.048 Dateien des vorausgehenden Piloten unverändert. Alle drei PNGs sind
+separat visuell geprüft. Das kompakte Nachweispaket mit 36 Nutzdateien und
+internem Manifest ist einschließlich Dateihashes und ZIP-CRC geprüft;
+Bindungen und gemessene Kosten stehen im Bericht und Ergebnisindex.
+Keine Fits, Suchen oder neuen wissenschaftlichen Eingaben ausgeführt.
+
+Es ergeben sich zwei getrennte Anschlussfragen: die Genauigkeit der
+Hintergrundschätzung und die Informationsgrenze des gleichmäßigen Rasters.
+Der Literaturvergleich von 64 gegen rund 4096 s Rauschdaten ist durch
+die bisherigen unabhängigen 128er-Fenster nicht beantwortet. Vor einer
+langen Suchserie wird ein günstiger, eigener Dauer-/Schätzervergleich
+empfohlen. Ein Vergleich tatsächlich ungleichmäßiger Akquisition ist
+eine zweite begründete Option mit neuer kontinuierlicher Rauschannahme.
+Der Methodenbericht hält Befunde und Grenzen fest; ein neuer Studienplan,
+seine Implementierung und ein wissenschaftlicher Start stehen noch aus.
+Die verfügbare Laufzeit bis 23.11. morgens ist ein weiches Planungsziel,
+keine wissenschaftliche Abbruchregel. Dauerhafte Archivablage und
+unabhängige Zweitkopie bleiben offen.
+
+## Historisch: negativer Entwicklungsbefund der gepoolten best-Auswahl
 
 Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
 Der [Methodenvergleich](noise_background_selector_pilot_001.md) ist ausgeführt
