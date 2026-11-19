@@ -576,6 +576,8 @@ def _overview_payloads(report, prepared):
             for arm in ARMS[2:]:
                 estimate = case.record["covariance_estimation"][arm]
                 diagnostic = case.record["covariance_diagnostics"][arm]
+                check = diagnostic["background_check"]["estimated"]["value"]
+                true_check = diagnostic["background_check"]["true"]["value"]
                 covariance_rows.append(
                     {
                         "block": case.spec["block"],
@@ -590,12 +592,10 @@ def _overview_payloads(report, prepared):
                         "relative_frobenius_error": diagnostic[
                             "relative_frobenius_error"
                         ]["value"],
-                        "check_score": diagnostic["background_check"]["estimated"][
-                            "value"
-                        ],
-                        "true_check_score": diagnostic["background_check"]["true"][
-                            "value"
-                        ],
+                        "check_score": None if check is None else check["score"],
+                        "true_check_score": None
+                        if true_check is None
+                        else true_check["score"],
                     }
                 )
         figure = _figure((12, 8))
@@ -961,7 +961,7 @@ def _transaction(output, build):
         raise
 
 
-def export(preparation, technical_path, series, output):
+def export(preparation, technical_path, series, output, *, _renderer_binding=None):
     """Verify the whole scientific series, then export every original output."""
     from . import noise_background as study
 
@@ -969,6 +969,7 @@ def export(preparation, technical_path, series, output):
     output = _validate_output(output, roots.values())
 
     def build(consumed):
+        rendering = None if _renderer_binding is None else _renderer_binding(consumed)
         binding = _hold(
             roots,
             consumed,
@@ -987,6 +988,8 @@ def export(preparation, technical_path, series, output):
                 (Path(series) / "completion" / publication.REPORT).read_bytes()
             ),
         }
+        if _renderer_binding is not None:
+            source["renderer_software"] = rendering
         records = report["assessments"]
         if len(records) != 130:
             raise ValueError(

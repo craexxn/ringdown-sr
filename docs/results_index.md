@@ -1,6 +1,6 @@
 # Ergebnisindex und Archivierungsstand
 
-Stand: 16.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
+Stand: 19.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
 nachträglichen Bewertungen; [Ablagerichtlinie](results_archiving.md).
 Serien sind die Indexeinheit, ihre Zellen/Wiederholungen bleiben im Originalbericht.
 Die Aufstellung ist keine Behauptung, dass alle jemals lokal erzeugten Ergebnisse
@@ -77,15 +77,15 @@ vorbereiteten Eingaben ist nach einem belegten System-Suspend im Fit von
 `ar1-01/estimated_64/member-04` durch den Uhrenintegritätswächter gesperrt.
 Übermittelte monotone Fitzeit 368,390180243 s, Serienabbruchzeit
 4.674,278524944 s; Suspend nicht enthalten, CPU-Messung unvollständig.
-Die vollständigen wissenschaftlichen Originaldateien sind noch nicht
-übermittelt, Suchrundenzahl und verifizierter wissenschaftlicher Befund
-bleiben offen. Die vorhandenen Auszüge, Kosten und Messgrenzen sind im
-Fortsetzungsstand zugeordnet. Originale unverändert bewahren und lesend
-prüfen; kein automatischer Neustart oder Umbuchen als numerischer Fehler.
-Der Laufweg bereitet die Archivierung von 001 und einen getrennten Versuch 002
-mit Schlaf- und Deckelsperre vor; weder dessen Start noch ein neues Archiv
-ist bisher belegt. Der Abbruch und seine Kosten bleiben auch nach einer
-späteren Wiederholung separat erhalten.
+Das inzwischen hochgeladene Abbrucharchiv 001 ist wegen der Downloadgrenze
+noch nicht selbst geprüft. Für den getrennten Versuch 002 sind der
+Serienabschluss und eine bestandene vollständige lesende Verifikation
+übermittelt; der anschließende Plotexport scheitert an einem Datenformatfehler.
+Die [wissenschaftlichen Archiveinträge](#wissenschaftliche-hintergrundstudie-manjaro-001-und-002)
+trennen diese Belegstände. Kosten und Messgrenzen stehen im Fortsetzungsstand.
+Originale unverändert bewahren und lesend prüfen; kein automatischer Neustart
+oder Umbuchen als numerischer Fehler. Der Abbruch von 001 und seine Kosten
+bleiben nach der getrennten Wiederholung erhalten.
 Keine Umwidmung alter Pilotarchive. Spätere wissenschaftliche Plot-/Formel-
 Exporte werden mit dem Original und seinen Prüfsummen verknüpft.
 
@@ -637,10 +637,42 @@ keine weiteren Laufdateien. Dauerhafte gemeinsame Archivablage und unabhängige
 hashgeprüfte Zweitkopie weiterhin unbestätigt; [Ablagezuordnung](#archivablage).
 Die Ressourcenprüfung gibt keinen Anlass zur Änderung eingefrorener Fristen,
 belegt aber keine Gesamtlaufzeit oder wissenschaftliche Qualität der 520er-Serie.
-Der anschließend gemeldete, nach Suspend gesperrte wissenschaftliche Versuch
-und seine noch fehlenden Originalbelege sind oben getrennt zugeordnet.
+Die anschließenden wissenschaftlichen Versuche und ihre noch offenen
+Originalprüfungen sind unten getrennt zugeordnet.
 Ausführung, lesende Prüfung und Archivierung bleiben getrennt;
 GitHub-Upload optional.
+
+### Wissenschaftliche Hintergrundstudie Manjaro 001 und 002
+
+Stand 19.11.2026; gebundener Manjaro-Ausführungsstand
+`bd42634b888c2dbaa5a92726b9a1f9851c766a48`, technischer Vorlauf 001 wie oben.
+Die wissenschaftlichen Originalmetadaten liegen noch nicht zur eigenen
+vollständigen Prüfung vor. Übermittelte Lauf-, Fehler- und Kostenbelege stehen
+im [Fortsetzungsstand](representation_implementation_status.md).
+
+- `noise-background-manjaro-001`: Nach belegtem Suspend gesperrter Versuch,
+  kein erfolgreicher wissenschaftlicher Abschluss. Das Originalarchiv
+  `noise-background-manjaro-001-aborted.tar.gz` wurde hochgeladen, überschreitet
+  aber die 32-MiB-Grenze des verfügbaren Downloads. Nur die zugehörige
+  Prüfsummendatei wurde gelesen: erwarteter SHA-256
+  `4c10460e4f90820f078c5aad5a9d1e33c8cfd9932a3f04471737287d91ba2f30`.
+  Dieser Hash ist **nicht an den Archivbytes bestätigt**; TAR-Inhalt und
+  vollständige Teilkosten sind noch ungeprüft. Eine Übertragung in kleineren
+  Teilen kann dieselben Originalarchivbytes zugänglich machen.
+- `noise-background-manjaro-002`: Laut übermittelter Aufrufdatei ist die
+  getrennte Serie nach rund 50 h 42 min abgeschlossen. Die vollständige lesende
+  Verifikation nach `verification-002` ist laut CLI-Meldung bestanden; der
+  erste fehlgeschlagene Verifikationsversuch bleibt separat erhalten. Der
+  anschließende Plotexport scheitert in der Kovarianzübersicht. Originale,
+  fehlgeschlagener Plotexport und Aufrufkosten bleiben erhalten; eine
+  wissenschaftliche Wiederholung ist daraus nicht begründet. Ein vollständiges
+  Archiv samt SHA-256 und ein erfolgreicher gebundener Export aller 130 Plots,
+  Originalformeln und Punktdaten liegen noch nicht zur eigenen Prüfung vor.
+
+Für beide Versuche sind gemeinsame dauerhafte Archivablage und unabhängige
+hashgeprüfte Zweitkopie unbestätigt. Der Fehlerbeleg des Plotexports ersetzt
+keine wissenschaftliche Ergebnisbewertung; diese folgt nach vollständiger
+Prüfung der Originale und der getrennt gebundenen grafischen Auswertung.
 
 ### Priorisierte fehlende Belege
 

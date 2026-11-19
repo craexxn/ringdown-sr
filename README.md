@@ -5,7 +5,7 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Fortsetzungsstand: 16.11.2026; wissenschaftlicher Ausführungs- und Prüfstand
+Fortsetzungsstand: 19.11.2026; wissenschaftlicher Ausführungs- und Prüfstand
 des Rauschpiloten `eb663a0` nach
 [PR #92](https://github.com/craexxn/ringdown-sr/pull/92).
 Der Budgetvergleich wurde auf `680af98` nach PR #85 wissenschaftlich ausgeführt;
@@ -180,14 +180,16 @@ Plotexport ist nach lokalen Prüfungen, KI-basierten Reviews und vollständiger
 Ready-CI mit [PR #95](https://github.com/craexxn/ringdown-sr/pull/95) als
 `bd42634` übernommen. Der technische Manjaro-Vorlauf mit fünf nativen
 N128-Zehnerworkern ist am Originalarchiv lesend bestätigt; seine Ressourcen
-begründen keine Änderung der eingefrorenen Fristen. Der danach gemeldete
-wissenschaftliche Ausführungsversuch wurde nach Vorbereitung aller 26 Eingaben
-durch den Integritätswächter gesperrt: Ein belegter System-Suspend während
-eines Fits ließ Kalender- und monotone Uhr auseinanderlaufen. Originaldateien
-und Teilkosten sind zu bewahren und lesend zu prüfen; kein automatischer Neustart oder
-Umbuchen als numerischer Fehler. Ein verifiziertes wissenschaftliches Ergebnis
-liegt noch nicht vor. Ergebnisse künftig mit **Plot,
-vollständiger Originalformel und zugeordneten Plotdaten**. Das Zusatzraster
+begründen keine Änderung der eingefrorenen Fristen. Versuch 001 bleibt nach
+belegtem System-Suspend gesperrt; seine Originale und Teilkosten bleiben erhalten.
+Für den getrennten Versuch 002 sind inzwischen der Serienabschluss nach rund
+**50 h 42 min** und eine bestandene vollständige lesende Verifikation
+übermittelt. Der anschließende Plotexport scheitert an einem Datenformatfehler
+der Kovarianzübersicht; die Korrektur wird getrennt vom gebundenen
+Ausführungscheckout geprüft. Eine eigene Prüfung der wissenschaftlichen
+Originalarchive und die Ergebnisbewertung stehen noch aus. Ergebnisse werden
+mit **Plot, vollständiger Originalformel und zugeordneten Plotdaten** ausgegeben.
+Das Zusatzraster
 bestimmt weder Suchauswahl noch vorzeitiges Ende. Wissenschaftliche Suchläufe
 bleiben ein separater Ausführungsschritt. Umsetzung und Nachweise stehen im
 [Fortsetzungsstand](docs/representation_implementation_status.md).

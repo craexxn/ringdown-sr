@@ -12,6 +12,7 @@ import numpy as np
 import pytest
 from test_noise_pilot_assessment import inputs as small_inputs
 from test_structure_proof import T, op, q
+from threadpoolctl import threadpool_limits
 
 from ringdown_sr import assessment_publication as publication
 from ringdown_sr import assessment_sources as sources
@@ -110,8 +111,8 @@ def artifacts(tmp_path, monkeypatch):
                 "condition_number": {"estimated": {"value": 3.0}},
                 "relative_frobenius_error": {"value": 0.2},
                 "background_check": {
-                    "estimated": {"value": -2.0},
-                    "true": {"value": -3.0},
+                    "estimated": {"value": {"score": -2.0}},
+                    "true": {"value": {"score": -3.0}},
                 },
             }
             for arm in plots.ARMS[2:]
@@ -404,6 +405,82 @@ def test_actual_renderers_produce_plots_and_auditable_overviews(artifacts):
         assert all(
             row["worker_wall_seconds"] == "" and row["cost_status"] == "unknown"
             for row in unknown
+        )
+
+
+def test_covariance_overview_uses_real_held_out_scores_and_preserves_missing_values(
+    artifacts,
+):
+    expected = {}
+    original_records = {}
+    with threadpool_limits(limits=1):
+        common, _ = plots.inputs.derive_common_inputs()
+        for model in ("ar1", "white"):
+            case_id = f"{model}-01"
+            spec = artifacts.prepared.cases[case_id].spec
+            case = plots.inputs.derive_case(spec, common)
+            artifacts.prepared.cases[case_id] = case
+            original_records[case_id] = copy.deepcopy(case.record)
+            windows = case.arrays["background_check"]
+
+            def independent_score(matrix, windows):
+                sign, logdet = np.linalg.slogdet(matrix)
+                assert sign == 1
+                whitened = np.linalg.solve(matrix, windows.T).T
+                return logdet + np.mean(np.sum(windows * whitened, axis=1))
+
+            expected[model] = {
+                "true": independent_score(case.arrays["covariance_true"], windows)
+            }
+            for arm in plots.ARMS[2:]:
+                size = arm.removeprefix("estimated_")
+                expected[model][arm] = independent_score(
+                    case.arrays[f"covariance_estimated_{size}"], windows
+                )
+
+            # Exercise the production unavailable records as well as ready values.
+            failed = artifacts.prepared.cases[f"{model}-02"].record
+            failed["arm_status"]["estimated_64"] = "not_run"
+            failed["covariance_estimation"]["estimated_64"] = {"alpha_selected": None}
+            failed["covariance_diagnostics"] = plots.inputs.covariance_diagnostics(
+                case.arrays, failed["arm_status"], "covariance_failed"
+            )
+            missing = artifacts.prepared.cases[f"{model}-03"].record
+            missing["arm_status"] = dict.fromkeys(plots.ARMS, "not_run")
+            missing["covariance_estimation"] = dict.fromkeys(plots.ARMS[2:])
+            missing["covariance_diagnostics"] = plots.inputs.covariance_diagnostics(
+                {}, missing["arm_status"], "data_failed"
+            )
+
+    overviews = plots._overview_payloads(artifacts.report, artifacts.prepared)
+    for model, blocks in (("ar1", 20), ("white", 6)):
+        assert overviews[f"{model}-covariance.png"].startswith(b"\x89PNG")
+        assert b"<svg" in overviews[f"{model}-covariance.svg"]
+        rows = list(
+            csv.DictReader(io.StringIO(overviews[f"{model}-covariance.csv"].decode()))
+        )
+        assert len(rows) == 3 * blocks
+        for row in rows:
+            if row["block"] == "1":
+                assert float(row["check_score"]) == pytest.approx(
+                    expected[model][row["arm"]], rel=1e-12
+                )
+                assert float(row["true_check_score"]) == pytest.approx(
+                    expected[model]["true"], rel=1e-12
+                )
+            elif row["block"] == "2" and row["arm"] == "estimated_64":
+                assert row["status"] == "not_run"
+                assert row["alpha"] == row["check_score"] == ""
+                assert float(row["true_check_score"]) == pytest.approx(
+                    expected[model]["true"], rel=1e-12
+                )
+            elif row["block"] == "3":
+                assert row["status"] == "not_run"
+                assert row["alpha"] == row["check_score"] == ""
+                assert row["true_check_score"] == ""
+        assert (
+            artifacts.prepared.cases[f"{model}-01"].record
+            == original_records[f"{model}-01"]
         )
 
 
