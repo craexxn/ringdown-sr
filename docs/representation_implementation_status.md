@@ -1,6 +1,26 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: gespeicherte Kandidaten der auffälligen Ausgaben geprüft
+## Aktuell: lesender Vergleich zweier Auswahlregeln in Arbeit
+
+Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
+Der [Methodenvergleich](noise_background_selector_pilot_001.md) ist beauftragt:
+alle 130 Pakete und 520 gespeicherten Workerfronten der Hintergrundserie 002,
+ursprüngliche Auswahl nach Trainingsverlust gegen eine vor Auswertung
+festgelegte gepoolte PySR-`best`-Regel. Auswahl verwendet nur Trainingsverlust
+und Komplexität; Wahrheit und Zusatzraster dienen erst der Bewertung.
+Umfang und Randfälle sind in einem eigenen unveränderlichen `scope.json`
+gebunden. Die bisherigen 26 Fälle bleiben Entwicklungsdaten.
+
+Arbeitsbranch `codex/noise-background-selector-pilot`, Basis
+`c7964457aa06296cd6e48ab7d1df72f30ab81888` aus
+[PR #99](https://github.com/craexxn/ringdown-sr/pull/99).
+Lesende Auditwerkzeuge und ihre Ausgaben werden separat archiviert;
+im Repository werden Befund und Fortsetzungsstand dokumentiert.
+Ausführung, unabhängige Nachrechnung, vollständige grafische Ausgabe und
+Archivbindung des Methodenvergleichs stehen noch aus. Die bedingte Vorbereitung
+einer frischen Vergleichsserie folgt aus dem vollständigen Befund.
+
+## Historisch: gespeicherte Kandidaten der auffälligen Ausgaben geprüft
 
 Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
 Die beauftragte [lesende Kandidatenprüfung](noise_background_candidates_manjaro_002.md)

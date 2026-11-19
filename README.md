@@ -204,6 +204,11 @@ Auswahl folgt korrekt dem Trainingsverlust; die diagnostisch besten gemeinsamen
 Alternativen über alle vier Worker haben 3,55–10,47 % höheren Trainingsverlust.
 Die Originalergebnisse bleiben erhalten. Vor einer langen Wiederholungsserie
 ist damit die methodische Auswahlfrage vorrangig zu klären.
+Am 19.11.2026 ist dafür der [lesende Methodenvergleich](docs/noise_background_selector_pilot_001.md)
+beauftragt und vor Auswertung festgelegt: ursprüngliche Trainingsverlustwahl
+gegen eine gepoolte PySR-`best`-Regel auf allen 130 vorhandenen Paketen.
+Die Signalwahrheit dient ausschließlich der anschließenden Bewertung.
+Diese Daten bleiben Entwicklungsdaten; der Vergleich startet keine neuen Suchen.
 Das Zusatzraster
 bestimmt weder Suchauswahl noch vorzeitiges Ende. Wissenschaftliche Suchläufe
 bleiben ein separater Ausführungsschritt. Umsetzung und Nachweise stehen im

@@ -926,6 +926,20 @@ Methodenänderungen. Keine neuen Seeds, Budgets oder Läufe sind damit beschloss
 Der eingefrorene Hintergrundplan bleibt unverändert; weitere Bedingungen erst
 aus dem vollständigen Befund begründen.
 
+**Methodenentscheidung vom 19.11.2026:** Der anschließend beauftragte
+[lesende Auswahlvergleich](noise_background_selector_pilot_001.md) prüft genau
+eine festgelegte Alternative auf allen 130 bisherigen Paketen: PySRs
+`best`-Heuristik auf einer ausdrücklich definierten gemeinsamen Front der
+vier Worker gegenüber der unveränderten Trainingsverlustwahl. Die Regel nutzt
+keine saubere Wahrheit zur Auswahl, keine neue Messung und keine neue Suche.
+Der Faktor 1,5 stammt aus PySR 2.6.0 und wird nicht aus den auffälligen
+Beispielen angepasst. Auswahl, Gleichstände und numerische Randfälle sind
+vor neuer Auswertung gebunden; diese Daten bleiben Entwicklungsdaten.
+Ein tragfähiger Pilotbefund soll die Vorbereitung eines frischen Vergleichs
+mit 32 AR(1)- und zehn weißen Blöcken, O/K/E1024 und je vier Suchworkern
+begründen. Die 504 Worker sind eine Ressourcenplanung für das verfügbare
+Zeitfenster, keine Powerberechnung oder bereits ausgeführte Studie.
+
 Zunächst wenige Signale und Rauschbedingungen wählen. Rauschrealisierungen,
 Hintergrunddaten und Suchseeds als unterschiedliche Zufallsquellen behandeln.
 Mehrere Suchseeds auf einer einzigen Rauschrealisierung belegen keine allgemeine
