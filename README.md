@@ -7,11 +7,14 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 Aktuelle Umsetzung vom 19.11.2026: Die beschlossene
 [Folgestudie zu Hintergrunddauer und Messraster](docs/noise_followup_plan.md)
-ist in [Draft-PR #102](https://github.com/craexxn/ringdown-sr/pull/102)
-implementiert. Vor den geplanten **624 wissenschaftlichen Workern** stehen
-ein technischer Vorlauf und eine getrennte Kovarianz-/PSD-/ACF-Diagnose ohne
-SR-Suche. Vollständiger technischer Gesamtnachweis und wissenschaftliche
-Ausführung stehen noch aus. Aktuelle Prüfbelege und offene Schritte führt der
+ist in [PR #102](https://github.com/craexxn/ringdown-sr/pull/102)
+implementiert. Vor den geplanten **624 wissenschaftlichen Workern** bestehen
+bereits ein eigener Vorlauf mit sechs technischen Workern und die getrennte
+Kovarianz-/PSD-/ACF-Diagnose mit 48 Schätzungen; beide lesend geprüft.
+Die [Entwicklungsabnahme](docs/noise_followup_development_001.md) trennt
+diese Befunde von der noch nicht ausgeführten wissenschaftlichen Suchserie.
+Vollständige Ready-CI und aktueller Freigabestand stehen im PR;
+Prüfbelege und offene Schritte führt der
 [Fortsetzungsstand](docs/representation_implementation_status.md);
 [Bedienung, Tests und Fortschrittsanzeige](docs/noise_followup.md) sind separat dokumentiert.
 

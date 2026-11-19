@@ -107,6 +107,14 @@ def test_complete_diagnostics_and_read_only_export_are_byte_identical(
         identities.add((record["case"], record["duration_seconds"], record["method"]))
         raw = (root / "completion" / record["arrays_path"]).read_bytes()
         assert sources.sha256(raw) == record["arrays_sha256"]
+        assert record["arrays_file_bytes"] == len(raw)
+        train_path = root / "inputs/cases" / record["case"] / "background_train.npy"
+        assert record["shared_training_file_bytes"] == train_path.stat().st_size
+        with inputs.open_training(train_path) as training:
+            prefix = training[: record["duration_seconds"] * inputs.SAMPLE_RATE]
+            assert record["training_prefix_bytes"] == prefix.nbytes
+            assert record["training_prefix_bytes"] == record["training_samples"] * 8
+            assert record["shared_training_file_bytes"] > training.nbytes
         with np.load(io.BytesIO(raw), allow_pickle=False) as arrays:
             expected = {"covariance", "raw_covariance"}
             if record["method"] == "welch_toeplitz":
@@ -116,7 +124,16 @@ def test_complete_diagnostics_and_read_only_export_are_byte_identical(
             assert arrays["covariance"].shape == (128, 128)
     assert len(identities) == 8
     call = _read(root / "call.json")
+    assert call["memory_scope"] == (
+        "process lifetime high-water mark in KiB; per-estimate samples after "
+        "estimation, whole-call sample after publication; includes earlier work, "
+        "not isolated method memory"
+    )
     assert len(call["estimator_measurements"]) == 8
+    peaks = [item["process_peak_rss_kib"] for item in call["estimator_measurements"]]
+    assert all(type(peak) is int for peak in peaks)
+    assert peaks == sorted(peaks)
+    assert peaks[-1] <= call["process_peak_rss_kib"]
     assert (
         sum(m["wall_seconds"] for m in call["estimator_measurements"])
         <= call["wall_seconds"]
@@ -193,6 +210,10 @@ def test_expected_covariance_failure_is_retained_without_replacement(
             root / "completion" / record["arrays_path"], allow_pickle=False
         ) as arrays:
             assert not arrays.files
+        assert (
+            record["arrays_file_bytes"]
+            == (root / "completion" / record["arrays_path"]).stat().st_size
+        )
     rows = list(
         csv.DictReader(io.StringIO((root / "completion/diagnostics.csv").read_text()))
     )
@@ -270,7 +291,20 @@ def test_late_change_after_main_publication_revokes_success(
 )
 def test_input_preparation_is_contained_in_measured_diagnostic_cost(baseline, field):
     call = _read(baseline.root / "call.json")
-    prep = baseline.report["preparation_call"]
+    report = copy.deepcopy(baseline.report)
+    prep = report["preparation_call"]
+    # CPU accounting may legitimately be exactly zero on a short real fixture.
+    # Bind controlled positive preparation costs before testing their containment.
+    prep["wall_seconds"] = 10.0
+    call["wall_seconds"] = 100.0
+    for measurement in call["estimator_measurements"]:
+        measurement["wall_seconds"] = 1.0
+    if field in {"cpu_user_seconds", "cpu_system_seconds"}:
+        prep[field] = 10.0
+        call[field] = 20.0
+    report_raw = sources.json_bytes(report)
+    call["source_report_sha256"] = sources.sha256(report_raw)
+    diagnostics._validate_timing(call, report, report_raw)
     if field == "disjoint_wall":
         estimates = sum(item["wall_seconds"] for item in call["estimator_measurements"])
         call["wall_seconds"] = (
@@ -278,14 +312,77 @@ def test_input_preparation_is_contained_in_measured_diagnostic_cost(baseline, fi
             + min(prep["wall_seconds"], estimates) / 2
         )
     else:
-        assert prep[field] > 1e-6
         call[field] = prep[field] / 2
     with pytest.raises(ValueError):
-        diagnostics._validate_timing(
-            call,
-            baseline.report,
-            (baseline.root / "completion" / publication.REPORT).read_bytes(),
-        )
+        diagnostics._validate_timing(call, report, report_raw)
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "missing",
+        "extra",
+        "boolean",
+        "fractional",
+        "negative",
+        "exceeds_whole",
+        "decreasing",
+        "scope",
+        "fractional_whole",
+    ],
+)
+def test_memory_measurements_preserve_exact_cumulative_semantics(baseline, mutation):
+    call = _read(baseline.root / "call.json")
+    report_raw = (baseline.root / "completion" / publication.REPORT).read_bytes()
+    measurements = call["estimator_measurements"]
+    # A valid fixed sequence makes each rejection independent of host RAM usage.
+    call["process_peak_rss_kib"] = 20
+    for measurement in measurements:
+        measurement["process_peak_rss_kib"] = 10
+    diagnostics._validate_timing(call, baseline.report, report_raw)
+    if mutation == "missing":
+        measurements[0].pop("process_peak_rss_kib")
+    elif mutation == "extra":
+        measurements[0]["isolated_method_rss_kib"] = 10
+    elif mutation == "boolean":
+        measurements[0]["process_peak_rss_kib"] = True
+    elif mutation == "fractional":
+        measurements[0]["process_peak_rss_kib"] = 10.5
+    elif mutation == "negative":
+        measurements[0]["process_peak_rss_kib"] = -1
+    elif mutation == "exceeds_whole":
+        measurements[0]["process_peak_rss_kib"] = 21
+    elif mutation == "decreasing":
+        measurements[1]["process_peak_rss_kib"] = 9
+    elif mutation == "scope":
+        call["memory_scope"] = "isolated method peak memory"
+    else:
+        call["process_peak_rss_kib"] = 20.5
+    with pytest.raises(ValueError):
+        diagnostics._validate_timing(call, baseline.report, report_raw)
+
+
+@pytest.mark.parametrize(
+    "field",
+    ["training_prefix_bytes", "shared_training_file_bytes", "arrays_file_bytes"],
+)
+def test_file_sizes_are_recomputed_even_after_consistent_report_rehash(run_copy, field):
+    completion = run_copy / "completion"
+    report_path = completion / publication.REPORT
+    report = _read(report_path)
+    report["records"][0][field] += 1
+    report_raw = sources.json_bytes(report)
+    report_path.write_bytes(report_raw)
+    manifest_path = completion / publication.MANIFEST
+    manifest = _read(manifest_path)
+    manifest[publication.REPORT] = sources.sha256(report_raw)
+    manifest_path.write_bytes(sources.json_bytes(manifest))
+    call_path = run_copy / "call.json"
+    call = _read(call_path)
+    call["source_report_sha256"] = sources.sha256(report_raw)
+    call_path.write_bytes(sources.json_bytes(call))
+    with pytest.raises(ValueError, match="Replayed estimator diagnostics differ"):
+        diagnostics.verify(run_copy)
 
 
 def test_late_cost_file_change_revokes_main_publication(

@@ -24,14 +24,15 @@ Ausführung und kein Sicherungsnachweis.
 
 Aktueller Planungs-/Implementierungsstand vom 19.11.2026: Die
 [Folgestudie zu Hintergrunddauer und Messraster](noise_followup_plan.md)
-ist in [Draft-PR #102](https://github.com/craexxn/ringdown-sr/pull/102)
+ist in [PR #102](https://github.com/craexxn/ringdown-sr/pull/102)
 implementiert, Planbindung `a37bf90fe439619fd263d6c06d868c6ff4ea00e8`.
 Vorgesehen sind 26 frische Fälle und 624 neue Worker (A: 416, B: 208);
 die 52 gemeinsamen Uniform-O/K-Pakete aus A erscheinen in B als
-Kontrollreferenzen ohne neue Suchkosten. Getrennte Kovarianz-/PSD-/ACF-Diagnose,
-technischer Vorlauf und vollständige Abnahme sind vor den wissenschaftlichen
-Suchen zu belegen. Noch kein wissenschaftlicher Lauf oder zugehöriges
-Ergebnisarchiv nachgewiesen; daher kein neuer Archiveintrag.
+Kontrollreferenzen ohne neue Suchkosten. Die [Entwicklungsabnahme](noise_followup_development_001.md)
+belegt 48 Kovarianz-/PSD-/ACF-Schätzungen und sechs kurze technische Worker,
+jeweils mit separater lesender Prüfung. Noch kein wissenschaftlicher Suchlauf
+oder zugehöriges Ergebnisarchiv nachgewiesen. Das separate Entwicklungsarchiv
+ist unten eingeordnet; vollständige Ready-CI und Freigabestand stehen im PR.
 [Prüfstand](representation_implementation_status.md) und
 [Lauf-/Export-/Archivbefehle](noise_followup.md) führen die nächsten Schritte.
 Künftige Originalformeln, Plots und vollständige Punkt-CSV sind separat
@@ -797,6 +798,24 @@ Keine Fits, Suchen oder neuen wissenschaftlichen Beobachtungen.
 Das kompakte Paket ist getrennt vom Originalarchiv bereitgestellt und bleibt eine
 retrospektive Mechanismusdiagnose. Gemeinsame dauerhafte Archivablage und
 unabhängige hashgeprüfte Zweitkopie bleiben unbestätigt.
+
+### Entwicklungsabnahme der Dauer-/Rasterstudie vom 19.11.2026
+
+- Lauf-IDs: `noise-followup-estimators-cloud-001` und
+  `noise-followup-preflight-cloud-001`; zwölf reine Rauschfälle/48 Schätzungen
+  sowie sechs N128-Zehnerworker, jeweils vollständig lesend bestätigt.
+- Ausführungscommit: `34ef0094d7ae52cbf56f6b012a76451325348444`, sauber;
+  dauerhaft über `refs/pull/102/head` erreichbar.
+- Originalarchiv: `noise-followup-development-cloud-001.tar.gz`,
+  1.698.753.038 Bytes; SHA-256
+  `1f15e7f4c0ab1af8b670d6edf21cf4937f7600b42bef67998de38f0bb9ed43f0`.
+- 390 Original-, Verify-, Plot- und Logdateien plus Manifest; fertiges Archiv
+  gegen sämtliche Datei- und Quellenhashes geprüft. Vollständige Originalformeln,
+  Punktdaten und sechs technische PNG-/SVG-Paare enthalten.
+- Bericht, Kosten, Aussagegrenzen und spätere Ressourcen-Ergänzung:
+  [Entwicklungsabnahme](noise_followup_development_001.md).
+- Ablage: lokaler Cloud-Exportordner `ringdown-noise-followup`.
+  Dauerhafte Archivablage und unabhängige Zweitkopie **offen**.
 
 ### Priorisierte fehlende Belege
 

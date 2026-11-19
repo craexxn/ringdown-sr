@@ -8,10 +8,12 @@ im [Fortsetzungsstand](representation_implementation_status.md).
 
 Aktueller Methoden- und Umsetzungsabgleich vom 19.11.2026 zu Phase 7:
 Die [Folgestudie zu Hintergrunddauer und Messraster](noise_followup_plan.md)
-ist nach vorab gebundenem Plan in Draft-PR #102 implementiert. Sie verbindet
+ist nach vorab gebundenem Plan in PR #102 implementiert. Sie verbindet
 eine getrennte Schätzerdiagnose ohne SR mit 416 + 208 geplanten neuen
-wissenschaftlichen Workern. Technischer Gesamtnachweis und wissenschaftliche
-Ausführung stehen noch aus; [Prüfstand](representation_implementation_status.md)
+wissenschaftlichen Workern. Die [Entwicklungsabnahme](noise_followup_development_001.md)
+belegt sechs technische Worker und 48 lesend bestätigte Schätzungen.
+Vollständige Ready-CI und wissenschaftliche Suchausführung werden getrennt geführt;
+[Prüfstand](representation_implementation_status.md)
 und [Bedienung](noise_followup.md) werden getrennt geführt.
 
 Historischer Ergebnisabgleich vom 14.11.2026: Die
@@ -1009,8 +1011,12 @@ Armwahl. R mit 4 × 1.000 bei 300/5 und die ursprüngliche `accuracy`-Auswahl
 bleiben erhalten. Originalformeln, alle gespeicherten Punktdaten und
 Kontrastplots werden separat an ihre Quellen gebunden. Der
 [Laufweg](noise_followup.md) ist in
-[Draft-PR #102](https://github.com/craexxn/ringdown-sr/pull/102) implementiert;
-vollständige technische Abnahme und wissenschaftliche Ausführung sind offen.
+[PR #102](https://github.com/craexxn/ringdown-sr/pull/102) implementiert.
+Die [Entwicklungsabnahme](noise_followup_development_001.md) zeigt günstigere
+Matrixfehler durch längeren Hintergrund für die korrelierten Diagnosefälle,
+aber keinen allgemeinen Vorteil bei den weißen Kontrollen. Die methodische
+Festlegung bleibt erhalten. Die wissenschaftliche Suchausführung ist offen;
+der vollständige Ready-CI-Nachweis wird im PR geführt.
 Die vorherige Aliasdiagnose und die historischen Versuchspläne bleiben erhalten.
 
 Zunächst wenige Signale und Rauschbedingungen wählen. Rauschrealisierungen,

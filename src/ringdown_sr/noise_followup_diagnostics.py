@@ -24,6 +24,10 @@ from .pilot import _write_json
 FORMAT = "ringdown-sr-noise-followup-diagnostics-1"
 SECONDS = 14400
 METHODS = ("full_matrix", "welch_toeplitz")
+MEMORY_SCOPE = (
+    "process lifetime high-water mark in KiB; per-estimate samples after estimation, "
+    "whole-call sample after publication; includes earlier work, not isolated method memory"
+)
 SUMMARY = (
     "# Separate Rauschschätzer-Vorprüfung\n\n"
     "Acht korrelierte und vier weiße Entwicklungsfälle, zwei Dauern und zwei "
@@ -163,7 +167,13 @@ def _calculate(prepared, consumed, measurements=None):
                     }
                     if measurements is not None:
                         measurements.append(
-                            {**identity, "wall_seconds": time.monotonic() - started}
+                            {
+                                **identity,
+                                "wall_seconds": time.monotonic() - started,
+                                "process_peak_rss_kib": resource.getrusage(
+                                    resource.RUSAGE_SELF
+                                ).ru_maxrss,
+                            }
                         )
                     name = f"{spec['id']}--{duration}s--{method}"
                     raw = _npz_bytes(arrays)
@@ -171,11 +181,14 @@ def _calculate(prepared, consumed, measurements=None):
                     record.update(
                         **identity,
                         training_samples=len(series),
+                        training_prefix_bytes=series.nbytes,
+                        shared_training_file_bytes=case.train_path.stat().st_size,
                         input_record_sha256=sources.sha256(
                             sources.json_bytes(case.record)
                         ),
                         arrays_path=f"estimate--{name}.npz",
                         arrays_sha256=sources.sha256(raw),
+                        arrays_file_bytes=len(raw),
                     )
                     records.append(record)
         case_checks.check()
@@ -297,6 +310,7 @@ def _timing(started, before, report_raw, measurements, *, error=None):
         "cpu_scope": "self_plus_reaped_children",
         "cpu_measurement_complete": error is None,
         "process_peak_rss_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+        "memory_scope": MEMORY_SCOPE,
         "estimator_measurements": measurements,
         "contained_costs_note": "Preparation and estimator times are contained, never add them to whole-call wall time.",
         "error": None if error is None else f"{type(error).__name__}: {error}",
@@ -386,6 +400,7 @@ def _validate_timing(call, report, report_raw):
             "cpu_scope",
             "cpu_measurement_complete",
             "process_peak_rss_kib",
+            "memory_scope",
             "estimator_measurements",
             "contained_costs_note",
             "error",
@@ -396,6 +411,8 @@ def _validate_timing(call, report, report_raw):
         or call.get("error") is not None
         or call.get("source_report_sha256") != sources.sha256(report_raw)
         or call.get("cpu_scope") != "self_plus_reaped_children"
+        or call.get("memory_scope") != MEMORY_SCOPE
+        or type(call.get("process_peak_rss_kib")) is not int
         or call.get("scope")
         != "entry_through_publication_and_handler_teardown_excluding_call_write_and_final_rechecks"
     ):
@@ -421,14 +438,27 @@ def _validate_timing(call, report, report_raw):
     actual = call.get("estimator_measurements")
     if not isinstance(actual, list) or len(actual) != len(expected):
         raise ValueError("Incomplete estimator measurement inventory.")
+    previous_peak = 0
     for item, identity in zip(actual, expected, strict=True):
-        if not isinstance(item, dict) or set(item) != {*identity, "wall_seconds"}:
+        if not isinstance(item, dict) or set(item) != {
+            *identity,
+            "wall_seconds",
+            "process_peak_rss_kib",
+        }:
             raise ValueError("Unexpected estimator measurement fields.")
         if {key: item[key] for key in identity} != identity:
             raise ValueError("Estimator measurement identity changed.")
         value = item["wall_seconds"]
         if type(value) not in (int, float) or not math.isfinite(value) or value < 0:
             raise ValueError("Invalid measured estimator duration.")
+        peak = item["process_peak_rss_kib"]
+        if (
+            type(peak) is not int
+            or peak < previous_peak
+            or peak > call["process_peak_rss_kib"]
+        ):
+            raise ValueError("Invalid cumulative process memory measurement.")
+        previous_peak = peak
     if sum(item["wall_seconds"] for item in actual) > call["wall_seconds"]:
         raise ValueError("Contained estimator times exceed whole-call duration.")
     for key in ("wall_seconds", "cpu_user_seconds", "cpu_system_seconds"):

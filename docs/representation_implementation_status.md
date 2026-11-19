@@ -6,11 +6,13 @@ Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
 Der vor neuen Studienbeobachtungen gebundene
 [Versuchsplan](noise_followup_plan.md) ist auf Branch
 `codex/noise-duration-sampling-study` in
-[Draft-PR #102](https://github.com/craexxn/ringdown-sr/pull/102) umgesetzt.
+[PR #102](https://github.com/craexxn/ringdown-sr/pull/102) umgesetzt.
 Basis ist der PR101-Stand `7f52cfb2fe94ad13cda1ff28e11daa261e57bd21`;
 Vorabplancommit `a37bf90fe439619fd263d6c06d868c6ff4ea00e8`.
-Die Implementierung liegt nach diesem Plancommit im Arbeitsstand des Draft-PR;
-ein wissenschaftlicher Ausführungscommit oder Ergebnisarchiv liegt noch nicht vor.
+Die erste vollständige Implementierung und lokale Entwicklungsabnahme binden
+`34ef0094d7ae52cbf56f6b012a76451325348444`; die anschließende Ergänzung betrifft
+Ressourcenangaben und einen von der Zeitauflösung abhängigen Test.
+Ein wissenschaftlicher Suchlauf oder zugehöriges Ergebnisarchiv liegt noch nicht vor.
 
 26 frische Fälle umfassen 20 AR(1)- und sechs getrennt ausgewertete weiße
 Kontrollen. Block A vergleicht auf dem Uniformraster O, K sowie Schätzung
@@ -32,12 +34,18 @@ Ausfällen und Kontrollreferenzen separat quellengebunden ausgegeben.
 Die gemeinsamen Start-, Test-, Archivierungs- und Fortschrittsbefehle stehen
 im [Laufweg](noise_followup.md); die Diagnose wählt keinen neuen SR-Schätzer.
 
-Gezielte Komponentenprüfungen liegen vor; der vollständige technische
-Gesamtnachweis ist noch offen. Nächster abgegrenzter Schritt ist die
-Integration mit gezieltem Review und vollständiger Ready-CI vor Verwendung
-des festen Ausführungsstands. Noch keine neue wissenschaftliche Suchserie
-ausgeführt und kein wissenschaftlicher Erfolg behauptet. Der 23.11. morgens
-bleibt ein weiches Planungsziel, keine zusätzliche Abbruchregel.
+Die [Entwicklungsabnahme](noise_followup_development_001.md) belegt sechs
+erfolgreiche native N128-Zehnerworker, getrennten Replay und vollständige
+technische Plots. Die separate Rauschdiagnose berechnet und reproduziert
+48/48 Schätzungen ohne SR. Unter korreliertem Rauschen sinkt der Matrixfehler
+mit dem langen Hintergrund; die weißen Kontrollen zeigen keinen allgemeinen
+Vorteil. Das ändert weder den festen Schätzer noch die Formelauswahl.
+Gezielte Methoden-/Implementierungsreviews sind abgeschlossen; 4.600
+Pythonfälle bestehen in der Draft-CI. Die vollständige Ready-CI und der
+endgültige Freigabestand werden im PR geführt. Danach folgt der feste lokale
+Ausführungscheckout gemäß Laufanleitung. Noch keine neue wissenschaftliche
+Suchserie ausgeführt und kein wissenschaftlicher Erfolg behauptet.
+Der 23.11. morgens bleibt ein weiches Planungsziel, keine Abbruchregel.
 
 ## Historisch: Aliasdiagnose und getrennte Anschlussfragen
 
