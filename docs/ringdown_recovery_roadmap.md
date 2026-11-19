@@ -894,6 +894,31 @@ Die alte 144er-Serie war bereits wissenschaftliche Ausführung;
 der technische Vorlauf für die neue Studie liefert keine neuen Qualitätsnachweise
 oder Laufzeit-/Speichergarantie. Gemeinsame Archivablage und Zweitkopie bleiben offen.
 
+**Ergebnisnachtrag vom 19.11.2026:** Der getrennte
+[Hintergrundlauf 002](noise_background_results_manjaro_002.md) umfasst
+520 abgeschlossene Suchen und 130 erfolgreiche Pakete bei rund 50 h 42 min
+Serienzeit. Das vollständige Archiv samt repariertem Plotexport ist hashgeprüft;
+unabhängige Statistik-, Herkunfts- und Plotaudits sowie die eigene vollständige
+Serienverifikation bestehen. Die Originalauswahl bleibt erhalten.
+
+Mehr Hintergrundtraining verbessert Matrixabweichung und Kontrollscore in
+allen 20 AR(1)-Blöcken; der primäre mittlere SR-Kontrast E1024−O ist dennoch
+**+0,01697744**, mit approximativem marginalem 95%-Intervall
+**[−0,01576760; +0,04972247]**. Einzelne Zwischenpunktspitzen, darunter
+16,310949 A, bleiben in allen Statistiken und Grafiken sichtbar. Dieser Befund
+begründet keine automatische Armwahl und keine weitere Hintergrundstaffel.
+
+Als nächster begrenzter Arbeitsschritt wird eine **lesende Endfrontdiagnose**
+vorgeschlagen: vorhandene Kandidaten und deren Rasterverhalten untersuchen,
+ohne neue Suche, neue Originalauswahl oder nachträgliche Erfolgszählung.
+Ein anschließender Suchzufallsvergleich bei festen Inputs und Matrizen könnte
+Suchvariation getrennt untersuchen und längere Rechnerzeit nutzen. Er wäre
+gesondert vorab zu planen; Wiederholungen allein beheben keine Rasterblindheit.
+Frequenzgrenzen, Grammatik-, Auswahl- oder Samplingänderungen sind eigenständige
+Methodenänderungen. Keine neuen Seeds, Budgets oder Läufe sind damit beschlossen.
+Der eingefrorene Hintergrundplan bleibt unverändert; weitere Bedingungen erst
+aus dem vollständigen Befund begründen.
+
 Zunächst wenige Signale und Rauschbedingungen wählen. Rauschrealisierungen,
 Hintergrunddaten und Suchseeds als unterschiedliche Zufallsquellen behandeln.
 Mehrere Suchseeds auf einer einzigen Rauschrealisierung belegen keine allgemeine

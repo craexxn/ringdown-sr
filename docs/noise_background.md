@@ -26,20 +26,24 @@ der anschließende Uhrenabgleich verweigerte korrekt die Freigabe. Die
 übermittelten Fehler- und Kostenbelege stehen im Fortsetzungsstand; eine
 vollständige Prüfung der wissenschaftlichen Originaldateien steht noch aus.
 
-Versuch 002 ist inzwischen laut übermittelter Aufrufdatei vollständig beendet
-(50 h 42 min 11,21 s); seine separate lesende Gesamtverifikation nach
-`verification-002` besteht laut Terminalausgabe. Der anschließende Plotexport
-scheitert an einem Darstellungsfehler: Ein Kovarianz-Kontrollscore wird als
-gesamter Diagnoseeintrag statt als dessen Zahlenfeld `score` übergeben.
-Die Originaldateien von 002 sind hier noch nicht unabhängig geprüft.
+Versuch 002 ist vollständig beendet (50 h 42 min 11,21 s). Das gelieferte
+Originalarchiv enthält die erfolgreiche Verifikation nach `verification-002`
+und den inzwischen erfolgreichen reparierten Plotexport `plots-002` mit allen
+130 Originalformeln und Punktdaten. Der frühere Exportfehler betraf ausschließlich
+die Darstellung des Kovarianz-Kontrollscores. Die eigene vollständige
+Serienverifikation und unabhängige Plot-, Statistik- und Herkunftsaudits
+sind bestanden. Alle vier Verify-Exportdateien sind bytegleich zur Manjaro-Prüfung.
+Aktuelle Belege und wissenschaftliche Einordnung stehen im
+[Ergebnisbericht](noise_background_results_manjaro_002.md).
 
 Versuch 001, beide Verifikationsversuche von 002 und den fehlgeschlagenen
 Plotexport erhalten. Abschnitt 3 dokumentiert den bereits ausgeführten,
 vollständig frischen Wiederholungsversuch und ist kein erneuter Startauftrag.
 Seeds, Reihenfolge, Budgets, Fristen und Uhrenwächter bleiben unverändert.
 Setup, technischen Vorlauf und wissenschaftliche Serie nicht wiederholen;
-der feste Ausführungscheckout bleibt auf `bd42634`. Abschnitt 5 beschreibt
-den getrennten Plot-Reparaturweg und die anschließende Archivierung.
+der feste Ausführungscheckout bleibt auf `bd42634`. Abschnitt 5 dokumentiert
+den bereits ausgeführten getrennten Plot-Reparaturweg und die Archivierung;
+für vorhandene vollständige Ausgaben nicht erneut ausführen.
 
 ## Umfang und feste Grenzen
 
