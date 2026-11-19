@@ -10,8 +10,10 @@ Der vor neuen Studienbeobachtungen gebundene
 Basis ist der PR101-Stand `7f52cfb2fe94ad13cda1ff28e11daa261e57bd21`;
 Vorabplancommit `a37bf90fe439619fd263d6c06d868c6ff4ea00e8`.
 Die erste vollständige Implementierung und lokale Entwicklungsabnahme binden
-`34ef0094d7ae52cbf56f6b012a76451325348444`; die anschließende Ergänzung betrifft
-Ressourcenangaben und einen von der Zeitauflösung abhängigen Test.
+`34ef0094d7ae52cbf56f6b012a76451325348444`; die anschließende Ergänzung an
+`04d9a760fc1e3eb8808fdb0763032b526fc9c568` betrifft Ressourcenangaben und einen
+von der Zeitauflösung abhängigen Test. Die erneute eigene Diagnose 002
+reproduziert dieselben 48 Schätzungen mit bytegleichen Eingaben und Matrizen.
 Ein wissenschaftlicher Suchlauf oder zugehöriges Ergebnisarchiv liegt noch nicht vor.
 
 26 frische Fälle umfassen 20 AR(1)- und sechs getrennt ausgewertete weiße
@@ -41,7 +43,8 @@ technische Plots. Die separate Rauschdiagnose berechnet und reproduziert
 mit dem langen Hintergrund; die weißen Kontrollen zeigen keinen allgemeinen
 Vorteil. Das ändert weder den festen Schätzer noch die Formelauswahl.
 Gezielte Methoden-/Implementierungsreviews sind abgeschlossen; 4.600
-Pythonfälle bestehen in der Draft-CI. Die vollständige Ready-CI und der
+Pythonfälle bestehen in der Draft-CI; nach der Berichtergänzung bestehen
+alle 229 eigenen Folgestudientests. Die vollständige Ready-CI und der
 endgültige Freigabestand werden im PR geführt. Danach folgt der feste lokale
 Ausführungscheckout gemäß Laufanleitung. Noch keine neue wissenschaftliche
 Suchserie ausgeführt und kein wissenschaftlicher Erfolg behauptet.

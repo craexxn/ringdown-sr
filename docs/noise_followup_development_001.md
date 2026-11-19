@@ -62,12 +62,34 @@ Diese enthaltenen Kosten werden nicht zu den einzelnen Schätzerzeiten addiert.
 Für den separaten ursprünglichen Verify-Aufruf wurde keine eigene Prozesszeit
 gespeichert; sie bleibt unbekannt.
 
-Eine nachfolgende Ergänzung der Berichterstattung weist auch je Schätzung
-den kumulativen Prozesshöchststand sowie Präfix-, gemeinsame Rohdatei- und
-Ergebnisdateigrößen ausdrücklich aus. Das ist keine isolierte RAM-Messung
-eines einzelnen Verfahrens und keine Änderung seiner Berechnung. Die zugehörige
-erneute technische Diagnose wird unter einer neuen Lauf-ID geführt;
-die Originalausgabe 001 bleibt unverändert erhalten.
+## Ressourcen-Ergänzung und Schätzerdiagnose 002
+
+Die Ergänzung weist auch je Schätzung den kumulativen Prozesshöchststand sowie
+Präfix-, gemeinsame Rohdatei- und Ergebnisdateigrößen ausdrücklich aus.
+Das ist keine isolierte RAM-Messung eines einzelnen Verfahrens und keine
+Änderung seiner Berechnung. Die Originalausgabe 001 bleibt unverändert.
+
+`noise-followup-estimators-cloud-002` ist am sauberen Commit
+`04d9a760fc1e3eb8808fdb0763032b526fc9c568` ausgeführt: **48/48 Schätzungen,
+keine Ausfälle, keine SR**, separate lesende Nachrechnung und neuer Export
+bestanden. Alle 37 Eingabedatei- und 48 Schätzer-NPZ-Hashes stimmen exakt mit
+001 überein. Es sind dieselben zwölf Entwicklungsfälle; sie werden weder als
+zusätzliche unabhängige Fälle gezählt noch zu einem größeren Datensatz gepoolt.
+Die obige Ergebnistabelle bleibt unverändert.
+
+Die tatsächlich gespeicherten Präfixgrößen sind 2.097.152 und 134.217.728 Bytes;
+beide referenzieren je Fall dieselbe 134.217.856 Bytes große NPY-Rohdatei
+einschließlich Header. Die tatsächliche Größe jeder Ergebnis-NPZ wird separat
+gebunden und beim Replay aus ihren Bytes bestimmt. Pro Schätzung gemessene
+Prozesshöchststände liegen zwischen 288.064 und 307.624 KiB; sie enthalten
+frühere Arbeit und sind keine isolierten Speichervergleiche der Verfahren.
+
+Der interne Gesamtaufruf benötigt 96,071 s Wandzeit, 87,860 s User- und
+8,091 s System-CPU-Zeit, Prozesshöchststand 307.624 KiB. Der äußere Python-
+Prozess benötigt einschließlich Start und letzter Nachprüfungen 100,030 s,
+90,895 s User- und 8,994 s System-CPU-Zeit. Die getrennte lesende Verifikation
+mit Export benötigt 73,721 s, 69,479 s User- und 4,132 s System-CPU-Zeit.
+Die unterschiedlichen eingeschlossenen Messbereiche werden nicht addiert.
 
 ## Technischer Vorlauf 001
 
@@ -110,10 +132,13 @@ beauftragten Umfang. Die Reviews ersetzen die ausführbaren Prüfungen nicht.
 Im [Draft-CI-Lauf 44542925986](https://github.com/craexxn/ringdown-sr/actions/runs/44542925986)
 bestehen 4.600 Python-Tests in 591,56 s. Der native Teil ist im Draft
 planmäßig übersprungen; das Abschlussgate verweigert daher korrekt eine volle
-Freigabe. Lokal bestehen 4.599 Tests, ein zusätzlicher Kostentest setzt
-unzulässig eine positive gemessene System-CPU-Zeit voraus. Dieser Test wird
-mit kontrollierten synthetischen Kosten unabhängig von der Betriebssystem-
-Zeitauflösung geprüft; die Produktionsgrenzen bleiben unverändert.
+Freigabe. Lokal bestehen zunächst 4.599 Tests, ein Kostentest setzt
+unzulässig eine positive gemessene System-CPU-Zeit voraus. Die Korrektur
+verwendet kontrollierte synthetische Kosten und ist damit unabhängig von der
+Betriebssystem-Zeitauflösung; die Produktionsgrenzen bleiben unverändert.
+Nach der Ergänzung bestehen alle **229 Tests der Folgestudie**, darunter
+35 Diagnoseprüfungen für tatsächliche Größen, manipulierte Ressourcenbelege
+und späte Quellenänderungen. Ruff, Format und 120 Markdown-Prüfungen bestehen.
 Vollständige Ready-CI und endgültiger Freigabestand stehen im PR.
 
 ## Archiv und offene Sicherung
@@ -132,6 +157,21 @@ Manifest verglichen und gegen die unveränderten Quelldateien geprüft.
 Packen und Archivprüfung benötigen zusammen 96,169 s; dieser eigene Aufwand
 wird nicht als Suchzeit gerechnet. Die Ausführungsquelle bleibt über
 `refs/pull/102/head` erreichbar.
+
+Die ergänzte Diagnose 002 besitzt das eigene vollständige Originalarchiv
+`noise-followup-diagnostics-cloud-002.tar.gz`, 1.565.250.615 Bytes;
+SHA-256:
+
+```text
+8206130fdfb58b34f430b4a99b9d90e76c2519fde7b141a96f684fff6f55d97e
+```
+
+156 Original-/Verify-/Logdateien plus Manifest, einschließlich aller langen
+Eingabereihen und der expliziten Bytevergleichsnotiz. Die fertig gepackten
+Mitglieder und unveränderten Quellen sind vollständig gehasht geprüft;
+Packen und Prüfung benötigen 85,192 s. Das zusätzliche Manifest verweist
+auf den SHA-256 des vorausgehenden Entwicklungsarchivs, ohne es zu ersetzen.
+Ausführungscommit 04d9a76 bleibt ebenfalls über den dauerhaften PR102-Ref erreichbar.
 
 Lokale Cloud-Arbeitsablage im Exportordner `ringdown-noise-followup`;
 dauerhafte Archivablage und unabhängige hashgeprüfte Zweitkopie sind nicht

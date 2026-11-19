@@ -55,8 +55,14 @@ test -z "$(git status --porcelain)"
 unset VIRTUAL_ENV
 uv sync --locked --dev --python 3.12.14
 git rev-parse HEAD
+export OPENBLAS_CORETYPE=Haswell
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+uv run --locked --no-sync python scripts/run_python.py scripts/check_environment.py
 BASH
 ```
+
+Die Umgebungsprüfung installiert beziehungsweise lädt auch das festgelegte
+Julia-System vor dem ersten zeitlich begrenzten technischen Worker.
 
 Alle folgenden Befehle im neuen Verzeichnis `ringdown-noise-followup-run`
 ausführen. Während des gesamten Versuchs keine Commits wechseln, kein

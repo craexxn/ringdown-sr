@@ -804,11 +804,20 @@ unabhängige hashgeprüfte Zweitkopie bleiben unbestätigt.
 - Lauf-IDs: `noise-followup-estimators-cloud-001` und
   `noise-followup-preflight-cloud-001`; zwölf reine Rauschfälle/48 Schätzungen
   sowie sechs N128-Zehnerworker, jeweils vollständig lesend bestätigt.
+- `noise-followup-estimators-cloud-002` ergänzt Ressourcenangaben an denselben
+  zwölf Entwicklungsfällen; alle 37 Eingabedateien und 48 Schätzerdateien sind
+  bytegleich zu 001, keine zusätzlichen unabhängigen Fälle oder Suchworker.
 - Ausführungscommit: `34ef0094d7ae52cbf56f6b012a76451325348444`, sauber;
-  dauerhaft über `refs/pull/102/head` erreichbar.
+  für Schätzerdiagnose 002 `04d9a760fc1e3eb8808fdb0763032b526fc9c568`, sauber.
+  Beide dauerhaft über `refs/pull/102/head` erreichbar.
 - Originalarchiv: `noise-followup-development-cloud-001.tar.gz`,
   1.698.753.038 Bytes; SHA-256
   `1f15e7f4c0ab1af8b670d6edf21cf4937f7600b42bef67998de38f0bb9ed43f0`.
+- Eigenes Originalarchiv der Ergänzung: `noise-followup-diagnostics-cloud-002.tar.gz`,
+  1.565.250.615 Bytes; SHA-256
+  `8206130fdfb58b34f430b4a99b9d90e76c2519fde7b141a96f684fff6f55d97e`.
+  156 Original-/Verify-/Logdateien plus Manifest; Archiv und Quellen vollständig
+  gegen die gebundenen Dateihashes geprüft.
 - 390 Original-, Verify-, Plot- und Logdateien plus Manifest; fertiges Archiv
   gegen sämtliche Datei- und Quellenhashes geprüft. Vollständige Originalformeln,
   Punktdaten und sechs technische PNG-/SVG-Paare enthalten.
