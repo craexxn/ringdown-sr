@@ -1,6 +1,56 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Aliasdiagnose und getrennte Anschlussfragen
+## Aktuell: Folgestudie zu Hintergrunddauer und Messraster implementiert
+
+Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
+Der vor neuen Studienbeobachtungen gebundene
+[Versuchsplan](noise_followup_plan.md) ist auf Branch
+`codex/noise-duration-sampling-study` in
+[PR #102](https://github.com/craexxn/ringdown-sr/pull/102) umgesetzt.
+Basis ist der PR101-Stand `7f52cfb2fe94ad13cda1ff28e11daa261e57bd21`;
+Vorabplancommit `a37bf90fe439619fd263d6c06d868c6ff4ea00e8`.
+Die erste vollständige Implementierung und lokale Entwicklungsabnahme binden
+`34ef0094d7ae52cbf56f6b012a76451325348444`; die anschließende Ergänzung an
+`04d9a760fc1e3eb8808fdb0763032b526fc9c568` betrifft Ressourcenangaben und einen
+von der Zeitauflösung abhängigen Test. Die erneute eigene Diagnose 002
+reproduziert dieselben 48 Schätzungen mit bytegleichen Eingaben und Matrizen.
+Ein wissenschaftlicher Suchlauf oder zugehöriges Ergebnisarchiv liegt noch nicht vor.
+
+26 frische Fälle umfassen 20 AR(1)- und sechs getrennt ausgewertete weiße
+Kontrollen. Block A vergleicht auf dem Uniformraster O, K sowie Schätzung
+aus 64/4096 s kontinuierlichem Hintergrund: 104 Viererpakete, 416 Worker.
+Block B ergänzt ungleichmäßige O/K-Akquisition mit 52 neuen Viererpaketen,
+208 Workern. Seine 52 Uniform-O/K-Kontrollreferenzen stammen aus A; keine
+erneute Suche, unabhängige Stichprobe oder doppelte Anrechnung neuer Kosten.
+Zusammen sind 156 neue Pakete und 624 wissenschaftliche Worker vorgesehen.
+R mit 4 × 1.000 bei lokal 300/5 und die ursprüngliche `accuracy`-Auswahl
+bleiben unverändert. Eine bessere Kovarianzschätzung beseitigt keine
+mathematische Mehrdeutigkeit identischer gleichmäßiger Samplewerte.
+
+Implementiert sind getrennte sechs N128-Zehnerworker als technischer Vorlauf,
+eine vorgeschaltete Kovarianz-/PSD-/ACF-Diagnose ohne SR mit eigenen
+Entwicklungsfällen, vorab gebundene Eingaben beider Raster, Serienlauf und
+lesende Verifikation. Vollständige unveränderte Originalformeln, PNG/SVG,
+Punkt-CSV, gepaarte Kontraste und marginale Intervalle werden einschließlich
+Ausfällen und Kontrollreferenzen separat quellengebunden ausgegeben.
+Die gemeinsamen Start-, Test-, Archivierungs- und Fortschrittsbefehle stehen
+im [Laufweg](noise_followup.md); die Diagnose wählt keinen neuen SR-Schätzer.
+
+Die [Entwicklungsabnahme](noise_followup_development_001.md) belegt sechs
+erfolgreiche native N128-Zehnerworker, getrennten Replay und vollständige
+technische Plots. Die separate Rauschdiagnose berechnet und reproduziert
+48/48 Schätzungen ohne SR. Unter korreliertem Rauschen sinkt der Matrixfehler
+mit dem langen Hintergrund; die weißen Kontrollen zeigen keinen allgemeinen
+Vorteil. Das ändert weder den festen Schätzer noch die Formelauswahl.
+Gezielte Methoden-/Implementierungsreviews sind abgeschlossen; 4.600
+Pythonfälle bestehen in der Draft-CI; nach der Berichtergänzung bestehen
+alle 229 eigenen Folgestudientests. Die vollständige Ready-CI und der
+endgültige Freigabestand werden im PR geführt. Danach folgt der feste lokale
+Ausführungscheckout gemäß Laufanleitung. Noch keine neue wissenschaftliche
+Suchserie ausgeführt und kein wissenschaftlicher Erfolg behauptet.
+Der 23.11. morgens bleibt ein weiches Planungsziel, keine Abbruchregel.
+
+## Historisch: Aliasdiagnose und getrennte Anschlussfragen
 
 Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
 Die [lesende Aliasdiagnose](noise_background_alias_diagnostic_001.md)

@@ -1,0 +1,458 @@
+{
+  "base_commit": "7f52cfb2fe94ad13cda1ff28e11daa261e57bd21",
+  "numpy": "2.5.3",
+  "historical_utf8_files": 392,
+  "excluded_count": 3463,
+  "excluded_sha256": "9317f94a40ac64e46f70791a18ee6bcf27ec9fe06470402e854b0025ea8f520a",
+  "reserved": {
+    "table_generator": 2026111901,
+    "acquisition_jitter": 2026111902,
+    "evaluation_grid": 2026111903,
+    "technical_noise": 2026111904,
+    "technical_background": 2026111905,
+    "technical_search": 2026111906
+  },
+  "draws": 180,
+  "rejections": 0,
+  "scientific_cases": [
+    {
+      "id": "ar1-01",
+      "noise_model": "ar1",
+      "block": 1,
+      "noise_seed": 661659402,
+      "background_seed": 688573129,
+      "search_seeds": [
+        495708838,
+        1070809445,
+        2061735221,
+        1963332789
+      ]
+    },
+    {
+      "id": "ar1-02",
+      "noise_model": "ar1",
+      "block": 2,
+      "noise_seed": 1963651965,
+      "background_seed": 149035534,
+      "search_seeds": [
+        1081753737,
+        1835562348,
+        26778951,
+        2060530951
+      ]
+    },
+    {
+      "id": "ar1-03",
+      "noise_model": "ar1",
+      "block": 3,
+      "noise_seed": 478938695,
+      "background_seed": 899512659,
+      "search_seeds": [
+        2011982336,
+        2049292712,
+        1986378837,
+        1741466021
+      ]
+    },
+    {
+      "id": "ar1-04",
+      "noise_model": "ar1",
+      "block": 4,
+      "noise_seed": 860811131,
+      "background_seed": 2120060803,
+      "search_seeds": [
+        494203636,
+        1228202255,
+        1147478233,
+        1773587673
+      ]
+    },
+    {
+      "id": "ar1-05",
+      "noise_model": "ar1",
+      "block": 5,
+      "noise_seed": 1398565207,
+      "background_seed": 1343675090,
+      "search_seeds": [
+        1456346437,
+        1688995458,
+        2085582868,
+        1259612285
+      ]
+    },
+    {
+      "id": "ar1-06",
+      "noise_model": "ar1",
+      "block": 6,
+      "noise_seed": 173620521,
+      "background_seed": 1194895573,
+      "search_seeds": [
+        429147991,
+        376549706,
+        1823797296,
+        1888196857
+      ]
+    },
+    {
+      "id": "ar1-07",
+      "noise_model": "ar1",
+      "block": 7,
+      "noise_seed": 2115390752,
+      "background_seed": 1394059164,
+      "search_seeds": [
+        987577257,
+        275105964,
+        675173631,
+        893968540
+      ]
+    },
+    {
+      "id": "ar1-08",
+      "noise_model": "ar1",
+      "block": 8,
+      "noise_seed": 165181661,
+      "background_seed": 1302691750,
+      "search_seeds": [
+        1253434814,
+        2104541514,
+        1842200624,
+        51060307
+      ]
+    },
+    {
+      "id": "ar1-09",
+      "noise_model": "ar1",
+      "block": 9,
+      "noise_seed": 1113201835,
+      "background_seed": 1223710041,
+      "search_seeds": [
+        1097987850,
+        579246130,
+        2098339923,
+        1952540971
+      ]
+    },
+    {
+      "id": "ar1-10",
+      "noise_model": "ar1",
+      "block": 10,
+      "noise_seed": 1864309459,
+      "background_seed": 612829763,
+      "search_seeds": [
+        1594112655,
+        1981794381,
+        518145669,
+        1363423214
+      ]
+    },
+    {
+      "id": "ar1-11",
+      "noise_model": "ar1",
+      "block": 11,
+      "noise_seed": 259049732,
+      "background_seed": 1393814079,
+      "search_seeds": [
+        955324575,
+        210299450,
+        868869338,
+        1801353731
+      ]
+    },
+    {
+      "id": "ar1-12",
+      "noise_model": "ar1",
+      "block": 12,
+      "noise_seed": 1241447752,
+      "background_seed": 1083656875,
+      "search_seeds": [
+        1847321906,
+        1181022348,
+        2032937062,
+        1523640808
+      ]
+    },
+    {
+      "id": "ar1-13",
+      "noise_model": "ar1",
+      "block": 13,
+      "noise_seed": 1562150822,
+      "background_seed": 1521299671,
+      "search_seeds": [
+        1109950155,
+        268269224,
+        2131573901,
+        1908872499
+      ]
+    },
+    {
+      "id": "ar1-14",
+      "noise_model": "ar1",
+      "block": 14,
+      "noise_seed": 2095141932,
+      "background_seed": 2092808344,
+      "search_seeds": [
+        1489069547,
+        1373247440,
+        183680698,
+        1772096412
+      ]
+    },
+    {
+      "id": "ar1-15",
+      "noise_model": "ar1",
+      "block": 15,
+      "noise_seed": 586947144,
+      "background_seed": 1126436677,
+      "search_seeds": [
+        732515175,
+        1729962547,
+        731921386,
+        2141684670
+      ]
+    },
+    {
+      "id": "ar1-16",
+      "noise_model": "ar1",
+      "block": 16,
+      "noise_seed": 2124803790,
+      "background_seed": 1458584844,
+      "search_seeds": [
+        489611843,
+        278542299,
+        623643084,
+        797930429
+      ]
+    },
+    {
+      "id": "ar1-17",
+      "noise_model": "ar1",
+      "block": 17,
+      "noise_seed": 195259173,
+      "background_seed": 1458647481,
+      "search_seeds": [
+        235496902,
+        797575657,
+        514804586,
+        224254764
+      ]
+    },
+    {
+      "id": "ar1-18",
+      "noise_model": "ar1",
+      "block": 18,
+      "noise_seed": 2038549563,
+      "background_seed": 1766622132,
+      "search_seeds": [
+        1923482373,
+        1245756957,
+        1090135714,
+        1167185541
+      ]
+    },
+    {
+      "id": "ar1-19",
+      "noise_model": "ar1",
+      "block": 19,
+      "noise_seed": 1516039832,
+      "background_seed": 771521092,
+      "search_seeds": [
+        1303040149,
+        543392316,
+        736450994,
+        1956324740
+      ]
+    },
+    {
+      "id": "ar1-20",
+      "noise_model": "ar1",
+      "block": 20,
+      "noise_seed": 768628215,
+      "background_seed": 1339517178,
+      "search_seeds": [
+        1834775671,
+        1540056359,
+        1764785044,
+        1666768072
+      ]
+    },
+    {
+      "id": "white-01",
+      "noise_model": "white",
+      "block": 1,
+      "noise_seed": 330977615,
+      "background_seed": 1424747908,
+      "search_seeds": [
+        1658118412,
+        64711457,
+        1476616406,
+        1640717866
+      ]
+    },
+    {
+      "id": "white-02",
+      "noise_model": "white",
+      "block": 2,
+      "noise_seed": 277478764,
+      "background_seed": 1745401714,
+      "search_seeds": [
+        734547014,
+        908720037,
+        1220518929,
+        2132755049
+      ]
+    },
+    {
+      "id": "white-03",
+      "noise_model": "white",
+      "block": 3,
+      "noise_seed": 73670716,
+      "background_seed": 70436910,
+      "search_seeds": [
+        632351550,
+        1282322418,
+        1437215635,
+        728667940
+      ]
+    },
+    {
+      "id": "white-04",
+      "noise_model": "white",
+      "block": 4,
+      "noise_seed": 1413341051,
+      "background_seed": 1179838797,
+      "search_seeds": [
+        800408925,
+        1545565194,
+        2130369901,
+        1141388061
+      ]
+    },
+    {
+      "id": "white-05",
+      "noise_model": "white",
+      "block": 5,
+      "noise_seed": 350917747,
+      "background_seed": 1450878205,
+      "search_seeds": [
+        910957476,
+        2139258943,
+        1396179112,
+        79129814
+      ]
+    },
+    {
+      "id": "white-06",
+      "noise_model": "white",
+      "block": 6,
+      "noise_seed": 1089053784,
+      "background_seed": 999062960,
+      "search_seeds": [
+        286134510,
+        780266315,
+        1373427845,
+        812529184
+      ]
+    }
+  ],
+  "diagnostic_cases": [
+    {
+      "id": "diagnostic-ar1-01",
+      "noise_model": "ar1",
+      "block": 1,
+      "noise_seed": 414982370,
+      "background_seed": 1236072442,
+      "search_seeds": []
+    },
+    {
+      "id": "diagnostic-ar1-02",
+      "noise_model": "ar1",
+      "block": 2,
+      "noise_seed": 391189588,
+      "background_seed": 1894583670,
+      "search_seeds": []
+    },
+    {
+      "id": "diagnostic-ar1-03",
+      "noise_model": "ar1",
+      "block": 3,
+      "noise_seed": 1504455878,
+      "background_seed": 426218877,
+      "search_seeds": []
+    },
+    {
+      "id": "diagnostic-ar1-04",
+      "noise_model": "ar1",
+      "block": 4,
+      "noise_seed": 232732700,
+      "background_seed": 901491311,
+      "search_seeds": []
+    },
+    {
+      "id": "diagnostic-ar1-05",
+      "noise_model": "ar1",
+      "block": 5,
+      "noise_seed": 500901638,
+      "background_seed": 596274961,
+      "search_seeds": []
+    },
+    {
+      "id": "diagnostic-ar1-06",
+      "noise_model": "ar1",
+      "block": 6,
+      "noise_seed": 360493226,
+      "background_seed": 2106275781,
+      "search_seeds": []
+    },
+    {
+      "id": "diagnostic-ar1-07",
+      "noise_model": "ar1",
+      "block": 7,
+      "noise_seed": 714468373,
+      "background_seed": 11644675,
+      "search_seeds": []
+    },
+    {
+      "id": "diagnostic-ar1-08",
+      "noise_model": "ar1",
+      "block": 8,
+      "noise_seed": 1955258800,
+      "background_seed": 1170880970,
+      "search_seeds": []
+    },
+    {
+      "id": "diagnostic-white-01",
+      "noise_model": "white",
+      "block": 1,
+      "noise_seed": 1216479853,
+      "background_seed": 177022733,
+      "search_seeds": []
+    },
+    {
+      "id": "diagnostic-white-02",
+      "noise_model": "white",
+      "block": 2,
+      "noise_seed": 456454085,
+      "background_seed": 1938837415,
+      "search_seeds": []
+    },
+    {
+      "id": "diagnostic-white-03",
+      "noise_model": "white",
+      "block": 3,
+      "noise_seed": 1704395421,
+      "background_seed": 1406868040,
+      "search_seeds": []
+    },
+    {
+      "id": "diagnostic-white-04",
+      "noise_model": "white",
+      "block": 4,
+      "noise_seed": 1639229735,
+      "background_seed": 1409519322,
+      "search_seeds": []
+    }
+  ],
+  "new_initial_rng_states_checked": 159,
+  "new_initial_rng_state_collisions": 0,
+  "no_observations_backgrounds_or_grid_points_generated": true
+}

@@ -72,9 +72,9 @@ Die Anbindung erhält keine zusätzlichen Suchläufe oder Budgets.
 Jeder Job checkt ausdrücklich `${{ github.sha }}` aus und protokolliert Commit
 und Dateibaum. Bei PR-Ereignissen ist dies der Mergecommit. Volle Historie und
 `persist-credentials: false` bleiben erhalten. Vor pytest und im nativen Job
-werden zusätzlich die dauerhaften PR-Head-Refs 55/61/63/65/67 abgerufen.
+werden zusätzlich die dauerhaften PR-Head-Refs 55/61/63/65/67/77/102 abgerufen.
 Der lesende Actions-Token bleibt auf die Prozessumgebung dieses Fetchs begrenzt.
-[Historische Bindungen](../scripts/ci_historical_refs.json) prüfen acht Commits,
+[Historische Bindungen](../scripts/ci_historical_refs.json) prüfen zehn Commits,
 ihre Abstammung und feste Dateihashes; HEAD muss unverändert bleiben.
 
 ## Abschluss, Cancellation und manuelle Läufe
@@ -170,7 +170,7 @@ Dies ist eine begrenzte Prüfung, kein vollständiger Markdown-Parser.
 sowie `docs/iteration_time_budget_plan.md`, `docs/restart_confirmation_plan.md`
 und `docs/time_coordinate_plan.md`, `docs/restart_budget_plan.md`,
 `docs/restart_budget_confirmation_plan.md`, `docs/noise_pilot_plan.md`
-und `docs/noise_background_plan.md`
+und `docs/noise_background_plan.md`, `docs/noise_followup_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere
@@ -264,6 +264,25 @@ Hintergrundplan gehört zum vollen CI-Scope. Die native Jobfrist bleibt
 zunächst bei 120 Minuten; ihre Reserve ist anhand des neuen technischen
 Laufs vor Ready zu prüfen. Implementierung und Workflowanbindung allein
 belegen noch keine erfolgreiche native Prüfung.
+
+Die Dauer-/Messraster-Folgestudie ergänzt `scripts/check_noise_followup.py`:
+sechs frische technische N128-Worker mit jeweils zehn äußeren Iterationen
+bei lokal 300/5. Vier uniforme Bedingungen O/K/E64s/E4096s und zwei echte
+Jitterbedingungen O/K teilen einen eigenen technischen AR(1)-Fall;
+die Sekundenangaben bezeichnen kontinuierliche Hintergrunddauer, nicht
+die Zahl unabhängiger Fenster. Der Vorlauf prüft den gebundenen neuen
+Schätzer- und Rasterweg mit eigenen technischen Seeds. Danach folgen ein
+separater `--verify`-Aufruf und `run_noise_followup.py technical-plots` mit
+allen sechs Originalformeln und Punktdaten. Fehler in jedem dieser drei
+Schritte sperren den Job und geben vorhandene Workerlogs aus. Die Ausgaben
+`results/ci-noise-followup-001` und `results/ci-noise-followup-plots-001`
+sind getrennt; alle bisherigen Prüfblöcke bleiben erhalten. Keine der
+624 wissenschaftlichen Suchen und keine wissenschaftliche Armwahl laufen
+in Actions. Der eingefrorene Plan gehört zum vollen CI-Scope; Plan und
+Seedtabelle sind zusätzlich an den Vorabcommit aus PR #102 gebunden.
+Die native Jobfrist bleibt bei 120 Minuten. Ihre Eignung ist vor Ready
+anhand des vollständigen nativen Laufs zu prüfen; die Workflowanbindung
+allein belegt keinen erfolgreichen technischen Vorlauf.
 
 Die Frist ausschließlich des seriellen `native`-Jobs wurde mit PR85 auf 90 Minuten
 gesetzt. Der damals zuletzt vollständig geprüfte native PR83-Lauf

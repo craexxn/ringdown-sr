@@ -5,6 +5,19 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
+Aktuelle Umsetzung vom 19.11.2026: Die beschlossene
+[Folgestudie zu Hintergrunddauer und Messraster](docs/noise_followup_plan.md)
+ist in [PR #102](https://github.com/craexxn/ringdown-sr/pull/102)
+implementiert. Vor den geplanten **624 wissenschaftlichen Workern** bestehen
+bereits ein eigener Vorlauf mit sechs technischen Workern und die getrennte
+Kovarianz-/PSD-/ACF-Diagnose mit 48 Schätzungen; beide lesend geprüft.
+Die [Entwicklungsabnahme](docs/noise_followup_development_001.md) trennt
+diese Befunde von der noch nicht ausgeführten wissenschaftlichen Suchserie.
+Vollständige Ready-CI und aktueller Freigabestand stehen im PR;
+Prüfbelege und offene Schritte führt der
+[Fortsetzungsstand](docs/representation_implementation_status.md);
+[Bedienung, Tests und Fortschrittsanzeige](docs/noise_followup.md) sind separat dokumentiert.
+
 Fortsetzungsstand: 19.11.2026; wissenschaftlicher Ausführungs- und Prüfstand
 des Rauschpiloten `eb663a0` nach
 [PR #92](https://github.com/craexxn/ringdown-sr/pull/92).
@@ -225,9 +238,14 @@ synthetische Studie mit tatsächlich ungleichmäßigen Messzeitpunkten.
 Daneben bleibt die Hintergrunddauer offen: Die bisherigen 64/256/1024
 unabhängigen Fenster enthalten nur 2/8/32 s Samplevolumen und prüfen keinen
 Literaturvergleich von etwa 64 gegen 4096 s kontinuierlicher Rauschaufnahme.
-Vor der Festlegung des nächsten Langlaufs wird ein günstiger, getrennt
-geplanter Dauer-/Schätzervergleich empfohlen. Keine dieser Optionen ist
-bereits ein beschlossener oder gestarteter neuer Suchlauf.
+Auf dieser Grundlage ist die neue [Folgestudie](docs/noise_followup_plan.md)
+vor Implementierung beschlossen: 26 frische gepaarte Fälle, zunächst
+64 gegen 4096 s Hintergrund bei uniformer Akquisition, anschließend
+ungleichmäßige Akquisition mit denselben 52 Uniform-O/K-Paketen als gebundenen
+Kontrollen. Das Profil R mit 4 × 1.000 bei 300/5 und die ursprüngliche
+`accuracy`-Auswahl bleiben erhalten. Die Implementierung in Draft-PR #102
+ist noch kein Ausführungsnachweis; historische Ergebnisse und Originalformeln
+bleiben unverändert.
 Das Zusatzraster
 bestimmt weder Suchauswahl noch vorzeitiges Ende. Wissenschaftliche Suchläufe
 bleiben ein separater Ausführungsschritt. Umsetzung und Nachweise stehen im
