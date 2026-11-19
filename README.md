@@ -204,6 +204,19 @@ Auswahl folgt korrekt dem Trainingsverlust; die diagnostisch besten gemeinsamen
 Alternativen über alle vier Worker haben 3,55–10,47 % höheren Trainingsverlust.
 Die Originalergebnisse bleiben erhalten. Vor einer langen Wiederholungsserie
 ist damit die methodische Auswahlfrage vorrangig zu klären.
+Der am 19.11.2026 vor Auswertung festgelegte
+[lesende Methodenvergleich](docs/noise_background_selector_pilot_001.md)
+ist einschließlich unabhängiger Gegenrechnung abgeschlossen: ursprüngliche
+Trainingsverlustwahl gegen eine gepoolte PySR-`best`-Regel auf allen 130 Paketen.
+Alle Entscheidungen wurden vor Laden der sauberen Wahrheit gespeichert.
+Der mittlere unregelmäßige RMSE steigt unter `best` in allen zehn
+Modell-/Armgruppen; bei AR(1)/E1024 von **4,071 % auf 8,743 % von A**.
+Einzelne große Spitzen verschwinden, andere einfache hochfrequente Formeln
+erzeugen neue große Zwischenpunktfehler. Alle 260 Ausgaben und 530.660 Punkte
+sind geprüft; keine neue Suche. Die Daten bleiben Entwicklungsdaten.
+Dieser Befund begründet keine Übernahme von `best` und keine anschließende
+504-Worker-Serie mit dieser Regel; eine andere Intervention ist vorher
+fachlich zu begründen.
 Das Zusatzraster
 bestimmt weder Suchauswahl noch vorzeitiges Ende. Wissenschaftliche Suchläufe
 bleiben ein separater Ausführungsschritt. Umsetzung und Nachweise stehen im
