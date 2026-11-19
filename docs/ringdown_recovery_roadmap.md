@@ -940,6 +940,22 @@ mit 32 AR(1)- und zehn weißen Blöcken, O/K/E1024 und je vier Suchworkern
 begründen. Die 504 Worker sind eine Ressourcenplanung für das verfügbare
 Zeitfenster, keine Powerberechnung oder bereits ausgeführte Studie.
 
+**Ergebnisabgleich desselben Methodenpiloten vom 19.11.2026:** Die vollständige
+Auswertung und unabhängige Gegenrechnung der 260 Ausgaben ergeben einen
+negativen Entwicklungsbefund für diese eine festgelegte Heuristik. In allen
+zehn Modell-/Armgruppen steigt der mittlere unregelmäßige RMSE; beim vorher
+benannten Fokus AR(1)/E1024 von 0,04071315 auf 0,08743199. Die Regel korrigiert
+einige bekannte Spitzen, erzeugt aber neue große Fehler auch mit einfachen
+hochfrequenten Originalformeln. Der detaillierte
+[Befund](noise_background_selector_pilot_001.md) erhält alle Verbesserungen,
+Verschlechterungen und numerischen Grenzen. Die Bedingung eines tragfähigen
+Pilotansatzes für die vorgeschlagene 504-Worker-Serie ist damit fachlich nicht
+gegeben; das ist keine nachträglich eingeführte statistische Bestehensgrenze.
+Keine weitere Regelanpassung oder lange Suche ausführen. Vor einem anderen
+Versuch klären, welche zusätzliche Information oder wissenschaftlich begründete
+Modellbeschränkung das erkennbare Problem adressieren soll. Die bestehenden
+Originalstudien und der negative Methodenpilot bleiben unverändert erhalten.
+
 Zunächst wenige Signale und Rauschbedingungen wählen. Rauschrealisierungen,
 Hintergrunddaten und Suchseeds als unterschiedliche Zufallsquellen behandeln.
 Mehrere Suchseeds auf einer einzigen Rauschrealisierung belegen keine allgemeine

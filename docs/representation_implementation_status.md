@@ -1,24 +1,43 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: lesender Vergleich zweier Auswahlregeln in Arbeit
+## Aktuell: negativer Entwicklungsbefund der gepoolten best-Auswahl
 
 Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
-Der [Methodenvergleich](noise_background_selector_pilot_001.md) ist beauftragt:
-alle 130 Pakete und 520 gespeicherten Workerfronten der Hintergrundserie 002,
-ursprüngliche Auswahl nach Trainingsverlust gegen eine vor Auswertung
-festgelegte gepoolte PySR-`best`-Regel. Auswahl verwendet nur Trainingsverlust
-und Komplexität; Wahrheit und Zusatzraster dienen erst der Bewertung.
-Umfang und Randfälle sind in einem eigenen unveränderlichen `scope.json`
-gebunden. Die bisherigen 26 Fälle bleiben Entwicklungsdaten.
+Der [Methodenvergleich](noise_background_selector_pilot_001.md) ist ausgeführt
+und unabhängig nachgerechnet: alle 6.985 gespeicherten Kandidaten aus
+130 Paketen und 520 Workern, ursprüngliche Trainingsverlustwahl gegen die
+vor Auswertung festgelegte gepoolte PySR-`best`-Regel. Alle 130 Auswahlpaare
+wurden gespeichert, bevor die saubere Wahrheit geladen wurde. Die 260
+gewählten Ausgaben und 530.660 Punkte sind vollständig verfügbar. Auswahl,
+Quellen, Scores und Originalformeln stimmen unabhängig; 497.380 zusätzliche
+Baumvorhersagen sind bitgleich, 33.280 native Trainingswerte bleiben erhalten.
+Alle 18.166 Originaldateien bleiben unverändert. Der Auditaufruf benötigt
+17,899 s, die unabhängige Gegenprüfung 31,870 s; keine Fits oder Suchen.
+
+In allen zehn Modell-/Armgruppen ist der mittlere unregelmäßige RMSE unter
+`best` höher. Beim vorher benannten Fokus AR(1)/E1024 steigt er von
+**0,04071315 auf 0,08743199**, Differenz **+0,04671884**. Zwölf der zwanzig
+Einzelpaare werden zwar besser, acht schlechter; die neuen großen Fehler
+überwiegen im Mittel. Kleine Baumkomplexität begrenzt keine Oszillationsfrequenz.
+Der Bericht enthält alle Gruppen, die sechs bekannten auffälligen Ausgaben
+und neue Gegenbeispiele einschließlich vollständiger Originalformeln.
 
 Arbeitsbranch `codex/noise-background-selector-pilot`, Basis
 `c7964457aa06296cd6e48ab7d1df72f30ab81888` aus
 [PR #99](https://github.com/craexxn/ringdown-sr/pull/99).
-Lesende Auditwerkzeuge und ihre Ausgaben werden separat archiviert;
-im Repository werden Befund und Fortsetzungsstand dokumentiert.
-Ausführung, unabhängige Nachrechnung, vollständige grafische Ausgabe und
-Archivbindung des Methodenvergleichs stehen noch aus. Die bedingte Vorbereitung
-einer frischen Vergleichsserie folgt aus dem vollständigen Befund.
+Der vor Auswertung veröffentlichte Plancommit ist
+`2e538ec92142be4fd2f1d2fdf4883b7af7ce200f`; Scope, Auditwerkzeuge,
+Prüfbelege und grafische Ausgaben sind separat quellengebunden.
+Die bisherigen 26 Fälle bleiben retrospektive Entwicklungsdaten, keine
+unabhängige Bestätigung der Auswahlregel. Endliche Rasterwerte ersetzen
+keinen kontinuierlichen Familien- oder Domainnachweis.
+
+Die bedingt vorgeschlagene frische 504-Worker-Serie mit dieser Heuristik
+wird nach dem negativen Pilotbefund nicht vorbereitet. Keine nachträgliche
+Anpassung des Faktors 1,5 oder der Komplexitätsgrenze und keine automatische
+Ersatzmethode. Nächster fachlicher Schritt ist die Begründung einer eigenständigen
+Intervention gegen die verbliebenen Auswahl-/Identifizierbarkeitsprobleme.
+Dauerhafte Archivablage und unabhängige Zweitkopie bleiben offen.
 
 ## Historisch: gespeicherte Kandidaten der auffälligen Ausgaben geprüft
 

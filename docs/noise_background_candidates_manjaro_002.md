@@ -419,3 +419,12 @@ oder wissenschaftlichen Laufaufträge. Eine Anschlussstudie benötigt ihr
 eigenes vorher festgelegtes Protokoll. Ein unabhängiges Backup des
 Originalarchivs und der getrennten Diagnoseartefakte bleibt gesondert
 gemäß [Archivierungsrichtlinie](results_archiving.md) nachzuweisen.
+
+**Anschluss vom 19.11.2026:** Der danach separat beauftragte und vor Anwendung
+festgelegte [lesende Methodenvergleich](noise_background_selector_pilot_001.md)
+prüft eine gepoolte PySR-`best`-Regel auf allen 130 Paketen. Er ist einschließlich
+unabhängiger Gegenrechnung abgeschlossen und ergibt einen negativen
+Entwicklungsbefund: der mittlere unregelmäßige RMSE steigt in allen zehn
+Modell-/Armgruppen. Die hier beschriebenen Diagnosezeugen und Originalauswahlen
+bleiben unverändert; der Anschlussbericht dokumentiert die zusätzliche
+Auswertung, ihre vollständigen Ausgaben und Grenzen getrennt.

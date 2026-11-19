@@ -724,6 +724,39 @@ hashgeprüfte Zweitkopie unbestätigt. Transportteile, lokale Arbeitskopien und
 die Galerie belegen keine unabhängige Sicherung. Der Abbruch von 001 und seine
 Teilkosten werden nicht in die abgeschlossene wissenschaftliche Serie 002 gepoolt.
 
+#### Lesender Methodenvergleich auf Hintergrundserie 002
+
+Der [Selektorpilot vom 19.11.2026](noise_background_selector_pilot_001.md)
+ist eine weitere getrennte Entwicklungsauswertung desselben unveränderten
+Originalarchivs: 6.985 Kandidaten aus 520 Workern, 130 gemeinsame Pools,
+260 gewählte Ausgaben und 530.660 Punkte. Vorabplancommit
+`2e538ec92142be4fd2f1d2fdf4883b7af7ce200f`, ursprüngliche wissenschaftliche
+Ausführung weiterhin `bd42634b888c2dbaa5a92726b9a1f9851c766a48`;
+Auswertungsprogramme sind im Bericht und Nachweispaket durch SHA-256 gebunden.
+Die gepoolte PySR-`best`-Regel erhöht in allen zehn Modell-/Armgruppen den
+mittleren unregelmäßigen RMSE. Keine neue Suchserie oder Methodenübernahme;
+unabhängige numerische und visuelle Gegenprüfungen bestehen, alle 18.166
+Originaldateien bleiben erhalten.
+
+- `noise-background-manjaro-002-selector-pilot-audit.zip`:
+  6.362.393 Bytes, SHA-256
+  `91c729ff71ea6de13717d817dfd487660949f75c09d2e132f891de09bf6a6605`.
+  540 Nutzdateien plus Manifest; Scope, Skripte, alle Fronten und gewählten
+  Originalkandidaten, Statistiken, Originalmanifest und unabhängige Nachweise.
+  Sämtliche Nutzdateihashes und ZIP-CRC geprüft.
+- `noise-background-manjaro-002-selector-pilot-gallery.zip`:
+  82.658.247 Bytes, SHA-256
+  `f4c76a959fc9ead7447cfc31cd4db54a7992f6f1a5868f097de16a56c0d12c5f`.
+  961 Dateien mit 130 Paarplots, zehn Gruppenübersichten und zehn Kontaktbögen,
+  260 vollständigen Originalformeln und sämtlichen Punktdaten. ZIP-CRC,
+  lokale Links, Bilder und Quellenkopien geprüft. Vier Transportteile von
+  höchstens 24 MiB wurden mit dem bereitgestellten Helfer zum exakten
+  Originalhash zusammengesetzt.
+
+Dauerhafte Archivablage und unabhängige Zweitkopie dieser abgeleiteten Pakete
+sind weiterhin unbestätigt. Der negative Befund bleibt Entwicklungsevidenz;
+die neue Auswertung ersetzt keine ursprüngliche wissenschaftliche Auswahl.
+
 ### Priorisierte fehlende Belege
 
 Ergänzung vom 12.11.2026: Das Bestätigungsarchiv 001 mit allen drei
