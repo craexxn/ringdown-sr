@@ -29,7 +29,7 @@ Ausführungscommit `8a1a4a1437f4b01daf1f070b56add248074c5907`.
 Originalarchive für Dauer/Messraster und eine Shared-Prüfkopie sind empfangen;
 39 lange Rauschdateien sind exakt aus ihren gebundenen Zuständen rekonstruiert.
 Berichtsstatistik, Workerzensus, Eingaben, Schätzer und Originalplots sind geprüft;
-die offiziellen Serienreplays laufen noch.
+beide offiziellen Serienreplays sind bestanden; die frischen Exporte sind bytegleich.
 Beide primären Intervalle umfassen null; der mittlere Rastereffekt wird von
 zwei Uniform-K-Fehlern getragen. Die 48 Schätzerdateien wiederholen bytegleich
 dieselben Entwicklungsfälle. [Original- und Übersichtseintrag](#wissenschaftliche-folgestudie-manjaro-001)

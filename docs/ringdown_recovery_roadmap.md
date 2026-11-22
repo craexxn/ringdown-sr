@@ -11,7 +11,8 @@ Die [Auswertung mit Originalnachprüfung](noise_followup_results_manjaro_001.md)
 prüft 156 Paketausgaben, alle Primärkontraste, Einzelworker und Originalplots;
 39 ausgelassene lange Rauschdateien sind bitgenau rekonstruiert.
 624 wissenschaftliche und sechs technische Worker sind erfolgreich; die
-offiziellen Serienreplays laufen noch. Beide Serienaufrufe benötigen zusammen
+offiziellen Serienreplays sind bestanden; die frischen Exporte sind bytegleich.
+Beide Serienaufrufe benötigen zusammen
 53,53 Stunden. Kein belegter primärer SR-Gewinn durch 4096 gegenüber 64 s;
 der mittlere Jitter-K-Vorteil wird stark von zwei Uniform-K-Fehlern geprägt.
 Beide marginalen Primärintervalle umfassen null. Die zwölf Schätzerfälle

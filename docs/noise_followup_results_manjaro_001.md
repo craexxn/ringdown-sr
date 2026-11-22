@@ -68,8 +68,15 @@ bevor eine weitere große Suchserie begonnen wird.
   Der technische Vorlauf, die vollständige Regeneration der wissenschaftlichen
   Eingaben und alle 48 Schätzungen sind inzwischen auch mit den offiziellen
   lesenden Verifiern nachgerechnet. Der neue Schätzerexport ist in allen
-  56 Dateien bytegleich zum Original. Die Serienverifikation wird separat
-  in `verify-duration-receipt.json` und `verify-sampling-receipt.json` belegt.
+  56 Dateien bytegleich zum Original. **Beide vollständigen offiziellen
+  Serienverifikationen sind bestanden**: A in 522,115 s, B einschließlich
+  seiner A-Kontrollkette in 765,253 s. Beide frischen Exporte sind jeweils in
+  drei Dateien bytegleich zur Originalcompletion und ursprünglichen
+  Manjaro-Verifikation. Die beiden Aufrufe liefen teilweise parallel; ihre
+  Zeiten werden nicht zu einer vermeintlichen Gesamtdauer addiert.
+  `verify-duration-receipt.json`, `verify-sampling-receipt.json` und
+  `verification-summary.json` binden Ausführung und abschließende
+  Unverändertheitsprüfung. Kein neuer Fit und keine symbolische Suche.
 - A: 104 neue Viererpakete/416 Suchaufrufe. B: 52 neue Viererpakete/208
   Suchaufrufe und 52 exakt identische, hashgebundene O/K-Kontrollpakete aus A.
   Insgesamt 156 neue Pakete; die 208 Assessmentzeilen beider Berichte sind

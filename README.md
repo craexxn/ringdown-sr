@@ -20,7 +20,8 @@ Uniform-K-Fehlern getragen. Beide primären Unsicherheitsintervalle umfassen nul
 Die Kovarianz wird in allen 20 tatsächlichen AR(1)-Fällen genauer, die Formel
 nur in acht. In sechs gezielt untersuchten Problemfällen liegen bereits
 bessere gespeicherte Alternativen vor; die ursprüngliche Auswahl bleibt korrekt
-nach Trainingsverlust. Die offiziellen Serienreplays laufen noch.
+nach Trainingsverlust. Beide offiziellen Serienreplays sind bestanden;
+die frischen Exporte sind bytegleich.
 Eine kleine Skalierungskontrolle und eine einzelne begründete Methodenänderung
 sind vor weiteren Großserien empfohlen; kein neuer Suchlauf. Die ursprünglichen
 komprimierten Shared-Bytes und die unabhängige Archiv-Zweitkopie bleiben getrennt
@@ -254,10 +255,14 @@ vor Implementierung beschlossen: 26 frische gepaarte Fälle, zunächst
 64 gegen 4096 s Hintergrund bei uniformer Akquisition, anschließend
 ungleichmäßige Akquisition mit denselben 52 Uniform-O/K-Paketen als gebundenen
 Kontrollen. Das Profil R mit 4 × 1.000 bei 300/5 und die ursprüngliche
-`accuracy`-Auswahl bleiben erhalten. Der am 22.11.2026 gelieferte
-[Ergebnisüberblick](docs/noise_followup_results_manjaro_001.md) belegt die
-berichteten Paketausgaben und ermöglicht deren lesende Baumrekonstruktion;
-die vollständige Prüfung der Originalarchive steht noch aus.
+`accuracy`-Auswahl bleiben erhalten. Die
+[Auswertung vom 22.11.2026](docs/noise_followup_results_manjaro_001.md)
+belegt 624 erfolgreiche Einzelworker und 156 Paketausgaben. Die nachgereichten
+Dauer-/Rasterarchive sind hashgeprüft; die Shared-Nutzdaten einschließlich
+39 bitgenau rekonstruierter Rauschdateien sowie die Originalplots sind geprüft.
+Beide offiziellen Serienreplays sind bestanden; die frischen Exporte sind
+bytegleich. Die nicht übertragenen ursprünglichen
+komprimierten Shared-Bytes bleiben von der Inhaltsprüfung getrennt.
 Historische Ergebnisse und Originalformeln bleiben unverändert.
 Das Zusatzraster
 bestimmt weder Suchauswahl noch vorzeitiges Ende. Wissenschaftliche Suchläufe

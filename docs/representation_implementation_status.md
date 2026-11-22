@@ -26,7 +26,8 @@ transport- und inventargeprüft. Alle 39 ausgelassenen NPY sind bitgenau mit
 Originalhashes und Generatorrecords rekonstruiert; 22.152 Originalnutzdateien
 plus drei Archivbelege stimmen. Technischer Vorlauf, Eingaberegeneration,
 48 Schätzungen und drei Originalplotexporte bestehen die offiziellen Verifier.
-Die offiziellen Serienreplays laufen noch. Keine neuen Fits oder Suchen.
+Beide offiziellen Serienreplays sind bestanden; die frischen Exporte sind
+bytegleich. Keine neuen Fits oder Suchen.
 
 Primär AR(1): E4096s−E64s +0,22428 Prozentpunkte, marginales approximatives
 95%-t-Intervall [−0,04855; +0,49710]; Jitter-K−Uniform-K −2,93505 pp,
