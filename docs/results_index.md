@@ -838,6 +838,19 @@ unabhängige hashgeprüfte Zweitkopie bleiben unbestätigt.
 - Bericht: [Übersichtsauswertung, Literatur und nächste Schritte](noise_followup_results_manjaro_001.md).
   Vollständige Herkunfts-/Workerprüfung und originale Plotexporte fehlen;
   neue lesende Formelplots sind separat zugeordnet. Keine neue Suche.
+- Separate Auswertungsexporte vom 22.11.2026, Berichtsfassung
+  `1b55a7d1d6f36f3efafc802ae0325fecfcae3110`:
+  `noise-followup-manjaro-001-analysis.zip`, **12.992.022 Bytes**, SHA-256
+  `84d38ddabcef90d1c3a56a22cde8d58f4b2e74f01a12b0b6a33accfde3d1a7da`;
+  Bericht, vier Übersichten, Einzelwerttabellen, Auditbelege/-skripte und
+  unverändertes geliefertes Übersichtspaket. Keine vollständigen Roharchive.
+  `noise-followup-manjaro-001-gallery.zip`, **53.067.688 Bytes**, SHA-256
+  `df545c14b79eff959cc382c57fab6e93167f33a710ee8a239cae7ecda33c7d8c`;
+  156 unveränderte Originalformeln/Bäume mit rekonstruierten PNG/SVG/CSV.
+  ZIP-CRC, sämtliche Nutzdateihashes und lokale Links geprüft; Galerie auch
+  in drei Teilen mit höchstens 24 MiB und geprüftem Zusammenfügehelfer.
+  Beide Pakete sind eigenständige, begrenzte lesende Auswertungen und ersetzen
+  weder die fehlenden Originalarchive noch deren vollständige Verifikation.
 - Ablage des Überblicks und seiner Auswertung: lokale Cloud-Arbeits-/Exportkopie.
   Dauerhafte gemeinsame Archivablage und unabhängige geprüfte Zweitkopie **offen**.
 
