@@ -280,8 +280,8 @@ Jittermessungen. Sie rechtfertigt keine Rückkehr zur unverändert negativen
    Evolution, lokale Konstantenoptimierung, Paretofront und endgültige Auswahl
    sind getrennte Bestandteile. Struktur-/Verschachtelungsbeschränkungen sind
    mögliche Interventionen; eine für unsere Daten passende Regel folgt daraus
-   noch nicht. Eine konkrete Ursache der Skalierungsabhängigkeit muss an
-   unseren gebundenen effektiven Optionen untersucht werden.
+   noch nicht. Eine mögliche Skalenabhängigkeit der Suchdynamik und ihre
+   Ursache müssen an unseren gebundenen effektiven Optionen untersucht werden.
 5. **Siegel, Isi und Farr (2025), Analyzing black-hole ringdowns II: data conditioning:**
    [Originalmanuskript](https://arxiv.org/html/2410.02704v2).
    Filterung, Downsampling und Signalfenster müssen konsistent auf Daten,
