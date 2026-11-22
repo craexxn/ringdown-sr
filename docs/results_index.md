@@ -1,6 +1,6 @@
 # Ergebnisindex und Archivierungsstand
 
-Stand: 19.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
+Stand: 22.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
 nachträglichen Bewertungen; [Ablagerichtlinie](results_archiving.md).
 Serien sind die Indexeinheit, ihre Zellen/Wiederholungen bleiben im Originalbericht.
 Die Aufstellung ist keine Behauptung, dass alle jemals lokal erzeugten Ergebnisse
@@ -22,7 +22,18 @@ bleiben beide gesicherten Ablageorte und die Prüfung ihrer Kopien nachzutragen.
 Technische Fixtures und ein implementierter Laufweg sind keine wissenschaftliche
 Ausführung und kein Sicherungsnachweis.
 
-Aktueller Planungs-/Implementierungsstand vom 19.11.2026: Die
+Aktueller Ergebnisstand vom 22.11.2026: Die
+[Übersichtsauswertung der Folgestudie](noise_followup_results_manjaro_001.md)
+bindet 624 berichtete Suchaufrufe und 156 erfolgreiche Paketausgaben an
+Ausführungscommit `8a1a4a1437f4b01daf1f070b56add248074c5907`.
+Berichtsstatistik, übermittelte Verifikation und ausgewählte Baumrekonstruktion
+sind geprüft; vollständige Originalarchive und alle Workerbelege fehlen.
+Beide primären Intervalle umfassen null; der mittlere Rastereffekt wird von
+zwei Uniform-K-Fehlern getragen. Die 48 Schätzerdateien wiederholen bytegleich
+dieselben Entwicklungsfälle. [Original- und Übersichtseintrag](#wissenschaftliche-folgestudie-manjaro-001)
+trennen empfangene Daten, nur berichtete Archivhashes und offene Sicherung.
+
+Historischer Planungs-/Implementierungsstand vom 19.11.2026: Die
 [Folgestudie zu Hintergrunddauer und Messraster](noise_followup_plan.md)
 ist in [PR #102](https://github.com/craexxn/ringdown-sr/pull/102)
 implementiert, Planbindung `a37bf90fe439619fd263d6c06d868c6ff4ea00e8`.
@@ -799,6 +810,37 @@ Das kompakte Paket ist getrennt vom Originalarchiv bereitgestellt und bleibt ein
 retrospektive Mechanismusdiagnose. Gemeinsame dauerhafte Archivablage und
 unabhängige hashgeprüfte Zweitkopie bleiben unbestätigt.
 
+### Wissenschaftliche Folgestudie Manjaro 001
+
+- Lauf-ID: `noise-followup-manjaro-001`, Dauer-/Messrasterstudie auf 26
+  gemeinsamen Fällen. A berichtet 416, B 208 neue Suchaufrufe; 156 erfolgreiche
+  Paketausgaben, 52 exakt gebundene Kontrollreferenzen ohne neue Suchkosten.
+- Ausführung laut gelieferten Quellenbindungen:
+  `8a1a4a1437f4b01daf1f070b56add248074c5907`. Abschluss laut Statusdatei
+  am 22.11.2026 um 01:07:08 CET; einzelner Workerstatus nicht vollständig
+  übermittelt. Gemessene Serienaufrufe zusammen 192.710,002 s.
+- Empfangen und am SHA-256 geprüft:
+  `noise-followup-manjaro-001-overview.tar.gz`, **11.177.133 Bytes**,
+  `911bf9249783848b9ff9c0543c7419fd52e089f8c48190849a5f9eaef086a3f6`.
+  Dies ist ein ausgewählter Berichtsexport, kein vollständiges Originalarchiv.
+- Eigenständig geprüft: Publikationsmanifeste, Quellenhashes,
+  bytegleiche Serien-/Verifikationsexporte, unabhängige Kontraststatistik,
+  48 Schätzermatrizen und Rekonstruktion aller 156 gewählten Originalbäume
+  auf fingerprintgleichen Rastern. Die Schätzerfälle sind identisch zu
+  Cloud-Diagnose 002; keine neue unabhängige Entwicklungsstichprobe.
+- Nur durch Prüfsummentexte berichtet, **Archivbytes noch nicht empfangen**:
+  `noise-followup-manjaro-001-shared.tar.gz`, SHA-256
+  `897fb84605042cf070893028d9e7368ade47ae50c7f7f5ba6879eceaf9cf01d5`;
+  `noise-followup-manjaro-001-duration.tar.gz`, SHA-256
+  `bc32f591f5d92418e53a68e6d6f120547f0661e3ab1ec0fb0014cbedcb09ed9a`;
+  `noise-followup-manjaro-001-sampling.tar.gz`, SHA-256
+  `d1536eb4d1cce4ea3c812d777c45b796c2e4d7c9c2d41ca83423d02cc443dca7`.
+- Bericht: [Übersichtsauswertung, Literatur und nächste Schritte](noise_followup_results_manjaro_001.md).
+  Vollständige Herkunfts-/Workerprüfung und originale Plotexporte fehlen;
+  neue lesende Formelplots sind separat zugeordnet. Keine neue Suche.
+- Ablage des Überblicks und seiner Auswertung: lokale Cloud-Arbeits-/Exportkopie.
+  Dauerhafte gemeinsame Archivablage und unabhängige geprüfte Zweitkopie **offen**.
+
 ### Entwicklungsabnahme der Dauer-/Rasterstudie vom 19.11.2026
 
 - Lauf-IDs: `noise-followup-estimators-cloud-001` und
@@ -846,6 +888,7 @@ R1–R3-Prüfnachweise werden übernommen, ihre Audits nicht pauschal wiederholt
 
 | Priorität / Bezug | Benötigter Beleg | Zweck und betroffene Aussage |
 | --- | --- | --- |
+| 1 — `noise-followup-manjaro-001` | Drei unveränderte Originalarchive `shared`, `duration`, `sampling`; Größen für geeigneten Übertragungsweg. Übersicht und drei Prüfsummentexte liegen bereits vor. | Alle wissenschaftlichen Rohinputs, Workerstatus/-herkunft, Kandidatenfronten, ursprüngliche Auswahl und Originalplots unabhängig nachprüfen; fehlende technische/Schätzer-Gesamtkosten ergänzen. Keine Wiederholung der Suchen. |
 | 1 — `global-restarts-technical-001` auf Manjaro | Abschlussausgabe und vorhandener Prüfbericht einschließlich lesender Verifikation mit Herkunft; nur bei Unklarheit der ganze unveränderte technische Ordner. | Technischen lokalen Erfolg belegen; Startmeldung allein genügt nicht. Keine wissenschaftliche Ergebnisbehauptung und keine neue CI-Archivpflicht. |
 | 1 — `iteration-time-prefix-001` und `iteration-time-technical-001` auf Manjaro | Vorhandene Abschlussausgaben bzw. Prüfberichte der technischen Vorläufe. | Ausführung der vorgesehenen Präfix-/Timerkontrollen dokumentieren; das bestandene wissenschaftliche Archiv beweist diese separaten Vorläufe nicht. Kein automatischer Wiederholungsauftrag. |
 | 1 — Archivablage und Zweitkopien | Verständliche Bezeichnungen beider Speicherziele, Liste tatsächlich vorhandener Dateien und Ergebnisse der SHA-256-Prüfung beider Kopien mit Prüfdatum. Bei Backup lesenden Wiederherstellungscheck angeben. | Dauerhafte Sicherung; Metadaten genügen, keine erneute Übertragung bereits vorhandener Archive erforderlich. |

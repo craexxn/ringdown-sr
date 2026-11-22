@@ -6,7 +6,22 @@ Ready-Wechsel und führt native Kontrollen seriell aus. Die wissenschaftlichen
 Phasen und Kriterien bleiben erhalten; tatsächlicher Prüf- und Übernahmestand
 im [Fortsetzungsstand](representation_implementation_status.md).
 
-Aktueller Methoden- und Umsetzungsabgleich vom 19.11.2026 zu Phase 7:
+Aktueller Ergebnisabgleich vom 22.11.2026 zu Phase 7:
+Die [Übersichtsauswertung der Folgestudie](noise_followup_results_manjaro_001.md)
+prüft die berichteten 156 Paketausgaben, alle Primärkontraste und die ausgewählten
+Originalbäume; vollständige Roharchive und Einzelworker fehlen noch.
+624 neue Suchaufrufe sind berichtet, beide Serienaufrufe benötigen zusammen
+53,53 Stunden. Kein belegter primärer SR-Gewinn durch 4096 gegenüber 64 s;
+der mittlere Jitter-K-Vorteil wird stark von zwei Uniform-K-Fehlern geprägt.
+Beide marginalen Primärintervalle umfassen null. Die zwölf Schätzerfälle
+sind identisch zur bisherigen Entwicklungsdiagnose, keine neue Bestätigung.
+Priorisiert vorgeschlagen sind vollständige Originalprüfung und gezielte
+Fehlerdiagnose, danach eine kleine White-Skalierungskontrolle und höchstens
+eine darauf begründete Intervention. Neue Signalbedingungen und Präzisionsziele
+gehören in eine spätere getrennte Bestätigung. Keine neue Suchserie oder
+Protokolländerung durch diese Einordnung; Grenzen und Literatur im Bericht.
+
+Historischer Methoden- und Umsetzungsabgleich vom 19.11.2026 zu Phase 7:
 Die [Folgestudie zu Hintergrunddauer und Messraster](noise_followup_plan.md)
 ist nach vorab gebundenem Plan in PR #102 implementiert. Sie verbindet
 eine getrennte Schätzerdiagnose ohne SR mit 416 + 208 geplanten neuen

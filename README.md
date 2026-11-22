@@ -5,18 +5,22 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Aktuelle Umsetzung vom 19.11.2026: Die beschlossene
+Aktuelle Auswertung vom 22.11.2026: Zur in
+[PR #102](https://github.com/craexxn/ringdown-sr/pull/102) übernommenen
 [Folgestudie zu Hintergrunddauer und Messraster](docs/noise_followup_plan.md)
-ist in [PR #102](https://github.com/craexxn/ringdown-sr/pull/102)
-implementiert. Vor den geplanten **624 wissenschaftlichen Workern** bestehen
-bereits ein eigener Vorlauf mit sechs technischen Workern und die getrennte
-Kovarianz-/PSD-/ACF-Diagnose mit 48 Schätzungen; beide lesend geprüft.
-Die [Entwicklungsabnahme](docs/noise_followup_development_001.md) trennt
-diese Befunde von der noch nicht ausgeführten wissenschaftlichen Suchserie.
-Vollständige Ready-CI und aktueller Freigabestand stehen im PR;
-Prüfbelege und offene Schritte führt der
-[Fortsetzungsstand](docs/representation_implementation_status.md);
-[Bedienung, Tests und Fortschrittsanzeige](docs/noise_followup.md) sind separat dokumentiert.
+liegt das hashgeprüfte Manjaro-Übersichtspaket vor: 624 berichtete Suchaufrufe,
+156 erfolgreiche Paketausgaben, 53,53 Stunden gemessene Serienzeit.
+Die [Auswertung](docs/noise_followup_results_manjaro_001.md) bestätigt die
+Berichtsstatistik und rekonstruiert alle 156 Originalausgaben auf gebundenen
+Rastern. Längerer Hintergrund zeigt keinen belegten primären SR-Vorteil;
+der mittlere Jitter-K-Vorteil wird fast vollständig von zwei großen
+Uniform-K-Fehlern getragen. Beide primären Unsicherheitsintervalle umfassen null.
+Originalarchive und alle Einzelworker sind noch vollständig nachzuprüfen.
+Die Literatur- und Anschlussvorschläge priorisieren Mechanismusdiagnose und
+eine kleine Skalierungskontrolle vor weiteren Großserien; kein neuer Suchlauf.
+[Prüfstand](docs/representation_implementation_status.md),
+[Archivindex](docs/results_index.md) und [Bedienung](docs/noise_followup.md)
+trennen Nachweise, offene Schritte und Ausführungsbefehle.
 
 Fortsetzungsstand: 19.11.2026; wissenschaftlicher Ausführungs- und Prüfstand
 des Rauschpiloten `eb663a0` nach
@@ -243,9 +247,11 @@ vor Implementierung beschlossen: 26 frische gepaarte Fälle, zunächst
 64 gegen 4096 s Hintergrund bei uniformer Akquisition, anschließend
 ungleichmäßige Akquisition mit denselben 52 Uniform-O/K-Paketen als gebundenen
 Kontrollen. Das Profil R mit 4 × 1.000 bei 300/5 und die ursprüngliche
-`accuracy`-Auswahl bleiben erhalten. Die Implementierung in Draft-PR #102
-ist noch kein Ausführungsnachweis; historische Ergebnisse und Originalformeln
-bleiben unverändert.
+`accuracy`-Auswahl bleiben erhalten. Der am 22.11.2026 gelieferte
+[Ergebnisüberblick](docs/noise_followup_results_manjaro_001.md) belegt die
+berichteten Paketausgaben und ermöglicht deren lesende Baumrekonstruktion;
+die vollständige Prüfung der Originalarchive steht noch aus.
+Historische Ergebnisse und Originalformeln bleiben unverändert.
 Das Zusatzraster
 bestimmt weder Suchauswahl noch vorzeitiges Ende. Wissenschaftliche Suchläufe
 bleiben ein separater Ausführungsschritt. Umsetzung und Nachweise stehen im

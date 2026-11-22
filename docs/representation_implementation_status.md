@@ -1,6 +1,46 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Folgestudie zu Hintergrunddauer und Messraster implementiert
+## Aktuell: Übersichtsauswertung der Manjaro-Folgestudie
+
+Stand 22.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
+Die [Ergebnisauswertung](noise_followup_results_manjaro_001.md) bindet das
+übermittelte Übersichtspaket an SHA-256
+`911bf9249783848b9ff9c0543c7419fd52e089f8c48190849a5f9eaef086a3f6`.
+Ausführungscommit laut Quellenbindungen ist
+`8a1a4a1437f4b01daf1f070b56add248074c5907`; PR #102 ist nach voller
+[Ready-CI](https://github.com/craexxn/ringdown-sr/actions/runs/44554906705)
+als `0f5a29f78c06a4fcdc3dabd5ae7ced6143dff6c8` übernommen.
+Aktueller Dokumentationsbranch `codex/noise-followup-results-manjaro-001`
+baut auf diesem Merge auf; endgültiger Dokumentationshead und CI stehen im PR.
+
+624 neue Suchaufrufe sind berichtet, 156 eindeutige Paketausgaben erfolgreich,
+52 in B wiederverwendete O/K-Kontrollen stimmen exakt mit A überein.
+Sechs Publikationsmanifeste, Quellenhashes und die Bytegleichheit der gelieferten
+Serien-/Verifikationsdateien sind geprüft. Die unabhängige Zahlenrechnung
+bestätigt 288 Zusammenfassungsfelder und alle 20 Kontraste. Die ausgewählten
+Bäume werden auf fingerprintgleichen Zeit-/Wahrheitsachsen neu dargestellt;
+alle 936 RMS-/Maximalwerte und 318.396 Plotpunktzeilen sind nachvollziehbar.
+Kein vollständiger Replay der fehlenden Originalarchive und kein Beleg für
+den individuellen Erfolg jedes der 624 Worker. Keine neuen Fits oder Suchen.
+
+Primär AR(1): E4096s−E64s +0,22428 Prozentpunkte, marginales approximatives
+95%-t-Intervall [−0,04855; +0,49710]; Jitter-K−Uniform-K −2,93505 pp,
+Intervall [−7,18011; +1,31002]. Zwei Uniform-K-Ausgaben tragen fast den
+gesamten mittleren Rasterkontrast. Schmale Spitzen bestehen weiterhin;
+die weißen Kontrollen begründen keine pauschale Jitterüberlegenheit.
+Die 48 Schätzermatrizen sind bytegleich zur Cloud-Diagnose 002, also eine
+Wiederholung derselben Entwicklungsfälle. Serienaufrufe A/B zusammen:
+192.710,002 s = 53 h 31 min 50 s; verschachtelte Kosten nicht addieren.
+Fehlende Kostenbelege und Archivprüfgrenzen sind im Ergebnisbericht ausgewiesen.
+
+Nächster abgegrenzter Schritt: Originalarchive nachreichen und die vollständige
+lesende Herkunftsprüfung sowie gezielte Kandidaten-/Mechanismusdiagnose
+abschließen. Anschließend ist eine kleine White-Skalierungskontrolle vor einer
+einzelnen begründeten Methodenintervention empfohlen. Dies sind Vorschläge,
+kein neuer Versuchsplan oder Laufauftrag. [Archivstand](results_index.md)
+und unabhängige Zweitkopie bleiben separat offen.
+
+## Historisch: Folgestudie zu Hintergrunddauer und Messraster implementiert
 
 Stand 19.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
 Der vor neuen Studienbeobachtungen gebundene
