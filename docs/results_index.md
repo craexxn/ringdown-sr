@@ -23,15 +23,18 @@ Technische Fixtures und ein implementierter Laufweg sind keine wissenschaftliche
 Ausführung und kein Sicherungsnachweis.
 
 Aktueller Ergebnisstand vom 22.11.2026: Die
-[Übersichtsauswertung der Folgestudie](noise_followup_results_manjaro_001.md)
-bindet 624 berichtete Suchaufrufe und 156 erfolgreiche Paketausgaben an
+[Auswertung und Nachprüfung der Folgestudie](noise_followup_results_manjaro_001.md)
+bindet 624 erfolgreiche Einzelworker und 156 erfolgreiche Paketausgaben an
 Ausführungscommit `8a1a4a1437f4b01daf1f070b56add248074c5907`.
-Berichtsstatistik, übermittelte Verifikation und ausgewählte Baumrekonstruktion
-sind geprüft; vollständige Originalarchive und alle Workerbelege fehlen.
+Originalarchive für Dauer/Messraster und eine Shared-Prüfkopie sind empfangen;
+39 lange Rauschdateien sind exakt aus ihren gebundenen Zuständen rekonstruiert.
+Berichtsstatistik, Workerzensus, Eingaben, Schätzer und Originalplots sind geprüft;
+die offiziellen Serienreplays laufen noch.
 Beide primären Intervalle umfassen null; der mittlere Rastereffekt wird von
 zwei Uniform-K-Fehlern getragen. Die 48 Schätzerdateien wiederholen bytegleich
 dieselben Entwicklungsfälle. [Original- und Übersichtseintrag](#wissenschaftliche-folgestudie-manjaro-001)
-trennen empfangene Daten, nur berichtete Archivhashes und offene Sicherung.
+trennen Originalarchive, rekonstruierte Nutzdaten, den nur berichteten Hash der
+ursprünglichen komprimierten Shared-Bytes und die weiterhin offene Sicherung.
 
 Historischer Planungs-/Implementierungsstand vom 19.11.2026: Die
 [Folgestudie zu Hintergrunddauer und Messraster](noise_followup_plan.md)
@@ -813,12 +816,13 @@ unabhängige hashgeprüfte Zweitkopie bleiben unbestätigt.
 ### Wissenschaftliche Folgestudie Manjaro 001
 
 - Lauf-ID: `noise-followup-manjaro-001`, Dauer-/Messrasterstudie auf 26
-  gemeinsamen Fällen. A berichtet 416, B 208 neue Suchaufrufe; 156 erfolgreiche
+  gemeinsamen Fällen. A 416/416, B 208/208 erfolgreiche Einzelworker;
+  zusätzlich 6/6 erfolgreiche technische Worker. 156 erfolgreiche
   Paketausgaben, 52 exakt gebundene Kontrollreferenzen ohne neue Suchkosten.
 - Ausführung laut gelieferten Quellenbindungen:
   `8a1a4a1437f4b01daf1f070b56add248074c5907`. Abschluss laut Statusdatei
-  am 22.11.2026 um 01:07:08 CET; einzelner Workerstatus nicht vollständig
-  übermittelt. Gemessene Serienaufrufe zusammen 192.710,002 s.
+  am 22.11.2026 um 01:07:08 CET; Einzelstatus jetzt vollständig geprüft,
+  ohne Fehler oder Timeout. Gemessene Serienaufrufe zusammen 192.710,002 s.
 - Empfangen und am SHA-256 geprüft:
   `noise-followup-manjaro-001-overview.tar.gz`, **11.177.133 Bytes**,
   `911bf9249783848b9ff9c0543c7419fd52e089f8c48190849a5f9eaef086a3f6`.
@@ -828,16 +832,29 @@ unabhängige hashgeprüfte Zweitkopie bleiben unbestätigt.
   48 Schätzermatrizen und Rekonstruktion aller 156 gewählten Originalbäume
   auf fingerprintgleichen Rastern. Die Schätzerfälle sind identisch zu
   Cloud-Diagnose 002; keine neue unabhängige Entwicklungsstichprobe.
-- Nur durch Prüfsummentexte berichtet, **Archivbytes noch nicht empfangen**:
-  `noise-followup-manjaro-001-shared.tar.gz`, SHA-256
-  `897fb84605042cf070893028d9e7368ade47ae50c7f7f5ba6879eceaf9cf01d5`;
-  `noise-followup-manjaro-001-duration.tar.gz`, SHA-256
+  Die Nachlieferung ergänzt alle Einzelworker, Eingaberegeneration,
+  Originalplots, 26 tatsächliche wissenschaftliche Kovarianzpaare und eine
+  begrenzte Diagnose von 333 Kandidaten aus 24 Workern in sechs Problemfällen.
+- Nachgereichte **Originalarchive**, vollständig aus 13 bzw. sieben Teilen
+  rekonstruiert und am ursprünglichen SHA-256 geprüft:
+  `noise-followup-manjaro-001-duration.tar.gz`, **314.610.102 Bytes**, SHA-256
   `bc32f591f5d92418e53a68e6d6f120547f0661e3ab1ec0fb0014cbedcb09ed9a`;
-  `noise-followup-manjaro-001-sampling.tar.gz`, SHA-256
+  `noise-followup-manjaro-001-sampling.tar.gz`, **174.969.349 Bytes**, SHA-256
   `d1536eb4d1cce4ea3c812d777c45b796c2e4d7c9c2d41ca83423d02cc443dca7`.
-- Bericht: [Übersichtsauswertung, Literatur und nächste Schritte](noise_followup_results_manjaro_001.md).
-  Vollständige Herkunfts-/Workerprüfung und originale Plotexporte fehlen;
-  neue lesende Formelplots sind separat zugeordnet. Keine neue Suche.
+- Nachgereichtes Transportderivat:
+  `noise-followup-manjaro-001-shared-review.tar.gz`, **44.494.683 Bytes**, SHA-256
+  `5df7a048cab2d59f3be65dc388c0fae68beb1413527ac5cc6ab92ad216c4db45`.
+  Alle enthaltenen Originalnutzdateien und der unveränderte Archivbeleg sind
+  geprüft. Die 39 ausgelassenen NPY wurden ausschließlich in einer separaten
+  Arbeitskopie bitgenau ergänzt; insgesamt 22.152 Originalnutzdateien plus
+  drei Archivbelege geprüft. `reconstruction-receipt.json` bindet diesen Vorgang.
+- Nicht selbst als komprimierte Datei empfangen:
+  `noise-followup-manjaro-001-shared.tar.gz`, berichteter SHA-256
+  `897fb84605042cf070893028d9e7368ade47ae50c7f7f5ba6879eceaf9cf01d5`.
+  Laut Transferbeleg prüfte der Upload-Helfer dieses Original auf Manjaro; die eigene
+  Nutzdatenrekonstruktion bestätigt nicht dessen komprimierte Archivbytes.
+- Bericht: [Auswertung, lesende Nachprüfung, Literatur und nächste Schritte](noise_followup_results_manjaro_001.md).
+  Keine neuen Fits/Suchen und keine veränderte Originalauswahl.
 - Separate Auswertungsexporte vom 22.11.2026, Berichtsfassung
   `1b55a7d1d6f36f3efafc802ae0325fecfcae3110`:
   `noise-followup-manjaro-001-analysis.zip`, **12.992.022 Bytes**, SHA-256
@@ -849,9 +866,12 @@ unabhängige hashgeprüfte Zweitkopie bleiben unbestätigt.
   156 unveränderte Originalformeln/Bäume mit rekonstruierten PNG/SVG/CSV.
   ZIP-CRC, sämtliche Nutzdateihashes und lokale Links geprüft; Galerie auch
   in drei Teilen mit höchstens 24 MiB und geprüftem Zusammenfügehelfer.
-  Beide Pakete sind eigenständige, begrenzte lesende Auswertungen und ersetzen
-  weder die fehlenden Originalarchive noch deren vollständige Verifikation.
-- Ablage des Überblicks und seiner Auswertung: lokale Cloud-Arbeits-/Exportkopie.
+  Beide früheren Pakete bleiben unverändert. Ihre Berichtsfassung dokumentiert
+  den damaligen eingeschränkten Überblick; die Galerie lässt die damals
+  fehlenden verrauschten Beobachtungen ausdrücklich leer.
+- Ablage von Überblick, Originalarchiven, Transportderivat und Auswertungen:
+  lokale Cloud-Arbeits-/Exportkopie. Die 39 großen NPY liegen zusätzlich in
+  der getrennten rekonstruierten Prüfkopie, nicht im empfangenen Derivat.
   Dauerhafte gemeinsame Archivablage und unabhängige geprüfte Zweitkopie **offen**.
 
 ### Entwicklungsabnahme der Dauer-/Rasterstudie vom 19.11.2026
@@ -901,7 +921,6 @@ R1–R3-Prüfnachweise werden übernommen, ihre Audits nicht pauschal wiederholt
 
 | Priorität / Bezug | Benötigter Beleg | Zweck und betroffene Aussage |
 | --- | --- | --- |
-| 1 — `noise-followup-manjaro-001` | Drei unveränderte Originalarchive `shared`, `duration`, `sampling`; Größen für geeigneten Übertragungsweg. Übersicht und drei Prüfsummentexte liegen bereits vor. | Alle wissenschaftlichen Rohinputs, Workerstatus/-herkunft, Kandidatenfronten, ursprüngliche Auswahl und Originalplots unabhängig nachprüfen; fehlende technische/Schätzer-Gesamtkosten ergänzen. Keine Wiederholung der Suchen. |
 | 1 — `global-restarts-technical-001` auf Manjaro | Abschlussausgabe und vorhandener Prüfbericht einschließlich lesender Verifikation mit Herkunft; nur bei Unklarheit der ganze unveränderte technische Ordner. | Technischen lokalen Erfolg belegen; Startmeldung allein genügt nicht. Keine wissenschaftliche Ergebnisbehauptung und keine neue CI-Archivpflicht. |
 | 1 — `iteration-time-prefix-001` und `iteration-time-technical-001` auf Manjaro | Vorhandene Abschlussausgaben bzw. Prüfberichte der technischen Vorläufe. | Ausführung der vorgesehenen Präfix-/Timerkontrollen dokumentieren; das bestandene wissenschaftliche Archiv beweist diese separaten Vorläufe nicht. Kein automatischer Wiederholungsauftrag. |
 | 1 — Archivablage und Zweitkopien | Verständliche Bezeichnungen beider Speicherziele, Liste tatsächlich vorhandener Dateien und Ergebnisse der SHA-256-Prüfung beider Kopien mit Prüfdatum. Bei Backup lesenden Wiederherstellungscheck angeben. | Dauerhafte Sicherung; Metadaten genügen, keine erneute Übertragung bereits vorhandener Archive erforderlich. |

@@ -8,16 +8,23 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 Aktuelle Auswertung vom 22.11.2026: Zur in
 [PR #102](https://github.com/craexxn/ringdown-sr/pull/102) übernommenen
 [Folgestudie zu Hintergrunddauer und Messraster](docs/noise_followup_plan.md)
-liegt das hashgeprüfte Manjaro-Übersichtspaket vor: 624 berichtete Suchaufrufe,
-156 erfolgreiche Paketausgaben, 53,53 Stunden gemessene Serienzeit.
+liegen die Übersicht, beide Ergebnisarchive und eine kompakte Shared-Prüfkopie
+vor: 624 einzeln erfolgreiche Suchworker, 156 erfolgreiche Paketausgaben,
+53,53 Stunden gemessene Serienzeit. Die 39 ausgelassenen langen Rauschdateien
+sind in einer getrennten Prüfkopie bitgenau wiederhergestellt.
 Die [Auswertung](docs/noise_followup_results_manjaro_001.md) bestätigt die
-Berichtsstatistik und rekonstruiert alle 156 Originalausgaben auf gebundenen
-Rastern. Längerer Hintergrund zeigt keinen belegten primären SR-Vorteil;
+Berichtsstatistik, den Workerzensus und alle Originalplots.
+Längerer Hintergrund zeigt keinen belegten primären SR-Vorteil;
 der mittlere Jitter-K-Vorteil wird fast vollständig von zwei großen
 Uniform-K-Fehlern getragen. Beide primären Unsicherheitsintervalle umfassen null.
-Originalarchive und alle Einzelworker sind noch vollständig nachzuprüfen.
-Die Literatur- und Anschlussvorschläge priorisieren Mechanismusdiagnose und
-eine kleine Skalierungskontrolle vor weiteren Großserien; kein neuer Suchlauf.
+Die Kovarianz wird in allen 20 tatsächlichen AR(1)-Fällen genauer, die Formel
+nur in acht. In sechs gezielt untersuchten Problemfällen liegen bereits
+bessere gespeicherte Alternativen vor; die ursprüngliche Auswahl bleibt korrekt
+nach Trainingsverlust. Die offiziellen Serienreplays laufen noch.
+Eine kleine Skalierungskontrolle und eine einzelne begründete Methodenänderung
+sind vor weiteren Großserien empfohlen; kein neuer Suchlauf. Die ursprünglichen
+komprimierten Shared-Bytes und die unabhängige Archiv-Zweitkopie bleiben getrennt
+von der Prüfung rekonstruierter Nutzdaten.
 [Prüfstand](docs/representation_implementation_status.md),
 [Archivindex](docs/results_index.md) und [Bedienung](docs/noise_followup.md)
 trennen Nachweise, offene Schritte und Ausführungsbefehle.

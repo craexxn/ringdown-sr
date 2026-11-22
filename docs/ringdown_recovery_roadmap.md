@@ -7,17 +7,23 @@ Phasen und Kriterien bleiben erhalten; tatsächlicher Prüf- und Übernahmestand
 im [Fortsetzungsstand](representation_implementation_status.md).
 
 Aktueller Ergebnisabgleich vom 22.11.2026 zu Phase 7:
-Die [Übersichtsauswertung der Folgestudie](noise_followup_results_manjaro_001.md)
-prüft die berichteten 156 Paketausgaben, alle Primärkontraste und die ausgewählten
-Originalbäume; vollständige Roharchive und Einzelworker fehlen noch.
-624 neue Suchaufrufe sind berichtet, beide Serienaufrufe benötigen zusammen
+Die [Auswertung mit Originalnachprüfung](noise_followup_results_manjaro_001.md)
+prüft 156 Paketausgaben, alle Primärkontraste, Einzelworker und Originalplots;
+39 ausgelassene lange Rauschdateien sind bitgenau rekonstruiert.
+624 wissenschaftliche und sechs technische Worker sind erfolgreich; die
+offiziellen Serienreplays laufen noch. Beide Serienaufrufe benötigen zusammen
 53,53 Stunden. Kein belegter primärer SR-Gewinn durch 4096 gegenüber 64 s;
 der mittlere Jitter-K-Vorteil wird stark von zwei Uniform-K-Fehlern geprägt.
 Beide marginalen Primärintervalle umfassen null. Die zwölf Schätzerfälle
 sind identisch zur bisherigen Entwicklungsdiagnose, keine neue Bestätigung.
-Priorisiert vorgeschlagen sind vollständige Originalprüfung und gezielte
-Fehlerdiagnose, danach eine kleine White-Skalierungskontrolle und höchstens
-eine darauf begründete Intervention. Neue Signalbedingungen und Präzisionsziele
+An den 20 tatsächlichen wissenschaftlichen AR(1)-Fällen verbessert längerer
+Hintergrund alle Kovarianzen, aber nur acht ausgewählte Formeln. Eine gezielte
+Prüfung von 333 Kandidaten aus 24 Workern findet in allen sechs Problemfällen
+bereits bessere Alternativen, erkennbar mit nachträglichem Wahrheitszugriff;
+die ursprüngliche Trainingsverlust-Auswahl ist korrekt reproduziert.
+Priorisiert vorgeschlagen sind eine kleine White-Skalierungskontrolle und
+eine darauf begründete einzelne Intervention; keine pauschale Komplexitätsgrenze
+oder erneute automatische `best`-Wahl. Neue Signalbedingungen und Präzisionsziele
 gehören in eine spätere getrennte Bestätigung. Keine neue Suchserie oder
 Protokolländerung durch diese Einordnung; Grenzen und Literatur im Bericht.
 

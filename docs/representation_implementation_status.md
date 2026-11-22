@@ -1,6 +1,6 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Übersichtsauswertung der Manjaro-Folgestudie
+## Aktuell: Auswertung und Nachprüfung der Manjaro-Folgestudie
 
 Stand 22.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
 Die [Ergebnisauswertung](noise_followup_results_manjaro_001.md) bindet das
@@ -13,15 +13,20 @@ als `0f5a29f78c06a4fcdc3dabd5ae7ced6143dff6c8` übernommen.
 Aktueller Dokumentationsbranch `codex/noise-followup-results-manjaro-001`
 baut auf diesem Merge auf; endgültiger Dokumentationshead und CI stehen im PR.
 
-624 neue Suchaufrufe sind berichtet, 156 eindeutige Paketausgaben erfolgreich,
+624 wissenschaftliche Einzelworker und sechs technische Worker sind erfolgreich
+abgeschlossen, ohne Fehler oder Timeout; 156 eindeutige Paketausgaben erfolgreich,
 52 in B wiederverwendete O/K-Kontrollen stimmen exakt mit A überein.
 Sechs Publikationsmanifeste, Quellenhashes und die Bytegleichheit der gelieferten
 Serien-/Verifikationsdateien sind geprüft. Die unabhängige Zahlenrechnung
 bestätigt 288 Zusammenfassungsfelder und alle 20 Kontraste. Die ausgewählten
 Bäume werden auf fingerprintgleichen Zeit-/Wahrheitsachsen neu dargestellt;
 alle 936 RMS-/Maximalwerte und 318.396 Plotpunktzeilen sind nachvollziehbar.
-Kein vollständiger Replay der fehlenden Originalarchive und kein Beleg für
-den individuellen Erfolg jedes der 624 Worker. Keine neuen Fits oder Suchen.
+Nachgereichte Ergebnisarchive und kompakte Shared-Prüfkopie sind vollständig
+transport- und inventargeprüft. Alle 39 ausgelassenen NPY sind bitgenau mit
+Originalhashes und Generatorrecords rekonstruiert; 22.152 Originalnutzdateien
+plus drei Archivbelege stimmen. Technischer Vorlauf, Eingaberegeneration,
+48 Schätzungen und drei Originalplotexporte bestehen die offiziellen Verifier.
+Die offiziellen Serienreplays laufen noch. Keine neuen Fits oder Suchen.
 
 Primär AR(1): E4096s−E64s +0,22428 Prozentpunkte, marginales approximatives
 95%-t-Intervall [−0,04855; +0,49710]; Jitter-K−Uniform-K −2,93505 pp,
@@ -31,12 +36,23 @@ die weißen Kontrollen begründen keine pauschale Jitterüberlegenheit.
 Die 48 Schätzermatrizen sind bytegleich zur Cloud-Diagnose 002, also eine
 Wiederholung derselben Entwicklungsfälle. Serienaufrufe A/B zusammen:
 192.710,002 s = 53 h 31 min 50 s; verschachtelte Kosten nicht addieren.
-Fehlende Kostenbelege und Archivprüfgrenzen sind im Ergebnisbericht ausgewiesen.
+Die nun bekannten technischen/Schätzer-Gesamtkosten betragen 303,735/80,015 s;
+Summe aller getrennt gemessenen Aufrufe 54 h 5 min 38 s, keine vollständige
+Skriptzeit. Die ursprünglichen komprimierten Shared-Bytes wurden nicht
+übertragen; deren Hash ist von der eigenen rekonstruierten Inhaltsprüfung
+zu unterscheiden. Archiv-Zweitkopie weiterhin unbestätigt.
 
-Nächster abgegrenzter Schritt: Originalarchive nachreichen und die vollständige
-lesende Herkunftsprüfung sowie gezielte Kandidaten-/Mechanismusdiagnose
-abschließen. Anschließend ist eine kleine White-Skalierungskontrolle vor einer
-einzelnen begründeten Methodenintervention empfohlen. Dies sind Vorschläge,
+Zusätzliche Diagnose an allen tatsächlichen Studieneingaben: AR(1)-Matrixfehler
+15,85096 → 2,03282 %, besser in 20/20 Fällen, Formel nur in 8/20.
+333 Kandidaten aus 24 Workern in sechs gezielten Problemfällen zeigen bereits
+vorhandene Alternativen mit kleineren RMS- und Spitzenfehlern auf beiden
+Zusatzrastern. Auswahl nach Trainingsverlust korrekt; die nachträgliche
+Wahrheitsdiagnose ist keine validierte Auswahlregel. ar1-12 besitzt auch eine
+gute Alternative mit derselben Komplexität 20 in einem anderen Paketworker.
+
+Nächster vorgeschlagener Schritt nach dem lesenden Abschluss: kleine
+White-Skalierungskontrolle vor einer einzelnen begründeten Methodenintervention.
+Dies sind Vorschläge,
 kein neuer Versuchsplan oder Laufauftrag. [Archivstand](results_index.md)
 und unabhängige Zweitkopie bleiben separat offen.
 
