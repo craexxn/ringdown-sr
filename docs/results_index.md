@@ -869,6 +869,17 @@ unabhängige hashgeprüfte Zweitkopie bleiben unbestätigt.
   Beide früheren Pakete bleiben unverändert. Ihre Berichtsfassung dokumentiert
   den damaligen eingeschränkten Überblick; die Galerie lässt die damals
   fehlenden verrauschten Beobachtungen ausdrücklich leer.
+- Ergänzendes Nachweispaket nach der vollständigen lesenden Prüfung,
+  Berichtsfassung `3016c0b78e35cec3e246067b0f179af85c12ea80`:
+  `noise-followup-manjaro-001-full-verification-v2.zip`, **18.537.844 Bytes**,
+  SHA-256 `382801917976000ff8abcafd9f1c7bc2ebcbd226adacdf1031649f1eb9745ed9`.
+  252 Nutzdateien und internes Prüfmanifest: aktualisierter Bericht,
+  sieben grafische Übersichten, sechs detaillierte Kandidatenvergleiche,
+  Originalformeln und Punktdaten, Auditprogramme/-belege sowie alle 62
+  frischen bytegleichen Verifikationsdateien. ZIP-CRC, sämtliche Nutzdateihashes
+  und 74 lokale HTML-Dateilinks geprüft; frühere Auswertungspakete bleiben
+  unverändert. Keine großen Originalarchive oder langen Roh-NPY im Paket;
+  deren Inhaltsnachweis ist separat dokumentiert.
 - Ablage von Überblick, Originalarchiven, Transportderivat und Auswertungen:
   lokale Cloud-Arbeits-/Exportkopie. Die 39 großen NPY liegen zusätzlich in
   der getrennten rekonstruierten Prüfkopie, nicht im empfangenen Derivat.
