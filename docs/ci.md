@@ -69,6 +69,20 @@ Befund ist kein Nachweis bestandener Tests.
 
 ## Serielle technische Prüfungen
 
+Die Hauptserienanbindung ergänzt `check_main_study.py` als **35. nativen
+Fachschritt**: zwei eigene AR(1)-Signalfälle mit N103, je vier technische
+O/K/E64/E4096-Worker mit zehn Iterationen und ursprünglichem lokalen
+300/5-Profil, danach lesender Replay. Beide Hintergrunddauern werden für
+jeden technischen Fall vollständig erzeugt; diese Daten und Seeds sind von
+der wissenschaftlichen Matrix getrennt. Die 1280 Hauptsuchen laufen nicht
+in CI. Neue Python-Referenzen prüfen insbesondere N103-Präfixe,
+L2-Normierung, Intervalle, Auswahl-/Ausfallregeln und Quellenbindungen.
+`docs/main_study_plan.md` ist eine laufzeitrelevante Ausnahme vom reinen
+Dokumentationspfad. Der historische Planungsentwurf
+`docs/main_study_protocol.md` bleibt Prosa. Die native Jobfrist bleibt
+180 Minuten; ein erfolgreicher Nachweis dieser erweiterten CI steht beim
+aktuellen Implementierungsstand noch aus.
+
 Der getrennte White-Skalierungspilot ergänzt `check_white_scaling.py`:
 native O/S/K-Arithmetik, vollständige Optionsgegenprüfungen, Vergleich der
 beobachteten und unbeobachteten lokalen Optimierung sowie vier frische
@@ -221,7 +235,9 @@ Dies ist eine begrenzte Prüfung, kein vollständiger Markdown-Parser.
 sowie `docs/iteration_time_budget_plan.md`, `docs/restart_confirmation_plan.md`
 und `docs/time_coordinate_plan.md`, `docs/restart_budget_plan.md`,
 `docs/restart_budget_confirmation_plan.md`, `docs/noise_pilot_plan.md`
-und `docs/noise_background_plan.md`, `docs/noise_followup_plan.md`
+und `docs/noise_background_plan.md`, `docs/noise_followup_plan.md`,
+`docs/white_loss_scaling_plan.md`, `docs/offgrid_selection_plan.md`,
+`docs/main_study_plan.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere

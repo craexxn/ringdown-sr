@@ -14,10 +14,14 @@ Alle 468 ausgewählten Ausgaben sind strukturell geprüft und im separaten Repla
 bestätigt; der unabhängige Evidenz-/Zensusaudit ist abgeschlossen. Es gab keine
 neuen Suchen oder Anpassungen. Originale, Prüfkopien, erhaltener erster
 Replayabbruch und Darstellungen haben getrennte Archivrollen.
-Das [Hauptversuchsprotokoll](main_study_protocol.md) beschreibt den nächsten
-Schritt mit frischen Fällen und dem bestätigten festen Suchprofil bei zusätzlich
-gemessenen Kosten. Es ist ein dokumentarischer Vorschlag; die Hauptserie ist
-noch nicht ausgeführt und ihre Eingaben sind noch nicht maschinell gebunden.
+Der daraus entstandene [verbindliche Hauptplan](main_study_plan.md) und die
+Seedtabelle sind vor Beobachtungen in `126b39e311eceeb12102cf09e6da57deb735025b`
+gebunden. Der [technische Laufweg](main_study.md) ist in PR107 lokal geprüft:
+4.955 Python-Tests, acht kurze N103-Worker, separater Replay und Originalplots.
+Die [Entwicklungsnachweise](#technische-hauptserienabnahme-vom-23112026) trennen
+den erhaltenen Umgebungsabbruch 001 vom bestandenen Vorlauf 002.
+Die wissenschaftliche Hauptserie und ihre 80 Dateneingaben sind noch nicht
+ausgeführt; vollständige Ready-CI und Manjaro-Vorlauf bleiben offen.
 
 **Archivierung offen:** Dauerhafte Ablage und eine geprüfte zweite Kopie sind
 hier noch nicht bestätigt. Lokal verfügbare Arbeitskopien werden nicht als
@@ -1131,6 +1135,43 @@ Vollgalerie. Beweiszertifikate gehören zum Nachweisarchiv. Diese Darstellungen
 ersetzen weder die Originalauswahlexporte noch eine unabhängige Sicherung.
 Dauerhafte Ablage und geprüfte Zweitkopie außerhalb der Arbeitsumgebung
 bleiben unbestätigt; frühere Archive und deren Belege gelten unverändert weiter.
+
+### Technische Hauptserienabnahme vom 23.11.2026
+
+Der [Laufweg samt Entwicklungsabnahme](main_study.md#technische-entwicklungsabnahme)
+gehört zu [PR107](https://github.com/craexxn/ringdown-sr/pull/107),
+Leitfadenphase 7. Plan und vollständige Seedtabelle sind vor Beobachtungen an
+`126b39e311eceeb12102cf09e6da57deb735025b` gebunden; tatsächlicher sauberer
+Ausführungscommit beider Cloud-Vorläufe ist
+`7fa2a45f55d3084dee16baf6952ed7053605f953`.
+
+- `main-study-development-001`: Umgebungsabbruch vor der ersten Suche;
+  alle acht Worker vorbereitet, kein Fit begonnen. Fehlende Depotbindung
+  führt beim Julia-Start zu einem schreibgeschützten Cachepfad. Originale,
+  Workerlog und 19,092 s unvollständiger Abbruchkosten bleiben erhalten.
+- `main-study-development-002`: acht erfolgreiche N103-Zehnerworker mit
+  eigenen technischen Eingaben und ursprünglichem lokalen Profil 300/5.
+  Separater Replay, Originalplots und Plotverifikation bestanden;
+  alle 261 Originaldateien sind unverändert. Keine Hauptsuchen oder
+  wissenschaftliche Qualitätsaussage. Gesamter Vorlauf 669,334 s;
+  getrennte Aufrufkosten stehen im verlinkten Bericht.
+- Die vollständige Python-Suite auf diesem unveränderten Checkout besteht
+  mit 4.955 Tests. Erhaltene frühere Precheck-/Diagnosefehler sind getrennt
+  dokumentiert; keine Schutzprüfung wurde gelockert. Vollständige Ready-CI
+  und Manjaro-Vorlauf bleiben vor der Hauptausführung offen.
+- Originalnachweispaket: `main-study-development-001-002.tar.gz`.
+  525.145.561 Bytes; SHA-256
+  `96931e3479c0d7dd07fafde2ae3d5365dd2baa5dd7fd7af36e011603d3ed2c8a`.
+  Alle 449 Quelldateien plus Inhaltsmanifest sind aus dem Archiv zurückgelesen
+  und gegen ihre Dateibytes geprüft; Originale danach unverändert.
+  Enthalten sind beide unveränderten Vorläufe, Originalplots/Formeln/Punktdaten,
+  Prüfprotokolle, unabhängiger Artefaktaudit samt Skript, getrennte Kosten,
+  Quellcode-Snapshot und Dateiinventar. Der Audit bestätigt alle acht
+  Galerieausgaben und 17.224 CSV-Punktzeilen einschließlich vollständiger
+  linearer SVG-Darstellung.
+- Ablage: lokaler Cloud-Exportordner `main-study-development-001-002`.
+  Ausführungs- und Plancommit bleiben über die PR107-Historie erreichbar.
+  Dauerhafte gemeinsame Ablage und unabhängige Zweitkopie **nicht bestätigt**.
 
 ### Priorisierte fehlende Belege
 

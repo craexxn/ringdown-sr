@@ -437,6 +437,27 @@ jobs:
             uv run --locked python scripts/check_white_scaling.py \
             --output results/ci-white-scaling-001
 
+      - name: Verify main study with eight N103 technical workers and original plots
+        run: |
+          failed() {
+            find results -path '*ci-main-study*' -type f -name '*.log' -print -exec tail -n 100 {} \;
+            exit 1
+          }
+          env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/check_main_study.py \
+            --output results/ci-main-study-001 || failed
+          env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/check_main_study.py \
+            --verify results/ci-main-study-001 || failed
+          env OPENBLAS_CORETYPE=Haswell \
+            OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+            uv run --locked python scripts/run_main_study.py technical-plots \
+            --technical results/ci-main-study-001 --export results/ci-main-study-plots-001 || failed
+          uv run --locked python scripts/run_main_study.py verify-plots \
+            --export results/ci-main-study-plots-001 || failed
+
   technical-checks:
     name: ${{ github.event_name == 'workflow_dispatch' && 'manual-technical-checks' || 'technical-checks' }}
     needs: [prepare, native]

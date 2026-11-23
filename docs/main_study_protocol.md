@@ -1,7 +1,14 @@
 # Hauptversuchsprotokoll: Hintergrunddauer und freie Ringdown-Rekonstruktion
 
 Stand 23.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
-**Konkreter Planungsentwurf nach Pilotabschluss; noch kein ausführbares oder
+Aktueller Beschluss vom 23.11.2026: Der nachfolgende Entwurf wird entsprechend
+umgesetzt. Die endgültige Matrix, technischen Einzelheiten und vollständige
+Seedtabelle stehen jetzt im getrennten [verbindlichen Hauptversuchsplan](main_study_plan.md).
+Dessen eigener Vorabcommit und Hashbindung sind maßgeblich für die Laufzeit.
+Die folgende Darstellung bleibt als Herkunft der Planungsentscheidung erhalten;
+sie ist kein Beleg einer bereits ausgeführten Hauptserie.
+
+**Historischer konkreter Planungsentwurf nach Pilotabschluss; noch kein ausführbares oder
 durch Commit und Eingabemanifest eingefrorenes Laufprotokoll.** In dieser
 Arbeitsstufe werden keine neuen Suchen oder Fits gestartet. Das Dokument ist
 keine Laufzeiteingabe des bestehenden Codes und verändert keinen historischen
