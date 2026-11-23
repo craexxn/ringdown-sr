@@ -19,8 +19,14 @@ lesende Verifikation, Originalplots und Archivierung. **4.955 Python-Tests,
 acht echte N103-Zehnerworker, separater Replay und Plotprüfung bestanden**;
 261 Originaldateien blieben unverändert. Das gezielte KI-basierte
 Integrationsreview hat keine offenen korrekturpflichtigen Befunde.
-Die vollständige Ready-CI bleibt vor Merge offen; ein Manjaro-Vorlauf oder
-eine wissenschaftliche Hauptsuche ist noch nicht nachgewiesen.
+Die [vollständige Ready-CI](https://github.com/craexxn/ringdown-sr/actions/runs/45234592530)
+ist bestanden: 4.955 Python-Tests, alle 35 nativen Fachschritte und Abschlussgate.
+PR107 ist als `2774b9ebce7276f29af4d7d592264bcf092d033c` übernommen;
+der Mergebaum entspricht dem geprüften Stand. Für den neuen Manjaro-Checkout
+ist `e366f50b9cbff0e8d6dd4fc8035e0c09cdc103f7` festgelegt.
+Nächster Schritt ist die [Startfolge](docs/main_study.md#geprüfter-ausführungscheckout)
+mit eingebautem Zielrechnervorlauf und anschließender Hauptserie.
+Ein Manjaro-Vorlauf oder eine wissenschaftliche Hauptsuche ist noch nicht belegt.
 
 23.11.2026: Der [Pilotabschluss](docs/pilot_closeout.md) ist einschließlich
 der begrenzten lesenden Struktur-/Domainprüfung fertig: 468 Originalausgaben,

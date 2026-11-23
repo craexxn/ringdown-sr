@@ -21,7 +21,8 @@ gebunden. Der [technische Laufweg](main_study.md) ist in PR107 lokal geprüft:
 Die [Entwicklungsnachweise](#technische-hauptserienabnahme-vom-23112026) trennen
 den erhaltenen Umgebungsabbruch 001 vom bestandenen Vorlauf 002.
 Die wissenschaftliche Hauptserie und ihre 80 Dateneingaben sind noch nicht
-ausgeführt; vollständige Ready-CI und Manjaro-Vorlauf bleiben offen.
+ausgeführt. Die vollständige Ready-CI ist bestanden und PR107 übernommen;
+Manjaro-Vorlauf und wissenschaftliche Ausführung bleiben offen.
 
 **Archivierung offen:** Dauerhafte Ablage und eine geprüfte zweite Kopie sind
 hier noch nicht bestätigt. Lokal verfügbare Arbeitskopien werden nicht als
@@ -1157,8 +1158,12 @@ Ausführungscommit beider Cloud-Vorläufe ist
   getrennte Aufrufkosten stehen im verlinkten Bericht.
 - Die vollständige Python-Suite auf diesem unveränderten Checkout besteht
   mit 4.955 Tests. Erhaltene frühere Precheck-/Diagnosefehler sind getrennt
-  dokumentiert; keine Schutzprüfung wurde gelockert. Vollständige Ready-CI
-  und Manjaro-Vorlauf bleiben vor der Hauptausführung offen.
+  dokumentiert; keine Schutzprüfung wurde gelockert. Die
+  [vollständige Ready-CI 45234592530](https://github.com/craexxn/ringdown-sr/actions/runs/45234592530)
+  besteht ebenfalls mit 4.955 Tests, allen 35 nativen Fachschritten und dem
+  Abschlussgate; PR107 ist als `2774b9e` übernommen. Historische
+  Ausführungscommits dieser Archive bleiben unverändert. Der Manjaro-Vorlauf
+  ist noch offen, keine wissenschaftliche Hauptausführung nachgewiesen.
 - Originalnachweispaket: `main-study-development-001-002.tar.gz`.
   525.145.561 Bytes; SHA-256
   `96931e3479c0d7dd07fafde2ae3d5365dd2baa5dd7fd7af36e011603d3ed2c8a`.

@@ -39,6 +39,29 @@ mit Baum `37b5a1bb01f98b908d2a0d347e517bdccfd14199`.
 PR104 ist als `a4bafe8551dc3e62a6c149cc32323a2410c4e124` übernommen;
 Baum und beide Eltern entsprechen dem geprüften Mergecommit.
 
+## Vollständiger Hauptserienabschluss PR107
+
+Am 23.11.2026 besteht [Ready-CI 45234592530](https://github.com/craexxn/ringdown-sr/actions/runs/45234592530)
+für [PR107](https://github.com/craexxn/ringdown-sr/pull/107) vollständig:
+4.955 Python-Tests in 623,72 s, alle 35 nativen Fachschritte einschließlich
+der acht neuen N103-Worker mit separatem Replay/Originalplots und das
+Abschlussgate `technical-checks`. Der Modus ist nachweislich `full`;
+ein abgesagter vorheriger Draft-Lauf ist kein Ersatznachweis.
+
+Head: `e366f50b9cbff0e8d6dd4fc8035e0c09cdc103f7`, Basis:
+`a0ddad1ad7751ed858a40534a8a2fd41b73be523`. Die Joblogs binden den tatsächlich
+geprüften Mergecommit `e3226e6c26a7ee02325939b32b6ff7ca06fffea0` und Baum
+`901f55a289098a4424f32c0feff528b10d9dfda4`. Vor Übernahme sind Head, aktuelle
+Basis, beide Mergeeltern und aktive strikte Required-Check-Regel abgeglichen.
+PR107 ist als `2774b9ebce7276f29af4d7d592264bcf092d033c` übernommen;
+beide Eltern und Baum entsprechen dem getesteten Mergecommit.
+
+Für den [Manjaro-Start](main_study.md#geprüfter-ausführungscheckout) bleibt der
+vollständig geprüfte Head `e366f50b9cbff0e8d6dd4fc8035e0c09cdc103f7` fest.
+Eine spätere reine Statusdokumentation ändert diesen Ausführungsstand nicht.
+Die bestandene CI ersetzt den eingebauten technischen Zielrechnervorlauf
+nicht und belegt keine bereits ausgeführte wissenschaftliche Hauptserie.
+
 ## Scope und Ausführungsmodus
 
 `prepare` gibt `full`, `comparison_known` und `mode` aus. `full` beschreibt den
