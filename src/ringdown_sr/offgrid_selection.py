@@ -60,7 +60,9 @@ def _mse(residual):
     normalized = math.fsum(float(x / scale) ** 2 for x in residual) / len(residual)
     rms = scale * math.sqrt(normalized)
     value = rms * rms
-    return value if math.isfinite(value) else None
+    # Only an exactly zero residual may report zero: retain representable
+    # positive subnormals, but do not turn a positive underflowed MSE into a tie.
+    return value if math.isfinite(value) and value > 0 else None
 
 
 def _validate_pool(pool):
@@ -111,7 +113,12 @@ def select(pool, time_s, observed):
                 "id": item["id"],
                 "mse": score,
                 "complexity": item["complexity"],
-                "status": "finite" if score is not None else "nonfinite",
+                "status": "finite" if score is not None else "unavailable",
+                "reason": None
+                if score is not None
+                else "nonfinite_prediction"
+                if prediction is None
+                else "nonfinite_or_unrepresentable_mse",
             }
         )
     eligible = [item for item in scores if item["mse"] is not None]
@@ -344,12 +351,21 @@ def _metrics(prediction, truth):
             "rms_over_amplitude": None,
             "max_over_amplitude": None,
         }
-    scale = max(float(np.max(np.abs(prediction))), float(np.max(np.abs(truth))))
-    residual = prediction if scale == 0 else prediction / scale - truth / scale
+    with np.errstate(over="ignore", invalid="ignore"):
+        residual = prediction - truth
+    if np.isfinite(residual).all():
+        scale = float(np.max(np.abs(residual)))
+        normalized = residual if scale == 0 else residual / scale
+    else:
+        # Subtraction itself can overflow for opposite huge finite operands.
+        # This branch cannot lose all residuals to cancellation: an overflowing
+        # difference has a scaled magnitude of order one.
+        scale = max(float(np.max(np.abs(prediction))), float(np.max(np.abs(truth))))
+        normalized = prediction / scale - truth / scale
     amplitude = abs(original.SIGNAL["amplitude"])
-    maximum = scale * (float(np.max(np.abs(residual))) / amplitude)
+    maximum = scale * (float(np.max(np.abs(normalized))) / amplitude)
     rms = scale * (
-        math.sqrt(math.fsum(float(x) ** 2 for x in residual) / len(residual))
+        math.sqrt(math.fsum(float(x) ** 2 for x in normalized) / len(normalized))
         / amplitude
     )
     return {
@@ -544,6 +560,29 @@ def _statistics(values):
     }
 
 
+def _availability(output, grid, metric):
+    """Distinguish selection abstention from unusable selected-formula assessment."""
+    if output["status"] == "abstained":
+        if output["metrics"][grid][metric] is not None:
+            raise ValueError("An abstained output cannot have an available assessment.")
+        return "abstained"
+    if output["status"] != "selected":
+        raise ValueError("Unknown selection output status.")
+    assessment = output["metrics"][grid]
+    value = assessment[metric]
+    if value is not None:
+        if type(value) not in (int, float) or not math.isfinite(value) or value < 0:
+            raise ValueError(
+                "An available assessment metric must be finite and nonnegative."
+            )
+        return "available"
+    if assessment["status"] == "nonfinite":
+        return "nonfinite_assessment"
+    if assessment["status"] == "partly_or_wholly_unrepresentable":
+        return "unrepresentable_assessment"
+    raise ValueError("An unavailable assessment metric lacks a reason.")
+
+
 def _summaries(records):
     summaries = []
     for model, planned in (("ar1", 20), ("white", 6)):
@@ -556,8 +595,11 @@ def _summaries(records):
             for selector in SELECTORS:
                 for grid in ("irregular", "diagnostic"):
                     for metric in ("rms_over_amplitude", "max_over_amplitude"):
-                        values, paired = [], []
+                        values, paired, availability = [], [], []
                         for row in group:
+                            availability.append(
+                                _availability(row["outputs"][selector], grid, metric)
+                            )
                             value = row["outputs"][selector]["metrics"][grid][metric]
                             baseline = row["outputs"]["original"]["metrics"][grid][
                                 metric
@@ -574,6 +616,21 @@ def _summaries(records):
                                 "grid": grid,
                                 "metric": metric,
                                 "planned_cases": planned,
+                                "not_run_cases": planned - len(group),
+                                "selected_cases": sum(
+                                    reason != "abstained" for reason in availability
+                                ),
+                                "abstained_cases": availability.count("abstained"),
+                                "unusable_assessment_cases": availability.count(
+                                    "nonfinite_assessment"
+                                )
+                                + availability.count("unrepresentable_assessment"),
+                                "nonfinite_assessment_cases": availability.count(
+                                    "nonfinite_assessment"
+                                ),
+                                "unrepresentable_assessment_cases": availability.count(
+                                    "unrepresentable_assessment"
+                                ),
                                 "finite_cases": len(values),
                                 "paired_cases": len(paired),
                                 **_statistics(values),
@@ -603,6 +660,22 @@ def _contrasts(records):
                 for metric in ("rms_over_amplitude", "max_over_amplitude"):
                     a = record["outputs"][left]["metrics"][grid][metric]
                     b = record["outputs"][right]["metrics"][grid][metric]
+                    reasons = (
+                        _availability(record["outputs"][left], grid, metric),
+                        _availability(record["outputs"][right], grid, metric),
+                    )
+                    exclusion = next(
+                        (
+                            reason
+                            for reason in (
+                                "abstained",
+                                "nonfinite_assessment",
+                                "unrepresentable_assessment",
+                            )
+                            if reason in reasons
+                        ),
+                        None,
+                    )
                     rows.append(
                         {
                             "case": record["case"],
@@ -615,9 +688,14 @@ def _contrasts(records):
                             else "secondary",
                             "grid": grid,
                             "metric": metric,
-                            "difference": None if a is None or b is None else a - b,
-                            "left_available": a is not None,
-                            "right_available": b is not None,
+                            "difference": None if exclusion is not None else a - b,
+                            "left_available": reasons[0] == "available",
+                            "right_available": reasons[1] == "available",
+                            "left_status": reasons[0],
+                            "right_status": reasons[1],
+                            "pair_status": "available"
+                            if exclusion is None
+                            else exclusion,
                         }
                     )
     for model, planned in (("ar1", 20), ("white", 6)):
@@ -625,16 +703,21 @@ def _contrasts(records):
             for left, right, priority in comparisons:
                 for grid in ("irregular", "diagnostic"):
                     for metric in ("rms_over_amplitude", "max_over_amplitude"):
-                        values = [
-                            row["difference"]
+                        grouped = [
+                            row
                             for row in rows
                             if row["model"] == model
                             and row["arm"] == arm
                             and row["contrast"] == left + "-minus-" + right
                             and row["grid"] == grid
                             and row["metric"] == metric
-                            and row["difference"] is not None
                         ]
+                        values = [
+                            row["difference"]
+                            for row in grouped
+                            if row["pair_status"] == "available"
+                        ]
+                        excluded = [row["pair_status"] for row in grouped]
                         summary.append(
                             {
                                 "model": model,
@@ -650,6 +733,16 @@ def _contrasts(records):
                                 "planned_pairs": planned,
                                 "available_pairs": len(values),
                                 "unavailable_pairs": planned - len(values),
+                                "not_run_pairs": planned - len(grouped),
+                                "excluded_abstention_pairs": excluded.count(
+                                    "abstained"
+                                ),
+                                "excluded_nonfinite_assessment_pairs": excluded.count(
+                                    "nonfinite_assessment"
+                                ),
+                                "excluded_unrepresentable_assessment_pairs": excluded.count(
+                                    "unrepresentable_assessment"
+                                ),
                                 **_statistics(values),
                                 "improved": sum(value < 0 for value in values),
                                 "worsened": sum(value > 0 for value in values),

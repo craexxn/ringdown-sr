@@ -70,6 +70,18 @@ def test_nonfinite_predictions_and_scores_abstain_without_fallback():
     assert selection._mse(np.array([1e154, -1e154])) == pytest.approx(1e308)
 
 
+def test_positive_mse_underflow_is_not_a_perfect_fit_or_an_exact_tie():
+    assert selection._mse(np.zeros(2)) == 0.0
+    assert selection._mse(np.array([1e-200, -1e-200])) is None
+    # The smallest representable positive square remains an admissible score.
+    residual = math.ldexp(1.0, -537)
+    assert selection._mse(np.array([residual, residual])) == math.ldexp(1.0, -1074)
+    result = selection.select([item("zero", constant(0), 1)], [0, 1], [1e-200, 1e-200])
+    assert result["status"] == "abstained"
+    assert result["scores"][0]["status"] == "unavailable"
+    assert result["scores"][0]["reason"] == "nonfinite_or_unrepresentable_mse"
+
+
 def test_exact_uniform_alias_reference_is_separated_by_new_measurements():
     # cos(2*pi*2*t) and cos(2*pi*10*t) agree at an 8-Hz raster.
     variable = {"kind": "variable", "index": 1}
@@ -325,10 +337,15 @@ def _summary_record(case, original_value, same_value, off_value):
         "arm": "ordinary",
         "outputs": {
             selector: {
+                "status": "selected",
                 "metrics": {
-                    grid: {"rms_over_amplitude": value, "max_over_amplitude": value}
+                    grid: {
+                        "status": "finite",
+                        "rms_over_amplitude": value,
+                        "max_over_amplitude": value,
+                    }
                     for grid in ("irregular", "diagnostic")
-                }
+                },
             }
             for selector, value in zip(
                 selection.SELECTORS,
@@ -369,6 +386,9 @@ def test_primary_paired_geometry_contrast_keeps_cases_and_large_values():
     records[1]["outputs"]["off_grid"]["metrics"]["irregular"]["rms_over_amplitude"] = (
         None
     )
+    records[1]["outputs"]["off_grid"]["metrics"]["irregular"]["status"] = (
+        "partly_or_wholly_unrepresentable"
+    )
     _, summaries = selection._contrasts(records)
     partial = next(
         row
@@ -381,6 +401,95 @@ def test_primary_paired_geometry_contrast_keeps_cases_and_large_values():
     )
     assert partial["available_pairs"] == 1 and partial["unavailable_pairs"] == 19
     assert partial["mcse"] is None
+
+
+def test_group_counts_separate_abstention_assessment_failure_and_not_run():
+    records = [_summary_record(f"white-{i:02d}", 1.0, 2.0, 1.0) for i in range(1, 6)]
+
+    def unavailable(record, selector, reason):
+        output = record["outputs"][selector]
+        output["status"] = "abstained" if reason == "abstained" else "selected"
+        for grid in ("irregular", "diagnostic"):
+            output["metrics"][grid] = {
+                "status": "nonfinite" if reason == "abstained" else reason,
+                "rms_over_amplitude": None,
+                "max_over_amplitude": None,
+            }
+
+    unavailable(records[1], "off_grid", "abstained")
+    unavailable(records[2], "off_grid", "nonfinite")
+    unavailable(records[3], "off_grid", "partly_or_wholly_unrepresentable")
+    unavailable(records[4], "off_grid", "abstained")
+    unavailable(records[4], "same_grid", "nonfinite")
+    group = next(
+        row
+        for row in selection._summaries(records)
+        if row["model"] == "white"
+        and row["arm"] == "ordinary"
+        and row["selector"] == "off_grid"
+        and row["grid"] == "irregular"
+        and row["metric"] == "rms_over_amplitude"
+    )
+    assert group["planned_cases"] == 6
+    assert group["selected_cases"] == 3
+    assert group["finite_cases"] == 1
+    assert group["abstained_cases"] == 2
+    assert group["unusable_assessment_cases"] == 2
+    assert group["nonfinite_assessment_cases"] == 1
+    assert group["unrepresentable_assessment_cases"] == 1
+    assert group["not_run_cases"] == 1
+    paired, contrasts = selection._contrasts(records)
+    primary = next(
+        row
+        for row in contrasts
+        if row["model"] == "white"
+        and row["arm"] == "ordinary"
+        and row["contrast"] == "off_grid-minus-same_grid"
+        and row["grid"] == "irregular"
+        and row["metric"] == "rms_over_amplitude"
+    )
+    assert primary["available_pairs"] == 1
+    assert primary["excluded_abstention_pairs"] == 2
+    assert primary["excluded_nonfinite_assessment_pairs"] == 1
+    assert primary["excluded_unrepresentable_assessment_pairs"] == 1
+    assert primary["not_run_pairs"] == 1
+    assert (
+        sum(
+            primary[key]
+            for key in (
+                "available_pairs",
+                "excluded_abstention_pairs",
+                "excluded_nonfinite_assessment_pairs",
+                "excluded_unrepresentable_assessment_pairs",
+                "not_run_pairs",
+            )
+        )
+        == primary["planned_pairs"]
+    )
+    case_five = next(
+        row
+        for row in paired
+        if row["case"] == "white-05" and row["contrast"] == "off_grid-minus-same_grid"
+    )
+    assert case_five["pair_status"] == "abstained"
+    assert case_five["left_status"] == "abstained"
+    assert case_five["right_status"] == "nonfinite_assessment"
+
+
+def test_metrics_retain_small_residuals_after_huge_common_values_cancel():
+    result = selection._metrics(np.array([1e308, 1.0]), np.array([1e308, 0.0]))
+    amplitude = abs(selection.original.SIGNAL["amplitude"])
+    assert result["rms_over_amplitude"] == pytest.approx(math.sqrt(0.5) / amplitude)
+    assert result["max_over_amplitude"] == pytest.approx(1 / amplitude)
+    assert result["status"] == "finite"
+    # An overflowing subtraction can still have a representable RMS over a window.
+    prediction, truth = np.zeros(128), np.zeros(128)
+    prediction[0], truth[0] = 1.7e308, -1.7e308
+    overflow = selection._metrics(prediction, truth)
+    assert overflow["rms_over_amplitude"] == pytest.approx(
+        (1.7e308 / math.sqrt(32)) / amplitude
+    )
+    assert overflow["max_over_amplitude"] is None
 
 
 @pytest.mark.parametrize("sign", [-1, 1])
