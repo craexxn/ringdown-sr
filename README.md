@@ -10,6 +10,10 @@ Der fertige Ergebnis-PR #103 ist seit 23.11.2026 nach erfolgreicher
 in `main` übernommen (`3ee6e22`).
 [PR #104](https://github.com/craexxn/ringdown-sr/pull/104) führt den neuen
 Methoden-/Ergebnisstand und die abschließende technische CI.
+Im ersten vollen CI-Lauf bestehen 4.791 Python-Tests und 30/34 native
+Fachschritte; der Lauf endet nach rund 120 Minuten ohne Vollfreigabe.
+Die [begründete Jobfristkorrektur](docs/ci.md#aktuelle-jobfrist-nach-pr104-abbruch)
+benötigt eine neue vollständige Prüfung.
 
 23.11.2026: Der [White-Skalierungspilot](docs/white_loss_scaling.md) ist mit
 72 festen Optimierungen und 21 freien Suchen einschließlich drei exakten

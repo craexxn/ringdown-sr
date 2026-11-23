@@ -38,6 +38,13 @@ Keine allgemeine Verlustumstellung, kein Komplexitätsschnitt und keine Änderun
 historischer Protokolle. Nächster vorgeschlagener Schritt: lesende Struktur-/
 Domainbewertung, danach Bestätigung mit begründeter Validierungsinformation.
 Die vollständige technische CI am abschließenden Head wird in PR104 geführt.
+Im ersten Ready-Lauf `45155705726` auf `fd5e7d0` bestehen 4.791 Python-Tests
+und 30/34 native Fachschritte. Der native Job wird nach 120 min 15 s
+abgebrochen; das Abschlussgate verweigert korrekt die Freigabe.
+Die [CI-Dokumentation](ci.md#aktuelle-jobfrist-nach-pr104-abbruch) begründet
+180 statt 120 Minuten ausschließlich für den seriellen nativen Job.
+Keine fachliche Prüfung oder wissenschaftliche Frist wird geändert;
+der neue Workflowstand benötigt einen frischen vollständigen Ready-Lauf.
 
 ## Ausgangsbefund: Auswertung und Nachprüfung der Manjaro-Folgestudie
 

@@ -6,6 +6,29 @@ und bei manuellem Aufruf. Es gibt keine Workflow-Pfadfilter. Die Umsetzung folgt
 [Abschnitten 4 und 5 des Sparplans](github_actions_savings_plan.md); die dortige
 Main-Wiederverwendung bleibt getrennte Folgearbeit.
 
+## Aktuelle Jobfrist nach PR104-Abbruch
+
+Am 23.11.2026 besteht im [Ready-Lauf 45155705726](https://github.com/craexxn/ringdown-sr/actions/runs/45155705726)
+auf Head `fd5e7d099a777b5462208a727e1f5a4c45a52d01` die Vorbereitung mit
+4.791 Python-Tests, Ruff, Format und 124 Dokumentationsdateien. Der native Job
+läuft von 10:34:04 bis 12:34:19 UTC und endet als `cancelled`:
+30 von 34 Fachschritten bestehen, der Rauschpilot wird abgebrochen,
+Hintergrund-, Folgestudien- und White-Skalierungscheck werden nicht begonnen.
+Das Log meldet `The operation was canceled.`; eine gesonderte Abbruchannotation
+liegt nicht vor. Die Dauer von 120 min 15 s bei konfigurierten 120 Minuten
+spricht stark für die Jobfrist. Der Abschluss verweigert korrekt die Freigabe.
+
+Das letzte abgeschlossene Fachprogramm endet bereits nach 119 min 24 s.
+Die vier verbleibenden Blöcke umfassen zusammen 18 frische Suchworker sowie
+feste Kontrollen, Verifikationen und Plotexporte. Ausschließlich der serielle
+`native`-Job erhält daher **180 Minuten** als begrenzte Reserve, keine
+vorhergesagte Laufzeit. `prepare` und Abschluss behalten je 75 Minuten.
+Alle Prüfschritte, Workerfristen, Suchbudgets, wissenschaftlichen Programme
+und das Vollständigkeitsgate bleiben unverändert. Historische Angaben zu
+120 Minuten weiter unten beschreiben den früheren Stand. Der korrigierte
+Workflow benötigt eine frische vollständige Ready-CI; der Abbruch und seine
+bestandenen Teilschritte sind kein vollständiger Erfolgsnachweis.
+
 ## Scope und Ausführungsmodus
 
 `prepare` gibt `full`, `comparison_known` und `mode` aus. `full` beschreibt den
