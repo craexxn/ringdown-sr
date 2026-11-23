@@ -9,11 +9,13 @@ der am 23.11.2026 nach bestandener
 [Dokumentations-CI](https://github.com/craexxn/ringdown-sr/actions/runs/45035553844)
 als `3ee6e22e9a78e867dae1923152c8df69d73791aa` übernommen wurde.
 Die Umsetzung ist in [PR #104](https://github.com/craexxn/ringdown-sr/pull/104)
-als Draft vorbereitet. Der wissenschaftliche Pilot läuft im getrennten,
-unveränderten Ausführungscheckout
-`d72202e341a51df0d19a4f86c67dbb1eb900c7b2` unter `white-scaling-cloud-001`.
-Eine vollständige wissenschaftliche Freigabe steht bis zum Abschluss und
-lesenden Replay aus. Die anschließende Auswahlprüfung ist implementiert,
+als Draft vorbereitet. Der erste wissenschaftliche Pilot auf
+`d72202e341a51df0d19a4f86c67dbb1eb900c7b2` unter `white-scaling-cloud-001`
+ist nach vollständiger fester Stufe und erster erfolgreicher freier Suche
+an einer neuen Elternprüfung abgebrochen. Die unten dokumentierte Korrektur
+bereitet `white-scaling-cloud-002` mit unverändertem Plan vor. Eine vollständige
+wissenschaftliche Freigabe steht bis zum Abschluss und lesenden Replay aus.
+Die anschließende Auswahlprüfung ist implementiert,
 aber bis zu ihrem gesonderten Vorabplan technisch gesperrt.
 
 ## Technische Nachweise vor dem Pilotstart
@@ -58,6 +60,27 @@ der Arbeit zunächst einen missverständlichen `aborted`-Vorgabewert ohne
 Anzeige unterscheidet deshalb einen begonnenen gespeicherten Stand von einem
 belegten Abschluss. Die laufenden Quellen und Ergebnisdateien werden dafür
 nicht geändert.
+
+## Erhaltener Fehlversuch 001 und gezielte Korrektur
+
+Alle 72 festen Optimierungen und die erste freie Suche sind numerisch
+erfolgreich. Die freie Suche erzeugt zwölf ursprüngliche Kandidaten und
+erreicht ihre 100 äußeren Iterationen. Erst die zusätzliche Elternprüfung
+der Baseline scheitert: Ein Hilfsprüfer für nichtnegative Verlustwerte wurde
+auf signierte Signalbeobachtungen angewandt. 63 Werte sind negativ, keiner
+subnormal. Die Korrektur prüft deren Betrag; Verlustkern, Optimierer,
+rationale Fehlerschranken, Seeds und Vorabplan bleiben unverändert.
+44 gezielte Tests einschließlich gemischter Vorzeichen für alle drei Arme
+und weiterhin abgelehnter Unterlaufgegenfälle bestehen. Eine unabhängige
+lesende Nachrechnung bestätigt alle zwölf Originalkandidaten und die
+Baseline; sie ersetzt nicht die fehlende vollständige Serienverifikation.
+
+001 bleibt als abgebrochener Versuch einschließlich aller Teilresultate
+erhalten. Serienwandzeit 1.037,583 s; darin 940,210 s feste Worker und
+96,409 s erster freier Worker, also keine zusätzlich zu addierenden Kosten.
+Der neue vollständige Durchlauf verwendet dieselben zwei Rauschfenster und
+Sequentiervorgaben in frischen Prozessen. Wiederholte Daten zählen nicht als
+zusätzliche unabhängige Fälle; keine Auswahl günstiger Suchwiederholungen.
 
 Die drei getrennten Verlustpfade sind gewöhnliche MSE (O), dieselbe MSE
 multipliziert mit 1/sigma² (S) und der diagonale Kovarianzpfad (K).

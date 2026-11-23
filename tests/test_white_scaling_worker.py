@@ -151,8 +151,9 @@ def test_changed_plan_is_rejected_before_preparation(monkeypatch):
 
 @pytest.mark.parametrize("arm", scaling.ARMS)
 @pytest.mark.parametrize("amplitude", [1.0, 0.001])
-def test_zero_baseline_and_floor_are_independently_checked(arm, amplitude):
-    observed = np.array([1.0, 2.0, 3.0, 4.0]) * amplitude
+@pytest.mark.parametrize("signs", [(1, 1, 1, 1), (1, -1, 0, -1)])
+def test_zero_baseline_and_floor_are_independently_checked(arm, amplitude, signs):
+    observed = np.array([1.0, 2.0, 3.0, 4.0]) * signs * amplitude
     document = request(arm)
     loss = mean_squared_error(observed)
     factor = None
@@ -191,6 +192,18 @@ def test_zero_baseline_and_floor_are_independently_checked(arm, amplitude):
         scaling.verify_normalization(
             document, observed, changed_both, native_factor=factor
         )
+
+
+@pytest.mark.parametrize("arm", scaling.ARMS)
+@pytest.mark.parametrize("sign", [-1, 1])
+@pytest.mark.parametrize("magnitude", [np.nextafter(0.0, 1.0), 1e-160])
+def test_signed_subnormal_observations_or_squares_remain_outside_reduction_domain(
+    arm, sign, magnitude
+):
+    observed = np.array([1.0, -2.0, sign * magnitude, 4.0])
+    # The unsupported value must fail before a purported baseline is consumed.
+    with pytest.raises(ValueError, match="normal Float64 domain"):
+        scaling.verify_normalization(request(arm), observed, {})
 
 
 def test_interrupted_worker_preserves_original_exception_and_known_costs(

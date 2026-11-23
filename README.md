@@ -12,8 +12,10 @@ in `main` übernommen (`3ee6e22`). Der aktuelle Methoden-PR #104 bleibt in Arbei
 23.11.2026: Die empfohlene kleine White-Skalierungskontrolle ist
 [vorab festgelegt](docs/white_loss_scaling_plan.md) und wird in einem getrennten
 [Laufweg](docs/white_loss_scaling.md) umgesetzt. Nach bestandenen technischen
-Kontrollen läuft der begrenzte Pilot auf einem getrennten, unveränderten
-Ausführungsstand; vollständige Ergebnisse stehen noch aus. Anschließend folgt eine einzelne
+Kontrollen hat der erste Pilot die feste Stufe abgeschlossen; eine fehlerhafte
+Vorzeichenprüfung in der anschließenden Elternverifikation ist korrigiert.
+Der vollständige Neustart behält den Plan bei; Ergebnisse stehen noch aus.
+Anschließend folgt eine einzelne
 begründete Auswahlintervention; keine pauschale Verringerung der Komplexität.
 
 Aktuelle Auswertung vom 22.11.2026: Zur in

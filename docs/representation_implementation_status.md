@@ -10,8 +10,10 @@ Der [Plan](white_loss_scaling_plan.md) ist vor Beobachtungen in
 `222b4bc2263e6200bf29b2424c2a5e6bd318bdd2` gebunden. Getrennte O/S/K-Pfade,
 72 feste lokale Diagnosen, 18 freie Kurzsuchen und drei vorbestimmte
 Wiederholungen sind implementiert. Nach vollständiger technischer Vorprüfung
-läuft die wissenschaftliche Ausführung unter `white-scaling-cloud-001` auf
-dem unveränderten Commit `d72202e341a51df0d19a4f86c67dbb1eb900c7b2`;
+ist `white-scaling-cloud-001` auf dem unveränderten Commit
+`d72202e341a51df0d19a4f86c67dbb1eb900c7b2` nach 72 festen Optimierungen
+und erster nativer Suche an einer signierten Baselineprüfung abgebrochen.
+Die gezielte Korrektur ist geprüft; 002 behält denselben Plan bei.
 Prüf-, Review- und Ergebnisstand im [Laufdokument](white_loss_scaling.md).
 Danach eine getrennt begründete Auswahlintervention, kein allgemeiner
 Komplexitätsschnitt und keine Änderung historischer Protokolle.

@@ -283,7 +283,8 @@ def verify_normalization(request, observed, result, *, native_factor=None):
     if values.ndim != 1 or values.size == 0 or not np.all(np.isfinite(values)):
         raise ValueError("Invalid normalization input vector.")
     for value in values:
-        weighted_replay.duration_replay._normal_or_zero(float(value))
+        # Observations are signed; the positive-domain helper checks magnitude.
+        weighted_replay.duration_replay._normal_or_zero(abs(float(value)))
         weighted_replay.duration_replay._normal_or_zero(float(value * value))
     u = Fraction(1, 2**53)
     lower, upper = weighted_replay._reduction_bounds(values.size)
