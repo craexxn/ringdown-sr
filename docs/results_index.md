@@ -1,10 +1,17 @@
 # Ergebnisindex und Archivierungsstand
 
-Stand: 22.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
+Stand: 23.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
 nachträglichen Bewertungen; [Ablagerichtlinie](results_archiving.md).
 Serien sind die Indexeinheit, ihre Zellen/Wiederholungen bleiben im Originalbericht.
 Die Aufstellung ist keine Behauptung, dass alle jemals lokal erzeugten Ergebnisse
 bereits erfasst oder gesichert seien.
+
+Der [White-Skalierungspilot](white_loss_scaling.md) ergänzt den
+[Eintrag vom 23.11.2026](#white-skalierungspilot-vom-23112026): abgeschlossener
+technischer Vorlauf und erhaltener wissenschaftlicher Abbruch 001 sind getrennt
+archiviert. Der unveränderte Wiederholungsplan läuft als 002; ein fertiger
+technischer Nachweis oder Teilbefund ist keine vollständige wissenschaftliche
+Serienfreigabe.
 
 **Archivierung offen:** Dauerhafte Ablage und eine geprüfte zweite Kopie sind
 hier noch nicht bestätigt. Lokal verfügbare Arbeitskopien werden nicht als
@@ -911,6 +918,52 @@ unabhängige hashgeprüfte Zweitkopie bleiben unbestätigt.
   [Entwicklungsabnahme](noise_followup_development_001.md).
 - Ablage: lokaler Cloud-Exportordner `ringdown-noise-followup`.
   Dauerhafte Archivablage und unabhängige Zweitkopie **offen**.
+
+### White-Skalierungspilot vom 23.11.2026
+
+Fragestellung, feste Budgets, Mechanismusdiagnose und Folgeschritt im
+[Lauf-/Befunddokument](white_loss_scaling.md); Vorabplancommit
+`222b4bc2263e6200bf29b2424c2a5e6bd318bdd2`. Zwei neue Rauschfenster,
+72 feste lokale Diagnosen und 21 freie Kurzsuchen einschließlich drei
+vorbestimmter Wiederholungen. Diese Wiederholungen sind keine weiteren
+unabhängigen Datenfälle.
+
+`white-scaling-technical-001` ist auf
+`d72202e341a51df0d19a4f86c67dbb1eb900c7b2` erfolgreich ausgeführt und separat
+lesend geprüft: 146 native Assertions, neun unabhängige arithmetische Referenzen,
+vier kleine Suchworker und vier feste Starts. 508,629 s technische Aufrufzeit;
+kein wissenschaftlicher Suchbefund.
+
+`white-scaling-cloud-001` bleibt **abgebrochen**, ebenfalls auf `d72202e`:
+72 feste Optimierungen und eine freie Suche erfolgreich, danach fehlerhafte
+signierte Baselineprüfung im Elternverifier. Gesamte Serienzeit 1.037,583 s,
+verschachtelte Workerzeiten nicht hinzuaddieren. Die gezielte spätere
+Nachrechnung bestätigt den fertigen Teil; sie ersetzt keinen fehlenden
+Serienabschluss. Der neue Versuch `white-scaling-cloud-002` auf
+`5ae263a5cddd65417aa5d5466646218168d074e7` erhält dieselben Eingaben und
+Budgets. Sein vollständiger Abschluss ist noch ausstehend.
+
+Neue, unverändert erhaltene Archive und Quellenpakete:
+
+| Archiv | SHA-256 |
+| --- | --- |
+| `white-scaling-cloud-001-aborted-originals.tar.gz` | `05828cd3337d5e5c35ad23a2946f5945e144610eb7c5c2b5c056a50b077e715a` |
+| `white-scaling-technical-001-originals.tar.gz` | `02104c51ff774683ed5fafd594602dff17421739db1ae635ac04c928eee8279f` |
+| `white-scaling-cloud-001-closed-evidence.tar.gz` | `fcb6368cb3aeefcf697d45f6e5bb53b493005647ce80cb5a9884cc174c606e97` |
+| `ringdown-sr-source-d72202e341a5.tar.gz` | `e16ef6884bc9899348ea6862e85007b070a11af9ca66b1fefdadc9e93bc6bb9d` |
+| `ringdown-sr-source-5ae263a5cddd.tar.gz` | `7ffca5d95697f95bf8f561ab933790d35c241f074972a215957d2e857c2c97a1` |
+| `ringdown-sr-history-through-5ae263a.bundle` | `6ea31fbc481af792cf9814ec1eb9e4ad27a96d0e4c84c75f997f61389b2e6b6c` |
+
+Ablagehinweis: separates Exportpaket `white-scaling-downloads-001`, darin
+`archive-catalog.json`, SHA-Dateien und eine kleine Übersicht. Alle Dateien
+sind kleiner als 24 MiB. Archivnutzdateien und Originalverzeichnisse sind
+vor/nach dem Packen identisch; 196 Quellenbindungen und acht tatsächlich
+gelesene Julia-Paketquellen sind geprüft. Das Git-Bundle erlaubt die geprüfte
+Offline-Wiederherstellung der 224 Vorgängercommits einschließlich beider
+Ausführungsstände. Das Nachweispaket trennt gezielte lokale Tests und
+erfolgreiche Draft-Vorprüfung ausdrücklich von noch ausstehender voller
+Ready-CI. Der Wiederholungslauf 002 ist in diesen abgeschlossenen Archiven
+nicht enthalten. Unabhängige Sicherung weiterhin unbestätigt.
 
 ### Priorisierte fehlende Belege
 

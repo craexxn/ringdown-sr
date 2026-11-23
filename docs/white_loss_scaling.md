@@ -82,12 +82,68 @@ Der neue vollständige Durchlauf verwendet dieselben zwei Rauschfenster und
 Sequentiervorgaben in frischen Prozessen. Wiederholte Daten zählen nicht als
 zusätzliche unabhängige Fälle; keine Auswahl günstiger Suchwiederholungen.
 
+## Abgeschlossene feste Stufe und numerischer Mechanismus
+
+Der getrennte Lauf 002 auf `5ae263a5cddd65417aa5d5466646218168d074e7`
+hat alle 72 festen Optimierungen abgeschlossen. Die unabhängige skalare
+Nachrechnung bestätigt gegenüber 001 bitgleiche Eingaben, Originalbäume,
+Vorhersagen, Residuen, Parametertraces, Callbackzahlen und Zufallszustände.
+Das sind dieselben zwei Rauschfenster, keine zusätzliche Stichprobe.
+Die freien Suchen sind noch nicht vollständig; die feste Stufe allein
+begründet keine allgemeine Aussage über freie Formelfindung.
+
 Die drei getrennten Verlustpfade sind gewöhnliche MSE (O), dieselbe MSE
 multipliziert mit 1/sigma² (S) und der diagonale Kovarianzpfad (K).
 Ein eigenes Requestformat und eigene Quellenbindungen lassen historische
 Suchprofile und Ergebnisse unverändert. Der feste Strukturvergleich prüft
 identische Startwerte und Neustartziehungen; freie Suchen behalten 300/5,
 Grammatik und bisherige Trainingsverlust-Auswahl.
+
+Alle 432 tatsächlichen Startzustände der lokalen Optimierungen stimmen mit
+den vorgeschriebenen Start-/Neustartwerten überein. Bei je 24 gepaarten
+Vergleichen unterscheiden sich die Parameterpfade ab dem ersten Update;
+die Endvorhersagen bleiben praktisch gleich:
+
+| Vergleich | Paare | Größtes absolutes Delta der abschließenden MSE | Größte Vorhersagedifferenz/A auf dem unregelmäßigen Prüfraster |
+| --- | --- | --- | --- |
+| S gegen O | 24 | 6,46e−17 | 3,19e−8 |
+| K gegen S | 24 | 1,73e−18 | 1,58e−9 |
+
+Die feste bekannte Familie erreicht über alle Starts und Suchseeds etwa
+1,2801 % bzw. 1,5231 % RMSE/A in den beiden Rauschfenstern. Die vorgegebene
+Familie ist privilegiertes Entwicklungswissen, keine frei wiederentdeckte
+Struktur und kein Argument für ihre Knotenzahl als allgemeine Suchgrenze.
+Die Callbacksummen O/S/K sind 116.613 / 98.844 / 99.327; die gemessenen
+Einzelzeiten enthalten Erstkompilierung und begründen keine allgemeine
+Geschwindigkeitsrangfolge.
+
+Die gepinnten Quellen von SymbolicRegression 2.5.1 und Optim 2.2.2 erklären,
+warum mathematisch äquivalente Verlustskalierungen verschiedene Pfade erlauben.
+Der evolutionäre Kostenwert verwendet
+`loss / max(baseline_loss, 0.01) + complexity * parsimony`; die Baseline
+wird ebenfalls mit dem jeweiligen Verlust berechnet. Oberhalb der Untergrenze
+kürzt sich ein gemeinsamer positiver Faktor mathematisch heraus. Die lokale
+Konstantenoptimierung erhält dagegen den rohen Verlust: BFGS beginnt mit der
+Einheitsmatrix als inverser Hesse-Näherung und einer Backtracking-Liniensuche.
+Damit sind bereits die ersten Schritte nicht allgemein skalierungsinvariant.
+Die unveränderte absolute Gradientenschranke `g_abstol=1e-8` entspricht zudem
+verschiedenen Schranken in MSE-Einheiten. Sie ist eine mögliche weitere
+Einflussstelle, aber kein nachgewiesener Abbruchgrund eines konkreten Fits:
+Der native Aufrufer verwirft die lokalen Optim-Ergebnisobjekte.
+
+Der Befund weist somit Pfadabhängigkeit nach, keine praktische Verbesserung
+der festen Endkurven und keinen Fehler des diagonalen Kovarianzkerns.
+Rundung, diskrete Auswahl und andere lokale Optimierer bei einzelnen freien
+Bäumen müssen bei den noch laufenden freien Suchen getrennt berücksichtigt
+werden. Insbesondere ist Newton für einen einzelnen skalaren Parameter
+nicht durch den BFGS-Feststrukturvergleich abgedeckt.
+
+Diese Trennung von evolutionärer Suche, Konstantenoptimierung und Auswahl
+entspricht [Cranmer (2023)](https://arxiv.org/abs/2305.01582).
+[Keijzers (2003) „linear scaling“](https://groups.csail.mit.edu/EVO-DesignOpt/groupWebSite/uploads/Site/keijzer-improving-symbolic-regression-interval-arithmetic-linear-scaling-eurogp-2003.pdf)
+bezeichnet einen affinen Ausgabefit und ist nicht mit unserem positiven
+Verlustfaktor gleichzusetzen. Die tatsächlich gelesenen Paketquellen und
+ihre Hashes bleiben im Nachweispaket erhalten.
 
 ## Befehle
 
