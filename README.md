@@ -5,6 +5,23 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
+23.11.2026: Der [Pilotabschluss](docs/pilot_closeout.md) ist einschließlich
+der begrenzten lesenden Struktur-/Domainprüfung fertig: 468 Originalausgaben,
+separater Replay und unabhängiger Evidenzaudit. Die zusätzliche Auswahl findet
+48 (Same-grid) bzw. 41 (Off-grid) nachgewiesene Familienmitglieder gegenüber
+null bei der Originalauswahl; dort bleiben 147 von 156 Familienfragen ungeklärt.
+Das ist kein Nachweis richtiger physikalischer Parameter oder einer allgemein
+überlegenen Auswahlregel. Originalformeln, Plots, Punktdaten und der erhaltene
+erste Replayabbruch sind im [Archivindex](docs/results_index.md) gebunden.
+
+Die Pilotentwicklung ist damit abgeschlossen. Nächster abgegrenzter Schritt
+ist die technische Umsetzung des [Hauptversuchsprotokolls](docs/main_study_protocol.md).
+Beschlossen ist **4 × 1.000 Suchiterationen, lokal 300/5, mit zusätzlichem
+Vergleich der gemessenen Rechenkosten**. Der konkrete Hauptentwurf schlägt
+zwei Signalbedingungen, O/K/E64/E4096 und 80 unabhängige Blöcke vor;
+Plan-/Seedbindung und Serienanbindung stehen noch aus. Keine Hauptsuche
+gestartet, keine allgemeine Verlustumstellung oder kleinere Komplexitätsgrenze.
+
 Der fertige Ergebnis-PR #103 ist seit 23.11.2026 nach erfolgreicher
 [Dokumentations-CI](https://github.com/craexxn/ringdown-sr/actions/runs/45035553844)
 in `main` übernommen (`3ee6e22`).
@@ -15,7 +32,7 @@ Fachschritte und das Abschlussgate bestanden. Der vorherige 120-Minuten-Abbruch
 und die bestätigte Jobfristkorrektur bleiben in der
 [CI-Dokumentation](docs/ci.md#aktuelle-jobfrist-nach-pr104-abbruch) erhalten.
 
-23.11.2026: Der [White-Skalierungspilot](docs/white_loss_scaling.md) ist mit
+Vorheriger Prüfstand vom 23.11.2026: Der [White-Skalierungspilot](docs/white_loss_scaling.md) ist mit
 72 festen Optimierungen und 21 freien Suchen einschließlich drei exakten
 Wiederholungen vollständig lesend bestätigt. Feste Endkurven bleiben praktisch
 gleich; freie Formeln unterscheiden sich deutlich. Zwei Rauschfenster begründen
@@ -24,10 +41,11 @@ Die daraus begründete [Auswahlprüfung](docs/offgrid_selection_plan.md) ist
 gesondert vorab festgelegt und vollständig geprüft: 156 Pakete, 468 Ausgaben,
 keine neue Suche. Mit zusätzlicher Validierungsinformation sinken die
 Off-grid-Gruppenmittel gegenüber der Originalauswahl; der direkte Rastervergleich
-ist gemischt und teilweise von einem Einzelwert geprägt. Die nächste begrenzte
-Empfehlung ist eine lesende Struktur-/Domainbewertung der neuen Auswahlen und
-danach eine Bestätigung mit vorab begründeter, tatsächlich verfügbarer
-Validierungsinformation. Originalformeln und Komplexitätsgrenze bleiben unverändert.
+ist gemischt und teilweise von einem Einzelwert geprägt. Die anschließend
+empfohlene Struktur-/Domainbewertung ist im oben verlinkten Pilotabschluss
+ausgeführt. Zusätzliche Signalbeobachtungen werden für die Hauptserie nicht
+als verfügbare Einzelevent-Information vorausgesetzt. Originalformeln und
+Komplexitätsgrenze bleiben unverändert.
 
 Ausgangsbefund vom 22.11.2026: Zur in
 [PR #102](https://github.com/craexxn/ringdown-sr/pull/102) übernommenen

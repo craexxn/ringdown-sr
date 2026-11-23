@@ -6,15 +6,18 @@ Serien sind die Indexeinheit, ihre Zellen/Wiederholungen bleiben im Originalberi
 Die Aufstellung ist keine Behauptung, dass alle jemals lokal erzeugten Ergebnisse
 bereits erfasst oder gesichert seien.
 
-Der [White-Skalierungspilot](white_loss_scaling.md) ergänzt den
-[Eintrag vom 23.11.2026](#white-skalierungspilot-vom-23112026): abgeschlossener
-technischer Vorlauf und erhaltener wissenschaftlicher Abbruch 001 sind getrennt
-archiviert. Lauf 002 ist inzwischen vollständig abgeschlossen und mit
-unabhängiger Kosten-/Bestandsprüfung sowie geschütztem Plotexport bestätigt.
-Die zugehörigen neuen Archive werden getrennt von 001 gebunden.
-Auch die anschließende [Auswahlprüfung](#gezielte-auswahlprüfung-vom-23112026)
-ist vollständig lesend bestätigt: 156 Pakete, 468 Ausgaben, keine neuen Suchen.
-Originale, konsumierte Prüfkopien und Darstellungen haben getrennte Archivrollen.
+Der [Pilotabschluss](pilot_closeout.md) vom 23.11.2026 verbindet den
+abgeschlossenen [White-Skalierungspiloten](white_loss_scaling.md), die
+[Auswahlprüfung](#gezielte-auswahlprüfung-vom-23112026) und die jetzt ebenfalls
+abgeschlossene [lesende Strukturprüfung](#lesende-strukturprüfung-und-pilotabschluss-vom-23112026).
+Alle 468 ausgewählten Ausgaben sind strukturell geprüft und im separaten Replay
+bestätigt; der unabhängige Evidenz-/Zensusaudit ist abgeschlossen. Es gab keine
+neuen Suchen oder Anpassungen. Originale, Prüfkopien, erhaltener erster
+Replayabbruch und Darstellungen haben getrennte Archivrollen.
+Das [Hauptversuchsprotokoll](main_study_protocol.md) beschreibt den nächsten
+Schritt mit frischen Fällen und dem bestätigten festen Suchprofil bei zusätzlich
+gemessenen Kosten. Es ist ein dokumentarischer Vorschlag; die Hauptserie ist
+noch nicht ausgeführt und ihre Eingaben sind noch nicht maschinell gebunden.
 
 **Archivierung offen:** Dauerhafte Ablage und eine geprüfte zweite Kopie sind
 hier noch nicht bestätigt. Lokal verfügbare Arbeitskopien werden nicht als
@@ -1046,6 +1049,88 @@ HTML-Verweise, 40 Paketdateien und ZIP-Prüfsummen sind geprüft; die wissenscha
 Abbildungen sind visuell kontrolliert. Die große Originalpublikation bleibt
 ein separates Archiv. Dieses Darstellungs-ZIP ersetzt keine Original- oder
 Eingabearchive und keine unabhängige Sicherung.
+
+### Lesende Strukturprüfung und Pilotabschluss vom 23.11.2026
+
+`pilot-structure-closeout-001`, tatsächliche Ausführungsquelle
+`aef40517334da106a6d6582963e720525056fbb0`. Der unveränderte begrenzte
+Strukturerkenner prüft alle **468 ausgewählten Ausgaben aus 156 Paketen**
+(26 bekannte Entwicklungsfälle × sechs Arme × drei Auswahlregeln).
+Keine Fits, Suchen, erneute Auswahl, Konstantenanpassung oder neuen
+Vorhersageberechnungen. Befund, Beweisgrenzen und Entscheidungen stehen im
+[Pilotabschluss](pilot_closeout.md); das
+[Hauptversuchsprotokoll](main_study_protocol.md) ist separat davon ein noch
+nicht ausgeführter Plan mit frischen Fällen.
+
+18 technische Referenz-/Bindungsprüfungen bestehen vor der Anwendung.
+Die Strukturprüfung umfasst 375 unterschiedliche Beweisaufrufe und 93 exakte
+Cachetreffer. Der erste Replay rechnet alle 468 Ausgaben ohne Cache nach,
+bricht aber beim Vergleich nativer Tupel mit gespeicherten JSON-Listen im
+Präzisionsfeld ab. Dieser gesperrte Fehlversuch mit seinen Teilständen,
+Fehlern und Kosten bleibt unverändert erhalten. Ein separat geprüfter Verifier
+vergleicht kanonische JSON-Datensätze; vier gezielte Gegenprüfungen erhalten
+die Ablehnung veränderter Beweise, Status, Zahlen, Präzision und Felder.
+Replay `verification-002` bestätigt **468/468 Datensätze bytegleich ohne Cache**.
+Der unabhängige Evidenz-/Zensusaudit bestätigt Originalkandidaten, Intervalle,
+Gruppenzahlen, Statusübergänge und Verifierbindungen; er führt keine zusätzliche
+mathematische Klassifikation durch.
+
+Für Original-/Same-grid-/Off-grid-Auswahl sind 0/48/41 Familienmitgliedschaften
+belegt, 9/6/3 Nichtmitgliedschaften belegt und 147/102/112 ungeklärt.
+Ungeklärt bedeutet kein bewiesenes Nichtmitglied; Familienmitgliedschaft
+belegt keine richtigen physikalischen Parameter. Domainbefunde bleiben davon
+getrennt. Resttermquantifizierung und neue Parametermatches sind nicht bewertet.
+Diese retrospektive Auswertung bekannter Fälle ist keine unabhängige Bestätigung.
+
+Gemessene Wandzeiten: Strukturprüfung 8,714 s, erster abgebrochener Replay
+3,333 s, Replay 002 8,195 s. Die Summe der ungerundeten Aufrufzeiten ist
+**20,241 s**; technische Tests, unabhängige Audits, Galerie und Archivierung
+sind darin nicht enthalten. CPU-Scope ist `self_plus_reaped_children`;
+die CPU-Messung des Abbruchs ist unvollständig. Verschachtelte Zeiten werden
+nicht nochmals addiert; die vollständigen Kostenbelege bleiben im Nachweisarchiv.
+
+Getrennte Dateien im gemeinsamen Exportordner `pilot-closeout-001`:
+
+| Archiv / Darstellung | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `pilot-structure-closeout-evidence.tar.gz` | 10.436.906 | `9a28dc5359d50e71fe0cfdee776d415ea18e7b25edafa0490d4c50251a6d1a1c` |
+| `pilot-structure-closeout-overview.zip` | 560.122 | `4f5843552378e166f23e2b62d9ebae8275d0b1180db8ce756bdf2e88b16e7faf` |
+| `pilot-structure-closeout-full-gallery.zip` (nach Zusammenfügen) | 61.520.309 | `f9066891dac4621b1b6ec674983d15520b06f56cfc0cf5340f7dd76118b81ada` |
+
+Der Nachweiskatalog `pilot-structure-closeout-evidence-catalog.json` hat
+SHA-256 `3412649d238b14bf5f1b03324e32718ca4fea1de25a36724390d80f1913dc6cf`
+und bindet 373 Nutzdateien ohne den Katalog selbst. Das Archiv enthält den
+gebundenen Plan, Adapter, Referenzen, erfolgreichen Run, beide Replayversuche,
+separaten Audit, Quellenarchiv und Git-Bundle sowie eine genaue Eingabeteilmenge.
+Originaldateien wurden byteerhaltend gepackt; für die Archivierung liefen
+keine wissenschaftlichen Operationen oder Tests erneut.
+
+**Replayabhängigkeiten:** Der unveränderte Adapter verlangt alle 789 Dateien
+des ursprünglichen flachen Auswahlexports. Enthalten sind 317 davon,
+darunter Bericht und alle 156 Paket-JSONs; **472 originale PNG-, CSV- und
+SVG-Dateien fehlen im Nachweisarchiv**. Ihre exakten Namen und Hashes stehen
+in `input-subset/dependency-catalog.json`. Die Vollgalerie liefert originale
+Panel-PNGs und Panel-CSV, stellt aber nicht automatisch sämtliche fehlenden
+Dateien einschließlich SVG und zusätzlicher Summen-CSV wieder her. Ein
+vollständiger Replay benötigt den vollständig restaurierten Originalauswahlexport,
+die beigefügten Originalanker und ein kompatibles gesperrtes Python-Umfeld.
+Die Laufzeitumgebung ist nicht mitarchiviert; Versionen und `uv.lock` sind
+gebunden. Das vollständige `common.npz` ist erhalten, für die Strukturintervalle
+wurden nur seine beiden Zeitachsen gelesen. Große frühere Workerarchive
+werden von diesem Adapter nicht konsumiert und gehören nicht zu diesem Paket.
+Das Archiv ist lesbar, aber kein allein vollständiges Replaypaket.
+
+Die finale Darstellung stammt aus `publication-002`; `transfer-002` liefert
+die Vollgalerie in drei Teilen von höchstens 24 MiB sowie den kleinen
+Zusammenfügehelfer in `pilot-structure-closeout-gallery-tools.zip`.
+Der Helfer prüft Teilhashes, Originalhash und ZIP-Prüfsummen. Übersicht,
+Teile und Helfer sind zusätzlich bytegeprüft im gemeinsamen Exportordner
+bereitgestellt. Die Übersicht enthält alle 468 Formeltexte und Strukturstatus;
+unveränderte Originalkurven und vollständige Punktdaten liegen in der
+Vollgalerie. Beweiszertifikate gehören zum Nachweisarchiv. Diese Darstellungen
+ersetzen weder die Originalauswahlexporte noch eine unabhängige Sicherung.
+Dauerhafte Ablage und geprüfte Zweitkopie außerhalb der Arbeitsumgebung
+bleiben unbestätigt; frühere Archive und deren Belege gelten unverändert weiter.
 
 ### Priorisierte fehlende Belege
 
