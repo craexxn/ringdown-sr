@@ -34,6 +34,10 @@ NOISE_TECHNICAL_FORMAT = "ringdown-sr-noise-technical-member-1"
 NOISE_TECHNICAL_ITERATIONS = 10
 NOISE_PLAN = "docs/noise_pilot_plan.md"
 NOISE_PLAN_SHA256 = "2a8e521b7729a668832ca02b0c8dd587d46ddec4010d7657d71e7b4d4d295fb8"
+MAIN_TECHNICAL_FORMAT = "ringdown-sr-main-study-technical-member-1"
+MAIN_TECHNICAL_ITERATIONS = 10
+MAIN_PLAN = "docs/main_study_plan.md"
+MAIN_PLAN_SHA256 = "772b26883e5bb871ad64af9d60b2e07b69c786af34790e9c68cfeb6930b5d706"
 PROFILE = "r4x1000-local300x5-v1"
 WORKER_LIMIT_SECONDS = 1800
 NATIVE_FILES = (
@@ -101,6 +105,11 @@ def source_hashes(*, request=None):
             if _sha256(raw) != NOISE_PLAN_SHA256:
                 raise ValueError("Changed frozen noise-pilot technical plan.")
             names.add(NOISE_PLAN)
+        elif request["format"] == MAIN_TECHNICAL_FORMAT:
+            raw = (ROOT / MAIN_PLAN).read_bytes()
+            if _sha256(raw) != MAIN_PLAN_SHA256:
+                raise ValueError("Changed frozen main-study technical plan.")
+            names.add(MAIN_PLAN)
     names.update(
         path.relative_to(ROOT).as_posix()
         for path in (ROOT / "src/ringdown_sr").glob("*.py")
@@ -115,20 +124,26 @@ def checked_request(document):
     if (
         not isinstance(document, dict)
         or set(document) != {"format", "profile", "seed", "technical", "budget"}
-        or document["format"] not in (FORMAT, NOISE_TECHNICAL_FORMAT)
+        or document["format"]
+        not in (FORMAT, NOISE_TECHNICAL_FORMAT, MAIN_TECHNICAL_FORMAT)
         or document["profile"] != PROFILE
         or type(document["technical"]) is not bool
         or type(document["seed"]) is not int
         or not 0 < document["seed"] < 2**31
     ):
         raise ValueError("Invalid confirmed-profile request.")
-    noise_technical = document["format"] == NOISE_TECHNICAL_FORMAT
-    if noise_technical and not document["technical"]:
-        raise ValueError("Noise-pilot technical format cannot request science.")
+    ten_iteration = document["format"] in (
+        NOISE_TECHNICAL_FORMAT,
+        MAIN_TECHNICAL_FORMAT,
+    )
+    if ten_iteration and not document["technical"]:
+        raise ValueError("A ten-iteration technical format cannot request science.")
     expected = symbolic.SearchBudget(
         seed=document["seed"],
-        niterations=NOISE_TECHNICAL_ITERATIONS
-        if noise_technical
+        niterations=MAIN_TECHNICAL_ITERATIONS
+        if document["format"] == MAIN_TECHNICAL_FORMAT
+        else NOISE_TECHNICAL_ITERATIONS
+        if ten_iteration
         else 1
         if document["technical"]
         else 1000,
@@ -273,6 +288,25 @@ def prepare_noise_technical_member(
     return _prepare_member(directory, time_s, observed, covariance, request)
 
 
+def prepare_main_technical_member(
+    directory, time_s, observed, *, covariance=None, seed
+):
+    """Prepare the separately bound N103, ten-iteration main-study probe."""
+    times, target, matrix = symbolic._inputs(time_s, observed, covariance)
+    if times.shape != (103,) or not np.array_equal(times, np.arange(103) / 4096):
+        raise ValueError("The main-study technical member requires its N103 grid.")
+    request = {
+        "format": MAIN_TECHNICAL_FORMAT,
+        "profile": PROFILE,
+        "seed": seed,
+        "technical": True,
+        "budget": asdict(
+            symbolic.SearchBudget(seed=seed, niterations=MAIN_TECHNICAL_ITERATIONS)
+        ),
+    }
+    return _prepare_member(directory, times, target, matrix, request)
+
+
 def _prepare_member(directory, time_s, observed, covariance, request):
     directory = Path(directory)
     checked_request(request)
@@ -329,6 +363,11 @@ def verify_prepared(directory):
     if any(value.dtype != np.dtype("float64") for value in arrays.values()):
         raise ValueError("Confirmed-profile inputs must retain Float64 representation.")
     symbolic._inputs(arrays["time_s"], arrays["observed"], arrays.get("covariance"))
+    if request["format"] == MAIN_TECHNICAL_FORMAT and (
+        arrays["time_s"].shape != (103,)
+        or not np.array_equal(arrays["time_s"], np.arange(103) / 4096)
+    ):
+        raise ValueError("The main-study technical member requires its N103 grid.")
     if manifest["input_fingerprints"] != {
         key: sources.fingerprint(value) for key, value in arrays.items()
     }:
@@ -512,8 +551,8 @@ def _verify_origin(metadata, initial, manifest, *, completed):
         metadata.get("provenance") != initial["provenance"]
         or metadata.get("adapter_source_sha256") != manifest["sources"]
         or (
-            manifest.get("format") == NOISE_TECHNICAL_FORMAT
-            and metadata.get("format") != NOISE_TECHNICAL_FORMAT
+            manifest.get("format") in (NOISE_TECHNICAL_FORMAT, MAIN_TECHNICAL_FORMAT)
+            and metadata.get("format") != manifest["format"]
         )
     ):
         raise ValueError("Changed parent provenance or adapter.")
@@ -951,10 +990,10 @@ def verify_member(directory):
     return {
         **(
             {
-                "format": NOISE_TECHNICAL_FORMAT,
-                "requested_iterations": NOISE_TECHNICAL_ITERATIONS,
+                "format": request["format"],
+                "requested_iterations": request["budget"]["niterations"],
             }
-            if request["format"] == NOISE_TECHNICAL_FORMAT
+            if request["format"] in (NOISE_TECHNICAL_FORMAT, MAIN_TECHNICAL_FORMAT)
             else {}
         ),
         "status": outcome["status"],

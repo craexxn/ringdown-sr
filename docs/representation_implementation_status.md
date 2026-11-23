@@ -1,6 +1,49 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Pilotabschluss und konkreter Hauptversuchsplan
+## Aktuell: Hauptserie vorab gebunden, technische Anbindung in Arbeit
+
+23.11.2026, Leitfadenphase 7. Der [Pilotabschluss](pilot_closeout.md) und
+Hauptentwurf sind nach geprüftem KI-Review und erfolgreicher
+[Dokumentations-CI 45209502428](https://github.com/craexxn/ringdown-sr/actions/runs/45209502428)
+mit [PR106](https://github.com/craexxn/ringdown-sr/pull/106) als
+`a0ddad1ad7751ed858a40534a8a2fd41b73be523` übernommen. Der Mergetree
+entspricht dem geprüften Stand. Die folgende Hauptumsetzung liegt im
+Branch `codex/main-study` auf dieser Basis.
+
+Der [verbindliche Hauptplan](main_study_plan.md) und
+[die vollständige Seedtabelle](../data/main_study_seeds.json) sind in
+`126b39e311eceeb12102cf09e6da57deb735025b` vor wissenschaftlichen
+Beobachtungen gebunden. 480 wissenschaftliche und sechs technische Seeds
+sind aus 486 Ziehungen ohne Verwerfung erzeugt; die Tabelle enthält den
+vollständigen historischen Ausschluss aus 471 UTF-8-Blobs der Basis.
+Die Seedziehung erzeugt keine Signalbeobachtungen oder Hintergrundreihen.
+
+Festgelegt sind zwei Signale, 80 unabhängige Blöcke, vier Arme und insgesamt
+1280 wissenschaftliche Worker. Die technische Anbindung ergänzt N103,
+zwei getrennte Signalabschnitte, relativen L2-Fehler auf dem gebundenen
+Prüfraster sowie getrennte Struktur-/Domainbefunde. Hauptdomain exakt
+`[0,1/40] s`, zusätzliche Stützbereichsdiagnose `[0,102/4096] s`;
+historische N128-Pläne bleiben unverändert. Das Suchprofil bleibt
+R4×1000, lokal 300/5, mit separat gemessenen tatsächlichen Kosten.
+
+[Bedienung und Startfolge](main_study.md) führen den begrenzten technischen
+Vorlauf mit acht N103-Zehnerworkern, die Bindung aller 80 Hauptfälle, die
+640 Worker je Signalabschnitt, lesende Verifikation, vollständige Darstellung
+und drei gebundene Originalarchive. Eingaben, Quellen, Vorläufe und Serien
+müssen denselben sauberen Ausführungsstand binden. Neue Eingabe-, Lauf- und
+Bewertungsmodule sowie deren technische Tests werden derzeit integriert;
+lokale Gesamtprüfung, gezieltes KI-Review und vollständige Ready-CI sind
+noch nicht als bestanden belegt. Die neue native CI-Prüfung erweitert das
+Inventar auf 35 Fachschritte; die 180-Minuten-Jobfrist bleibt unverändert.
+
+Ein lokaler Cloud-Vorlauf ersetzt keinen Vorlauf am Zielrechner. Der
+Manjaro-Vorlauf ist noch unbestätigt; wissenschaftliche Hauptinputs und
+Hauptsuchen wurden hier nicht erzeugt. Nach den gebündelten lokalen Prüfungen
+folgt die volle Ready-CI. Lange CI-Läufe werden nicht fortlaufend überwacht;
+ohne vollständigen Nachweis bleibt der neue Implementierungs-PR offen.
+Endgültiger Head, Prüfbelege und nächster Startstand werden im PR nachgeführt.
+
+## Vorheriger Stand: Pilotabschluss und konkreter Hauptversuchsplan
 
 23.11.2026, Leitfadenphase 7. Die [lesende Schlussprüfung](pilot_closeout.md)
 auf unveränderten Quellen `aef40517334da106a6d6582963e720525056fbb0`

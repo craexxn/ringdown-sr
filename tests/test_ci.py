@@ -54,6 +54,7 @@ def test_only_allowed_prose_can_skip_the_technical_suite(paths):
         "docs/noise_pilot_plan.md",
         "docs/noise_background_plan.md",
         "docs/noise_followup_plan.md",
+        "docs/main_study_plan.md",
         "data/transfer_check_inputs.npz",
         "data/transfer_check_inputs.json",
         "docs/reference.npz",
@@ -714,6 +715,7 @@ def test_all_original_commands_options_error_wrappers_and_order_are_preserved():
         "Verify background study with five bounded technical workers and plots",
         "Verify duration and sampling study with six bounded technical workers and plots",
         "Verify controlled white-loss scaling in isolated technical workers",
+        "Verify main study with eight N103 technical workers and original plots",
     }
     ordered = []
     for group in ("native-a", "native-b", "native-c"):

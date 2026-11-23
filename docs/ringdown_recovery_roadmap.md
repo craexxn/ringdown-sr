@@ -1,5 +1,20 @@
 # Leitfaden: wiederholbare Ringdown-Rekonstruktion und Übergang zu Rauschversuchen
 
+Phase 7, Hauptserienanbindung vom 23.11.2026: Nach Übernahme des
+[Pilotabschlusses](pilot_closeout.md) in PR106 wird der
+[verbindliche Hauptplan](main_study_plan.md) technisch umgesetzt.
+Plan und vollständige Seedtabelle sind vor Beobachtungen in
+`126b39e311eceeb12102cf09e6da57deb735025b` gebunden. Die Matrix umfasst
+zwei Signalbedingungen, O/K/E64/E4096 und 80 unabhängige Blöcke mit
+1280 Workern bei R4×1000, lokal 300/5. Relativer L2-Fehler,
+Formelstruktur, Domain, Ausfälle und tatsächliche Kosten bleiben getrennte
+Endpunkte. Acht kurze N103-Integrationsworker prüfen den neuen Laufweg;
+sie sind keine zusätzlichen wissenschaftlichen Fälle oder Qualitätsauswahl.
+[Startfolge](main_study.md) und [aktueller Prüfstand](representation_implementation_status.md)
+trennen Implementierung, technische Abnahme und wissenschaftliche Ausführung.
+Die Umsetzung und ihre Prüfungen sind in Arbeit; kein erfolgreicher
+Manjaro-Vorlauf und keine wissenschaftliche Hauptsuche nachgewiesen.
+
 Phase 7, Pilotabschluss vom 23.11.2026: Die
 [begrenzte Struktur-/Domainprüfung](pilot_closeout.md) aller 468 bereits
 ausgewählten Originalausgaben ist mit getrenntem Replay und Evidenzaudit
@@ -10,9 +25,9 @@ richtigen physikalischen Parameter. Die bisherigen Grenzen werden im
 Die Pilotentwicklung ist beendet, ohne einen positiven Dauereffekt oder
 perfekte Rekonstruktion als weitere Abschlussbedingung zu verlangen.
 Beschlossen: R4×1000, lokal 300/5, tatsächliche Kosten zusätzlich vergleichen.
-Die konkrete Hauptmatrix ist vorgeschlagen; vor der Hauptserie folgen
-Plan-/Seedbindung und die getrennte technische Serienanbindung. Keine neue
-Hauptsuche ausgeführt, keine offene weitere Pilotoptimierung.
+Die hier zunächst vorgeschlagene Hauptmatrix ist inzwischen im oben
+verlinkten Plan gebunden; ihre technische Serienanbindung folgt getrennt.
+Keine neue Hauptsuche ausgeführt, keine offene weitere Pilotoptimierung.
 
 Vorheriger Phase-7-Abgleich vom 23.11.2026: Der
 [kleine White-Skalierungspilot](white_loss_scaling_plan.md) ist vollständig

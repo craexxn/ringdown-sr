@@ -5,6 +5,19 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
+23.11.2026: Die technische Umsetzung der **Hauptserie** läuft auf
+`codex/main-study`. Der [verbindliche Plan](docs/main_study_plan.md) und die
+vollständige Seedtabelle sind vor wissenschaftlichen Beobachtungen in
+`126b39e311eceeb12102cf09e6da57deb735025b` gebunden: zwei Signalbedingungen,
+80 unabhängige Blöcke, O/K/E64/E4096, 320 Viererpakete und 1280 Suchworker.
+R4×1000, lokal 300/5, bleibt fest; tatsächliche Kosten werden zusätzlich
+verglichen. Die neue N103-Anbindung trennt relativen L2-Fehler,
+Originalfamilie und Definitionsbereich. [Bedienung und Startfolge](docs/main_study.md)
+beschreiben acht technische Worker, Eingabebindung, beide Signalabschnitte,
+lesende Verifikation, Originalplots und Archivierung. Implementierungsprüfung
+und vollständige Ready-CI sind noch offen; ein Manjaro-Vorlauf oder eine
+wissenschaftliche Hauptsuche ist nicht nachgewiesen.
+
 23.11.2026: Der [Pilotabschluss](docs/pilot_closeout.md) ist einschließlich
 der begrenzten lesenden Struktur-/Domainprüfung fertig: 468 Originalausgaben,
 separater Replay und unabhängiger Evidenzaudit. Die zusätzliche Auswahl findet
@@ -14,13 +27,12 @@ Das ist kein Nachweis richtiger physikalischer Parameter oder einer allgemein
 überlegenen Auswahlregel. Originalformeln, Plots, Punktdaten und der erhaltene
 erste Replayabbruch sind im [Archivindex](docs/results_index.md) gebunden.
 
-Die Pilotentwicklung ist damit abgeschlossen. Nächster abgegrenzter Schritt
-ist die technische Umsetzung des [Hauptversuchsprotokolls](docs/main_study_protocol.md).
-Beschlossen ist **4 × 1.000 Suchiterationen, lokal 300/5, mit zusätzlichem
-Vergleich der gemessenen Rechenkosten**. Der konkrete Hauptentwurf schlägt
-zwei Signalbedingungen, O/K/E64/E4096 und 80 unabhängige Blöcke vor;
-Plan-/Seedbindung und Serienanbindung stehen noch aus. Keine Hauptsuche
-gestartet, keine allgemeine Verlustumstellung oder kleinere Komplexitätsgrenze.
+Die Pilotentwicklung ist damit abgeschlossen. Der Pilotabschluss und
+[Hauptentwurf](docs/main_study_protocol.md) sind mit
+[PR #106](https://github.com/craexxn/ringdown-sr/pull/106) nach erfolgreicher
+Dokumentations-CI in `a0ddad1ad7751ed858a40534a8a2fd41b73be523`
+übernommen. Die oben genannte Hauptumsetzung folgt daraus; keine allgemeine
+Verlustumstellung oder kleinere Komplexitätsgrenze.
 
 Der fertige Ergebnis-PR #103 ist seit 23.11.2026 nach erfolgreicher
 [Dokumentations-CI](https://github.com/craexxn/ringdown-sr/actions/runs/45035553844)
