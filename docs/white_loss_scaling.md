@@ -219,6 +219,18 @@ zum Archiv; Prüfzeiten und verschachtelte Rechenzeiten werden nicht hinzuaddier
 
 ## Begründetes weiteres Vorgehen
 
+Aktualisierung vom 23.11.2026: Die folgende Empfehlung ist inzwischen durch
+die [begrenzte lesende Schlussprüfung](pilot_closeout.md) abgearbeitet.
+Alle 468 ausgewählten Originalausgaben sind einschließlich Familienstatus
+und Domain bewertet und separat nachgerechnet. Neue Parameterübereinstimmungen
+und quantifizierte Restterme bleiben dabei `not_assessed`.
+Die Pilotentwicklung ist abgeschlossen; das [Hauptversuchsprotokoll](main_study_protocol.md)
+führt die tatsächlichen Signal-/Hintergrundvergleiche mit festem Suchprofil
+und zusätzlicher Kostenmessung fort. Zusätzliche Signalbeobachtungen werden
+nicht als allgemein verfügbare Selektionsinformation übernommen.
+
+Die ursprüngliche Empfehlung vor dieser Schlussprüfung lautete:
+
 Die vorhandenen Fronten enthalten nutzbare bessere Rekonstruktionskurven.
 Die nächste begrenzte Prüfung sollte deshalb die neu ausgewählten Originalbäume
 mit der vorhandenen Struktur-/Domainbewertung einordnen: Originalfamilie,

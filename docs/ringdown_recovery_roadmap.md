@@ -1,6 +1,20 @@
 # Leitfaden: wiederholbare Ringdown-Rekonstruktion und Übergang zu Rauschversuchen
 
-Phase 7, Ergänzung vom 23.11.2026: Der
+Phase 7, Pilotabschluss vom 23.11.2026: Die
+[begrenzte Struktur-/Domainprüfung](pilot_closeout.md) aller 468 bereits
+ausgewählten Originalausgaben ist mit getrenntem Replay und Evidenzaudit
+abgeschlossen. 0/48/41 Familiennachweise bei Original/Same-grid/Off-grid
+gehen mit 147/102/112 ungeklärten Familienfragen einher; sie belegen keine
+richtigen physikalischen Parameter. Die bisherigen Grenzen werden im
+[Hauptversuchsprotokoll](main_study_protocol.md) zu getrennten Endpunkten.
+Die Pilotentwicklung ist beendet, ohne einen positiven Dauereffekt oder
+perfekte Rekonstruktion als weitere Abschlussbedingung zu verlangen.
+Beschlossen: R4×1000, lokal 300/5, tatsächliche Kosten zusätzlich vergleichen.
+Die konkrete Hauptmatrix ist vorgeschlagen; vor der Hauptserie folgen
+Plan-/Seedbindung und die getrennte technische Serienanbindung. Keine neue
+Hauptsuche ausgeführt, keine offene weitere Pilotoptimierung.
+
+Vorheriger Phase-7-Abgleich vom 23.11.2026: Der
 [kleine White-Skalierungspilot](white_loss_scaling_plan.md) ist vollständig
 abgeschlossen und lesend bestätigt: gleiche feste Endkurven bei verschiedenen
 Pfaden, deutlich verschiedene freie Fronten, nur zwei unabhängige Rauschfenster.
@@ -10,10 +24,10 @@ Die daraus und aus der bisherigen Kandidatendiagnose begründete einzelne
 an sämtlichen 156 vorhandenen Paketen abgeschlossen und unabhängig geprüft.
 Zusätzliche verrauschte Beobachtungen erlauben bessere Gruppenmittel gegenüber
 Original; der isolierte Rastervergleich ist gemischt. Historische Regeln und
-Komplexitätsgrenze bleiben erhalten. Nächste begrenzte Empfehlung: lesende
-Struktur-/Domainbewertung der neuen Auswahlen, danach ein vorab begründeter
-Bestätigungsplan mit tatsächlich verfügbarer Validierungsinformation.
-Dieser Anschluss ist noch nicht ausgeführt oder als neue Suchserie beschlossen.
+Komplexitätsgrenze bleiben erhalten. Die damals empfohlene lesende
+Struktur-/Domainbewertung ist im oben verlinkten Pilotabschluss ausgeführt.
+Der neue Hauptentwurf setzt zusätzliche Signalbeobachtungen nicht als
+verfügbare Einzelevent-Information voraus.
 
 Übernommener technischer Begleitauftrag zu Phase 1: Der
 [CI-Sparplan](github_actions_savings_plan.md) bündelt lokale Prüfungen vor dem
@@ -21,7 +35,7 @@ Ready-Wechsel und führt native Kontrollen seriell aus. Die wissenschaftlichen
 Phasen und Kriterien bleiben erhalten; tatsächlicher Prüf- und Übernahmestand
 im [Fortsetzungsstand](representation_implementation_status.md).
 
-Aktueller Ergebnisabgleich vom 22.11.2026 zu Phase 7:
+Historischer Ergebnisabgleich vom 22.11.2026 zu Phase 7:
 Die [Auswertung mit Originalnachprüfung](noise_followup_results_manjaro_001.md)
 prüft 156 Paketausgaben, alle Primärkontraste, Einzelworker und Originalplots;
 39 ausgelassene lange Rauschdateien sind bitgenau rekonstruiert.

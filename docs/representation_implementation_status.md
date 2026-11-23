@@ -1,6 +1,33 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: White-Skalierung und gezielte Auswahlprüfung abgeschlossen
+## Aktuell: Pilotabschluss und konkreter Hauptversuchsplan
+
+23.11.2026, Leitfadenphase 7. Die [lesende Schlussprüfung](pilot_closeout.md)
+auf unveränderten Quellen `aef40517334da106a6d6582963e720525056fbb0`
+klassifiziert alle 468 ausgewählten Originalausgaben der 156 bekannten Pakete.
+18 technische Vorprüfungen, ein separater Replay ohne Cache und ein
+unabhängiger Evidenz-/Zensusaudit sind abgeschlossen. Der erste Replayabbruch
+durch einen Tuple-/JSON-Vergleich bleibt erhalten; vier gezielte Gegenprüfungen
+begleiten die getrennte Verifierkorrektur. Kein neuer Fit, keine Suche oder
+Neuauswahl. Original/Same-grid/Off-grid haben 0/48/41 nachgewiesene Mitglieder
+und 147/102/112 ungeklärte Familienfragen; kein neuer Parameterbeweis.
+Vollständiger Befund, Domainfälle und Kosten stehen im Abschlussbericht,
+Originalformeln/Plots/Punktdaten und Archive im [Ergebnisindex](results_index.md).
+
+Die Pilotentwicklung ist beendet. Das [Hauptversuchsprotokoll](main_study_protocol.md)
+hält die beschlossene Verwendung von R4×1000, lokal 300/5, mit zusätzlicher
+Kostenmessung fest. Vorgeschlagen sind zwei Exposé-Signale, O/K/E64/E4096,
+80 unabhängige Blöcke, 320 Paketausgaben und 1280 Worker, relativer L2-Fehler
+sowie getrennte Struktur-/Domainbefunde. Das Dokument ist ein konkreter
+Planungsentwurf, keine Laufzeiteingabe oder bereits ausgeführte Hauptserie.
+Nächster Schritt: endgültige Protokoll-/Seedbindung, neue N103-Serienanbindung
+und acht kleine technische Integrationsworker vor dem Hauptlauf.
+Keine weitere offene Pilotoptimierung. Unabhängige Archiv-Zweitkopien bleiben
+unbestätigt. Der Dokumentationsbranch `codex/pilot-closeout` baut auf
+`aef4051` nach PR105 auf; endgültiger Head, gezieltes KI-Review und
+Dokumentationsprüfungen werden im zugehörigen PR geführt.
+
+## Vorheriger Stand: White-Skalierung und gezielte Auswahlprüfung abgeschlossen
 
 23.11.2026, Leitfadenphase 7. Die Umsetzung entstand im Branch
 `codex/white-loss-scaling-pilot`, ausgehend von PR103-Head
@@ -38,8 +65,10 @@ zwölf Gruppen; zusätzliche Beobachtungen und bei gewichteten Armen die neue
 Auswahlmetrik verhindern eine alleinige Zuschreibung ans Raster.
 Report, Originalformeln und Grenzen im [Befund](white_loss_scaling.md).
 Keine allgemeine Verlustumstellung, kein Komplexitätsschnitt und keine Änderung
-historischer Protokolle. Nächster vorgeschlagener Schritt: lesende Struktur-/
-Domainbewertung, danach Bestätigung mit begründeter Validierungsinformation.
+historischer Protokolle. Die damals vorgeschlagene lesende Struktur-/
+Domainbewertung ist inzwischen im oben verlinkten Pilotabschluss ausgeführt;
+der konkrete Hauptentwurf führt keine zusätzlichen Signalbeobachtungen als
+Selektionsinformation ein.
 Im ersten Ready-Lauf `45155705726` auf `fd5e7d0` bestehen 4.791 Python-Tests
 und 30/34 native Fachschritte. Der native Job wird nach 120 min 15 s
 abgebrochen; das Abschlussgate verweigert korrekt die Freigabe.
@@ -3429,6 +3458,14 @@ und keine erneute Primärdaten- oder native Nachrechnung dieses Befunds.
   offenem Review oder ausstehender CI beschreiben ihren damaligen Stand.
 
 ### Exposé und nächste abgegrenzte Schritte
+
+Dieser Abschnitt hält den damaligen Abgleich fest. Ergänzung vom 23.11.2026:
+Die Budgetfrage ist inzwischen zugunsten eines festen Suchprofils mit
+zusätzlicher Kostenmessung entschieden. Signal-/Rasterabgleich, relativer
+L2-Endpunkt und konkrete Hauptmatrix stehen im
+[Hauptversuchsprotokoll](main_study_protocol.md); dessen technische Umsetzung
+und endgültige Bindung sind der nächste Schritt. Das ursprüngliche Exposé-PDF
+war bei diesem aktuellen Abgleich nicht erneut verfügbar.
 
 Das bereitgestellte Exposé vom 29.09.2026 wurde gelesen, insbesondere Seiten
 2–3. Verbindlicher Forschungsanspruch bleibt eine freie Formelsuche und der
