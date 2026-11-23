@@ -267,7 +267,7 @@ def run(output):
     deadline = started + LIMIT_SECONDS
     outcome = {
         "format": FORMAT,
-        "status": "aborted",
+        "status": "running",
         "completed_fixed": 0,
         "completed_search": 0,
         "started_at": _utc_now(),
@@ -298,6 +298,7 @@ def run(output):
                 outcome[f"completed_{stage}"] += 1
         outcome["status"] = "completed"
     except BaseException as error:
+        outcome["status"] = "aborted"
         outcome["error"] = f"{type(error).__name__}: {error}"
         raise
     finally:

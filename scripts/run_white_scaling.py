@@ -4,8 +4,6 @@ import argparse
 import json
 from pathlib import Path
 
-from ringdown_sr import white_scaling
-
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -19,7 +17,12 @@ def main():
             print("Noch kein gespeicherter Laufstand.")
             return
         status = json.loads(path.read_bytes())
-        print(f"Status: {status['status']}")
+        state = (
+            status["status"]
+            if "finished_at" in status
+            else "gestartet; Prozessstatus unbekannt"
+        )
+        print(f"Status: {state}")
         print(f"Feste Worker: {status['completed_fixed']}/18 (je 4 Starts)")
         print(f"Freie Suchen: {status['completed_search']}/21")
         print(f"Zuletzt: {status.get('stage', '')} {status.get('current_cell', '')}")
@@ -29,6 +32,8 @@ def main():
             "Nur gespeicherter Stand; Prozessabschluss ist kein Verifikationsnachweis."
         )
         return
+    from ringdown_sr import white_scaling
+
     if args.action == "run":
         white_scaling.run(args.directory)
     elif args.action == "verify":
