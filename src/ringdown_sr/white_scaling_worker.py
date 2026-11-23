@@ -487,41 +487,66 @@ def run_member(directory, *, deadline):
         str(ROOT / "scripts/run_white_scaling_worker.py"),
         str(directory),
     ]
-    with (directory / "worker.log").open("xb") as log:
-        process = subprocess.Popen(
-            command,
-            stdout=log,
-            stderr=subprocess.STDOUT,
-            env=environment,
-            start_new_session=True,
-        )
-        try:
-            code = process.wait(
-                timeout=min(WORKER_LIMIT_SECONDS, deadline - time.monotonic())
+    process = None
+    code = None
+    interruption = cleanup_error = None
+    try:
+        with (directory / "worker.log").open("xb") as log:
+            process = subprocess.Popen(
+                command,
+                stdout=log,
+                stderr=subprocess.STDOUT,
+                env=environment,
+                start_new_session=True,
             )
-        except subprocess.TimeoutExpired:
-            timed_out = True
-            symbolic._stop_worker(process)
+            try:
+                code = process.wait(
+                    timeout=min(WORKER_LIMIT_SECONDS, deadline - time.monotonic())
+                )
+            except subprocess.TimeoutExpired:
+                timed_out = True
+                symbolic._stop_worker(process)
+                code = process.returncode
+    except BaseException as error:
+        interruption = f"{type(error).__name__}: {error}"
+        if process is not None:
+            try:
+                symbolic._stop_worker(process)
+            except BaseException as stop_error:  # noqa: BLE001 -- Preserve the original interruption.
+                cleanup_error = f"{type(stop_error).__name__}: {stop_error}"
             code = process.returncode
-        except BaseException:
-            symbolic._stop_worker(process)
-            raise
-    after = resource.getrusage(resource.RUSAGE_CHILDREN)
-    outcome = {
-        "format": FORMAT,
-        "status": "completed"
-        if code == 0 and not timed_out
-        else "timeout"
-        if timed_out
-        else "failed",
-        "returncode": code,
-        "timed_out": timed_out,
-        "worker_wall_seconds": time.monotonic() - started,
-        "cpu_user_seconds": None if timed_out else after.ru_utime - before.ru_utime,
-        "cpu_system_seconds": None if timed_out else after.ru_stime - before.ru_stime,
-    }
-    _write_json(directory / "outcome.json", outcome)
-    _write_json(directory / "member_checksums.json", confirmed._inventory(directory))
+        raise
+    finally:
+        after = resource.getrusage(resource.RUSAGE_CHILDREN)
+        complete_cpu = (
+            interruption is None and not timed_out and type(code) is int and code >= 0
+        )
+        outcome = {
+            "format": FORMAT,
+            "status": "aborted"
+            if interruption is not None
+            else "completed"
+            if code == 0 and not timed_out
+            else "timeout"
+            if timed_out
+            else "failed",
+            "returncode": code,
+            "timed_out": timed_out,
+            "error": interruption,
+            "cleanup_error": cleanup_error,
+            "worker_wall_seconds": time.monotonic() - started,
+            "cpu_measurement_complete": complete_cpu,
+            "cpu_user_seconds": after.ru_utime - before.ru_utime
+            if complete_cpu
+            else None,
+            "cpu_system_seconds": after.ru_stime - before.ru_stime
+            if complete_cpu
+            else None,
+        }
+        _write_json(directory / "outcome.json", outcome)
+        _write_json(
+            directory / "member_checksums.json", confirmed._inventory(directory)
+        )
     return verify_member(directory)
 
 
@@ -615,18 +640,39 @@ def verify_member(directory):
             "status",
             "returncode",
             "timed_out",
+            "error",
+            "cleanup_error",
             "worker_wall_seconds",
+            "cpu_measurement_complete",
             "cpu_user_seconds",
             "cpu_system_seconds",
         }
         or outcome["format"] != FORMAT
-        or type(outcome["returncode"]) is not int
+        or (
+            type(outcome["returncode"]) is not int and outcome["returncode"] is not None
+        )
         or type(outcome["timed_out"]) is not bool
+        or type(outcome["cpu_measurement_complete"]) is not bool
+        or (outcome["error"] is not None and type(outcome["error"]) is not str)
+        or (
+            outcome["cleanup_error"] is not None
+            and type(outcome["cleanup_error"]) is not str
+        )
     ):
         raise ValueError("Invalid white-scaling outcome.")
     completed = outcome["status"] == "completed"
-    if outcome["status"] not in {"completed", "failed", "timeout"}:
+    if outcome["status"] not in {"completed", "failed", "timeout", "aborted"}:
         raise ValueError("Unrecognized white-scaling outcome.")
+    complete_cpu = (
+        outcome["status"] in {"completed", "failed"}
+        and not outcome["timed_out"]
+        and type(outcome["returncode"]) is int
+        and outcome["returncode"] >= 0
+    )
+    if outcome["cpu_measurement_complete"] is not complete_cpu or (
+        (outcome["status"] == "aborted") != (outcome["error"] is not None)
+    ):
+        raise ValueError("Contradictory interrupted-worker cost evidence.")
     confirmed._verify_origin(
         metadata,
         confirmed.read(directory, "metadata_initial.json"),
@@ -634,7 +680,11 @@ def verify_member(directory):
         completed=completed,
     )
     for key in ("worker_wall_seconds", "cpu_user_seconds", "cpu_system_seconds"):
-        if key.startswith("cpu_") and outcome["timed_out"] and outcome[key] is None:
+        if key.startswith("cpu_") and not complete_cpu:
+            if outcome[key] is not None:
+                raise ValueError(
+                    "Incomplete worker CPU measurement must remain unknown."
+                )
             continue
         if (
             type(outcome[key]) not in (int, float)

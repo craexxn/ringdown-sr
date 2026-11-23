@@ -713,6 +713,7 @@ def test_all_original_commands_options_error_wrappers_and_order_are_preserved():
         "Verify noise pilot with three bounded technical workers",
         "Verify background study with five bounded technical workers and plots",
         "Verify duration and sampling study with six bounded technical workers and plots",
+        "Verify controlled white-loss scaling in isolated technical workers",
     }
     ordered = []
     for group in ("native-a", "native-b", "native-c"):

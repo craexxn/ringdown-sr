@@ -17,6 +17,7 @@ function isolated(name)
 end
 
 const REPLAY_CASES = NamedTuple[]
+const NAMESPACES = [isolated(Symbol("ScalingArm", index)) for index in 1:4]
 
 @testset "White loss scaling: exact profile, arithmetic and observation" begin
     time = collect(0.0:0.125:0.875)
@@ -26,7 +27,7 @@ const REPLAY_CASES = NamedTuple[]
     ordinary_baseline = Ref(0.0)
     ordinary_cost = Ref(0.0)
     for (index, arm) in enumerate(("ordinary", "scaled", "covariance"))
-        namespace = isolated(Symbol("ScalingArm", index))
+        namespace = NAMESPACES[index]
         backend = namespace.RingdownSRSearch
         module_ = namespace.WhiteLossScaling
         covariance = arm == "covariance" ? Matrix(Diagonal(fill(sigma^2, 8))) : nothing
@@ -114,7 +115,7 @@ const REPLAY_CASES = NamedTuple[]
         @test sort(unique(s.local_index for s in observed_fit.states)) == collect(1:6)
         @test !observed_fit.termination_available
     end
-    namespace = isolated(:ScalingWrongCovariance)
+    namespace = NAMESPACES[4]
     namespace.RingdownSRSearch.bind_context(time, observed, Matrix(Diagonal(fill(1.0, 8))))
     @test_throws ErrorException namespace.WhiteLossScaling.configure("covariance", sigma, seed)
     @test_throws ErrorException namespace.WhiteLossScaling.configure("ordinary", sigma, seed)

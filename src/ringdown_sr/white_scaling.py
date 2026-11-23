@@ -95,6 +95,49 @@ def _read(path):
     return json.loads(Path(path).read_bytes())
 
 
+def evaluate_grid(tree, times, truth):
+    """Preserve domain failures as outcomes, without hiding malformed trees."""
+    try:
+        prediction = symbolic.evaluate_tree(tree, times)
+    except ValueError as error:
+        if str(error) != "Tree prediction is not finite.":
+            raise
+        prediction = np.empty(len(times), dtype=np.float64)
+        for index, value in enumerate(times):
+            try:
+                prediction[index] = symbolic.evaluate_tree(tree, [value])[0]
+            except ValueError as point_error:
+                if str(point_error) != "Tree prediction is not finite.":
+                    raise
+                prediction[index] = np.nan
+    failed = int(np.count_nonzero(~np.isfinite(prediction)))
+    record = {
+        "status": "nonfinite_prediction" if failed else "finite",
+        "nonfinite_count": failed,
+        "rmse_over_a": None,
+        "max_over_a": None,
+    }
+    if failed:
+        return prediction, record
+    with np.errstate(over="ignore", invalid="ignore"):
+        residual = prediction - truth
+        maximum = float(np.max(np.abs(residual)))
+        rmse = (
+            0.0
+            if maximum == 0
+            else maximum
+            * math.sqrt(
+                math.fsum(float(x) ** 2 for x in residual / maximum) / len(residual)
+            )
+        )
+        metrics = (rmse / AMPLITUDE, maximum / AMPLITUDE)
+    if all(math.isfinite(value) for value in metrics):
+        record.update(rmse_over_a=metrics[0], max_over_a=metrics[1])
+    else:
+        record["status"] = "metric_out_of_float64_range"
+    return prediction, record
+
+
 def _sources():
     if _sha256((symbolic.ROOT / PLAN).read_bytes()) != PLAN_SHA256:
         raise ValueError("The frozen scaling protocol changed.")
@@ -398,12 +441,8 @@ def verify(output):
             ("regular", expected["regular_time_s"], expected["regular_truth"]),
             ("irregular", expected["irregular_time_s"], expected["irregular_truth"]),
         ):
-            values = symbolic.evaluate_tree(selected["tree"], times)
-            residual = values - truth
-            row[f"{name}_rmse_over_a"] = float(
-                np.sqrt(np.mean(residual**2)) / AMPLITUDE
-            )
-            row[f"{name}_max_over_a"] = float(np.max(np.abs(residual)) / AMPLITUDE)
+            _, metrics = evaluate_grid(selected["tree"], times, truth)
+            row.update({f"{name}_{key}": value for key, value in metrics.items()})
         rows.append(row)
         if cell["repeat"]:
             original = _read(
@@ -480,13 +519,15 @@ def export(output, destination):
             "w", newline=""
         ) as handle:
             writer = csv.writer(handle)
-            writer.writerow(["grid", "time_s", "truth", "prediction", "observed"])
+            writer.writerow(
+                ["grid", "time_s", "truth", "prediction", "observed", "grid_status"]
+            )
             for name, times, truth in (
                 ("training", arrays["time_s"], arrays["truth"]),
                 ("regular", arrays["regular_time_s"], arrays["regular_truth"]),
                 ("irregular", arrays["irregular_time_s"], arrays["irregular_truth"]),
             ):
-                prediction = symbolic.evaluate_tree(selected["tree"], times)
+                prediction, metrics = evaluate_grid(selected["tree"], times, truth)
                 observed = (
                     arrays[f"observed_{row['case']}"]
                     if name == "training"
@@ -499,9 +540,29 @@ def export(output, destination):
                         truth,
                         prediction,
                         observed,
+                        [metrics["status"]] * len(times),
                         strict=True,
                     )
                 )
+                representable = np.all(
+                    np.abs(prediction[np.isfinite(prediction)]) < 1e100
+                )
+                if not representable or metrics["status"] != "finite":
+                    axes[0].text(
+                        0.01,
+                        {"training": 0.95, "regular": 0.89, "irregular": 0.83}[name],
+                        f"{name}: {metrics['status']}; nichtendliche Werte: {metrics['nonfinite_count']}; Punktdaten vollständig",
+                        transform=axes[0].transAxes,
+                        fontsize=7,
+                    )
+                if not representable:
+                    axes[0].text(
+                        0.01,
+                        0.74,
+                        "Werte außerhalb des Plotbereichs; siehe unveränderte CSV.",
+                        transform=axes[0].transAxes,
+                    )
+                    continue
                 if name == "regular":
                     axes[0].plot(times, truth, color="black", label="Wahrheit")
                     axes[0].plot(times, prediction, label="Originalformel")

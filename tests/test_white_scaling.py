@@ -3,6 +3,7 @@
 import math
 
 import numpy as np
+import pytest
 
 from ringdown_sr import white_scaling as pilot
 
@@ -69,3 +70,42 @@ def test_positive_scaling_preserves_fixed_candidate_order():
     ]
     np.testing.assert_allclose(covariance_loss, np.array(mse) * scale, rtol=5e-16)
     assert np.argmin(mse) == np.argmin(covariance_loss)
+
+
+def test_offgrid_pole_is_reported_and_finite_points_are_preserved():
+    one = {"kind": "constant", "value_hex": (1.0).hex()}
+    half = {"kind": "constant", "value_hex": (0.5).hex()}
+    variable = {"kind": "variable", "index": 1}
+    denominator = {
+        "kind": "operator",
+        "arity": 2,
+        "operator_index": 2,
+        "operator": "-",
+        "children": [variable, half],
+    }
+    tree = {
+        "kind": "operator",
+        "arity": 2,
+        "operator_index": 4,
+        "operator": "/",
+        "children": [one, denominator],
+    }
+    values, metrics = pilot.evaluate_grid(tree, [0.0, 0.5, 1.0], np.zeros(3))
+    assert values[0] == -2 and np.isnan(values[1]) and values[2] == 2
+    assert metrics == {
+        "status": "nonfinite_prediction",
+        "nonfinite_count": 1,
+        "rmse_over_a": None,
+        "max_over_a": None,
+    }
+    _, training = pilot.evaluate_grid(tree, [0.0, 1.0], np.zeros(2))
+    assert training["status"] == "finite"
+
+
+def test_large_finite_values_do_not_overflow_by_squaring():
+    tree = {"kind": "constant", "value_hex": (1e200).hex()}
+    _, metrics = pilot.evaluate_grid(tree, [0.0, 1.0], np.zeros(2))
+    assert metrics["status"] == "finite"
+    assert math.isclose(metrics["rmse_over_a"], 1e200 / pilot.AMPLITUDE)
+    with pytest.raises(ValueError, match="finite"):
+        pilot.evaluate_grid({"kind": "constant", "value_hex": "inf"}, [0.0], [0.0])

@@ -9,8 +9,10 @@ from pathlib import Path
 
 import numpy as np
 
+from ringdown_sr import white_scaling as study
+from ringdown_sr import white_scaling_fixed as fixed
 from ringdown_sr import white_scaling_worker as scaling
-from ringdown_sr.pilot import _json_bytes, _write_json
+from ringdown_sr.pilot import _json_bytes, _sha256, _write_json
 
 SEED = 73
 SIGMA = 0.25
@@ -66,9 +68,18 @@ def verify(output):
         != reports["ordinary-repeat"]["costs"]["callback_calls_during_fit"]
     ):
         raise ValueError("Repeated ordinary worker changed its fit callback count.")
+    fixed.verify_fixed(output / "fixed-ordinary")
+    fixed_request, _, _ = scaling.verify_prepared(output / "fixed-ordinary")
+    if (
+        fixed_request["technical"] is not True
+        or fixed_request["arm"] != "ordinary"
+        or fixed_request["sigma_hex"] != SIGMA.hex()
+        or scaling.checked_request(fixed_request).seed != SEED
+    ):
+        raise ValueError("Changed fixed-structure technical control.")
     print(
         "White-scaling controls passed: O/S/K/O, native objective arithmetic, "
-        "unaltered options, independent replay and repeated original front."
+        "unaltered options, independent replay, fixed-worker replay and repeated original front."
     )
     return reports
 
@@ -117,6 +128,40 @@ def run(output):
             niterations=2,
         )
         scaling.run_member(output / name, deadline=started + 7200)
+    fixed_directory = output / "fixed-ordinary"
+    scaling.prepare_member(
+        fixed_directory,
+        times,
+        1.0 + times,
+        arm="ordinary",
+        sigma=SIGMA,
+        seed=SEED,
+        technical=True,
+        niterations=2,
+    )
+    _write_json(
+        fixed_directory / "fixed_request.json",
+        {
+            "format": fixed.FORMAT,
+            "starts": [
+                {"name": f"start-{index + 1}", "parameters": values}
+                for index, values in enumerate(study.starts(1.0 + times))
+            ],
+        },
+    )
+    _write_json(
+        fixed_directory / "fixed_prepared.json",
+        {
+            "request_sha256": _sha256(
+                (fixed_directory / "fixed_request.json").read_bytes()
+            ),
+            "source_sha256": scaling.source_hashes(),
+            "prepared_sha256": _sha256(
+                (fixed_directory / "prepared.json").read_bytes()
+            ),
+        },
+    )
+    study._fixed(fixed_directory, started + 7200)
     verify(output)
     _write_json(
         output / "technical-summary.json",
@@ -125,7 +170,7 @@ def run(output):
             "status": "passed",
             "source_sha256": scaling.source_hashes(),
             "wall_seconds": time.monotonic() - started,
-            "cells": [name for name, _ in CELLS],
+            "cells": [name for name, _ in CELLS] + ["fixed-ordinary"],
             "scope": "technical_linear_fixture_only_no_scientific_windows",
         },
     )

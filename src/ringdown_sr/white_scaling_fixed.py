@@ -4,6 +4,7 @@ import argparse
 import copy
 import math
 import os
+import time
 from pathlib import Path
 
 import numpy as np
@@ -13,7 +14,13 @@ from ringdown_sr import symbolic
 from ringdown_sr import time_budget_profile as native
 from ringdown_sr import white_scaling_worker as worker
 from ringdown_sr.constant_diagnostic import backend_seed, ringdown_tree
-from ringdown_sr.pilot import _environment, _json_bytes, _sha256, _write_json
+from ringdown_sr.pilot import (
+    _environment,
+    _json_bytes,
+    _provenance,
+    _sha256,
+    _write_json,
+)
 from ringdown_sr.prediction_reference import verify_prediction
 from ringdown_sr.representation_profiles import plugin_field_record, plugin_records
 
@@ -74,10 +81,19 @@ def prepared(directory):
         for tau in (duration / 8, duration / 2)
     ]
     starts = fixed["starts"]
+    if request["technical"]:
+        times = np.arange(8, dtype=np.float64) / 16
+        if (
+            not np.array_equal(arrays["time_s"], times)
+            or not np.array_equal(arrays["observed"], 1.0 + times)
+            or request["budget"]["seed"] != 73
+            or request["sigma_hex"] != (0.25).hex()
+        ):
+            raise ValueError("Changed technical fixed-worker fixture.")
+    elif not np.array_equal(arrays["time_s"], np.arange(128, dtype=np.float64) / 4096):
+        raise ValueError("Changed scientific fixed-worker sample times.")
     if (
-        request["technical"]
-        or len(arrays["time_s"]) != 128
-        or not isinstance(starts, list)
+        not isinstance(starts, list)
         or len(starts) != 4
         or any(
             not isinstance(item, dict)
@@ -93,13 +109,16 @@ def prepared(directory):
     return request, arrays, manifest, fixed
 
 
-def run(directory):
+def _run(directory):
     directory = Path(directory).resolve()
-    request, arrays, _, fixed = prepared(directory)
+    request, arrays, manifest, fixed = prepared(directory)
     if (directory / "fixed_result.json").exists():
         raise ValueError("Fixed workers cannot overwrite results.")
     if os.environ.get("PYTHON_JULIACALL_PROJECT") != str(symbolic.ROOT / "julia"):
         raise RuntimeError("Use scripts/run_python.py.")
+    provenance = _provenance()
+    if provenance != manifest["provenance"]:
+        raise ValueError("Fixed-worker provenance differs from preparation.")
     import pysr
     from juliacall import Main as jl
     from juliacall import convert
@@ -137,7 +156,17 @@ def run(directory):
         "after": [str(value) for value in reference.after],
         "draws": [vector(values) for values in reference.draws],
     }
-    for start in fixed["starts"]:
+    for number, start in enumerate(fixed["starts"], start=1):
+        _write_json(
+            directory / "fixed_status.json",
+            {
+                "format": FORMAT,
+                "status": "running",
+                "current_start": number,
+                "start_name": start["name"],
+                "completed_starts": number - 1,
+            },
+        )
         result = module.run_fixed(array(start["parameters"]), seed)
         tree = symbolic._export_tree(result.tree, result.options)
         parameters = decode(vector(result.parameters))
@@ -154,7 +183,7 @@ def run(directory):
             or not math.isfinite(initial_loss)
         ):
             raise ValueError("Unusable native fixed-structure loss.")
-        a, b, c, d = parameters
+        a, b, c, d = map(float, parameters)
         # Exact round-trip decimal constants, preserving the native thirteen nodes.
         formula = f"({a!r} * (exp({b!r} * t) * cos(({c!r} * t) + {d!r})))"
         records.append(
@@ -226,6 +255,7 @@ def run(directory):
                 },
             }
         )
+        _write_json(directory / f"fixed-start-{number:02d}.json", records[-1])
         print(f"Fixed start {start['name']}: completed.", flush=True)
     environment_after = _environment()
     environment_after["julia_used"] = True
@@ -234,6 +264,7 @@ def run(directory):
         runtime != native.checked_runtime(jl)
         or backend_sources != native.checked_backend_sources(jl)
         or actual_mechanism != worker.checked_mechanism_sources(jl)
+        or _provenance() != provenance
     ):
         raise ValueError("Native sources or runtime changed during fixed diagnostics.")
     prepared(directory)
@@ -241,6 +272,7 @@ def run(directory):
         "format": FORMAT,
         "request": request,
         "fixed_request": fixed,
+        "worker_provenance": provenance,
         "records": records,
         "reference_options": reference_options,
         "rng_reference": rng_reference,
@@ -264,9 +296,61 @@ def run(directory):
     verify_fixed(directory)
 
 
+def run(directory):
+    """Retain completed starts and a terminal status even after a later failure."""
+    directory = Path(directory).resolve()
+    if (
+        not directory.is_dir()
+        or any(
+            (directory / name).exists()
+            for name in (
+                "fixed_result.json",
+                "fixed_status.json",
+                "fixed_result_sha256.json",
+            )
+        )
+        or list(directory.glob("fixed-start-*.json"))
+    ):
+        raise ValueError("Fixed workers require a fresh prepared directory.")
+    started = time.monotonic()
+    _write_json(
+        directory / "fixed_status.json",
+        {
+            "format": FORMAT,
+            "status": "starting",
+            "completed_starts": 0,
+        },
+    )
+    try:
+        _run(directory)
+    except BaseException as error:
+        previous = confirmed.read(directory, "fixed_status.json")
+        _write_json(
+            directory / "fixed_status.json",
+            {
+                **previous,
+                "status": "failed",
+                "error": f"{type(error).__name__}: {error}",
+                "completed_starts": len(list(directory.glob("fixed-start-*.json"))),
+                "worker_body_seconds": time.monotonic() - started,
+            },
+        )
+        raise
+    else:
+        _write_json(
+            directory / "fixed_status.json",
+            {
+                "format": FORMAT,
+                "status": "completed",
+                "completed_starts": 4,
+                "worker_body_seconds": time.monotonic() - started,
+            },
+        )
+
+
 def verify_fixed(directory):
     directory = Path(directory)
-    request, arrays, _, fixed = prepared(directory)
+    request, arrays, manifest, fixed = prepared(directory)
     report = confirmed.read(directory, "fixed_result.json")
     if confirmed.read(directory, "fixed_result_sha256.json") != {
         "fixed_result.json": _sha256((directory / "fixed_result.json").read_bytes()),
@@ -276,6 +360,7 @@ def verify_fixed(directory):
         report["format"] != FORMAT
         or report["request"] != request
         or report["fixed_request"] != fixed
+        or report["worker_provenance"] != manifest["provenance"]
     ):
         raise ValueError("Changed fixed diagnostic binding.")
     native.validate_runtime(report["runtime"])
@@ -310,6 +395,13 @@ def verify_fixed(directory):
     records = report["records"]
     if len(records) != 4:
         raise ValueError("Incomplete fixed-structure worker.")
+    if sorted(path.name for path in directory.glob("fixed-start-*.json")) != [
+        f"fixed-start-{number:02d}.json" for number in range(1, 5)
+    ] or any(
+        confirmed.read(directory, f"fixed-start-{number:02d}.json") != record
+        for number, record in enumerate(records, start=1)
+    ):
+        raise ValueError("Changed separately retained fixed-start records.")
     scale = 1.0 if request["arm"] == "ordinary" else float.fromhex(request["scale_hex"])
     for start, record in zip(fixed["starts"], records, strict=True):
         if record["start"] != start or record["initial_parameters"] != vector(
@@ -454,6 +546,8 @@ def main():
         verify_fixed(arguments.directory)
         print("Fixed white-scaling read-only verification passed.")
     else:
+        if hasattr(os, "sched_getaffinity"):
+            os.sched_setaffinity(0, {min(os.sched_getaffinity(0))})
         run(arguments.directory)
 
 

@@ -1,6 +1,7 @@
 """Separate scaling requests and scalar semantics must remain fail closed."""
 
 import copy
+import time
 from dataclasses import asdict
 
 import numpy as np
@@ -190,3 +191,85 @@ def test_zero_baseline_and_floor_are_independently_checked(arm, amplitude):
         scaling.verify_normalization(
             document, observed, changed_both, native_factor=factor
         )
+
+
+def test_interrupted_worker_preserves_original_exception_and_known_costs(
+    tmp_path, monkeypatch
+):
+    output = tmp_path / "interrupted"
+    times = np.arange(8, dtype=float)
+    scaling.prepare_member(
+        output,
+        times,
+        1 + times,
+        arm="ordinary",
+        sigma=0.25,
+        seed=73,
+        technical=True,
+        niterations=2,
+    )
+    error = KeyboardInterrupt("technical interruption")
+
+    class Process:
+        returncode = None
+
+        def wait(self, *, timeout):
+            raise error
+
+    process = Process()
+    monkeypatch.setattr(scaling.subprocess, "Popen", lambda *args, **kwargs: process)
+    stopped = []
+
+    def stop(child):
+        stopped.append(child)
+        child.returncode = -15
+
+    monkeypatch.setattr(scaling.symbolic, "_stop_worker", stop)
+    with pytest.raises(KeyboardInterrupt) as caught:
+        scaling.run_member(output, deadline=time.monotonic() + 10)
+    assert caught.value is error
+    assert stopped == [process]
+    outcome = scaling.confirmed.read(output, "outcome.json")
+    assert outcome["status"] == "aborted"
+    assert outcome["error"] == "KeyboardInterrupt: technical interruption"
+    assert outcome["returncode"] == -15
+    assert outcome["worker_wall_seconds"] >= 0
+    assert outcome["cpu_measurement_complete"] is False
+    assert outcome["cpu_user_seconds"] is outcome["cpu_system_seconds"] is None
+    assert scaling.confirmed.read(
+        output, "member_checksums.json"
+    ) == scaling.confirmed._inventory(output)
+    with pytest.raises(ValueError, match="did not complete"):
+        scaling.verify_member(output)
+
+
+def test_failed_process_creation_is_archived_and_reraised(tmp_path, monkeypatch):
+    output = tmp_path / "startup-failure"
+    times = np.arange(8, dtype=float)
+    scaling.prepare_member(
+        output,
+        times,
+        1 + times,
+        arm="ordinary",
+        sigma=0.25,
+        seed=73,
+        technical=True,
+        niterations=2,
+    )
+    error = OSError("technical startup failure")
+
+    def popen(*args, **kwargs):
+        raise error
+
+    monkeypatch.setattr(scaling.subprocess, "Popen", popen)
+    with pytest.raises(OSError) as caught:
+        scaling.run_member(output, deadline=time.monotonic() + 10)
+    assert caught.value is error
+    outcome = scaling.confirmed.read(output, "outcome.json")
+    assert outcome["status"] == "aborted"
+    assert outcome["returncode"] is None
+    assert outcome["cpu_measurement_complete"] is False
+    assert outcome["cpu_user_seconds"] is outcome["cpu_system_seconds"] is None
+    assert scaling.confirmed.read(
+        output, "member_checksums.json"
+    ) == scaling.confirmed._inventory(output)
