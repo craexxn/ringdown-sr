@@ -1,8 +1,9 @@
 # Leitfaden: wiederholbare Ringdown-Rekonstruktion und Übergang zu Rauschversuchen
 
 Phase 7, Hauptserienanbindung vom 23.11.2026: Nach Übernahme des
-[Pilotabschlusses](pilot_closeout.md) in PR106 wird der
-[verbindliche Hauptplan](main_study_plan.md) technisch umgesetzt.
+[Pilotabschlusses](pilot_closeout.md) in PR106 ist der
+[verbindliche Hauptplan](main_study_plan.md) in
+[PR107](https://github.com/craexxn/ringdown-sr/pull/107) technisch umgesetzt.
 Plan und vollständige Seedtabelle sind vor Beobachtungen in
 `126b39e311eceeb12102cf09e6da57deb735025b` gebunden. Die Matrix umfasst
 zwei Signalbedingungen, O/K/E64/E4096 und 80 unabhängige Blöcke mit
@@ -12,8 +13,10 @@ Endpunkte. Acht kurze N103-Integrationsworker prüfen den neuen Laufweg;
 sie sind keine zusätzlichen wissenschaftlichen Fälle oder Qualitätsauswahl.
 [Startfolge](main_study.md) und [aktueller Prüfstand](representation_implementation_status.md)
 trennen Implementierung, technische Abnahme und wissenschaftliche Ausführung.
-Die Umsetzung und ihre Prüfungen sind in Arbeit; kein erfolgreicher
-Manjaro-Vorlauf und keine wissenschaftliche Hauptsuche nachgewiesen.
+4.955 Python-Tests, acht echte Cloud-Zehnerworker, separater Replay und
+gebundene Originalplots sind geprüft; gezieltes KI-basiertes Integrationsreview
+ohne offene Korrektur. Vollständige Ready-CI steht vor Merge noch aus;
+kein Manjaro-Vorlauf und keine wissenschaftliche Hauptsuche nachgewiesen.
 
 Phase 7, Pilotabschluss vom 23.11.2026: Die
 [begrenzte Struktur-/Domainprüfung](pilot_closeout.md) aller 468 bereits

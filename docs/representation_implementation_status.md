@@ -1,6 +1,6 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Hauptserie vorab gebunden, technische Anbindung in Arbeit
+## Aktuell: Hauptserie lokal technisch geprüft, vollständige Ready-CI offen
 
 23.11.2026, Leitfadenphase 7. Der [Pilotabschluss](pilot_closeout.md) und
 Hauptentwurf sind nach geprüftem KI-Review und erfolgreicher
@@ -30,16 +30,33 @@ R4×1000, lokal 300/5, mit separat gemessenen tatsächlichen Kosten.
 Vorlauf mit acht N103-Zehnerworkern, die Bindung aller 80 Hauptfälle, die
 640 Worker je Signalabschnitt, lesende Verifikation, vollständige Darstellung
 und drei gebundene Originalarchive. Eingaben, Quellen, Vorläufe und Serien
-müssen denselben sauberen Ausführungsstand binden. Neue Eingabe-, Lauf- und
-Bewertungsmodule sowie deren technische Tests werden derzeit integriert;
-lokale Gesamtprüfung, gezieltes KI-Review und vollständige Ready-CI sind
-noch nicht als bestanden belegt. Die neue native CI-Prüfung erweitert das
-Inventar auf 35 Fachschritte; die 180-Minuten-Jobfrist bleibt unverändert.
+müssen denselben sauberen Ausführungsstand binden. Die neue Anbindung ist
+in [PR107](https://github.com/craexxn/ringdown-sr/pull/107) implementiert.
+Am unveränderten Ausführungscommit
+`7fa2a45f55d3084dee16baf6952ed7053605f953` bestehen **4.955 Python-Tests**
+in 1.016,39 s, Ruff/Format, Dokumentationsprüfung und Seedreproduktion.
+Der getrennte Cloud-Vorlauf 002 besteht mit **acht N103-Zehnerworkern**,
+separatem Replay und geprüften Originalplots; alle 261 Originaldateien
+bleiben unverändert. Der gesamte Vorlauf misst 669,334 s Wandzeit;
+Kosten, erhaltener Umgebungsabbruch 001 und Aussagegrenzen stehen in der
+[Entwicklungsabnahme](main_study.md#technische-entwicklungsabnahme),
+die Originalbindung im [Ergebnisindex](results_index.md).
+
+Das gezielte KI-basierte Integrationsreview für PR107 auf diesem Head gegen
+`a0ddad1ad7751ed858a40534a8a2fd41b73be523` prüft Inputs, technischen Vorlauf,
+Runner, Bewertung, Darstellung und wesentliche CLI-/Archivierungsübergänge.
+Zwei Befunde sind korrigiert und gegengeprüft: RNG-Zustandskollisionen werden
+vor Datenerzeugung geprüft; σ/A und σ/RMS(s) sind an das ursprüngliche
+N103-Signal gebunden und in Bewertung/Darstellung sichtbar. Keine offenen
+korrekturpflichtigen Befunde. Das KI-Review ersetzt keine wissenschaftliche
+Validierung. Die neue native CI-Prüfung erweitert das Inventar auf
+35 Fachschritte; die 180-Minuten-Jobfrist bleibt unverändert.
 
 Ein lokaler Cloud-Vorlauf ersetzt keinen Vorlauf am Zielrechner. Der
 Manjaro-Vorlauf ist noch unbestätigt; wissenschaftliche Hauptinputs und
 Hauptsuchen wurden hier nicht erzeugt. Nach den gebündelten lokalen Prüfungen
-folgt die volle Ready-CI. Lange CI-Läufe werden nicht fortlaufend überwacht;
+folgt die volle Ready-CI; deren Erfolg ist hier noch nicht belegt.
+Lange CI-Läufe werden nicht fortlaufend überwacht;
 ohne vollständigen Nachweis bleibt der neue Implementierungs-PR offen.
 Endgültiger Head, Prüfbelege und nächster Startstand werden im PR nachgeführt.
 

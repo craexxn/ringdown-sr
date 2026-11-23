@@ -5,8 +5,9 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-23.11.2026: Die technische Umsetzung der **Hauptserie** läuft auf
-`codex/main-study`. Der [verbindliche Plan](docs/main_study_plan.md) und die
+23.11.2026: Die **Hauptserie** ist in
+[PR #107](https://github.com/craexxn/ringdown-sr/pull/107) implementiert und
+lokal technisch geprüft. Der [verbindliche Plan](docs/main_study_plan.md) und die
 vollständige Seedtabelle sind vor wissenschaftlichen Beobachtungen in
 `126b39e311eceeb12102cf09e6da57deb735025b` gebunden: zwei Signalbedingungen,
 80 unabhängige Blöcke, O/K/E64/E4096, 320 Viererpakete und 1280 Suchworker.
@@ -14,9 +15,12 @@ R4×1000, lokal 300/5, bleibt fest; tatsächliche Kosten werden zusätzlich
 verglichen. Die neue N103-Anbindung trennt relativen L2-Fehler,
 Originalfamilie und Definitionsbereich. [Bedienung und Startfolge](docs/main_study.md)
 beschreiben acht technische Worker, Eingabebindung, beide Signalabschnitte,
-lesende Verifikation, Originalplots und Archivierung. Implementierungsprüfung
-und vollständige Ready-CI sind noch offen; ein Manjaro-Vorlauf oder eine
-wissenschaftliche Hauptsuche ist nicht nachgewiesen.
+lesende Verifikation, Originalplots und Archivierung. **4.955 Python-Tests,
+acht echte N103-Zehnerworker, separater Replay und Plotprüfung bestanden**;
+261 Originaldateien blieben unverändert. Das gezielte KI-basierte
+Integrationsreview hat keine offenen korrekturpflichtigen Befunde.
+Die vollständige Ready-CI bleibt vor Merge offen; ein Manjaro-Vorlauf oder
+eine wissenschaftliche Hauptsuche ist noch nicht nachgewiesen.
 
 23.11.2026: Der [Pilotabschluss](docs/pilot_closeout.md) ist einschließlich
 der begrenzten lesenden Struktur-/Domainprüfung fertig: 468 Originalausgaben,

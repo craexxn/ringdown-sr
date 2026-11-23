@@ -8,8 +8,9 @@ Plan-SHA-256: `772b26883e5bb871ad64af9d60b2e07b69c786af34790e9c68cfeb6930b5d706`
 Seeds-SHA-256: `b03b2ec41a868e6875169c5375639c2fbee5c52838063ae479a3dd990a870381`.
 Der bisherige N128-Pilot und seine Originalarchive bleiben unverändert.
 
-Die technische Anbindung wird derzeit integriert und geprüft. Vollständige
-Abnahme, endgültiger Implementierungscommit und CI-Nachweis stehen im
+Die technische Anbindung ist in [PR107](https://github.com/craexxn/ringdown-sr/pull/107)
+implementiert und lokal geprüft. Entwicklungsabnahme unten; endgültiger
+Freigabecommit und noch ausstehender vollständiger CI-Nachweis stehen im
 [Fortsetzungsstand](representation_implementation_status.md) beziehungsweise
 Implementierungs-PR. Diese Anleitung belegt keine bereits ausgeführten
 Hauptsuchen. Ein technischer Cloud-Vorlauf ersetzt keinen Vorlauf auf Manjaro;
@@ -51,6 +52,98 @@ Eine Laufzeitprognose für die neuen Signalbedingungen liegt noch nicht vor.
 Die Fristen im Plan sind Sicherheitsgrenzen. Tatsächliche Vorbereitungs-,
 Worker-, Paket-, Abschnitts-, Prüf- und Exportkosten werden getrennt erfasst;
 enthaltene Zeiten dürfen nicht additiv doppelt gezählt werden.
+
+## Technische Entwicklungsabnahme
+
+Die lokale Abnahme zu [PR #107](https://github.com/craexxn/ringdown-sr/pull/107)
+ist auf dem sauberen, getrennten Ausführungscommit
+`7fa2a45f55d3084dee16baf6952ed7053605f953` abgeschlossen.
+Der vorab gebundene Plan-/Seedstand bleibt
+`126b39e311eceeb12102cf09e6da57deb735025b`; Ausführungs- und Plancommit
+haben unterschiedliche Rollen. Die folgenden Belege betreffen ausschließlich
+die technische Entwicklung. Wissenschaftliche Hauptdaten oder Hauptsuchen
+sind damit nicht ausgeführt.
+
+`main-study-development-001` bleibt als abgebrochener Cloud-Vorlauf erhalten.
+Alle acht technischen Worker waren vorbereitet; **kein Fit und keine
+wissenschaftliche Suche waren gestartet**. Bereits die Julia-Vorbereitung
+des ersten Workers scheitert am schreibgeschützten Standarddepot, weil
+`JULIA_DEPOT_PATH` bei diesem Start nicht auf das vorhandene beschreibbare
+Depot gesetzt war. Das ursprüngliche Workerlog enthält `read-only file system
+(EROFS)`. Die übergeordnete Fehlermeldung
+`ValueError: Missing ordinary numerical failure evidence.` gibt diesen
+Umgebungsabbruch ausdrücklich nicht als gewöhnlichen numerischen Suchausfall
+frei. Die acht vorbereiteten Worker, das Log, der gesperrte Abschluss und
+`technical_call.json` bleiben unverändert erhalten.
+
+Der originale Aufrufbeleg von 001 misst **19,092 s Wandzeit** sowie
+13,430/4,383 s CPU User/System. Seine CPU-Messung ist ausdrücklich
+unvollständig (`cpu_measurement_complete=false`); Scope ist
+`self_plus_reaped_children`. Die Messung umfasst den abgebrochenen Aufruf
+bis zur Wiederherstellung der Handler und zum Widerruf des Abschlusses,
+ohne das abschließende Schreiben des Kostenbelegs. Es gibt keinen gültigen
+Reporthash. Enthaltene Vorbereitungskosten werden nicht erneut addiert.
+
+Die anschließende Umgebungsprüfung mit explizit gesetztem vorhandenem
+beschreibbarem Julia-Depot besteht; Beleg ist
+`main-study-development-001/environment.log`. Nachgewiesen sind unter anderem
+Python 3.12.14, Julia 1.13.1, PySR 2.6.0 und SymbolicRegression 2.5.1.
+Diese Umgebungsprüfung ersetzt weder die acht nativen Worker noch deren
+unabhängigen Replay.
+
+Der getrennte Cloud-Vorlauf `main-study-development-002` ist auf
+**demselben unveränderten Ausführungscommit vollständig bestanden**:
+acht N103-Worker mit je zehn Iterationen, beide Signale und alle vier Arme,
+keine ausgefallene Suche. Eigene technische Seeds und zwei vollständige
+4096-s-Hintergrundreihen; keine wissenschaftlichen Hauptfälle.
+001 wird weder überschrieben noch nachträglich als bestanden bezeichnet.
+
+| Ausgeführter Schritt | Wandzeit / s | CPU User / s | CPU System / s |
+| --- | ---: | ---: | ---: |
+| Vorlauf 002 einschließlich Vorbereitung und Worker | 669,334 | 602,229 | 38,252 |
+| Separate lesende Verifikation, äußerer Aufruf | 15,017 | 12,367 | 2,315 |
+| Technischer Plotexport, äußerer Aufruf | 24,980 | 21,915 | 2,748 |
+| Plotverifikation, äußerer Aufruf | 1,823 | 1,545 | 0,256 |
+| Unabhängiger Artefaktaudit | 1,200 | nicht gemessen | nicht gemessen |
+
+Der interne Plotaufruf misst 22,696 s und ist bereits im äußeren Aufruf
+enthalten. Die Tabellenzeilen bezeichnen getrennte Aufrufe, nicht Summen
+zusätzlicher Worker-/Fitkosten. Originalbelege halten die genauen Messbereiche
+und CPU-Vollständigkeit; der Vorlauf erfasst Elternprozess plus abgewartete
+Kinder, die äußeren Prüfbelege den abgewarteten Unterprozess samt dessen Kindern.
+Die kurzen technischen Zeiten sind keine Laufzeitprognose für die Hauptserie.
+
+Die getrennte Nachprüfung und der vollständige Export sind erfolgreich;
+**alle 261 Originaldateien blieben bytegleich**. Acht PNG-/SVG-Paare mit
+unveränderten Originalformeln, vollständigen Punkt-CSV und offline nutzbarer
+Galerie sind gebunden. Haupt- und Stützraster, Trainingspunkte und Endpunkte
+bleiben getrennt; keine Glättung oder Neuauswahl. Die visuell geprüften
+Beispielplots zeigen bewusst auch die schlechte Rekonstruktion kurzer Suchen.
+Technischer Erfolg ist hier keine wissenschaftliche Qualitätsaussage.
+
+Ein unabhängiger lesender Artefaktaudit bestätigt Fall-/Arm-/Budgetzensus,
+Originalauswahl und alle **17.224 CSV-Punktzeilen**. Die 35.272 Datenmarker
+in den acht SVGs entsprechen numerisch den CSV-Werten auf linearen Achsen
+und liegen vollständig innerhalb der Plotgrenzen. Das ist eine Prüfung der
+gespeicherten Daten und ihrer Darstellung, keine weitere Baumneuauswertung
+oder kontinuierliche Domainanalyse. Der Auditbeleg samt Skript ist erhalten.
+
+Auf demselben unveränderten Checkout bestehen **4.955 Python-Tests in
+1.016,39 s**. Ruff, Format, Dokumentation, Shellsyntax, CI-Fehlerweitergabe und
+Seedreproduktion sind geprüft. Der erste Python-Precheck im noch bearbeiteten
+Arbeitsbaum wurde nach Quellenbindungsfehlern gestoppt (1.476 bestanden,
+drei fehlgeschlagen, 35 Fixturefehler; 212,62 s). Ein einzelner Diagnoseaufruf
+bestätigte denselben Inventarfehler (6,12 s). Beide sind als technische
+Vorprüfungsfehler dokumentiert, nicht als erfolgreiche Gesamtsuite; CPU-Kosten
+dieser Aufrufe sind unbekannt. Nach Commit aller Module und Wechsel zum
+unveränderten Checkout besteht die vollständige Suite ohne gelockerte Guards.
+
+Das gezielte KI-basierte Integrationsreview für PR107 gegen
+`a0ddad1ad7751ed858a40534a8a2fd41b73be523` hat nach den zwei dokumentierten
+Korrekturen keinen offenen korrekturpflichtigen Befund. Die Originalarchive
+und ihre Bindungen stehen im [Ergebnisindex](results_index.md).
+Vollständige Ready-CI und Zielrechnerprüfung bleiben offen. Der bestandene
+Cloudlauf ersetzt keinen technischen Vorlauf auf dem vorgesehenen Manjaro-Rechner.
 
 ## Geprüfter Ausführungscheckout
 
