@@ -4,11 +4,15 @@
 
 23.11.2026, Leitfadenphase 7, Branch `codex/white-loss-scaling-pilot` auf
 PR103-Head `9d63fff65c833b2e2de9ee66c4fcd720177bc6d7`.
+PR103 ist nach erfolgreicher Dokumentations-CI `45035553844` in
+`3ee6e22e9a78e867dae1923152c8df69d73791aa` übernommen; PR104 zielt auf `main`.
 Der [Plan](white_loss_scaling_plan.md) ist vor Beobachtungen in
 `222b4bc2263e6200bf29b2424c2a5e6bd318bdd2` gebunden. Getrennte O/S/K-Pfade,
 72 feste lokale Diagnosen, 18 freie Kurzsuchen und drei vorbestimmte
-Wiederholungen werden implementiert. Wissenschaftliche Ausführung steht aus;
-Prüf- und Ergebnisstand im [Laufdokument](white_loss_scaling.md).
+Wiederholungen sind implementiert. Nach vollständiger technischer Vorprüfung
+läuft die wissenschaftliche Ausführung unter `white-scaling-cloud-001` auf
+dem unveränderten Commit `d72202e341a51df0d19a4f86c67dbb1eb900c7b2`;
+Prüf-, Review- und Ergebnisstand im [Laufdokument](white_loss_scaling.md).
 Danach eine getrennt begründete Auswahlintervention, kein allgemeiner
 Komplexitätsschnitt und keine Änderung historischer Protokolle.
 

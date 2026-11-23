@@ -1,10 +1,12 @@
 """Independent references for the frozen new-signal confirmation profile."""
 
+import copy
 import io
 import json
 import random
 import re
 import subprocess
+import zipfile
 from fractions import Fraction
 
 import gmpy2
@@ -35,24 +37,132 @@ def git(*args):
     return subprocess.check_output(["git", *args], cwd=ROOT)
 
 
-def test_frozen_generator_reproduces_bytes_and_preserves_all_global_random_state():
+def _method_without_evaluated_signal_bits(document):
+    """Remove only data-dependent outputs, keeping every method field exact."""
+    result = copy.deepcopy(document)
+    result.pop("inputs_sha256")
+    result["generation"]["independent_check"].pop("max_absolute_error_over_amplitude")
+    for case in result["signals"]:
+        for role in ("observed", "diagnostic_truth"):
+            case["arrays"][role].pop("sha256")
+        case["grid"]["truth"].pop("sha256")
+    return result
+
+
+def _check_signal_reference(name, values):
+    """Check either archive or local regeneration against the original MPFR bound."""
+    expected = tuple(float(Fraction(value)) for value in SIGNALS[name])
+    with gmpy2.context(gmpy2.get_context(), precision=350):
+        amplitude, frequency, decay, phase = map(gmpy2.mpfr, expected)
+        pi = gmpy2.const_pi()
+        checked = 0
+        for times, truth in values:
+            for time, observed in zip(times, truth, strict=True):
+                t = gmpy2.mpfr(float(time))
+                reference = (
+                    amplitude
+                    * gmpy2.exp(-t / decay)
+                    * gmpy2.cos(2 * pi * frequency * t + phase)
+                )
+                assert abs(
+                    gmpy2.mpfr(float(observed)) - reference
+                ) / amplitude < gmpy2.mpfr("1e-13")
+                checked += 1
+        assert checked == 2041
+        assert values[0][0][0] == 0.0
+        assert abs(
+            gmpy2.mpfr(float(values[0][1][0])) / amplitude - gmpy2.cos(phase)
+        ) < gmpy2.mpfr("3e-16")
+
+
+def test_frozen_generator_keeps_archival_bits_and_repeats_local_values_without_rng_mutation():
     config = profile.configuration()
     python_before, numpy_before = random.getstate(), np.random.get_state()
     precision_before = mpmath.mp.dps
-    outputs, actual = generator().prepare(ROOT, config["base_commit"])
+    build = generator()
+    outputs, actual = build.prepare(ROOT, config["base_commit"])
+    repeated_outputs, repeated = build.prepare(ROOT, config["base_commit"])
     numpy_after = np.random.get_state()
     assert random.getstate() == python_before
     assert numpy_after[0] == numpy_before[0]
     assert np.array_equal(numpy_after[1], numpy_before[1])
     assert numpy_after[2:] == numpy_before[2:]
     assert mpmath.mp.dps == precision_before
-    assert sources.json_bytes(actual) == sources.json_bytes(config)
+    assert outputs == repeated_outputs
+    assert sources.json_bytes(actual) == sources.json_bytes(repeated)
+    # NumPy's supported exp/cos SIMD paths can differ in their last bits. The
+    # archived payload remains the only accepted scientific input; regeneration
+    # must repeat locally and satisfy the original independent analytic bound.
+    assert sources.json_bytes(
+        _method_without_evaluated_signal_bits(actual)
+    ) == sources.json_bytes(_method_without_evaluated_signal_bits(config))
     assert set(outputs) == {
         "data/restart_budget_confirmation_protocol.json",
         "data/restart_budget_confirmation_inputs.npz",
     }
-    for name, raw in outputs.items():
-        assert raw == (ROOT / name).read_bytes()
+    for name, expected_hash in profile.PLAN_HASHES.items():
+        assert sources.sha256((ROOT / name).read_bytes()) == expected_hash
+    protocol_path = "data/restart_budget_confirmation_protocol.json"
+    input_path = "data/restart_budget_confirmation_inputs.npz"
+    assert sources.json_bytes(
+        sources.read_json(outputs[protocol_path])
+    ) == sources.json_bytes(actual)
+    check = actual["generation"]["independent_check"]
+    assert 0 <= check["max_absolute_error_over_amplitude"] < check["bound"] == 1e-13
+    assert sources.sha256(outputs[input_path]) == actual["inputs_sha256"]
+    archived_raw = (ROOT / input_path).read_bytes()
+    assert sources.sha256(archived_raw) == config["inputs_sha256"]
+    with (
+        np.load(io.BytesIO(archived_raw), allow_pickle=False) as saved,
+        np.load(io.BytesIO(outputs[input_path]), allow_pickle=False) as regenerated,
+    ):
+        assert regenerated.files == saved.files
+        archived_arrays = {name: saved[name] for name in saved.files}
+        # Exact reserialization checks container determinism without pretending
+        # transcendental evaluation is bitwise identical across CPU dispatches.
+        assert build.npz_bytes(archived_arrays) == archived_raw
+        assert (
+            build.npz_bytes({name: regenerated[name] for name in regenerated.files})
+            == outputs[input_path]
+        )
+        for name in saved.files:
+            assert regenerated[name].dtype == saved[name].dtype == np.dtype("<f8")
+            assert regenerated[name].shape == saved[name].shape
+            if name.endswith("time_s"):
+                assert regenerated[name].tobytes() == saved[name].tobytes()
+        for case in actual["signals"]:
+            name = case["name"]
+            for role, fingerprint in case["arrays"].items():
+                key = role if role.endswith("time_s") else name + "_" + role
+                assert sources.fingerprint(regenerated[key]) == fingerprint
+            assert case["grid"] == {
+                "time_s": sources.fingerprint(regenerated["irregular_time_s"]),
+                "truth": sources.fingerprint(regenerated[name + "_irregular_truth"]),
+            }
+            _check_signal_reference(
+                name,
+                [
+                    (regenerated["time_s"], regenerated[name + "_observed"]),
+                    (
+                        regenerated["diagnostic_time_s"],
+                        regenerated[name + "_diagnostic_truth"],
+                    ),
+                    (
+                        regenerated["irregular_time_s"],
+                        regenerated[name + "_irregular_truth"],
+                    ),
+                ],
+            )
+    for raw in (archived_raw, outputs[input_path]):
+        with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+            assert archive.testzip() is None
+            assert archive.namelist() == [name + ".npy" for name in archived_arrays]
+            for member in archive.infolist():
+                assert member.date_time == (1980, 1, 1, 0, 0, 0)
+                assert member.compress_type == zipfile.ZIP_STORED
+                assert member.external_attr == 0o600 << 16
+                with archive.open(member) as stream:
+                    assert np.lib.format.read_magic(stream) == (1, 0)
     assert actual["generation"]["truth_regenerated"] is True
     assert actual["generation"]["grid_regenerated"] is True
     assert actual["generation"]["coordinate_transformed"] is False
@@ -248,27 +358,7 @@ def test_all_new_signal_values_match_an_independent_mpfr_analytic_reference(name
         (physical["diagnostic_time_s"], physical["diagnostic_truth"]),
         (grid["time_s"], grid["truth"]),
     ]
-    with gmpy2.context(gmpy2.get_context(), precision=350):
-        amplitude, frequency, decay, phase = map(gmpy2.mpfr, expected)
-        pi = gmpy2.const_pi()
-        checked = 0
-        for times, truth in values:
-            for time, observed in zip(times, truth, strict=True):
-                t = gmpy2.mpfr(float(time))
-                reference = (
-                    amplitude
-                    * gmpy2.exp(-t / decay)
-                    * gmpy2.cos(2 * pi * frequency * t + phase)
-                )
-                assert abs(
-                    gmpy2.mpfr(float(observed)) - reference
-                ) / amplitude < gmpy2.mpfr("1e-13")
-                checked += 1
-        assert checked == 2041
-        assert physical["time_s"][0] == 0.0
-        assert abs(
-            gmpy2.mpfr(float(physical["observed"][0])) / amplitude - gmpy2.cos(phase)
-        ) < gmpy2.mpfr("3e-16")
+    _check_signal_reference(name, values)
 
 
 @pytest.mark.parametrize(
