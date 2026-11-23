@@ -20,8 +20,8 @@ from .symbolic import evaluate_tree, select_candidate
 
 FORMAT = "ringdown-sr-offgrid-selection-1"
 PLAN = "docs/offgrid_selection_plan.md"
-# Execution remains unavailable until the separate post-scaling plan is frozen.
-PLAN_SHA256 = None
+# The separate plan was frozen after the completed scaling pilot, before scoring.
+PLAN_SHA256 = "05999ee4831a6961ee3c61e9b43ac18af0e92b2566fd12101b15e77338478185"
 MANIFESTS = {
     "shared": "e938851c3f5ffeec0bcd8505ed5f38835df8a14865e0aa5f5b34759dece1299a",
     "duration": "2af1c2e46aae4526e0c272729033ad90939c21fa41e395044108cc56aff77c22",

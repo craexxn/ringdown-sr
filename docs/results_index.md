@@ -9,9 +9,9 @@ bereits erfasst oder gesichert seien.
 Der [White-Skalierungspilot](white_loss_scaling.md) ergänzt den
 [Eintrag vom 23.11.2026](#white-skalierungspilot-vom-23112026): abgeschlossener
 technischer Vorlauf und erhaltener wissenschaftlicher Abbruch 001 sind getrennt
-archiviert. Der unveränderte Wiederholungsplan läuft als 002; ein fertiger
-technischer Nachweis oder Teilbefund ist keine vollständige wissenschaftliche
-Serienfreigabe.
+archiviert. Lauf 002 ist inzwischen vollständig abgeschlossen und mit
+unabhängiger Kosten-/Bestandsprüfung sowie geschütztem Plotexport bestätigt.
+Die zugehörigen neuen Archive werden getrennt von 001 gebunden.
 
 **Archivierung offen:** Dauerhafte Ablage und eine geprüfte zweite Kopie sind
 hier noch nicht bestätigt. Lokal verfügbare Arbeitskopien werden nicht als
@@ -941,7 +941,12 @@ verschachtelte Workerzeiten nicht hinzuaddieren. Die gezielte spätere
 Nachrechnung bestätigt den fertigen Teil; sie ersetzt keinen fehlenden
 Serienabschluss. Der neue Versuch `white-scaling-cloud-002` auf
 `5ae263a5cddd65417aa5d5466646218168d074e7` erhält dieselben Eingaben und
-Budgets. Sein vollständiger Abschluss ist noch ausstehend.
+Budgets. 002 ist vollständig abgeschlossen und lesend bestätigt: 39 erfolgreiche
+Prozesse, 72 feste Optimierungen, 21 freie Suchen einschließlich drei exakter
+Wiederholungen; 1132 Quelldateien unverändert. Serienwandzeit 2729,867 s.
+Der geschützte Export bindet 93 Originalformeln, 93 PNGs und alle Punktdaten.
+Die neuen 002-Archive sind von den nachstehenden bereits geschlossenen
+001-Archiven getrennt.
 
 Neue, unverändert erhaltene Archive und Quellenpakete:
 

@@ -1,4 +1,4 @@
-# White-Skalierungspilot: Laufweg und Befund
+# Verlustskalierung und gezielte Formelauswahl: Laufweg und Befund
 
 Stand 23.11.2026, Leitfadenphase 7. Der
 [Vorabplan](white_loss_scaling_plan.md) ist in Commit
@@ -12,11 +12,14 @@ Die Umsetzung ist in [PR #104](https://github.com/craexxn/ringdown-sr/pull/104)
 als Draft vorbereitet. Der erste wissenschaftliche Pilot auf
 `d72202e341a51df0d19a4f86c67dbb1eb900c7b2` unter `white-scaling-cloud-001`
 ist nach vollständiger fester Stufe und erster erfolgreicher freier Suche
-an einer neuen Elternprüfung abgebrochen. Die unten dokumentierte Korrektur
-bereitet `white-scaling-cloud-002` mit unverändertem Plan vor. Eine vollständige
-wissenschaftliche Freigabe steht bis zum Abschluss und lesenden Replay aus.
-Die anschließende Auswahlprüfung ist implementiert,
-aber bis zu ihrem gesonderten Vorabplan technisch gesperrt.
+an einer neuen Elternprüfung abgebrochen. Der getrennte Lauf
+`white-scaling-cloud-002` auf `5ae263a5cddd65417aa5d5466646218168d074e7`
+ist mit unverändertem Plan vollständig abgeschlossen und lesend geprüft:
+72 feste Optimierungen, 18 freie Kurzsuchen und drei exakt reproduzierte
+Wiederholungen. Die Verlustskalierung verändert Suchpfade und freie Ergebnisse,
+begründet bei zwei Rauschfenstern aber keine allgemeine Methodenrangfolge.
+Die anschließende [Auswahlprüfung](offgrid_selection_plan.md) ist nach diesem
+Befund gesondert in `6f41817cd0102d7a204a4e28cb5b3a77fc74271f` vorab festgelegt.
 
 ## Technische Nachweise vor dem Pilotstart
 
@@ -89,8 +92,8 @@ hat alle 72 festen Optimierungen abgeschlossen. Die unabhängige skalare
 Nachrechnung bestätigt gegenüber 001 bitgleiche Eingaben, Originalbäume,
 Vorhersagen, Residuen, Parametertraces, Callbackzahlen und Zufallszustände.
 Das sind dieselben zwei Rauschfenster, keine zusätzliche Stichprobe.
-Die freien Suchen sind noch nicht vollständig; die feste Stufe allein
-begründet keine allgemeine Aussage über freie Formelfindung.
+Die feste Stufe allein begründet keine allgemeine Aussage über freie
+Formelfindung; die abgeschlossene freie Stufe steht getrennt unten.
 
 Die drei getrennten Verlustpfade sind gewöhnliche MSE (O), dieselbe MSE
 multipliziert mit 1/sigma² (S) und der diagonale Kovarianzpfad (K).
@@ -134,8 +137,7 @@ Der native Aufrufer verwirft die lokalen Optim-Ergebnisobjekte.
 Der Befund weist somit Pfadabhängigkeit nach, keine praktische Verbesserung
 der festen Endkurven und keinen Fehler des diagonalen Kovarianzkerns.
 Rundung, diskrete Auswahl und andere lokale Optimierer bei einzelnen freien
-Bäumen müssen bei den noch laufenden freien Suchen getrennt berücksichtigt
-werden. Insbesondere ist Newton für einen einzelnen skalaren Parameter
+Bäumen müssen getrennt berücksichtigt werden. Insbesondere ist Newton für einen einzelnen skalaren Parameter
 nicht durch den BFGS-Feststrukturvergleich abgedeckt.
 
 Diese Trennung von evolutionärer Suche, Konstantenoptimierung und Auswahl
@@ -144,6 +146,89 @@ entspricht [Cranmer (2023)](https://arxiv.org/abs/2305.01582).
 bezeichnet einen affinen Ausgabefit und ist nicht mit unserem positiven
 Verlustfaktor gleichzusetzen. Die tatsächlich gelesenen Paketquellen und
 ihre Hashes bleiben im Nachweispaket erhalten.
+
+## Vollständige freie Stufe und begründeter Anschluss
+
+Mittlerer sauberer RMSE/A auf den 1024 unregelmäßigen Prüfpunkten, je Fenster
+über die drei vorbestimmten Suchseeds; die drei Prozesswiederholungen sind
+aus diesen Mitteln ausgeschlossen:
+
+| Rauschfenster | O: MSE | S: skalierte MSE | K: diagonaler Kovarianzpfad |
+| --- | ---: | ---: | ---: |
+| 1 | 13,2005 % | 3,9093 % | 12,7062 % |
+| 2 | 9,1395 % | 2,6180 % | 12,9692 % |
+
+S hat in fünf von sechs gepaarten Suchaufrufen kleineren unregelmäßigen RMSE
+als O; ein Unterschied beträgt dabei lediglich 0,000925 Prozentpunkte.
+K verbessert diesen Endpunkt in einem von sechs Paaren gegenüber S,
+die Trainings-MSE in keinem. In beiden Kontrasten ändern sich alle sechs
+ursprünglichen Fronten und ausgewählten Bäume. Sämtliche drei vorbestimmten
+Wiederholungen reproduzieren Front, Auswahl und Callbackzahl exakt.
+Die gewöhnlichen Baselines betragen 0,0489228 und 0,0444343; die Untergrenze
+0,01 ist in allen Armen inaktiv. Sie erklärt diese Unterschiede somit nicht.
+Gleiche Anfangsseeds belegen keine identischen späteren Zufallszüge oder
+Populationen nach divergierender Suche. Zwei unabhängige Rauschfenster und
+100 äußere Iterationen erlauben weder eine universelle Rangfolge noch einen
+gesicherten Langbudgetvorteil von S. Historische Verlustprofile bleiben erhalten.
+
+Der Originalbaum `white-02-seed-2026112312-covariance` enthält den linearen Term
+`sin(90.90624942174962*((t*(0.7944755598450789+300.73558476534595))+23.104196569256864))`.
+Seine Frequenz ist 4362,590873 Hz, der Alias auf dem 4096-Hz-Raster
+266,590873 Hz. Die exakte Rasteridentität betrifft diesen Term; bei direkter
+Float64-Nachrechnung beträgt die maximale Abweichung 5,07e−13. Auf den
+unregelmäßigen Prüfpunkten beträgt der RMS-Unterschied der beiden Sinusterme
+0,98235. Die vollständige Originalformel wird weder ersetzt noch vereinfacht.
+Ihr sauberer unregelmäßiger RMSE beträgt 29,3185 % A.
+
+Ein anderer konkreter Gegenvergleich ist Fenster 1, Seed 2026112313:
+O mit nur 15 Knoten erreicht 23,3085 % A, S mit 17 Knoten 1,4234 % A.
+Zusammen mit den bereits gespeicherten besseren Alternativen der Folgestudie
+begründet das eine gezielte Auswahlprüfung mit zusätzlicher Messinformation;
+eine pauschale niedrigere Komplexitätsgrenze folgt daraus nicht.
+[VanderPlas (2018)](https://arxiv.org/abs/1703.09824) erklärt die Rolle des
+spektralen Fensters und die Grenzen bloßer Unterteilungen desselben Uniformrasters.
+Ungleichmäßige Messzeiten garantieren gleichwohl keine richtige Formel.
+
+Der gesonderte Anschlussplan vergleicht alle 156 ursprünglichen Pakete mit
+Originalauswahl, 128 neuen verrauschten Werten auf dem bisherigen Raster und
+128 auf einem neuen unregelmäßigen Raster. Primär ist Off-grid minus Same-grid,
+getrennt nach sechs Armen und zwei Rauschmodellen. Originalbäume, Konstanten,
+Suchbudgets und Komplexitätsgrenze bleiben unverändert. Wahrheit bleibt aus
+der Auswahl-API ausgeschlossen. Diese zusätzliche synthetische Beobachtung
+ist Entwicklungsinformation und lässt sich nicht nachträglich aus einem
+einzelnen realen GW-Ereignis erzeugen.
+
+## Abschlussbelege und Kosten von Lauf 002
+
+Der separate gebundene Verifier besteht. Die unabhängige Nachrechnung bestätigt
+39 erfolgreiche Prozesse, alle Originalfronten, die vollständigen Zellmengen,
+die Kosten und 1132 unveränderte Quelldateien. Audit-SHA-256:
+`c9a2ddf6872a35eb2014956daf018db40d8d18f63e65b3b2b5d714528246b84e`;
+Originalmanifest-SHA-256:
+`255223ba1bc8c653b75e9399a49e4ac83c86548f619ec58b9532965d87d9b3b3`.
+Der separate Formelbeleg bindet die genannten Alias-/Komplexitätsgegenbeispiele.
+
+Ein späteres KI-basiertes Integrationsreview an `f6cfced` gegen `3ee6e22`
+findet zwei Lücken im neuen Laufweg: einige ungeprüfte Kostenfelder und fehlende
+Quellenbindung während des Plotexports. Die wissenschaftliche Ausführung auf
+5ae bleibt unverändert. Ein unabhängiger Kosten-/Bestandsaudit und ein externer
+Exportguard ergänzen diese konkreten Prüfungen rein lesend. Der Guard bindet
+alle 93 ursprünglichen Formelobjekte, alle 93 PNGs und sämtliche Punktdaten;
+284 Nutzdateien werden erst nach vollständiger Prüfung veröffentlicht.
+Sein SHA-256 lautet
+`4105e1adb4f24bc2f0aa4066e669ab32fd806c71bb3fda4b078aa27eed6c47af`.
+Die korrigierte Implementierung für künftige Läufe prüft zusätzlich
+verschachtelte Zeiten und erhält Primärfehler sowie bekannte CPU-Teilkosten
+auch bei einem sekundären Schreibfehler. Ältere Kostenschemata werden nicht
+nachträglich umgeschrieben oder als neue Messung ausgegeben.
+
+Serienwandzeit: **2729,867 s = 45 min 29,867 s**, nach Vorbereitung der Eingaben.
+Darin enthalten sind 786,739 s feste und 1934,688 s freie Worker;
+verschachtelte Zeiten nicht addieren. Gemessene CPU der beendeten Worker:
+2586,746 s User und 119,587 s System (`RUSAGE_CHILDREN`). Die vollständige
+Serien-CPU einschließlich Treiber wurde in dieser Ausführungsfassung nicht
+gemessen. Der vorherige Abbruch 001 und technische Vorlauf bleiben separat
+mit ihren Kosten und Archiven im [Ergebnisindex](results_index.md) erhalten.
 
 ## Befehle
 

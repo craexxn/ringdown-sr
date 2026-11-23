@@ -9,14 +9,14 @@ Der fertige Ergebnis-PR #103 ist seit 23.11.2026 nach erfolgreicher
 [Dokumentations-CI](https://github.com/craexxn/ringdown-sr/actions/runs/45035553844)
 in `main` übernommen (`3ee6e22`). Der aktuelle Methoden-PR #104 bleibt in Arbeit.
 
-23.11.2026: Die empfohlene kleine White-Skalierungskontrolle ist
-[vorab festgelegt](docs/white_loss_scaling_plan.md) und wird in einem getrennten
-[Laufweg](docs/white_loss_scaling.md) umgesetzt. Nach bestandenen technischen
-Kontrollen hat der erste Pilot die feste Stufe abgeschlossen; eine fehlerhafte
-Vorzeichenprüfung in der anschließenden Elternverifikation ist korrigiert.
-Der vollständige Neustart behält den Plan bei; Ergebnisse stehen noch aus.
-Anschließend folgt eine einzelne
-begründete Auswahlintervention; keine pauschale Verringerung der Komplexität.
+23.11.2026: Der [White-Skalierungspilot](docs/white_loss_scaling.md) ist mit
+72 festen Optimierungen und 21 freien Suchen einschließlich drei exakten
+Wiederholungen vollständig lesend bestätigt. Feste Endkurven bleiben praktisch
+gleich; freie Formeln unterscheiden sich deutlich. Zwei Rauschfenster begründen
+keine allgemeine Verlustumstellung. Der erhaltene Abbruch 001 bleibt getrennt.
+Die daraus begründete [Auswahlprüfung](docs/offgrid_selection_plan.md) ist
+gesondert vorab festgelegt: zusätzliche verrauschte Messwerte auf gleichem oder
+neuem Raster, unveränderte Originalformeln und Komplexitätsgrenze.
 
 Aktuelle Auswertung vom 22.11.2026: Zur in
 [PR #102](https://github.com/craexxn/ringdown-sr/pull/102) übernommenen

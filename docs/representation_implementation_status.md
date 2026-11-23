@@ -1,6 +1,6 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: kontrollierter White-Skalierungspilot in Umsetzung
+## Aktuell: White-Skalierung geprüft, einzelne Auswahlintervention vorab festgelegt
 
 23.11.2026, Leitfadenphase 7, Branch `codex/white-loss-scaling-pilot` auf
 PR103-Head `9d63fff65c833b2e2de9ee66c4fcd720177bc6d7`.
@@ -13,10 +13,19 @@ Wiederholungen sind implementiert. Nach vollständiger technischer Vorprüfung
 ist `white-scaling-cloud-001` auf dem unveränderten Commit
 `d72202e341a51df0d19a4f86c67dbb1eb900c7b2` nach 72 festen Optimierungen
 und erster nativer Suche an einer signierten Baselineprüfung abgebrochen.
-Die gezielte Korrektur ist geprüft; 002 behält denselben Plan bei.
+Der getrennte Lauf 002 auf `5ae263a5cddd65417aa5d5466646218168d074e7`
+ist nach gezielter Korrektur vollständig lesend bestätigt: 72 feste Optimierungen,
+21 erfolgreiche freie Suchen einschließlich drei exakter Wiederholungen.
+Die feste Stufe erreicht praktisch gleiche Endkurven; die freien Fronten
+unterscheiden sich in sämtlichen sechs Paaren beider Kontraste. Nur zwei
+unabhängige Rauschfenster, keine universelle Methodenrangfolge.
+Unabhängiger Kosten-/Bestandsaudit und geschützter Export bestätigen
+1132 unveränderte Quelldateien und 93 Originalausgaben. Nachgebesserte
+Abschlussprüfungen lassen den wissenschaftlichen Ausführungsstand unverändert.
 Prüf-, Review- und Ergebnisstand im [Laufdokument](white_loss_scaling.md).
-Danach eine getrennt begründete Auswahlintervention, kein allgemeiner
-Komplexitätsschnitt und keine Änderung historischer Protokolle.
+Die [einzelne Auswahlintervention](offgrid_selection_plan.md) ist in
+`6f41817cd0102d7a204a4e28cb5b3a77fc74271f` vor ihrer Ausführung festgelegt;
+kein allgemeiner Komplexitätsschnitt und keine Änderung historischer Protokolle.
 
 ## Aktuell: Auswertung und Nachprüfung der Manjaro-Folgestudie
 

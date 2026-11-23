@@ -41,9 +41,18 @@ native O/S/K-Arithmetik, vollständige Optionsgegenprüfungen, Vergleich der
 beobachteten und unbeobachteten lokalen Optimierung sowie vier frische
 O/S/K/O-Worker mit je zwei äußeren Iterationen auf acht linearen Messpunkten.
 Die O-Wiederholung muss die ursprüngliche Front und Callbackzahl reproduzieren.
+Vier feste Starts prüfen zusätzlich den isolierten Fixed-Worker und dessen
+lesende Nachrechnung. Python-Gegenfälle prüfen Kosten-/Abschlussbelege,
+Quellenänderungen während des Exports und die gesperrte Ausgabe bei Plotfehlern.
 Die wissenschaftlichen 72 lokalen Diagnosen und 21 kurzen Suchen sind nicht
 Teil der CI. `docs/white_loss_scaling_plan.md` und der spätere
 `docs/offgrid_selection_plan.md` gelten als laufzeitrelevante Pläne.
+
+Der historische Regenerationstest unterscheidet unveränderte Archivbytes von
+CPU-abhängiger NumPy-Signalarithmetik. Lokale Wiederholung, Methode, Seeds und
+Zeitachsen bleiben exakt; archivierte und neu erzeugte Signalwerte müssen
+jeweils dieselbe ursprüngliche MPFR-Fehlerschranke erfüllen. Eingefrorene Daten,
+Hashes und Generatoren werden dafür nicht verändert.
 
 | Job / Abschnitt | Prüfungen |
 | --- | --- |
