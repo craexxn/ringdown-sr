@@ -1,5 +1,20 @@
 # Leitfaden: wiederholbare Ringdown-Rekonstruktion und Übergang zu Rauschversuchen
 
+Phase 7, Ergänzung vom 23.11.2026: Der
+[kleine White-Skalierungspilot](white_loss_scaling_plan.md) ist vollständig
+abgeschlossen und lesend bestätigt: gleiche feste Endkurven bei verschiedenen
+Pfaden, deutlich verschiedene freie Fronten, nur zwei unabhängige Rauschfenster.
+[Aktueller Prüf-/Befundstand](white_loss_scaling.md).
+Die daraus und aus der bisherigen Kandidatendiagnose begründete einzelne
+[Auswahlintervention](offgrid_selection_plan.md) ist nach gesondertem Vorabplan
+an sämtlichen 156 vorhandenen Paketen abgeschlossen und unabhängig geprüft.
+Zusätzliche verrauschte Beobachtungen erlauben bessere Gruppenmittel gegenüber
+Original; der isolierte Rastervergleich ist gemischt. Historische Regeln und
+Komplexitätsgrenze bleiben erhalten. Nächste begrenzte Empfehlung: lesende
+Struktur-/Domainbewertung der neuen Auswahlen, danach ein vorab begründeter
+Bestätigungsplan mit tatsächlich verfügbarer Validierungsinformation.
+Dieser Anschluss ist noch nicht ausgeführt oder als neue Suchserie beschlossen.
+
 Übernommener technischer Begleitauftrag zu Phase 1: Der
 [CI-Sparplan](github_actions_savings_plan.md) bündelt lokale Prüfungen vor dem
 Ready-Wechsel und führt native Kontrollen seriell aus. Die wissenschaftlichen

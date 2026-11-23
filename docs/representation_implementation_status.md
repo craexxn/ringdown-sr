@@ -1,6 +1,52 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Auswertung und Nachprüfung der Manjaro-Folgestudie
+## Aktuell: White-Skalierung und gezielte Auswahlprüfung abgeschlossen
+
+23.11.2026, Leitfadenphase 7, Branch `codex/white-loss-scaling-pilot` auf
+PR103-Head `9d63fff65c833b2e2de9ee66c4fcd720177bc6d7`.
+PR103 ist nach erfolgreicher Dokumentations-CI `45035553844` in
+`3ee6e22e9a78e867dae1923152c8df69d73791aa` übernommen; PR104 zielt auf `main`.
+Der [Plan](white_loss_scaling_plan.md) ist vor Beobachtungen in
+`222b4bc2263e6200bf29b2424c2a5e6bd318bdd2` gebunden. Getrennte O/S/K-Pfade,
+72 feste lokale Diagnosen, 18 freie Kurzsuchen und drei vorbestimmte
+Wiederholungen sind implementiert. Nach vollständiger technischer Vorprüfung
+ist `white-scaling-cloud-001` auf dem unveränderten Commit
+`d72202e341a51df0d19a4f86c67dbb1eb900c7b2` nach 72 festen Optimierungen
+und erster nativer Suche an einer signierten Baselineprüfung abgebrochen.
+Der getrennte Lauf 002 auf `5ae263a5cddd65417aa5d5466646218168d074e7`
+ist nach gezielter Korrektur vollständig lesend bestätigt: 72 feste Optimierungen,
+21 erfolgreiche freie Suchen einschließlich drei exakter Wiederholungen.
+Die feste Stufe erreicht praktisch gleiche Endkurven; die freien Fronten
+unterscheiden sich in sämtlichen sechs Paaren beider Kontraste. Nur zwei
+unabhängige Rauschfenster, keine universelle Methodenrangfolge.
+Unabhängiger Kosten-/Bestandsaudit und geschützter Export bestätigen
+1132 unveränderte Quelldateien und 93 Originalausgaben. Nachgebesserte
+Abschlussprüfungen lassen den wissenschaftlichen Ausführungsstand unverändert.
+Prüf-, Review- und Ergebnisstand im [Laufdokument](white_loss_scaling.md).
+Die [einzelne Auswahlintervention](offgrid_selection_plan.md) ist in
+`6f41817cd0102d7a204a4e28cb5b3a77fc74271f` vor ihrer Ausführung festgelegt;
+auf `9f13a6714bb902101a55feea75053a64c85cb4ef` sind alle 156 Pakete und
+468 Ausgaben vollständig nachgerechnet, ohne neue Fits/Suchen. 8344 Kandidaten,
+16688 Scores und sämtliche Plotpunkte geprüft; keine Ausfälle oder Enthaltungen.
+Der primäre Off-grid-minus-Same-grid-Vergleich ist gemischt: fünf Gruppenmittel
+kleiner, sieben größer; AR(1)/O wird fast vollständig von `ar1-08` getragen.
+Sekundär sinken die Off-grid-Mittel gegenüber der Originalauswahl in allen
+zwölf Gruppen; zusätzliche Beobachtungen und bei gewichteten Armen die neue
+Auswahlmetrik verhindern eine alleinige Zuschreibung ans Raster.
+Report, Originalformeln und Grenzen im [Befund](white_loss_scaling.md).
+Keine allgemeine Verlustumstellung, kein Komplexitätsschnitt und keine Änderung
+historischer Protokolle. Nächster vorgeschlagener Schritt: lesende Struktur-/
+Domainbewertung, danach Bestätigung mit begründeter Validierungsinformation.
+Die vollständige technische CI am abschließenden Head wird in PR104 geführt.
+Im ersten Ready-Lauf `45155705726` auf `fd5e7d0` bestehen 4.791 Python-Tests
+und 30/34 native Fachschritte. Der native Job wird nach 120 min 15 s
+abgebrochen; das Abschlussgate verweigert korrekt die Freigabe.
+Die [CI-Dokumentation](ci.md#aktuelle-jobfrist-nach-pr104-abbruch) begründet
+180 statt 120 Minuten ausschließlich für den seriellen nativen Job.
+Keine fachliche Prüfung oder wissenschaftliche Frist wird geändert;
+der neue Workflowstand benötigt einen frischen vollständigen Ready-Lauf.
+
+## Ausgangsbefund: Auswertung und Nachprüfung der Manjaro-Folgestudie
 
 Stand 22.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
 Die [Ergebnisauswertung](noise_followup_results_manjaro_001.md) bindet das

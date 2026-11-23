@@ -5,7 +5,31 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-Aktuelle Auswertung vom 22.11.2026: Zur in
+Der fertige Ergebnis-PR #103 ist seit 23.11.2026 nach erfolgreicher
+[Dokumentations-CI](https://github.com/craexxn/ringdown-sr/actions/runs/45035553844)
+in `main` übernommen (`3ee6e22`).
+[PR #104](https://github.com/craexxn/ringdown-sr/pull/104) führt den neuen
+Methoden-/Ergebnisstand und die abschließende technische CI.
+Im ersten vollen CI-Lauf bestehen 4.791 Python-Tests und 30/34 native
+Fachschritte; der Lauf endet nach rund 120 Minuten ohne Vollfreigabe.
+Die [begründete Jobfristkorrektur](docs/ci.md#aktuelle-jobfrist-nach-pr104-abbruch)
+benötigt eine neue vollständige Prüfung.
+
+23.11.2026: Der [White-Skalierungspilot](docs/white_loss_scaling.md) ist mit
+72 festen Optimierungen und 21 freien Suchen einschließlich drei exakten
+Wiederholungen vollständig lesend bestätigt. Feste Endkurven bleiben praktisch
+gleich; freie Formeln unterscheiden sich deutlich. Zwei Rauschfenster begründen
+keine allgemeine Verlustumstellung. Der erhaltene Abbruch 001 bleibt getrennt.
+Die daraus begründete [Auswahlprüfung](docs/offgrid_selection_plan.md) ist
+gesondert vorab festgelegt und vollständig geprüft: 156 Pakete, 468 Ausgaben,
+keine neue Suche. Mit zusätzlicher Validierungsinformation sinken die
+Off-grid-Gruppenmittel gegenüber der Originalauswahl; der direkte Rastervergleich
+ist gemischt und teilweise von einem Einzelwert geprägt. Die nächste begrenzte
+Empfehlung ist eine lesende Struktur-/Domainbewertung der neuen Auswahlen und
+danach eine Bestätigung mit vorab begründeter, tatsächlich verfügbarer
+Validierungsinformation. Originalformeln und Komplexitätsgrenze bleiben unverändert.
+
+Ausgangsbefund vom 22.11.2026: Zur in
 [PR #102](https://github.com/craexxn/ringdown-sr/pull/102) übernommenen
 [Folgestudie zu Hintergrunddauer und Messraster](docs/noise_followup_plan.md)
 liegen die Übersicht, beide Ergebnisarchive und eine kompakte Shared-Prüfkopie

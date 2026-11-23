@@ -713,6 +713,7 @@ def test_all_original_commands_options_error_wrappers_and_order_are_preserved():
         "Verify noise pilot with three bounded technical workers",
         "Verify background study with five bounded technical workers and plots",
         "Verify duration and sampling study with six bounded technical workers and plots",
+        "Verify controlled white-loss scaling in isolated technical workers",
     }
     ordered = []
     for group in ("native-a", "native-b", "native-c"):
@@ -865,8 +866,8 @@ def test_workflow_requires_early_success_and_all_native_results_without_bypasses
     assert text.count("persist-credentials: false") == 3
     assert text.count("fetch-depth: 0") == 3
     assert text.count("timeout-minutes: 75") == 2
-    assert text.count("timeout-minutes: 120") == 1
-    assert "timeout-minutes: 120" in jobs["native"]
+    assert text.count("timeout-minutes: 180") == 1
+    assert "timeout-minutes: 180" in jobs["native"]
     for job in ("prepare", "technical-checks"):
         assert "timeout-minutes: 75" in jobs[job]
     assert "OPENBLAS" not in text.split("jobs:", 1)[0]

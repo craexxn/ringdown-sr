@@ -6,6 +6,29 @@ und bei manuellem Aufruf. Es gibt keine Workflow-Pfadfilter. Die Umsetzung folgt
 [Abschnitten 4 und 5 des Sparplans](github_actions_savings_plan.md); die dortige
 Main-Wiederverwendung bleibt getrennte Folgearbeit.
 
+## Aktuelle Jobfrist nach PR104-Abbruch
+
+Am 23.11.2026 besteht im [Ready-Lauf 45155705726](https://github.com/craexxn/ringdown-sr/actions/runs/45155705726)
+auf Head `fd5e7d099a777b5462208a727e1f5a4c45a52d01` die Vorbereitung mit
+4.791 Python-Tests, Ruff, Format und 124 Dokumentationsdateien. Der native Job
+läuft von 10:34:04 bis 12:34:19 UTC und endet als `cancelled`:
+30 von 34 Fachschritten bestehen, der Rauschpilot wird abgebrochen,
+Hintergrund-, Folgestudien- und White-Skalierungscheck werden nicht begonnen.
+Das Log meldet `The operation was canceled.`; eine gesonderte Abbruchannotation
+liegt nicht vor. Die Dauer von 120 min 15 s bei konfigurierten 120 Minuten
+spricht stark für die Jobfrist. Der Abschluss verweigert korrekt die Freigabe.
+
+Das letzte abgeschlossene Fachprogramm endet bereits nach 119 min 24 s.
+Die vier verbleibenden Blöcke umfassen zusammen 18 frische Suchworker sowie
+feste Kontrollen, Verifikationen und Plotexporte. Ausschließlich der serielle
+`native`-Job erhält daher **180 Minuten** als begrenzte Reserve, keine
+vorhergesagte Laufzeit. `prepare` und Abschluss behalten je 75 Minuten.
+Alle Prüfschritte, Workerfristen, Suchbudgets, wissenschaftlichen Programme
+und das Vollständigkeitsgate bleiben unverändert. Historische Angaben zu
+120 Minuten weiter unten beschreiben den früheren Stand. Der korrigierte
+Workflow benötigt eine frische vollständige Ready-CI; der Abbruch und seine
+bestandenen Teilschritte sind kein vollständiger Erfolgsnachweis.
+
 ## Scope und Ausführungsmodus
 
 `prepare` gibt `full`, `comparison_known` und `mode` aus. `full` beschreibt den
@@ -35,6 +58,24 @@ Base und tatsächlich geprüften Mergecommit kontrollieren. Ein Review ohne
 Befund ist kein Nachweis bestandener Tests.
 
 ## Serielle technische Prüfungen
+
+Der getrennte White-Skalierungspilot ergänzt `check_white_scaling.py`:
+native O/S/K-Arithmetik, vollständige Optionsgegenprüfungen, Vergleich der
+beobachteten und unbeobachteten lokalen Optimierung sowie vier frische
+O/S/K/O-Worker mit je zwei äußeren Iterationen auf acht linearen Messpunkten.
+Die O-Wiederholung muss die ursprüngliche Front und Callbackzahl reproduzieren.
+Vier feste Starts prüfen zusätzlich den isolierten Fixed-Worker und dessen
+lesende Nachrechnung. Python-Gegenfälle prüfen Kosten-/Abschlussbelege,
+Quellenänderungen während des Exports und die gesperrte Ausgabe bei Plotfehlern.
+Die wissenschaftlichen 72 lokalen Diagnosen und 21 kurzen Suchen sind nicht
+Teil der CI. `docs/white_loss_scaling_plan.md` und der spätere
+`docs/offgrid_selection_plan.md` gelten als laufzeitrelevante Pläne.
+
+Der historische Regenerationstest unterscheidet unveränderte Archivbytes von
+CPU-abhängiger NumPy-Signalarithmetik. Lokale Wiederholung, Methode, Seeds und
+Zeitachsen bleiben exakt; archivierte und neu erzeugte Signalwerte müssen
+jeweils dieselbe ursprüngliche MPFR-Fehlerschranke erfüllen. Eingefrorene Daten,
+Hashes und Generatoren werden dafür nicht verändert.
 
 | Job / Abschnitt | Prüfungen |
 | --- | --- |

@@ -1,10 +1,20 @@
 # Ergebnisindex und Archivierungsstand
 
-Stand: 22.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
+Stand: 23.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
 nachträglichen Bewertungen; [Ablagerichtlinie](results_archiving.md).
 Serien sind die Indexeinheit, ihre Zellen/Wiederholungen bleiben im Originalbericht.
 Die Aufstellung ist keine Behauptung, dass alle jemals lokal erzeugten Ergebnisse
 bereits erfasst oder gesichert seien.
+
+Der [White-Skalierungspilot](white_loss_scaling.md) ergänzt den
+[Eintrag vom 23.11.2026](#white-skalierungspilot-vom-23112026): abgeschlossener
+technischer Vorlauf und erhaltener wissenschaftlicher Abbruch 001 sind getrennt
+archiviert. Lauf 002 ist inzwischen vollständig abgeschlossen und mit
+unabhängiger Kosten-/Bestandsprüfung sowie geschütztem Plotexport bestätigt.
+Die zugehörigen neuen Archive werden getrennt von 001 gebunden.
+Auch die anschließende [Auswahlprüfung](#gezielte-auswahlprüfung-vom-23112026)
+ist vollständig lesend bestätigt: 156 Pakete, 468 Ausgaben, keine neuen Suchen.
+Originale, konsumierte Prüfkopien und Darstellungen haben getrennte Archivrollen.
 
 **Archivierung offen:** Dauerhafte Ablage und eine geprüfte zweite Kopie sind
 hier noch nicht bestätigt. Lokal verfügbare Arbeitskopien werden nicht als
@@ -911,6 +921,131 @@ unabhängige hashgeprüfte Zweitkopie bleiben unbestätigt.
   [Entwicklungsabnahme](noise_followup_development_001.md).
 - Ablage: lokaler Cloud-Exportordner `ringdown-noise-followup`.
   Dauerhafte Archivablage und unabhängige Zweitkopie **offen**.
+
+### White-Skalierungspilot vom 23.11.2026
+
+Fragestellung, feste Budgets, Mechanismusdiagnose und Folgeschritt im
+[Lauf-/Befunddokument](white_loss_scaling.md); Vorabplancommit
+`222b4bc2263e6200bf29b2424c2a5e6bd318bdd2`. Zwei neue Rauschfenster,
+72 feste lokale Diagnosen und 21 freie Kurzsuchen einschließlich drei
+vorbestimmter Wiederholungen. Diese Wiederholungen sind keine weiteren
+unabhängigen Datenfälle.
+
+`white-scaling-technical-001` ist auf
+`d72202e341a51df0d19a4f86c67dbb1eb900c7b2` erfolgreich ausgeführt und separat
+lesend geprüft: 146 native Assertions, neun unabhängige arithmetische Referenzen,
+vier kleine Suchworker und vier feste Starts. 508,629 s technische Aufrufzeit;
+kein wissenschaftlicher Suchbefund.
+
+`white-scaling-cloud-001` bleibt **abgebrochen**, ebenfalls auf `d72202e`:
+72 feste Optimierungen und eine freie Suche erfolgreich, danach fehlerhafte
+signierte Baselineprüfung im Elternverifier. Gesamte Serienzeit 1.037,583 s,
+verschachtelte Workerzeiten nicht hinzuaddieren. Die gezielte spätere
+Nachrechnung bestätigt den fertigen Teil; sie ersetzt keinen fehlenden
+Serienabschluss. Der neue Versuch `white-scaling-cloud-002` auf
+`5ae263a5cddd65417aa5d5466646218168d074e7` erhält dieselben Eingaben und
+Budgets. 002 ist vollständig abgeschlossen und lesend bestätigt: 39 erfolgreiche
+Prozesse, 72 feste Optimierungen, 21 freie Suchen einschließlich drei exakter
+Wiederholungen; 1132 Quelldateien unverändert. Serienwandzeit 2729,867 s.
+Der geschützte Export bindet 93 Originalformeln, 93 PNGs und alle Punktdaten.
+Die neuen 002-Archive sind von den nachstehenden bereits geschlossenen
+001-Archiven getrennt.
+
+Neue, unverändert erhaltene Archive und Quellenpakete:
+
+| Archiv | SHA-256 |
+| --- | --- |
+| `white-scaling-cloud-001-aborted-originals.tar.gz` | `05828cd3337d5e5c35ad23a2946f5945e144610eb7c5c2b5c056a50b077e715a` |
+| `white-scaling-technical-001-originals.tar.gz` | `02104c51ff774683ed5fafd594602dff17421739db1ae635ac04c928eee8279f` |
+| `white-scaling-cloud-001-closed-evidence.tar.gz` | `fcb6368cb3aeefcf697d45f6e5bb53b493005647ce80cb5a9884cc174c606e97` |
+| `ringdown-sr-source-d72202e341a5.tar.gz` | `e16ef6884bc9899348ea6862e85007b070a11af9ca66b1fefdadc9e93bc6bb9d` |
+| `ringdown-sr-source-5ae263a5cddd.tar.gz` | `7ffca5d95697f95bf8f561ab933790d35c241f074972a215957d2e857c2c97a1` |
+| `ringdown-sr-history-through-5ae263a.bundle` | `6ea31fbc481af792cf9814ec1eb9e4ad27a96d0e4c84c75f997f61389b2e6b6c` |
+
+Ablagehinweis: separates Exportpaket `white-scaling-downloads-001`, darin
+`archive-catalog.json`, SHA-Dateien und eine kleine Übersicht. Alle Dateien
+sind kleiner als 24 MiB. Archivnutzdateien und Originalverzeichnisse sind
+vor/nach dem Packen identisch; 196 Quellenbindungen und acht tatsächlich
+gelesene Julia-Paketquellen sind geprüft. Das Git-Bundle erlaubt die geprüfte
+Offline-Wiederherstellung der 224 Vorgängercommits einschließlich beider
+Ausführungsstände. Das Nachweispaket trennt gezielte lokale Tests und
+erfolgreiche Draft-Vorprüfung ausdrücklich von noch ausstehender voller
+Ready-CI. Der Wiederholungslauf 002 ist in diesen abgeschlossenen Archiven
+nicht enthalten. Unabhängige Sicherung weiterhin unbestätigt.
+
+#### Abgeschlossener White-Skalierungslauf 002
+
+Ausführung auf `5ae263a5cddd65417aa5d5466646218168d074e7`, vollständiger
+lesender Verifier, unabhängiger Zahlen-/Kosten-/Bestandsaudit und geschützter
+Export bestanden. Die drei Archive sind getrennt in `white-scaling-downloads-002`
+bereitgestellt. Originaldaten und Export benötigen jeweils zwei Teile von
+höchstens 24 MiB; Katalog, SHA-Dateien und geprüfter Zusammenfügehelfer liegen
+daneben. Alle Nutzdateien sind byteweise zurückgeprüft; die tatsächlichen Teile
+wurden erfolgreich wieder zusammengesetzt.
+
+| Archiv | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `white-scaling-cloud-002-completed-originals.tar.gz` | 25.357.982 | `269ff9cecc4730f8f9c63a8e3b850139fd3d8a8d48f1df9ad97023b8f4c6816a` |
+| `white-scaling-cloud-002-guarded-original-export.tar.gz` | 27.192.750 | `dc647666c3baa55923255c4461f0f59e1df43c24a9b28d7b8c3d946450d3166f` |
+| `white-scaling-cloud-002-complete-audit-and-mechanism.tar.gz` | 175.224 | `8ef0bba177912e69863deddee3ea019e941969ae223be0830104beb7fabcf8c5` |
+
+Das Exportarchiv erhält den unveränderten alten Export einschließlich äußerem
+Guardbeleg, Quelleninventar und Nachbar-Kostenbeleg. Ein inneres `verified`
+allein gilt nicht als ergänzte Abschlussprüfung. Das Evidenzarchiv bindet
+abgeschlossenen Audit, Skripte, Gegenfälle, Logs und tatsächlich gelesene
+Backendquellen. Die obigen 5ae-Quellenpakete und das Git-Bundle gelten weiter.
+001-Archive und Originale sind unverändert. Unabhängige Zweitsicherung offen.
+
+### Gezielte Auswahlprüfung vom 23.11.2026
+
+`offgrid-selection-cloud-001`, Vorabplan
+`6f41817cd0102d7a204a4e28cb5b3a77fc74271f`, Ausführung
+`9f13a6714bb902101a55feea75053a64c85cb4ef`. Alle 156 eindeutigen Pakete,
+468 Ausgaben, 8344 Originalkandidaten und 16688 neue Scores vollständig
+lesend geprüft. Keine neue Suche, kein Refit, keine Enthaltung oder fehlende
+Ausgabe; 4209 konsumierte Dateien unverändert. Aufruf 152,906 s Wandzeit;
+Ergebnis, Kosten, Grenzen und Vorschläge im [Befund](white_loss_scaling.md).
+Die Off-grid-Gruppenmittel sinken gegenüber der Originalauswahl; der primäre
+Rastervergleich gegen Same-grid ist gemischt. Bekannte Entwicklungsdaten und
+zusätzliche synthetische Beobachtungen, keine unabhängige Bestätigung.
+
+Getrennte Ablage `offgrid-selection-downloads-001`, ausschließlich Downloads
+bis 24 MiB: vier Publikationsteile und neun Teile der konsumierten Prüfkopie;
+alle Archive einschließlich tatsächlicher Wiederzusammensetzung rückgeprüft.
+Die Prüfkopie enthält exakt die 3332 konsumierten Originaldateien samt drei
+Originalinventaren. Sie ersetzt nicht den vollständigen ursprünglichen
+Folgestudienbestand. Der unabhängige Audit ist abgeschlossen und separat gebunden.
+
+| Archiv | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `offgrid-selection-cloud-001-complete-publication.tar.gz` | 88.532.674 | `cef195f7ddd475bfccbea83462012672e05e1eaf6a0bed69d3e4a4affd2518dd` |
+| `offgrid-selection-cloud-001-consumed-original-inputs.tar.gz` | 205.112.744 | `6f42243de7157ea7bee48a70e72306e32d0c95fa36ba379e50d6424c516665a3` |
+| `offgrid-selection-cloud-001-independent-audit-evidence.tar.gz` | 427.662 | `a6e003e872c77d5db2fec76a8d4d9dde5e57d44528853041a31098ab949577f1` |
+| `ringdown-sr-source-9f13a6714bb9.tar.gz` | 2.192.268 | `f7b16636d1f75e0421e2f7087c992371d196daa22c7ced73ba80b17e60f586db` |
+| `ringdown-sr-history-through-9f13a671.bundle` | 2.865.084 | `cdd5a9a7a127b5a15027602480bdc05f965cb211466c02e65adb282fce682c0c` |
+
+Die Publikation enthält alle Originalformeln, Punktdaten und Plots, außerdem
+den zwingenden benachbarten `-call.json`-Beleg sowie Lauf-/Verifikationslogs.
+Die Quellenhistorie ist bis zum tatsächlichen Ausführungscommit offline
+wiederhergestellt und geprüft, einschließlich des vorher eingefrorenen Plans.
+Kleine Archivübersicht, SHA-Dateien und geprüfter Helfer liegen bei.
+Unabhängige Zweitsicherung weiterhin unbestätigt.
+
+#### Gemeinsame grafische Übersicht
+
+Separates, vollständiges Kleinpaket
+`ringdown-white-scaling-and-selection-overview.zip`, **1.860.062 Bytes**,
+SHA-256 `9060729e126a0f54b0d657304aa39aa16885686af52ca5020afb080f067237fc`.
+Enthalten sind beide Pilotübersichten, die lineare und Symlog-Auswahlansicht,
+alle 156 primären Punkte und zwölf Gruppen sowie sämtliche 93 + 468 ausgewählten
+Originalformeln/Bäume mit den numerischen Daten der Übersichtsgrafiken.
+Die vollständigen Kurvenpunktdaten gehören zu den separaten Originalexporten.
+Sieben Ausgangs-/Prüfbelege
+sind bytegleich eingebunden. Alle 561 dargestellten Formeltexte, 228 lokalen
+HTML-Verweise, 40 Paketdateien und ZIP-Prüfsummen sind geprüft; die wissenschaftlichen
+Abbildungen sind visuell kontrolliert. Die große Originalpublikation bleibt
+ein separates Archiv. Dieses Darstellungs-ZIP ersetzt keine Original- oder
+Eingabearchive und keine unabhängige Sicherung.
 
 ### Priorisierte fehlende Belege
 

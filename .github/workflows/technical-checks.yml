@@ -82,7 +82,7 @@ jobs:
     needs: prepare
     if: needs.prepare.outputs.mode == 'full'
     runs-on: ubuntu-24.04
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -430,6 +430,12 @@ jobs:
             find results -path '*ci-noise-followup-001*' -type f -name '*.log' -print -exec tail -n 100 {} \;
             exit 1
           fi
+
+      - name: Verify controlled white-loss scaling in isolated technical workers
+        run: |
+          taskset -c "$(python -c 'import os; print(min(os.sched_getaffinity(0)))')" \
+            uv run --locked python scripts/check_white_scaling.py \
+            --output results/ci-white-scaling-001
 
   technical-checks:
     name: ${{ github.event_name == 'workflow_dispatch' && 'manual-technical-checks' || 'technical-checks' }}
