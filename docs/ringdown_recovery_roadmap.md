@@ -6,7 +6,29 @@ Ready-Wechsel und führt native Kontrollen seriell aus. Die wissenschaftlichen
 Phasen und Kriterien bleiben erhalten; tatsächlicher Prüf- und Übernahmestand
 im [Fortsetzungsstand](representation_implementation_status.md).
 
-Aktueller Methoden- und Umsetzungsabgleich vom 19.11.2026 zu Phase 7:
+Aktueller Ergebnisabgleich vom 22.11.2026 zu Phase 7:
+Die [Auswertung mit Originalnachprüfung](noise_followup_results_manjaro_001.md)
+prüft 156 Paketausgaben, alle Primärkontraste, Einzelworker und Originalplots;
+39 ausgelassene lange Rauschdateien sind bitgenau rekonstruiert.
+624 wissenschaftliche und sechs technische Worker sind erfolgreich; die
+offiziellen Serienreplays sind bestanden; die frischen Exporte sind bytegleich.
+Beide Serienaufrufe benötigen zusammen
+53,53 Stunden. Kein belegter primärer SR-Gewinn durch 4096 gegenüber 64 s;
+der mittlere Jitter-K-Vorteil wird stark von zwei Uniform-K-Fehlern geprägt.
+Beide marginalen Primärintervalle umfassen null. Die zwölf Schätzerfälle
+sind identisch zur bisherigen Entwicklungsdiagnose, keine neue Bestätigung.
+An den 20 tatsächlichen wissenschaftlichen AR(1)-Fällen verbessert längerer
+Hintergrund alle Kovarianzen, aber nur acht ausgewählte Formeln. Eine gezielte
+Prüfung von 333 Kandidaten aus 24 Workern findet in allen sechs Problemfällen
+bereits bessere Alternativen, erkennbar mit nachträglichem Wahrheitszugriff;
+die ursprüngliche Trainingsverlust-Auswahl ist korrekt reproduziert.
+Priorisiert vorgeschlagen sind eine kleine White-Skalierungskontrolle und
+eine darauf begründete einzelne Intervention; keine pauschale Komplexitätsgrenze
+oder erneute automatische `best`-Wahl. Neue Signalbedingungen und Präzisionsziele
+gehören in eine spätere getrennte Bestätigung. Keine neue Suchserie oder
+Protokolländerung durch diese Einordnung; Grenzen und Literatur im Bericht.
+
+Historischer Methoden- und Umsetzungsabgleich vom 19.11.2026 zu Phase 7:
 Die [Folgestudie zu Hintergrunddauer und Messraster](noise_followup_plan.md)
 ist nach vorab gebundenem Plan in PR #102 implementiert. Sie verbindet
 eine getrennte Schätzerdiagnose ohne SR mit 416 + 208 geplanten neuen

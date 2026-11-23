@@ -1,6 +1,6 @@
 # Ergebnisindex und Archivierungsstand
 
-Stand: 19.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
+Stand: 22.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
 nachträglichen Bewertungen; [Ablagerichtlinie](results_archiving.md).
 Serien sind die Indexeinheit, ihre Zellen/Wiederholungen bleiben im Originalbericht.
 Die Aufstellung ist keine Behauptung, dass alle jemals lokal erzeugten Ergebnisse
@@ -22,7 +22,21 @@ bleiben beide gesicherten Ablageorte und die Prüfung ihrer Kopien nachzutragen.
 Technische Fixtures und ein implementierter Laufweg sind keine wissenschaftliche
 Ausführung und kein Sicherungsnachweis.
 
-Aktueller Planungs-/Implementierungsstand vom 19.11.2026: Die
+Aktueller Ergebnisstand vom 22.11.2026: Die
+[Auswertung und Nachprüfung der Folgestudie](noise_followup_results_manjaro_001.md)
+bindet 624 erfolgreiche Einzelworker und 156 erfolgreiche Paketausgaben an
+Ausführungscommit `8a1a4a1437f4b01daf1f070b56add248074c5907`.
+Originalarchive für Dauer/Messraster und eine Shared-Prüfkopie sind empfangen;
+39 lange Rauschdateien sind exakt aus ihren gebundenen Zuständen rekonstruiert.
+Berichtsstatistik, Workerzensus, Eingaben, Schätzer und Originalplots sind geprüft;
+beide offiziellen Serienreplays sind bestanden; die frischen Exporte sind bytegleich.
+Beide primären Intervalle umfassen null; der mittlere Rastereffekt wird von
+zwei Uniform-K-Fehlern getragen. Die 48 Schätzerdateien wiederholen bytegleich
+dieselben Entwicklungsfälle. [Original- und Übersichtseintrag](#wissenschaftliche-folgestudie-manjaro-001)
+trennen Originalarchive, rekonstruierte Nutzdaten, den nur berichteten Hash der
+ursprünglichen komprimierten Shared-Bytes und die weiterhin offene Sicherung.
+
+Historischer Planungs-/Implementierungsstand vom 19.11.2026: Die
 [Folgestudie zu Hintergrunddauer und Messraster](noise_followup_plan.md)
 ist in [PR #102](https://github.com/craexxn/ringdown-sr/pull/102)
 implementiert, Planbindung `a37bf90fe439619fd263d6c06d868c6ff4ea00e8`.
@@ -798,6 +812,78 @@ Keine Fits, Suchen oder neuen wissenschaftlichen Beobachtungen.
 Das kompakte Paket ist getrennt vom Originalarchiv bereitgestellt und bleibt eine
 retrospektive Mechanismusdiagnose. Gemeinsame dauerhafte Archivablage und
 unabhängige hashgeprüfte Zweitkopie bleiben unbestätigt.
+
+### Wissenschaftliche Folgestudie Manjaro 001
+
+- Lauf-ID: `noise-followup-manjaro-001`, Dauer-/Messrasterstudie auf 26
+  gemeinsamen Fällen. A 416/416, B 208/208 erfolgreiche Einzelworker;
+  zusätzlich 6/6 erfolgreiche technische Worker. 156 erfolgreiche
+  Paketausgaben, 52 exakt gebundene Kontrollreferenzen ohne neue Suchkosten.
+- Ausführung laut gelieferten Quellenbindungen:
+  `8a1a4a1437f4b01daf1f070b56add248074c5907`. Abschluss laut Statusdatei
+  am 22.11.2026 um 01:07:08 CET; Einzelstatus jetzt vollständig geprüft,
+  ohne Fehler oder Timeout. Gemessene Serienaufrufe zusammen 192.710,002 s.
+- Empfangen und am SHA-256 geprüft:
+  `noise-followup-manjaro-001-overview.tar.gz`, **11.177.133 Bytes**,
+  `911bf9249783848b9ff9c0543c7419fd52e089f8c48190849a5f9eaef086a3f6`.
+  Dies ist ein ausgewählter Berichtsexport, kein vollständiges Originalarchiv.
+- Eigenständig geprüft: Publikationsmanifeste, Quellenhashes,
+  bytegleiche Serien-/Verifikationsexporte, unabhängige Kontraststatistik,
+  48 Schätzermatrizen und Rekonstruktion aller 156 gewählten Originalbäume
+  auf fingerprintgleichen Rastern. Die Schätzerfälle sind identisch zu
+  Cloud-Diagnose 002; keine neue unabhängige Entwicklungsstichprobe.
+  Die Nachlieferung ergänzt alle Einzelworker, Eingaberegeneration,
+  Originalplots, 26 tatsächliche wissenschaftliche Kovarianzpaare und eine
+  begrenzte Diagnose von 333 Kandidaten aus 24 Workern in sechs Problemfällen.
+- Nachgereichte **Originalarchive**, vollständig aus 13 bzw. sieben Teilen
+  rekonstruiert und am ursprünglichen SHA-256 geprüft:
+  `noise-followup-manjaro-001-duration.tar.gz`, **314.610.102 Bytes**, SHA-256
+  `bc32f591f5d92418e53a68e6d6f120547f0661e3ab1ec0fb0014cbedcb09ed9a`;
+  `noise-followup-manjaro-001-sampling.tar.gz`, **174.969.349 Bytes**, SHA-256
+  `d1536eb4d1cce4ea3c812d777c45b796c2e4d7c9c2d41ca83423d02cc443dca7`.
+- Nachgereichtes Transportderivat:
+  `noise-followup-manjaro-001-shared-review.tar.gz`, **44.494.683 Bytes**, SHA-256
+  `5df7a048cab2d59f3be65dc388c0fae68beb1413527ac5cc6ab92ad216c4db45`.
+  Alle enthaltenen Originalnutzdateien und der unveränderte Archivbeleg sind
+  geprüft. Die 39 ausgelassenen NPY wurden ausschließlich in einer separaten
+  Arbeitskopie bitgenau ergänzt; insgesamt 22.152 Originalnutzdateien plus
+  drei Archivbelege geprüft. `reconstruction-receipt.json` bindet diesen Vorgang.
+- Nicht selbst als komprimierte Datei empfangen:
+  `noise-followup-manjaro-001-shared.tar.gz`, berichteter SHA-256
+  `897fb84605042cf070893028d9e7368ade47ae50c7f7f5ba6879eceaf9cf01d5`.
+  Laut Transferbeleg prüfte der Upload-Helfer dieses Original auf Manjaro; die eigene
+  Nutzdatenrekonstruktion bestätigt nicht dessen komprimierte Archivbytes.
+- Bericht: [Auswertung, lesende Nachprüfung, Literatur und nächste Schritte](noise_followup_results_manjaro_001.md).
+  Keine neuen Fits/Suchen und keine veränderte Originalauswahl.
+- Separate Auswertungsexporte vom 22.11.2026, Berichtsfassung
+  `1b55a7d1d6f36f3efafc802ae0325fecfcae3110`:
+  `noise-followup-manjaro-001-analysis.zip`, **12.992.022 Bytes**, SHA-256
+  `84d38ddabcef90d1c3a56a22cde8d58f4b2e74f01a12b0b6a33accfde3d1a7da`;
+  Bericht, vier Übersichten, Einzelwerttabellen, Auditbelege/-skripte und
+  unverändertes geliefertes Übersichtspaket. Keine vollständigen Roharchive.
+  `noise-followup-manjaro-001-gallery.zip`, **53.067.688 Bytes**, SHA-256
+  `df545c14b79eff959cc382c57fab6e93167f33a710ee8a239cae7ecda33c7d8c`;
+  156 unveränderte Originalformeln/Bäume mit rekonstruierten PNG/SVG/CSV.
+  ZIP-CRC, sämtliche Nutzdateihashes und lokale Links geprüft; Galerie auch
+  in drei Teilen mit höchstens 24 MiB und geprüftem Zusammenfügehelfer.
+  Beide früheren Pakete bleiben unverändert. Ihre Berichtsfassung dokumentiert
+  den damaligen eingeschränkten Überblick; die Galerie lässt die damals
+  fehlenden verrauschten Beobachtungen ausdrücklich leer.
+- Ergänzendes Nachweispaket nach der vollständigen lesenden Prüfung,
+  Berichtsfassung `3016c0b78e35cec3e246067b0f179af85c12ea80`:
+  `noise-followup-manjaro-001-full-verification-v2.zip`, **18.537.844 Bytes**,
+  SHA-256 `382801917976000ff8abcafd9f1c7bc2ebcbd226adacdf1031649f1eb9745ed9`.
+  252 Nutzdateien und internes Prüfmanifest: aktualisierter Bericht,
+  sieben grafische Übersichten, sechs detaillierte Kandidatenvergleiche,
+  Originalformeln und Punktdaten, Auditprogramme/-belege sowie alle 62
+  frischen bytegleichen Verifikationsdateien. ZIP-CRC, sämtliche Nutzdateihashes
+  und 74 lokale HTML-Dateilinks geprüft; frühere Auswertungspakete bleiben
+  unverändert. Keine großen Originalarchive oder langen Roh-NPY im Paket;
+  deren Inhaltsnachweis ist separat dokumentiert.
+- Ablage von Überblick, Originalarchiven, Transportderivat und Auswertungen:
+  lokale Cloud-Arbeits-/Exportkopie. Die 39 großen NPY liegen zusätzlich in
+  der getrennten rekonstruierten Prüfkopie, nicht im empfangenen Derivat.
+  Dauerhafte gemeinsame Archivablage und unabhängige geprüfte Zweitkopie **offen**.
 
 ### Entwicklungsabnahme der Dauer-/Rasterstudie vom 19.11.2026
 
