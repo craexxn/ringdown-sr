@@ -1,6 +1,6 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Hauptserie lokal technisch geprüft, vollständige Ready-CI offen
+## Aktuell: Hauptserie nach vollständiger CI übernommen, Manjaro-Start vorbereitet
 
 23.11.2026, Leitfadenphase 7. Der [Pilotabschluss](pilot_closeout.md) und
 Hauptentwurf sind nach geprüftem KI-Review und erfolgreicher
@@ -54,11 +54,24 @@ Validierung. Die neue native CI-Prüfung erweitert das Inventar auf
 
 Ein lokaler Cloud-Vorlauf ersetzt keinen Vorlauf am Zielrechner. Der
 Manjaro-Vorlauf ist noch unbestätigt; wissenschaftliche Hauptinputs und
-Hauptsuchen wurden hier nicht erzeugt. Nach den gebündelten lokalen Prüfungen
-folgt die volle Ready-CI; deren Erfolg ist hier noch nicht belegt.
-Lange CI-Läufe werden nicht fortlaufend überwacht;
-ohne vollständigen Nachweis bleibt der neue Implementierungs-PR offen.
-Endgültiger Head, Prüfbelege und nächster Startstand werden im PR nachgeführt.
+Hauptsuchen wurden hier nicht erzeugt. Die
+[Ready-CI 45234592530](https://github.com/craexxn/ringdown-sr/actions/runs/45234592530)
+ist inzwischen vollständig bestanden: 4.955 Python-Tests in 623,72 s,
+alle 35 nativen Fachschritte und das Abschlussgate. Der abschließende
+KI-basierte Dokumentationsabgleich auf Head
+`e366f50b9cbff0e8d6dd4fc8035e0c09cdc103f7` hat ebenfalls keinen offenen Befund.
+Geprüft wurde Mergecommit `e3226e6c26a7ee02325939b32b6ff7ca06fffea0` gegen
+die unveränderte Basis `a0ddad1ad7751ed858a40534a8a2fd41b73be523`.
+Der tatsächliche Merge `2774b9ebce7276f29af4d7d592264bcf092d033c` hat dieselben
+Eltern und denselben Baum; Einzelheiten in der [CI-Dokumentation](ci.md#vollständiger-hauptserienabschluss-pr107).
+
+Die [Startbefehle](main_study.md#geprüfter-ausführungscheckout) verwenden den
+geprüften Head `e366f50b9cbff0e8d6dd4fc8035e0c09cdc103f7` in einem neuen
+unveränderten Checkout. Der gemeinsame Start führt erst den technischen
+Manjaro-Vorlauf und danach beide wissenschaftlichen Abschnitte aus.
+Keine routinemäßige Wiederholung der bestandenen vollständigen CI.
+Dieser Dokumentationsabgleich entsteht getrennt auf `codex/main-study-start`
+ab dem PR107-Merge; er verändert weder Code noch Laufzeitpläne oder Seeds.
 
 ## Vorheriger Stand: Pilotabschluss und konkreter Hauptversuchsplan
 

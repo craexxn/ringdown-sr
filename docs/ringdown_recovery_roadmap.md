@@ -15,8 +15,11 @@ sie sind keine zusätzlichen wissenschaftlichen Fälle oder Qualitätsauswahl.
 trennen Implementierung, technische Abnahme und wissenschaftliche Ausführung.
 4.955 Python-Tests, acht echte Cloud-Zehnerworker, separater Replay und
 gebundene Originalplots sind geprüft; gezieltes KI-basiertes Integrationsreview
-ohne offene Korrektur. Vollständige Ready-CI steht vor Merge noch aus;
-kein Manjaro-Vorlauf und keine wissenschaftliche Hauptsuche nachgewiesen.
+ohne offene Korrektur. Die [vollständige Ready-CI](https://github.com/craexxn/ringdown-sr/actions/runs/45234592530)
+mit allen 35 nativen Fachschritten ist bestanden; PR107 ist als `2774b9e`
+übernommen. Der nächste Schritt ist der neue Manjaro-Start auf `e366f50`
+mit eingebautem technischem Vorlauf. Dessen tatsächliche Ausführung und
+die wissenschaftliche Hauptserie sind noch nicht nachgewiesen.
 
 Phase 7, Pilotabschluss vom 23.11.2026: Die
 [begrenzte Struktur-/Domainprüfung](pilot_closeout.md) aller 468 bereits

@@ -9,8 +9,9 @@ Seeds-SHA-256: `b03b2ec41a868e6875169c5375639c2fbee5c52838063ae479a3dd990a870381
 Der bisherige N128-Pilot und seine Originalarchive bleiben unverändert.
 
 Die technische Anbindung ist in [PR107](https://github.com/craexxn/ringdown-sr/pull/107)
-implementiert und lokal geprüft. Entwicklungsabnahme unten; endgültiger
-Freigabecommit und noch ausstehender vollständiger CI-Nachweis stehen im
+implementiert, lokal und in der vollständigen Ready-CI geprüft sowie als
+`2774b9ebce7276f29af4d7d592264bcf092d033c` übernommen. Entwicklungsabnahme unten;
+Freigabecommit und CI-Nachweis stehen im
 [Fortsetzungsstand](representation_implementation_status.md) beziehungsweise
 Implementierungs-PR. Diese Anleitung belegt keine bereits ausgeführten
 Hauptsuchen. Ein technischer Cloud-Vorlauf ersetzt keinen Vorlauf auf Manjaro;
@@ -142,22 +143,26 @@ Das gezielte KI-basierte Integrationsreview für PR107 gegen
 `a0ddad1ad7751ed858a40534a8a2fd41b73be523` hat nach den zwei dokumentierten
 Korrekturen keinen offenen korrekturpflichtigen Befund. Die Originalarchive
 und ihre Bindungen stehen im [Ergebnisindex](results_index.md).
-Vollständige Ready-CI und Zielrechnerprüfung bleiben offen. Der bestandene
-Cloudlauf ersetzt keinen technischen Vorlauf auf dem vorgesehenen Manjaro-Rechner.
+Die [vollständige Ready-CI](ci.md#vollständiger-hauptserienabschluss-pr107) ist
+inzwischen bestanden und PR107 übernommen. Die Zielrechnerprüfung bleibt offen;
+der Cloudlauf ersetzt keinen technischen Vorlauf auf dem vorgesehenen Manjaro-Rechner.
 
 ## Geprüfter Ausführungscheckout
 
-Erst den durch Review und vollständige Ready-CI geprüften Implementierungsstand
-verwenden. Der folgende Platzhalter ist durch dessen vollständigen Commit zu
-ersetzen; der Plancommit allein enthält noch keinen fertigen Laufweg.
-Der Ausführungsordner muss neu sein.
+Der durch Review und vollständige Ready-CI geprüfte Implementierungsstand ist
+`e366f50b9cbff0e8d6dd4fc8035e0c09cdc103f7`. Sein Baum stimmt mit dem geprüften
+und tatsächlichen Merge überein. Den folgenden Block im vorhandenen
+Projektcheckout ausführen; der benachbarte Ausführungsordner muss neu sein.
 
 ```bash
 bash <<'BASH'
 set -euo pipefail
-task_commit='HIER_VOLLSTAENDIGEN_GEPRUEFTEN_IMPLEMENTIERUNGSCOMMIT_EINTRAGEN'
-[[ "$task_commit" =~ ^[0-9a-f]{40}$ ]]
-git fetch origin codex/main-study
+task_commit='e366f50b9cbff0e8d6dd4fc8035e0c09cdc103f7'
+git fetch origin main
+for task_pr in 55 61 63 65 67 77 102; do
+  git fetch --no-tags origin "refs/pull/$task_pr/head:refs/ci-history/$task_pr/head"
+done
+git merge-base --is-ancestor "$task_commit" origin/main
 git cat-file -e "$task_commit^{commit}"
 git worktree add --detach ../ringdown-main-study-run "$task_commit"
 cd ../ringdown-main-study-run
@@ -172,12 +177,22 @@ git rev-parse HEAD
 BASH
 ```
 
-Alle weiteren Befehle laufen in `ringdown-main-study-run`. Während der Serie
+Der `cd` im Bash-Block ändert nicht das Arbeitsverzeichnis des aufrufenden
+Terminals. Vor den weiteren Blöcken deshalb ausdrücklich in den neuen
+`ringdown-main-study-run` wechseln; das Startskript setzt seinen Pfad nicht selbst.
+Die sieben dauerhaften PR-Refs entsprechen dem am Ausführungsstand gebundenen
+Inventar der historischen Quellen. Während der Serie
 bleiben Commit und Umgebung unverändert; keine Aktualisierung mit `git pull`
 oder erneutem `uv sync`. `--no-sync` erhält die vorbereitete Umgebung.
 Die Umgebungsprüfung bereitet Julia vor dem zeitlich begrenzten Vorlauf vor.
 
-## Tests vor dem technischen Vorlauf
+## Optionale vollständige lokale Wiederholung
+
+Die vollständige CI auf diesem unveränderten Stand ist bereits bestanden.
+Für den regulären Manjaro-Start genügen die obige Umgebungsprüfung und der
+im gemeinsamen Start enthaltene Zielrechnervorlauf. Der folgende vollständige
+Testblock bleibt für eine ausdrücklich gewünschte lokale Wiederholung oder
+konkrete Diagnose verfügbar; er ist keine zusätzliche Routinevoraussetzung.
 
 Ein frischer Checkout benötigt die registrierten historischen Git-Belege.
 Der folgende lesende Abgleich lädt fehlende dauerhafte PR-Refs über den bereits
