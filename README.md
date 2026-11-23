@@ -8,12 +8,12 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 Der fertige Ergebnis-PR #103 ist seit 23.11.2026 nach erfolgreicher
 [Dokumentations-CI](https://github.com/craexxn/ringdown-sr/actions/runs/45035553844)
 in `main` übernommen (`3ee6e22`).
-[PR #104](https://github.com/craexxn/ringdown-sr/pull/104) führt den neuen
-Methoden-/Ergebnisstand und die abschließende technische CI.
-Im ersten vollen CI-Lauf bestehen 4.791 Python-Tests und 30/34 native
-Fachschritte; der Lauf endet nach rund 120 Minuten ohne Vollfreigabe.
-Die [begründete Jobfristkorrektur](docs/ci.md#aktuelle-jobfrist-nach-pr104-abbruch)
-benötigt eine neue vollständige Prüfung.
+[PR #104](https://github.com/craexxn/ringdown-sr/pull/104) ist am 23.11.2026 nach
+vollständiger [Ready-CI](https://github.com/craexxn/ringdown-sr/actions/runs/45176973402)
+in `main` übernommen (`a4bafe8`): 4.791 Python-Tests, alle 34 nativen
+Fachschritte und das Abschlussgate bestanden. Der vorherige 120-Minuten-Abbruch
+und die bestätigte Jobfristkorrektur bleiben in der
+[CI-Dokumentation](docs/ci.md#aktuelle-jobfrist-nach-pr104-abbruch) erhalten.
 
 23.11.2026: Der [White-Skalierungspilot](docs/white_loss_scaling.md) ist mit
 72 festen Optimierungen und 21 freien Suchen einschließlich drei exakten

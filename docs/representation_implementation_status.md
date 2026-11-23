@@ -2,10 +2,13 @@
 
 ## Aktuell: White-Skalierung und gezielte Auswahlprüfung abgeschlossen
 
-23.11.2026, Leitfadenphase 7, Branch `codex/white-loss-scaling-pilot` auf
-PR103-Head `9d63fff65c833b2e2de9ee66c4fcd720177bc6d7`.
+23.11.2026, Leitfadenphase 7. Die Umsetzung entstand im Branch
+`codex/white-loss-scaling-pilot`, ausgehend von PR103-Head
+`9d63fff65c833b2e2de9ee66c4fcd720177bc6d7`.
 PR103 ist nach erfolgreicher Dokumentations-CI `45035553844` in
-`3ee6e22e9a78e867dae1923152c8df69d73791aa` übernommen; PR104 zielt auf `main`.
+`3ee6e22e9a78e867dae1923152c8df69d73791aa` übernommen. PR104 ist nach
+vollständiger Ready-CI `45176973402` als
+`a4bafe8551dc3e62a6c149cc32323a2410c4e124` in `main` übernommen.
 Der [Plan](white_loss_scaling_plan.md) ist vor Beobachtungen in
 `222b4bc2263e6200bf29b2424c2a5e6bd318bdd2` gebunden. Getrennte O/S/K-Pfade,
 72 feste lokale Diagnosen, 18 freie Kurzsuchen und drei vorbestimmte
@@ -37,14 +40,18 @@ Report, Originalformeln und Grenzen im [Befund](white_loss_scaling.md).
 Keine allgemeine Verlustumstellung, kein Komplexitätsschnitt und keine Änderung
 historischer Protokolle. Nächster vorgeschlagener Schritt: lesende Struktur-/
 Domainbewertung, danach Bestätigung mit begründeter Validierungsinformation.
-Die vollständige technische CI am abschließenden Head wird in PR104 geführt.
 Im ersten Ready-Lauf `45155705726` auf `fd5e7d0` bestehen 4.791 Python-Tests
 und 30/34 native Fachschritte. Der native Job wird nach 120 min 15 s
 abgebrochen; das Abschlussgate verweigert korrekt die Freigabe.
 Die [CI-Dokumentation](ci.md#aktuelle-jobfrist-nach-pr104-abbruch) begründet
 180 statt 120 Minuten ausschließlich für den seriellen nativen Job.
 Keine fachliche Prüfung oder wissenschaftliche Frist wird geändert;
-der neue Workflowstand benötigt einen frischen vollständigen Ready-Lauf.
+der neue Workflowstand `3b2c5691c069d4ba3a9386d3ee2167c2bf9eecea` besteht
+den vollständigen [Ready-Lauf 45176973402](https://github.com/craexxn/ringdown-sr/actions/runs/45176973402):
+4.791 Python-Tests, alle 34 nativen Fachschritte und das Abschlussgate.
+Geprüfter Mergecommit, Baumgleichheit bei der Übernahme und technische
+Jobzeiten sind in der verlinkten CI-Dokumentation belegt. Die wissenschaftlichen
+Ausführungscommits und Ergebnisse bleiben unverändert.
 
 ## Ausgangsbefund: Auswertung und Nachprüfung der Manjaro-Folgestudie
 

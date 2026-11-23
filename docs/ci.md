@@ -25,9 +25,19 @@ feste Kontrollen, Verifikationen und Plotexporte. Ausschließlich der serielle
 vorhergesagte Laufzeit. `prepare` und Abschluss behalten je 75 Minuten.
 Alle Prüfschritte, Workerfristen, Suchbudgets, wissenschaftlichen Programme
 und das Vollständigkeitsgate bleiben unverändert. Historische Angaben zu
-120 Minuten weiter unten beschreiben den früheren Stand. Der korrigierte
-Workflow benötigt eine frische vollständige Ready-CI; der Abbruch und seine
+120 Minuten weiter unten beschreiben den früheren Stand. Der Abbruch und seine
 bestandenen Teilschritte sind kein vollständiger Erfolgsnachweis.
+
+Abschluss am 23.11.2026: Der neue
+[Ready-Lauf 45176973402](https://github.com/craexxn/ringdown-sr/actions/runs/45176973402)
+auf Head `3b2c5691c069d4ba3a9386d3ee2167c2bf9eecea` besteht vollständig:
+4.791 Python-Tests, alle 34 nativen Fachschritte einschließlich White-Skalierung
+und das Abschlussgate. Der native Job läuft von 12:59:59 bis 14:51:14 UTC,
+also 111 min 15 s; Vorbereitung und Abschluss benötigen 984 s bzw. 10 s.
+Alle drei Jobs prüfen Mergecommit `5bd294807c6387ec70316ac99c0f4221768973e3`
+mit Baum `37b5a1bb01f98b908d2a0d347e517bdccfd14199`.
+PR104 ist als `a4bafe8551dc3e62a6c149cc32323a2410c4e124` übernommen;
+Baum und beide Eltern entsprechen dem geprüften Mergecommit.
 
 ## Scope und Ausführungsmodus
 

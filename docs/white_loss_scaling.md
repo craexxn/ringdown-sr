@@ -8,8 +8,9 @@ festgelegt. Branch `codex/white-loss-scaling-pilot` baut auf
 der am 23.11.2026 nach bestandener
 [Dokumentations-CI](https://github.com/craexxn/ringdown-sr/actions/runs/45035553844)
 als `3ee6e22e9a78e867dae1923152c8df69d73791aa` übernommen wurde.
-Die Umsetzung und abschließende technische CI werden in
-[PR #104](https://github.com/craexxn/ringdown-sr/pull/104) geführt.
+Die Umsetzung ist mit [PR #104](https://github.com/craexxn/ringdown-sr/pull/104)
+nach vollständiger [Ready-CI](https://github.com/craexxn/ringdown-sr/actions/runs/45176973402)
+am 23.11.2026 als `a4bafe8551dc3e62a6c149cc32323a2410c4e124` übernommen.
 Der erste wissenschaftliche Pilot auf
 `d72202e341a51df0d19a4f86c67dbb1eb900c7b2` unter `white-scaling-cloud-001`
 ist nach vollständiger fester Stufe und erster erfolgreicher freier Suche
@@ -293,8 +294,8 @@ Verifikationsprozess besteht ebenfalls. Der technische Gesamtlauf benötigt
 vollständige lokale Lauf auf `13d6344` ergibt 4.641 bestandene Tests und einen
 Fehler: Die explizite CI-Schrittliste kannte den neu ergänzten Prüfschritt
 noch nicht. Diese Liste ist auf `d72202e` ergänzt; ihre gezielte Nachprüfung
-ist bestanden. Keine bisherigen Prüfungen entfernt. Vollständige abschließende
-Ready-CI am späteren PR-Head bleibt erforderlich.
+ist bestanden. Keine bisherigen Prüfungen entfernt. Der abschließende
+Ready-CI-Nachweis am späteren PR-Head folgt unten.
 
 Die Draft-CI `45139792797` findet danach einen anderen, älteren Testfehler:
 Die Signalregeneration erwartet plattformübergreifend gleiche NumPy-Bytes.
@@ -313,9 +314,20 @@ und der Auswahlplanbindung bestehen am Stand
 `9f13a6714bb902101a55feea75053a64c85cb4ef` 177 gezielte Tests, Ruff,
 Format- und Dokumentationsprüfung. Das gezielte KI-Nachreview bestätigt
 Kostenverschachtelung, Erhalt gemessener Teilkosten, Quellenbindung und
-Primärfehlererhalt bei sekundären Schreibfehlern. Vollständige technische
-Ready-CI und endgültiger Head-/Base-Abgleich werden im PR geführt;
-gezielte Tests ersetzen diesen Abschluss nicht.
+Primärfehlererhalt bei sekundären Schreibfehlern. Diese gezielten Tests
+ersetzen keine vollständige technische CI.
+
+Im ersten Ready-Lauf `45155705726` bestehen 4.791 Python-Tests und 30/34 native
+Fachschritte. Der native Job wird nach 120 min 15 s ohne Vollfreigabe abgebrochen.
+Die [begründete Jobfristkorrektur](ci.md#aktuelle-jobfrist-nach-pr104-abbruch)
+ändert ausschließlich die technische Jobfrist. Der neue
+[Ready-Lauf 45176973402](https://github.com/craexxn/ringdown-sr/actions/runs/45176973402)
+auf `3b2c5691c069d4ba3a9386d3ee2167c2bf9eecea` besteht mit 4.791 Python-Tests,
+allen 34 nativen Fachschritten und dem Abschlussgate. Head und Basis sind
+gegen den tatsächlich geprüften Mergecommit abgeglichen; die Übernahme von
+PR104 hat denselben Baum und dieselben Eltern. Die CI-Dokumentation bindet
+Commits und Jobzeiten. Wissenschaftliche Ausführung und lesende Nachprüfung
+bleiben ihren oben genannten unveränderten Ständen zugeordnet.
 
 Gezieltes KI-basiertes Review an `13d6344690d3541dd1276a42d34df154071e53df`
 gegen `9d63fff65c833b2e2de9ee66c4fcd720177bc6d7`: drei notwendige
