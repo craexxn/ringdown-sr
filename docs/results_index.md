@@ -12,6 +12,9 @@ technischer Vorlauf und erhaltener wissenschaftlicher Abbruch 001 sind getrennt
 archiviert. Lauf 002 ist inzwischen vollständig abgeschlossen und mit
 unabhängiger Kosten-/Bestandsprüfung sowie geschütztem Plotexport bestätigt.
 Die zugehörigen neuen Archive werden getrennt von 001 gebunden.
+Auch die anschließende [Auswahlprüfung](#gezielte-auswahlprüfung-vom-23112026)
+ist vollständig lesend bestätigt: 156 Pakete, 468 Ausgaben, keine neuen Suchen.
+Originale, konsumierte Prüfkopien und Darstellungen haben getrennte Archivrollen.
 
 **Archivierung offen:** Dauerhafte Ablage und eine geprüfte zweite Kopie sind
 hier noch nicht bestätigt. Lokal verfügbare Arbeitskopien werden nicht als
@@ -969,6 +972,80 @@ Ausführungsstände. Das Nachweispaket trennt gezielte lokale Tests und
 erfolgreiche Draft-Vorprüfung ausdrücklich von noch ausstehender voller
 Ready-CI. Der Wiederholungslauf 002 ist in diesen abgeschlossenen Archiven
 nicht enthalten. Unabhängige Sicherung weiterhin unbestätigt.
+
+#### Abgeschlossener White-Skalierungslauf 002
+
+Ausführung auf `5ae263a5cddd65417aa5d5466646218168d074e7`, vollständiger
+lesender Verifier, unabhängiger Zahlen-/Kosten-/Bestandsaudit und geschützter
+Export bestanden. Die drei Archive sind getrennt in `white-scaling-downloads-002`
+bereitgestellt. Originaldaten und Export benötigen jeweils zwei Teile von
+höchstens 24 MiB; Katalog, SHA-Dateien und geprüfter Zusammenfügehelfer liegen
+daneben. Alle Nutzdateien sind byteweise zurückgeprüft; die tatsächlichen Teile
+wurden erfolgreich wieder zusammengesetzt.
+
+| Archiv | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `white-scaling-cloud-002-completed-originals.tar.gz` | 25.357.982 | `269ff9cecc4730f8f9c63a8e3b850139fd3d8a8d48f1df9ad97023b8f4c6816a` |
+| `white-scaling-cloud-002-guarded-original-export.tar.gz` | 27.192.750 | `dc647666c3baa55923255c4461f0f59e1df43c24a9b28d7b8c3d946450d3166f` |
+| `white-scaling-cloud-002-complete-audit-and-mechanism.tar.gz` | 175.224 | `8ef0bba177912e69863deddee3ea019e941969ae223be0830104beb7fabcf8c5` |
+
+Das Exportarchiv erhält den unveränderten alten Export einschließlich äußerem
+Guardbeleg, Quelleninventar und Nachbar-Kostenbeleg. Ein inneres `verified`
+allein gilt nicht als ergänzte Abschlussprüfung. Das Evidenzarchiv bindet
+abgeschlossenen Audit, Skripte, Gegenfälle, Logs und tatsächlich gelesene
+Backendquellen. Die obigen 5ae-Quellenpakete und das Git-Bundle gelten weiter.
+001-Archive und Originale sind unverändert. Unabhängige Zweitsicherung offen.
+
+### Gezielte Auswahlprüfung vom 23.11.2026
+
+`offgrid-selection-cloud-001`, Vorabplan
+`6f41817cd0102d7a204a4e28cb5b3a77fc74271f`, Ausführung
+`9f13a6714bb902101a55feea75053a64c85cb4ef`. Alle 156 eindeutigen Pakete,
+468 Ausgaben, 8344 Originalkandidaten und 16688 neue Scores vollständig
+lesend geprüft. Keine neue Suche, kein Refit, keine Enthaltung oder fehlende
+Ausgabe; 4209 konsumierte Dateien unverändert. Aufruf 152,906 s Wandzeit;
+Ergebnis, Kosten, Grenzen und Vorschläge im [Befund](white_loss_scaling.md).
+Die Off-grid-Gruppenmittel sinken gegenüber der Originalauswahl; der primäre
+Rastervergleich gegen Same-grid ist gemischt. Bekannte Entwicklungsdaten und
+zusätzliche synthetische Beobachtungen, keine unabhängige Bestätigung.
+
+Getrennte Ablage `offgrid-selection-downloads-001`, ausschließlich Downloads
+bis 24 MiB: vier Publikationsteile und neun Teile der konsumierten Prüfkopie;
+alle Archive einschließlich tatsächlicher Wiederzusammensetzung rückgeprüft.
+Die Prüfkopie enthält exakt die 3332 konsumierten Originaldateien samt drei
+Originalinventaren. Sie ersetzt nicht den vollständigen ursprünglichen
+Folgestudienbestand. Der unabhängige Audit ist abgeschlossen und separat gebunden.
+
+| Archiv | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `offgrid-selection-cloud-001-complete-publication.tar.gz` | 88.532.674 | `cef195f7ddd475bfccbea83462012672e05e1eaf6a0bed69d3e4a4affd2518dd` |
+| `offgrid-selection-cloud-001-consumed-original-inputs.tar.gz` | 205.112.744 | `6f42243de7157ea7bee48a70e72306e32d0c95fa36ba379e50d6424c516665a3` |
+| `offgrid-selection-cloud-001-independent-audit-evidence.tar.gz` | 427.662 | `a6e003e872c77d5db2fec76a8d4d9dde5e57d44528853041a31098ab949577f1` |
+| `ringdown-sr-source-9f13a6714bb9.tar.gz` | 2.192.268 | `f7b16636d1f75e0421e2f7087c992371d196daa22c7ced73ba80b17e60f586db` |
+| `ringdown-sr-history-through-9f13a671.bundle` | 2.865.084 | `cdd5a9a7a127b5a15027602480bdc05f965cb211466c02e65adb282fce682c0c` |
+
+Die Publikation enthält alle Originalformeln, Punktdaten und Plots, außerdem
+den zwingenden benachbarten `-call.json`-Beleg sowie Lauf-/Verifikationslogs.
+Die Quellenhistorie ist bis zum tatsächlichen Ausführungscommit offline
+wiederhergestellt und geprüft, einschließlich des vorher eingefrorenen Plans.
+Kleine Archivübersicht, SHA-Dateien und geprüfter Helfer liegen bei.
+Unabhängige Zweitsicherung weiterhin unbestätigt.
+
+#### Gemeinsame grafische Übersicht
+
+Separates, vollständiges Kleinpaket
+`ringdown-white-scaling-and-selection-overview.zip`, **1.860.062 Bytes**,
+SHA-256 `9060729e126a0f54b0d657304aa39aa16885686af52ca5020afb080f067237fc`.
+Enthalten sind beide Pilotübersichten, die lineare und Symlog-Auswahlansicht,
+alle 156 primären Punkte und zwölf Gruppen sowie sämtliche 93 + 468 ausgewählten
+Originalformeln/Bäume mit den numerischen Daten der Übersichtsgrafiken.
+Die vollständigen Kurvenpunktdaten gehören zu den separaten Originalexporten.
+Sieben Ausgangs-/Prüfbelege
+sind bytegleich eingebunden. Alle 561 dargestellten Formeltexte, 228 lokalen
+HTML-Verweise, 40 Paketdateien und ZIP-Prüfsummen sind geprüft; die wissenschaftlichen
+Abbildungen sind visuell kontrolliert. Die große Originalpublikation bleibt
+ein separates Archiv. Dieses Darstellungs-ZIP ersetzt keine Original- oder
+Eingabearchive und keine unabhängige Sicherung.
 
 ### Priorisierte fehlende Belege
 

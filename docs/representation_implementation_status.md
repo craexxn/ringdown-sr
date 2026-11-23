@@ -1,6 +1,6 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: White-Skalierung geprüft, einzelne Auswahlintervention vorab festgelegt
+## Aktuell: White-Skalierung und gezielte Auswahlprüfung abgeschlossen
 
 23.11.2026, Leitfadenphase 7, Branch `codex/white-loss-scaling-pilot` auf
 PR103-Head `9d63fff65c833b2e2de9ee66c4fcd720177bc6d7`.
@@ -25,9 +25,21 @@ Abschlussprüfungen lassen den wissenschaftlichen Ausführungsstand unverändert
 Prüf-, Review- und Ergebnisstand im [Laufdokument](white_loss_scaling.md).
 Die [einzelne Auswahlintervention](offgrid_selection_plan.md) ist in
 `6f41817cd0102d7a204a4e28cb5b3a77fc74271f` vor ihrer Ausführung festgelegt;
-kein allgemeiner Komplexitätsschnitt und keine Änderung historischer Protokolle.
+auf `9f13a6714bb902101a55feea75053a64c85cb4ef` sind alle 156 Pakete und
+468 Ausgaben vollständig nachgerechnet, ohne neue Fits/Suchen. 8344 Kandidaten,
+16688 Scores und sämtliche Plotpunkte geprüft; keine Ausfälle oder Enthaltungen.
+Der primäre Off-grid-minus-Same-grid-Vergleich ist gemischt: fünf Gruppenmittel
+kleiner, sieben größer; AR(1)/O wird fast vollständig von `ar1-08` getragen.
+Sekundär sinken die Off-grid-Mittel gegenüber der Originalauswahl in allen
+zwölf Gruppen; zusätzliche Beobachtungen und bei gewichteten Armen die neue
+Auswahlmetrik verhindern eine alleinige Zuschreibung ans Raster.
+Report, Originalformeln und Grenzen im [Befund](white_loss_scaling.md).
+Keine allgemeine Verlustumstellung, kein Komplexitätsschnitt und keine Änderung
+historischer Protokolle. Nächster vorgeschlagener Schritt: lesende Struktur-/
+Domainbewertung, danach Bestätigung mit begründeter Validierungsinformation.
+Die vollständige technische CI am abschließenden Head wird in PR104 geführt.
 
-## Aktuell: Auswertung und Nachprüfung der Manjaro-Folgestudie
+## Ausgangsbefund: Auswertung und Nachprüfung der Manjaro-Folgestudie
 
 Stand 22.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
 Die [Ergebnisauswertung](noise_followup_results_manjaro_001.md) bindet das
