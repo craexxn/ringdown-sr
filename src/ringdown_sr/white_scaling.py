@@ -1,0 +1,539 @@
+"""Frozen small scaling experiment, independent replay and complete exports."""
+
+import csv
+import json
+import math
+import os
+import resource
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+import numpy as np
+
+from . import symbolic
+from . import white_scaling_fixed as fixed
+from . import white_scaling_worker as worker
+from .pilot import _provenance, _sha256, _utc_now, _write_json
+
+FORMAT = "ringdown-sr-white-scaling-pilot-1"
+PLAN = "docs/white_loss_scaling_plan.md"
+PLAN_SHA256 = "3daa4d9c7701a8a99f841a5dc27cc3a7ae3cdbcbde1bbc8cd3f51eef2f202378"
+NOISE_SEEDS = (2026112301, 2026112302)
+SEARCH_SEEDS = (2026112311, 2026112312, 2026112313)
+AMPLITUDE = 11 / 12
+SIGMA = AMPLITUDE * 0.05
+LIMIT_SECONDS = 21600
+
+
+def signal(times):
+    return (
+        AMPLITUDE * np.exp(-times / (1 / 150)) * np.cos(2 * np.pi * 265 * times + 0.25)
+    )
+
+
+def data():
+    """Generate new development noise and separate truth-only evaluation arrays."""
+    times = np.arange(128, dtype=np.float64) / 4096
+    regular = np.linspace(times[0], times[-1], 889)
+    irregular = np.sort(
+        np.random.Generator(np.random.PCG64(2026112391)).uniform(
+            times[0], times[-1], 1024
+        )
+    )
+    return {
+        "time_s": times,
+        "truth": signal(times),
+        "regular_time_s": regular,
+        "regular_truth": signal(regular),
+        "irregular_time_s": irregular,
+        "irregular_truth": signal(irregular),
+        **{
+            f"observed_{i + 1}": signal(times)
+            + SIGMA * np.random.Generator(np.random.PCG64(seed)).standard_normal(128)
+            for i, seed in enumerate(NOISE_SEEDS)
+        },
+    }
+
+
+def starts(observed):
+    return [
+        [
+            float(np.max(np.abs(observed))),
+            -1 / tau,
+            2 * math.pi * frequency,
+            math.pi / 2,
+        ]
+        for frequency in (128.0, 512.0)
+        for tau in ((128 / 4096) / 8, (128 / 4096) / 2)
+    ]
+
+
+def cells():
+    result = []
+    for case in (1, 2):
+        for index, seed in enumerate(SEARCH_SEEDS):
+            arms = worker.ARMS[index:] + worker.ARMS[:index]
+            for arm in arms:
+                result.append(
+                    {
+                        "id": f"white-{case:02d}-seed-{seed}-{arm}",
+                        "case": case,
+                        "seed": seed,
+                        "arm": arm,
+                        "repeat": False,
+                    }
+                )
+    result.extend(
+        {**cell, "id": cell["id"] + "-repeat", "repeat": True} for cell in result[:3]
+    )
+    return result
+
+
+def _read(path):
+    return json.loads(Path(path).read_bytes())
+
+
+def _sources():
+    if _sha256((symbolic.ROOT / PLAN).read_bytes()) != PLAN_SHA256:
+        raise ValueError("The frozen scaling protocol changed.")
+    return worker.source_hashes()
+
+
+def prepare(output):
+    """Exclusively reserve every input before the first scientific operation."""
+    output = Path(output).resolve()
+    provenance = _provenance()
+    if provenance["git"]["dirty"]:
+        raise ValueError(
+            "Commit the implementation before preparing scientific inputs."
+        )
+    sources = _sources()
+    output.mkdir(parents=True, exist_ok=False)
+    arrays = data()
+    np.savez(output / "inputs.npz", **arrays)
+    manifest = {
+        "format": FORMAT,
+        "created_at": _utc_now(),
+        "plan_sha256": PLAN_SHA256,
+        "sources": sources,
+        "provenance": provenance,
+        "cells": cells(),
+        "input_sha256": _sha256((output / "inputs.npz").read_bytes()),
+        "sigma_hex": SIGMA.hex(),
+        "scale_hex": (1 / (SIGMA * SIGMA)).hex(),
+    }
+    for cell in cells():
+        for stage in ("search",) if cell["repeat"] else ("fixed", "search"):
+            directory = output / stage / cell["id"]
+            worker.prepare_member(
+                directory,
+                arrays["time_s"],
+                arrays[f"observed_{cell['case']}"],
+                arm=cell["arm"],
+                sigma=SIGMA,
+                seed=cell["seed"],
+            )
+            if stage == "fixed":
+                _write_json(
+                    directory / "fixed_request.json",
+                    {
+                        "format": "ringdown-sr-white-scaling-fixed-1",
+                        "starts": [
+                            {"name": f"start-{i + 1}", "parameters": values}
+                            for i, values in enumerate(
+                                starts(arrays[f"observed_{cell['case']}"])
+                            )
+                        ],
+                    },
+                )
+                _write_json(
+                    directory / "fixed_prepared.json",
+                    {
+                        "request_sha256": _sha256(
+                            (directory / "fixed_request.json").read_bytes()
+                        ),
+                        "source_sha256": worker.source_hashes(),
+                        "prepared_sha256": _sha256(
+                            (directory / "prepared.json").read_bytes()
+                        ),
+                    },
+                )
+    _write_json(output / "manifest.json", manifest)
+    return manifest
+
+
+def _fixed(directory, deadline):
+    environment = os.environ.copy()
+    environment.update(worker.native.JULIA_THREADS)
+    environment.update(
+        {
+            name: "1"
+            for name in (
+                "OPENBLAS_NUM_THREADS",
+                "OMP_NUM_THREADS",
+                "MKL_NUM_THREADS",
+                "NUMEXPR_NUM_THREADS",
+            )
+        }
+    )
+    environment["OPENBLAS_CORETYPE"] = "Haswell"
+    started = time.monotonic()
+    before = resource.getrusage(resource.RUSAGE_CHILDREN)
+    outcome = {"status": "aborted", "cpu_measurement_complete": False}
+    try:
+        with (directory / "worker.log").open("xb") as log:
+            process = subprocess.Popen(
+                [
+                    sys.executable,
+                    str(symbolic.ROOT / "scripts/run_python.py"),
+                    str(symbolic.ROOT / "scripts/run_white_scaling_fixed.py"),
+                    str(directory),
+                ],
+                stdout=log,
+                stderr=subprocess.STDOUT,
+                env=environment,
+                start_new_session=True,
+            )
+            try:
+                code = process.wait(timeout=min(1800, deadline - time.monotonic()))
+            except BaseException:
+                symbolic._stop_worker(process)
+                raise
+        if code != 0:
+            raise RuntimeError(f"Fixed scaling worker failed ({code}): {directory}")
+        outcome.update(status="completed", cpu_measurement_complete=True)
+    except BaseException as error:
+        outcome["error"] = f"{type(error).__name__}: {error}"
+        raise
+    finally:
+        after = resource.getrusage(resource.RUSAGE_CHILDREN)
+        outcome.update(
+            wall_seconds=time.monotonic() - started,
+            cpu_user_seconds=after.ru_utime - before.ru_utime,
+            cpu_system_seconds=after.ru_stime - before.ru_stime,
+        )
+        _write_json(directory / "call.json", outcome)
+
+
+def run(output):
+    output = Path(output).resolve()
+    manifest = prepare(output)
+    started = time.monotonic()
+    deadline = started + LIMIT_SECONDS
+    outcome = {
+        "format": FORMAT,
+        "status": "aborted",
+        "completed_fixed": 0,
+        "completed_search": 0,
+        "started_at": _utc_now(),
+    }
+    try:
+        for stage in ("fixed", "search"):
+            planned = [
+                cell for cell in cells() if stage != "fixed" or not cell["repeat"]
+            ]
+            for index, cell in enumerate(planned, 1):
+                if time.monotonic() >= deadline:
+                    raise TimeoutError("The frozen pilot deadline expired.")
+                if (
+                    manifest["sources"] != _sources()
+                    or manifest["provenance"] != _provenance()
+                ):
+                    raise ValueError("Pilot implementation changed during execution.")
+                outcome.update(stage=stage, current_cell=cell["id"])
+                _write_json(output / "status.json", outcome)
+                print(f"[{stage} {index}/{len(planned)}] {cell['id']}", flush=True)
+                directory = output / stage / cell["id"]
+                if stage == "fixed":
+                    _fixed(directory, deadline)
+                else:
+                    report = worker.run_member(directory, deadline=deadline)
+                    if report.get("status") != "completed":
+                        raise ValueError("Scientific scaling worker did not complete.")
+                outcome[f"completed_{stage}"] += 1
+        outcome["status"] = "completed"
+    except BaseException as error:
+        outcome["error"] = f"{type(error).__name__}: {error}"
+        raise
+    finally:
+        outcome["wall_seconds"] = time.monotonic() - started
+        outcome["finished_at"] = _utc_now()
+        _write_json(output / "status.json", outcome)
+    return outcome
+
+
+def verify(output):
+    """Read existing outputs, regenerate input bits, never execute native fits."""
+    output = Path(output).resolve()
+    manifest = _read(output / "manifest.json")
+    if (
+        manifest.get("format") != FORMAT
+        or manifest["sources"] != _sources()
+        or manifest["cells"] != cells()
+    ):
+        raise ValueError("Changed pilot manifest or source coverage.")
+    if _sha256((output / "inputs.npz").read_bytes()) != manifest["input_sha256"]:
+        raise ValueError("Changed pilot inputs.")
+    with np.load(output / "inputs.npz", allow_pickle=False) as saved:
+        expected = data()
+        if set(saved.files) != set(expected) or any(
+            not np.array_equal(saved[k], v) for k, v in expected.items()
+        ):
+            raise ValueError("Inputs do not reproduce the frozen generator.")
+    status = _read(output / "status.json")
+    if (
+        status["status"] != "completed"
+        or status["completed_fixed"] != 18
+        or status["completed_search"] != 21
+    ):
+        raise ValueError("Incomplete pilot; no completed-series claim is permitted.")
+    rows = []
+    fixed_rows = []
+    fixed_records = {}
+    for cell in cells():
+        if cell["repeat"]:
+            continue
+        directory = output / "fixed" / cell["id"]
+        report = fixed.verify_fixed(directory)
+        _, inputs, _ = worker.verify_prepared(directory)
+        _check_cell_inputs(cell, report["request"], inputs, expected)
+        if _read(directory / "call.json")["status"] != "completed":
+            raise ValueError("Fixed worker did not complete.")
+        fixed_records[cell["id"]] = report["records"]
+        for record in report["records"]:
+            fixed_rows.append(
+                {
+                    **cell,
+                    "start": record["start"]["name"],
+                    "initial_parameters": record["initial_parameters"],
+                    "parameters": record["parameters"],
+                    "native_loss": record["loss"],
+                    "mse": math.fsum(
+                        float(x) ** 2 for x in fixed.decode(record["residual"])
+                    )
+                    / 128,
+                    "fit_callback_count": record["fit_callback_count"],
+                    "local_steps": record["local_steps"],
+                    "optimization_seconds": record["optimization_seconds"],
+                    "formula": record["display_equation"],
+                }
+            )
+    fixed_pairs = []
+    for case in (1, 2):
+        for seed in SEARCH_SEEDS:
+            by_arm = {
+                arm: fixed_records[f"white-{case:02d}-seed-{seed}-{arm}"]
+                for arm in worker.ARMS
+            }
+            for start in range(4):
+                for left, right in (("ordinary", "scaled"), ("scaled", "covariance")):
+                    a, b = by_arm[left][start], by_arm[right][start]
+                    for key in (
+                        "initial_parameters",
+                        "rng_before",
+                        "rng_after",
+                        "restart_draws",
+                        "restart_parameters",
+                    ):
+                        if a[key] != b[key]:
+                            raise ValueError(
+                                "Fixed loss arms did not receive identical optimizer starts/randomness."
+                            )
+                    trace_a = [
+                        (s["local_index"], s["step"], s["parameters"])
+                        for s in a["states"]
+                    ]
+                    trace_b = [
+                        (s["local_index"], s["step"], s["parameters"])
+                        for s in b["states"]
+                    ]
+                    first = next(
+                        (i for i, (x, y) in enumerate(zip(trace_a, trace_b)) if x != y),
+                        None,
+                    )
+                    if first is None and len(trace_a) != len(trace_b):
+                        first = min(len(trace_a), len(trace_b))
+                    fixed_pairs.append(
+                        {
+                            "case": case,
+                            "seed": seed,
+                            "start": a["start"]["name"],
+                            "contrast": right + "-" + left,
+                            "identical_initial_and_restart_values": True,
+                            "same_parameter_trace": trace_a == trace_b,
+                            "first_parameter_trace_difference": first,
+                            "same_final_parameters": a["parameters"] == b["parameters"],
+                            "mse_difference": math.fsum(
+                                float(x) ** 2 for x in fixed.decode(b["residual"])
+                            )
+                            / 128
+                            - math.fsum(
+                                float(x) ** 2 for x in fixed.decode(a["residual"])
+                            )
+                            / 128,
+                        }
+                    )
+    for cell in cells():
+        directory = output / "search" / cell["id"]
+        worker.verify_member(directory)
+        request, inputs, _ = worker.verify_prepared(directory)
+        _check_cell_inputs(cell, request, inputs, expected)
+        result = _read(directory / "result.json")
+        selected = result["candidates"][result["selected_index"]]
+        row = {
+            **cell,
+            "candidate_count": len(result["candidates"]),
+            "selected_index": result["selected_index"],
+            "complexity": selected["complexity"],
+            "native_loss": selected["loss"],
+            "baseline_loss": result["baseline_loss"],
+            "cost_normalization": result["cost_normalization"],
+            "callback_calls": result["callback_calls_during_fit"],
+            "formula": selected["display_equation"],
+        }
+        for name, times, truth in (
+            ("training", expected["time_s"], expected[f"observed_{cell['case']}"]),
+            ("regular", expected["regular_time_s"], expected["regular_truth"]),
+            ("irregular", expected["irregular_time_s"], expected["irregular_truth"]),
+        ):
+            values = symbolic.evaluate_tree(selected["tree"], times)
+            residual = values - truth
+            row[f"{name}_rmse_over_a"] = float(
+                np.sqrt(np.mean(residual**2)) / AMPLITUDE
+            )
+            row[f"{name}_max_over_a"] = float(np.max(np.abs(residual)) / AMPLITUDE)
+        rows.append(row)
+        if cell["repeat"]:
+            original = _read(
+                output / "search" / cell["id"].removesuffix("-repeat") / "result.json"
+            )
+            for key in ("candidates", "selected_index", "callback_calls_during_fit"):
+                if original[key] != result[key]:
+                    raise ValueError(
+                        f"Fresh-process repeat differs: {cell['id']} / {key}"
+                    )
+    return {
+        "format": FORMAT,
+        "status": "verified",
+        "source_manifest_sha256": _sha256((output / "manifest.json").read_bytes()),
+        "searches": rows,
+        "fixed": fixed_rows,
+        "fixed_pairs": fixed_pairs,
+        "wall_seconds": status["wall_seconds"],
+    }
+
+
+def _check_cell_inputs(cell, request, arrays, expected):
+    if (
+        request["arm"] != cell["arm"]
+        or request["budget"]["seed"] != cell["seed"]
+        or request["sigma_hex"] != SIGMA.hex()
+        or request["technical"]
+        or not np.array_equal(arrays["time_s"], expected["time_s"])
+        or not np.array_equal(arrays["observed"], expected[f"observed_{cell['case']}"])
+    ):
+        raise ValueError("Pilot cell does not match the predeclared data/arm/seed.")
+
+
+def export(output, destination):
+    """Export all selected original formulas and unmodified point predictions."""
+    report = verify(output)
+    output, destination = Path(output).resolve(), Path(destination).resolve()
+    destination.mkdir(parents=True, exist_ok=False)
+    _write_json(destination / "report.json", report)
+    for name in ("searches", "fixed", "fixed_pairs"):
+        with (destination / f"{name}.csv").open("w", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=list(report[name][0]))
+            writer.writeheader()
+            writer.writerows(report[name])
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    arrays = data()
+    selections = []
+    for row in report["searches"]:
+        result = _read(output / "search" / row["id"] / "result.json")
+        selections.append((row, result["candidates"][result["selected_index"]]))
+    for cell in cells():
+        if cell["repeat"]:
+            continue
+        for record in _read(output / "fixed" / cell["id"] / "fixed_result.json")[
+            "records"
+        ]:
+            selections.append(
+                (
+                    {
+                        **cell,
+                        "id": "fixed-" + cell["id"] + "-" + record["start"]["name"],
+                    },
+                    record,
+                )
+            )
+    for row, selected in selections:
+        _write_json(destination / (row["id"] + "-formula.json"), selected)
+        fig, axes = plt.subplots(2, 1, figsize=(10, 7), sharex=True)
+        with (destination / (row["id"] + "-points.csv")).open(
+            "w", newline=""
+        ) as handle:
+            writer = csv.writer(handle)
+            writer.writerow(["grid", "time_s", "truth", "prediction", "observed"])
+            for name, times, truth in (
+                ("training", arrays["time_s"], arrays["truth"]),
+                ("regular", arrays["regular_time_s"], arrays["regular_truth"]),
+                ("irregular", arrays["irregular_time_s"], arrays["irregular_truth"]),
+            ):
+                prediction = symbolic.evaluate_tree(selected["tree"], times)
+                observed = (
+                    arrays[f"observed_{row['case']}"]
+                    if name == "training"
+                    else [""] * len(times)
+                )
+                writer.writerows(
+                    zip(
+                        [name] * len(times),
+                        times,
+                        truth,
+                        prediction,
+                        observed,
+                        strict=True,
+                    )
+                )
+                if name == "regular":
+                    axes[0].plot(times, truth, color="black", label="Wahrheit")
+                    axes[0].plot(times, prediction, label="Originalformel")
+                if name != "training":
+                    axes[1].plot(
+                        times,
+                        (prediction - truth) / AMPLITUDE,
+                        ".",
+                        markersize=2,
+                        label=name,
+                    )
+        axes[0].scatter(
+            arrays["time_s"],
+            arrays[f"observed_{row['case']}"],
+            s=7,
+            label="Beobachtung",
+        )
+        axes[0].set_ylabel("Amplitude / 1")
+        axes[1].set_ylabel("Fehler / A")
+        axes[1].set_xlabel("Zeit / s")
+        axes[0].legend()
+        axes[1].legend()
+        fig.suptitle(row["id"])
+        fig.tight_layout()
+        fig.savefig(destination / (row["id"] + ".png"), dpi=120)
+        plt.close(fig)
+    _write_json(
+        destination / "checksums.json",
+        {
+            p.name: _sha256(p.read_bytes())
+            for p in sorted(destination.iterdir())
+            if p.is_file()
+        },
+    )
+    return report

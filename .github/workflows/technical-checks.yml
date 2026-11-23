@@ -431,6 +431,12 @@ jobs:
             exit 1
           fi
 
+      - name: Verify controlled white-loss scaling in isolated technical workers
+        run: |
+          taskset -c "$(python -c 'import os; print(min(os.sched_getaffinity(0)))')" \
+            uv run --locked python scripts/check_white_scaling.py \
+            --output results/ci-white-scaling-001
+
   technical-checks:
     name: ${{ github.event_name == 'workflow_dispatch' && 'manual-technical-checks' || 'technical-checks' }}
     needs: [prepare, native]

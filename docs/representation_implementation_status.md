@@ -1,5 +1,17 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
+## Aktuell: kontrollierter White-Skalierungspilot in Umsetzung
+
+23.11.2026, Leitfadenphase 7, Branch `codex/white-loss-scaling-pilot` auf
+PR103-Head `9d63fff65c833b2e2de9ee66c4fcd720177bc6d7`.
+Der [Plan](white_loss_scaling_plan.md) ist vor Beobachtungen in
+`222b4bc2263e6200bf29b2424c2a5e6bd318bdd2` gebunden. Getrennte O/S/K-Pfade,
+72 feste lokale Diagnosen, 18 freie Kurzsuchen und drei vorbestimmte
+Wiederholungen werden implementiert. Wissenschaftliche Ausführung steht aus;
+Prüf- und Ergebnisstand im [Laufdokument](white_loss_scaling.md).
+Danach eine getrennt begründete Auswahlintervention, kein allgemeiner
+Komplexitätsschnitt und keine Änderung historischer Protokolle.
+
 ## Aktuell: Auswertung und Nachprüfung der Manjaro-Folgestudie
 
 Stand 22.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).

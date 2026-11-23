@@ -1,5 +1,11 @@
 # Leitfaden: wiederholbare Ringdown-Rekonstruktion und Übergang zu Rauschversuchen
 
+Phase 7, Ergänzung vom 23.11.2026: Der
+[kleine White-Skalierungspilot](white_loss_scaling_plan.md) ist vorab
+festgelegt und wird umgesetzt. [Aktueller Prüf-/Laufstand](white_loss_scaling.md).
+Die anschließende einzelne Auswahlintervention wird aus diesem Befund und
+der bisherigen Kandidatendiagnose begründet; historische Regeln bleiben erhalten.
+
 Übernommener technischer Begleitauftrag zu Phase 1: Der
 [CI-Sparplan](github_actions_savings_plan.md) bündelt lokale Prüfungen vor dem
 Ready-Wechsel und führt native Kontrollen seriell aus. Die wissenschaftlichen

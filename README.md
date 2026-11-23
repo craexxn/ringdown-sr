@@ -5,6 +5,12 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
+23.11.2026: Die empfohlene kleine White-Skalierungskontrolle ist
+[vorab festgelegt](docs/white_loss_scaling_plan.md) und wird in einem getrennten
+[Laufweg](docs/white_loss_scaling.md) umgesetzt. Es liegen noch keine neuen
+wissenschaftlichen Pilotresultate vor. Anschließend folgt eine einzelne
+begründete Auswahlintervention; keine pauschale Verringerung der Komplexität.
+
 Aktuelle Auswertung vom 22.11.2026: Zur in
 [PR #102](https://github.com/craexxn/ringdown-sr/pull/102) übernommenen
 [Folgestudie zu Hintergrunddauer und Messraster](docs/noise_followup_plan.md)

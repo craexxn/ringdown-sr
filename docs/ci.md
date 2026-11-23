@@ -36,6 +36,15 @@ Befund ist kein Nachweis bestandener Tests.
 
 ## Serielle technische Prüfungen
 
+Der getrennte White-Skalierungspilot ergänzt `check_white_scaling.py`:
+native O/S/K-Arithmetik, vollständige Optionsgegenprüfungen, Vergleich der
+beobachteten und unbeobachteten lokalen Optimierung sowie vier frische
+O/S/K/O-Worker mit je zwei äußeren Iterationen auf acht linearen Messpunkten.
+Die O-Wiederholung muss die ursprüngliche Front und Callbackzahl reproduzieren.
+Die wissenschaftlichen 72 lokalen Diagnosen und 21 kurzen Suchen sind nicht
+Teil der CI. `docs/white_loss_scaling_plan.md` und der spätere
+`docs/offgrid_selection_plan.md` gelten als laufzeitrelevante Pläne.
+
 | Job / Abschnitt | Prüfungen |
 | --- | --- |
 | `prepare` | Umfang und Modus, Dokumentation; bei vollem Scope historische Referenzen, uv/Sync, Ruff, Format und pytest |
