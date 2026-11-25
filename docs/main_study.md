@@ -1,6 +1,6 @@
 # Laufweg der Hauptserie: Hintergrunddauer und freie Rekonstruktion
 
-Stand 23.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
+Stand 25.11.2026, [Leitfadenphase 7](ringdown_recovery_roadmap.md).
 Der [verbindliche Hauptplan](main_study_plan.md) und die vollständige
 [Seedtabelle](../data/main_study_seeds.json) sind vor wissenschaftlichen
 Beobachtungen in `126b39e311eceeb12102cf09e6da57deb735025b` gebunden.
@@ -13,9 +13,25 @@ implementiert, lokal und in der vollständigen Ready-CI geprüft sowie als
 `2774b9ebce7276f29af4d7d592264bcf092d033c` übernommen. Entwicklungsabnahme unten;
 Freigabecommit und CI-Nachweis stehen im
 [Fortsetzungsstand](representation_implementation_status.md) beziehungsweise
-Implementierungs-PR. Diese Anleitung belegt keine bereits ausgeführten
-Hauptsuchen. Ein technischer Cloud-Vorlauf ersetzt keinen Vorlauf auf Manjaro;
-der Zielrechnernachweis ist noch offen.
+Implementierungs-PR. Auf dem geprüften Stand begann der erste
+Manjaro-Lauf am 23.11.2026. Sein Abbruch ist im
+[Ergebnisindex](results_index.md#hauptserie-manjaro-001) dokumentiert.
+
+## Nächste Ausführung unter v2
+
+Für die nächste Serie gilt die [Protokollergänzung zur Referenzbreite](main_study_reference_width_v2.md).
+Ein nachgewiesener reiner Breitenfehler eines Kandidaten macht das ganze
+Viererpaket in diesem Block numerisch nicht auswertbar. Alle vier
+vorgesehenen Worker und ihre Kosten gehören in den Paketbericht. Weitere
+geplante Arme und Blöcke werden regulär bearbeitet. Andere ungeklärte
+Replayfehler oder Herkunftswidersprüche stoppen die Serie.
+
+Für v2 sind eine neue Lauf-ID, ein eigener Vorlauf mit acht erfolgreich
+beendeten Workern und eine frische Eingabebindung vorgesehen. Das
+v1-Teilarchiv dokumentiert den ersten Versuch. Der Prüfnachweis für den
+v2-Ausführungscommit und der Start der neuen wissenschaftlichen Serie stehen
+aus. Die Bash-Blöcke mit `e366f50` oder `main-study-manjaro-001` weiter unten
+dokumentieren den ursprünglichen Laufweg.
 
 ## Umfang, Speicher und Reihenfolge
 
@@ -144,12 +160,14 @@ Das gezielte KI-basierte Integrationsreview für PR107 gegen
 Korrekturen keinen offenen korrekturpflichtigen Befund. Die Originalarchive
 und ihre Bindungen stehen im [Ergebnisindex](results_index.md).
 Die [vollständige Ready-CI](ci.md#vollständiger-hauptserienabschluss-pr107) ist
-inzwischen bestanden und PR107 übernommen. Die Zielrechnerprüfung bleibt offen;
-der Cloudlauf ersetzt keinen technischen Vorlauf auf dem vorgesehenen Manjaro-Rechner.
+bestanden und PR107 übernommen. Den darauf aufbauenden technischen
+Zielrechnervorlauf dokumentiert das Terminalprotokoll von
+[Manjaro 001](results_index.md#hauptserie-manjaro-001).
 
 ## Geprüfter Ausführungscheckout
 
-Der durch Review und vollständige Ready-CI geprüfte Implementierungsstand ist
+Für die lesende Zuordnung der historischen v1-Artefakte gilt der durch Review
+und vollständige Ready-CI geprüfte Implementierungsstand
 `e366f50b9cbff0e8d6dd4fc8035e0c09cdc103f7`. Sein Baum stimmt mit dem geprüften
 und tatsächlichen Merge überein. Den folgenden Block im vorhandenen
 Projektcheckout ausführen; der benachbarte Ausführungsordner muss neu sein.
@@ -253,10 +271,10 @@ CI-Läufe müssen nicht durch fortlaufende Chat-Abfragen überwacht werden.
 
 ## Gemeinsamer Start auf Manjaro
 
-**Dieser Befehl startet nach bestandenem Vorlauf auch die vollständige
-wissenschaftliche Serie mit 1280 Workern.** Er ist kein bloßer Testbefehl.
-Für ausschließlich technische Prüfungen den getrennten Block weiter unten
-verwenden.
+**Historischer Startbefehl von Lauf 001 auf dem v1-Checkout.** Die
+ursprüngliche Startfolge umfasste nach bestandenem Vorlauf eine geplante
+wissenschaftliche Serie mit 1280 Workern. Lauf 001 ist abgebrochen und sein
+Teilarchiv liegt vor. Für v2 gilt der oben beschriebene eigene Ausführungsstand.
 
 Netzteil anschließen, Laptop mit offenem Deckel stehen lassen und das Terminal
 offen halten. Das Skript bindet eine erlaubte CPU und erwirbt vor Ausführung

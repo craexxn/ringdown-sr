@@ -266,6 +266,8 @@ def assess_package(verified_report, arrays, *, amplitude, source_identity):
     elif status != "not_run":
         raise ValueError("An executed package requires original input arrays.")
     reason = None if status == "success" else "package_" + status
+    if status == "failed":
+        reason = verified_report.get("failure_reason", reason)
     record = {
         "format": FORMAT,
         "source_identity": copy.deepcopy(source_identity),

@@ -165,7 +165,12 @@ def test_missing_progress_is_read_only_and_counts_all_planned_workers(tmp_path):
     assert "kein wissenschaftlicher Erfolgsnachweis" in watch.render(result)
 
 
-def test_stale_running_progress_and_partial_costs_never_imply_completion(tmp_path):
+@pytest.mark.parametrize(
+    "worker_status", ["fit_error", "reference_width_indeterminate"]
+)
+def test_stale_running_progress_and_partial_costs_never_imply_completion(
+    tmp_path, worker_status
+):
     watch = load("watch_main_study")
     signal = "signal_200_4ms"
     case = signal + "-ar1-01"
@@ -181,7 +186,7 @@ def test_stale_running_progress_and_partial_costs_never_imply_completion(tmp_pat
     )
     write(
         package / "member-01/outcome.json",
-        {"status": "fit_error", "worker_wall_seconds": 9.0},
+        {"status": worker_status, "worker_wall_seconds": 9.0},
     )
     write(
         package / "member-02/metadata.json",
@@ -200,6 +205,9 @@ def test_stale_running_progress_and_partial_costs_never_imply_completion(tmp_pat
     result = watch.snapshot(root, now=datetime(2026, 11, 23, 10, 5, tzinfo=UTC))
     block = result["blocks"][signal]
     assert block["finished_cases"] == 0
+    assert block["cases"][0]["conditions"][0]["workers"][0]["state"] == worker_status
+    if worker_status == "reference_width_indeterminate":
+        assert "1=Referenzintervall zu breit" in watch.render(result)
     assert block["finished_processes"] == block["recorded_failures"] == 1
     assert block["measured_worker_seconds"] == 9.0
     assert block["invocation_costs"]["wall_seconds"] == 300.0

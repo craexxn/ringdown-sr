@@ -55,6 +55,7 @@ def test_only_allowed_prose_can_skip_the_technical_suite(paths):
         "docs/noise_background_plan.md",
         "docs/noise_followup_plan.md",
         "docs/main_study_plan.md",
+        "docs/main_study_reference_width_v2.md",
         "data/transfer_check_inputs.npz",
         "data/transfer_check_inputs.json",
         "docs/reference.npz",

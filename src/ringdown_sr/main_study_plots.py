@@ -990,9 +990,12 @@ def _verify_points(entry, table, spec):
         ):
             raise ValueError("Stored native predictions changed in the point table.")
         if candidate is None and any(
-            row["prediction"] or row["status"] != "not_available" for row in selected
+            row["prediction"]
+            or row["status"] != "not_available"
+            or row.get("reason") != (entry.get("reason") or "no_original_output")
+            for row in selected
         ):
-            raise ValueError("Unavailable original output acquired a plot prediction.")
+            raise ValueError("Point table contradicts its unavailable original output.")
 
 
 def _verify_payloads(report, payloads):

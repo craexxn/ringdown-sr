@@ -8,6 +8,7 @@ from types import SimpleNamespace
 
 import pytest
 from test_main_study_assessment import arrays as reference_arrays
+from test_main_study_assessment import width_failure_fields
 from test_structure_proof import T, op, q
 
 from ringdown_sr import assessment_publication as publication
@@ -48,6 +49,8 @@ def record(spec, arm, *, status="success", tree=None):
         },
         "selected_candidate": candidate(tree) if status == "success" else None,
     }
+    if status == "failed":
+        package.update(width_failure_fields())
     identity = {
         "signal_id": spec["signal_id"],
         "case_id": spec["id"],
@@ -101,6 +104,8 @@ def artifacts(tmp_path, monkeypatch):
             status = (
                 "not_run" if spec == specs[0] and arm == "estimated_64s" else "success"
             )
+            if spec == specs[1] and arm == "estimated_64s":
+                status = "failed"
             records.append(record(spec, arm, status=status))
     reports = {}
     for signal_id in signal_ids:
@@ -250,6 +255,47 @@ def test_complete_declared_sections_keep_exact_formulas_all_grids_and_failures(
     assert missing["candidate"] is None and missing["point_count"] == 2153
     assert missing["status"] == "not_run"
     assert (artifacts.output.parent / "plots-call.json").is_file()
+
+
+def test_verified_plot_export_keeps_width_failure_and_rejects_changed_reason(
+    artifacts, monkeypatch
+):
+    tiny_render(monkeypatch)
+    report = run_export(artifacts, both=False)
+    assert plots.verify_export(artifacts.output) == report
+    width_stem = artifacts.specs[1]["id"] + "-estimated_64s"
+    width = json.loads((artifacts.output / (width_stem + ".json")).read_bytes())
+    reason = "reference_width_exceeds_bound"
+    assert width["status"] == "failed" and width["reason"] == reason
+    assert width["candidate"] is width["identity"]["member_position"] is None
+    assert reason in (artifacts.output / (width_stem + ".formula.txt")).read_text()
+    width_rows = list(
+        csv.DictReader(
+            io.StringIO((artifacts.output / (width_stem + ".csv")).read_text())
+        )
+    )
+    assert len(width_rows) == 2153
+    assert {
+        (row["prediction"], row["status"], row["reason"]) for row in width_rows
+    } == {("", "not_available", reason)}
+    overview = artifacts.output / (artifacts.signal_ids[0] + "-white-overview.csv")
+    overview_row = next(
+        row
+        for row in csv.DictReader(io.StringIO(overview.read_text()))
+        if row["condition"] == "estimated_64s"
+    )
+    assert (
+        overview_row["primary_reason"] == reason
+        and overview_row["relative_l2_main"] == ""
+    )
+    assert overview_row["search_calls"] == "4"
+    assert float(overview_row["original_worker_wall_seconds"]) == 21.0
+
+    width_rows[0]["reason"] = "package_failed"
+    changed = plots.shared._csv(width_rows)
+    width["points_csv_sha256"] = sources.sha256(changed)
+    with pytest.raises(ValueError, match="unavailable original output"):
+        plots._verify_points(width, changed, artifacts.specs[1])
 
 
 def test_partial_nonfinite_grid_keeps_finite_points_without_changing_denominator():

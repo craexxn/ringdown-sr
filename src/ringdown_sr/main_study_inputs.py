@@ -31,9 +31,11 @@ from .pilot import _utc_now
 from .signals import ringdown_signal, sample_times
 
 ROOT = sources.ROOT
-FORMAT = "ringdown-sr-main-study-inputs-1"
+FORMAT = "ringdown-sr-main-study-inputs-2"
 CALL_FORMAT = "ringdown-sr-main-study-input-call-1"
 PLAN_PATH = "docs/main_study_plan.md"
+WIDTH_PLAN_PATH = "docs/main_study_reference_width_v2.md"
+WIDTH_PLAN_SHA256 = "c1173c98be3f0d92892d07b198482b28d08c7293b8ed5dded3365079aa772dde"
 SEEDS_PATH = "data/main_study_seeds.json"
 PLAN_COMMIT = "126b39e311eceeb12102cf09e6da57deb735025b"
 PLAN_SHA256 = "772b26883e5bb871ad64af9d60b2e07b69c786af34790e9c68cfeb6930b5d706"
@@ -660,12 +662,24 @@ def _protocol(consumed):
                 "Frozen main-study plan or seed table differs from its commit."
             )
         result[path_name] = expected
-    return {"commit": PLAN_COMMIT, "file_sha256": result}
+    addendum = _small_read(ROOT / WIDTH_PLAN_PATH, consumed)
+    if sources.sha256(addendum) != WIDTH_PLAN_SHA256:
+        raise ValueError("Frozen main-study reference-width addendum differs.")
+    return {
+        "commit": PLAN_COMMIT,
+        "file_sha256": result,
+        "prediction_failure_policy": confirmed_search.WIDTH_POLICY,
+        "addendum_sha256": {WIDTH_PLAN_PATH: WIDTH_PLAN_SHA256},
+    }
 
 
 def _freeze_sources(consumed):
     software = confirmed_search.freeze_software(consumed)
-    _protocol(consumed)
+    if (
+        sources.sha256(consumed.git_file(software["software_commit"], WIDTH_PLAN_PATH))
+        != WIDTH_PLAN_SHA256
+    ):
+        raise ValueError("The study software does not contain the frozen width policy.")
     return software
 
 

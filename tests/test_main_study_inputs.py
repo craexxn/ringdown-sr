@@ -89,6 +89,27 @@ def test_frozen_inventory_and_seed_roles_are_complete():
     assert inputs.COVARIANCE_CHUNK_SAMPLES == (65536 // 103) * 103 == 65508
 
 
+def test_width_addendum_is_bound_before_search_and_rejects_changed_bytes(
+    tmp_path, monkeypatch
+):
+    for name in (inputs.WIDTH_PLAN_PATH, inputs.PLAN_PATH, inputs.SEEDS_PATH):
+        target = tmp_path / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes((inputs.ROOT / name).read_bytes())
+    monkeypatch.setattr(inputs, "ROOT", tmp_path)
+    consumed = publication.Consumption(publication.Deadline(30))
+    record = inputs._protocol(consumed)
+    assert record["prediction_failure_policy"] == inputs.confirmed_search.WIDTH_POLICY
+    assert record["addendum_sha256"] == {
+        inputs.WIDTH_PLAN_PATH: inputs.WIDTH_PLAN_SHA256
+    }
+    (tmp_path / inputs.WIDTH_PLAN_PATH).write_text("changed eligibility rule")
+    with pytest.raises(ValueError, match="Consumed file changed"):
+        consumed.check()
+    with pytest.raises(ValueError, match="addendum differs"):
+        inputs._protocol(publication.Consumption(publication.Deadline(30)))
+
+
 def test_rng_collision_stops_before_any_input_generation(
     tmp_path, tiny_protocol, technical_table, monkeypatch
 ):

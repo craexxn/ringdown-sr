@@ -1,7 +1,7 @@
 """Check four-member execution, weighted bindings, publication and read-only replay."""
 
 import copy
-from types import SimpleNamespace
+from functools import partial
 
 import numpy as np
 import pytest
@@ -33,13 +33,18 @@ def fake_native(monkeypatch, *, statuses=None, losses=None, complexities=None):
     )
     monkeypatch.setattr(search, "_provenance", lambda: copy.deepcopy(provenance))
 
-    def prepare(directory, time_s, observed, *, covariance, seed, technical):
+    def prepare(
+        directory, time_s, observed, *, covariance, seed, technical, width=False
+    ):
         directory.mkdir()
         arrays = {"time_s": time_s, "observed": observed}
         if covariance is not None:
             arrays["covariance"] = covariance
         np.savez(directory / "inputs.npz", **arrays)
-        _write_json(directory / "request.json", {"seed": seed, "technical": technical})
+        request = {"seed": seed, "technical": technical}
+        if width:
+            request["format"] = search.profile.MAIN_WIDTH_FORMAT
+        _write_json(directory / "request.json", request)
         events.append(("prepare", seed))
 
     def prepared(directory):
@@ -88,29 +93,33 @@ def fake_native(monkeypatch, *, statuses=None, losses=None, complexities=None):
             "profile": search.PROFILE,
             "input_fingerprints": search._fingerprints(arrays),
         }
+        if request.get("format") == search.profile.MAIN_WIDTH_FORMAT:
+            record.update(
+                format=search.profile.MAIN_WIDTH_FORMAT,
+                requested_iterations=10 if request["technical"] else 1000,
+            )
+            if status == search.profile.WIDTH_STATUS:
+                record["width_evidence"] = {"reason": "reference_width_exceeds_bound"}
         _write_json(directory / "verified.json", record)
         return verify(directory)
 
     monkeypatch.setattr(
-        search,
-        "profile",
-        SimpleNamespace(
-            prepare_member=prepare,
-            prepared_files=prepared,
-            run_member=run,
-            verify_member=verify,
-        ),
+        search.profile, "prepare_main_width_member", partial(prepare, width=True)
     )
+    monkeypatch.setattr(search.profile, "prepare_member", prepare)
+    monkeypatch.setattr(search.profile, "prepared_files", prepared)
+    monkeypatch.setattr(search.profile, "run_member", run)
+    monkeypatch.setattr(search.profile, "verify_member", verify)
     return events
 
 
-def run_package(tmp_path, **kwargs):
+def run_package(tmp_path, *, technical=True, **kwargs):
     return search.run_confirmed_package(
         [0.0, 0.1, 0.2],
         [1.0, 0.5, -0.2],
         output=tmp_path / "package",
         seeds=SEEDS,
-        technical=True,
+        technical=technical,
         **kwargs,
     )
 
@@ -202,6 +211,104 @@ def test_failures_remain_in_denominator_and_all_calls_execute(
     assert run.status == ("failed" if chosen is None else "success")
     assert len(report["members"]) == 4 and report["costs"]["worker_wall_seconds"] == 4
     assert len([event for event in events if event[0] == "run"]) == 4
+
+
+@pytest.mark.parametrize(
+    "width_members,technical",
+    [([0], True), ([1, 3], False), ([0, 1, 2, 3], False), ([], False)],
+)
+def test_width_policy_runs_all_slots_and_withholds_entire_package(
+    monkeypatch, tmp_path, width_members, technical
+):
+    statuses = [
+        search.profile.WIDTH_STATUS if i in width_members else "completed"
+        for i in range(4)
+    ]
+    events = fake_native(monkeypatch, statuses=statuses)
+    if width_members:
+
+        def forbidden_selection(records):
+            pytest.fail("A member of a withheld package was considered for selection.")
+
+        monkeypatch.setattr(search.restarts, "package_selection", forbidden_selection)
+    run = run_package(tmp_path, technical=technical, withhold_on_reference_width=True)
+    report = search.verify_confirmed_package(run.output_directory)
+    assert [e[1] for e in events if e[0] == "run"] == list(SEEDS)
+    assert report["prediction_failure_policy"] == search.WIDTH_POLICY
+    assert report["reference_width_members"] == width_members
+    assert [r["status"] for r in report["members"]] == statuses
+    assert report["search_calls"] == len(report["members"]) == 4
+    assert report["costs"]["worker_wall_seconds"] == 4
+    assert report["costs"]["callback_calls_during_fit"] == 40
+    if width_members:
+        assert report["failure_reason"] == "reference_width_exceeds_bound"
+        assert report["package_status"] == run.status == "failed"
+        assert (
+            run.selected_member
+            is run.selected_candidate
+            is run.selected_directory
+            is None
+        )
+        assert report["selected_candidate_path"] is None
+    else:
+        assert report["package_status"] == run.status == "success"
+        assert run.selected_member == 2
+
+
+def test_width_evidence_does_not_hide_later_integrity_failure(monkeypatch, tmp_path):
+    events = fake_native(
+        monkeypatch,
+        statuses=[
+            search.profile.WIDTH_STATUS,
+            "completed",
+            ValueError("contradiction"),
+            "completed",
+        ],
+    )
+    with pytest.raises(ValueError, match="contradiction"):
+        run_package(tmp_path, withhold_on_reference_width=True)
+    assert len([e for e in events if e[0] == "run"]) == 3
+    assert (tmp_path / "package/completion" / publication.LOCK).exists()
+
+
+def test_ordinary_package_rejects_reference_width_status(monkeypatch, tmp_path):
+    fake_native(monkeypatch, statuses=[search.profile.WIDTH_STATUS] * 4)
+    with pytest.raises(ValueError, match="planned slot"):
+        run_package(tmp_path)
+
+
+@pytest.mark.parametrize(
+    "change",
+    ["policy", "format", "iterations", "missing_evidence", "unexpected_evidence"],
+)
+def test_resealed_width_policy_and_members_must_agree(monkeypatch, tmp_path, change):
+    fake_native(
+        monkeypatch,
+        statuses=[search.profile.WIDTH_STATUS, "completed", "completed", "completed"],
+    )
+    root = run_package(tmp_path, withhold_on_reference_width=True).output_directory
+    path = root / (
+        "preparation.json"
+        if change == "policy"
+        else "member-02/verified.json"
+        if change == "unexpected_evidence"
+        else "member-01/verified.json"
+    )
+    document = search.sources.read_json(path.read_bytes())
+    if change == "policy":
+        del document["prediction_failure_policy"]
+    elif change == "format":
+        del document["format"]
+    elif change == "iterations":
+        document["requested_iterations"] = 1
+    elif change == "missing_evidence":
+        del document["width_evidence"]
+    else:
+        document["width_evidence"] = {"reason": "reference_width_exceeds_bound"}
+    _write_json(path, document)
+    reseal(root)
+    with pytest.raises(ValueError, match="planned slot|policy|evidence"):
+        search.verify_confirmed_package(root)
 
 
 @pytest.mark.parametrize(

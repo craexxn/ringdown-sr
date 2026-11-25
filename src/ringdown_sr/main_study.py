@@ -18,9 +18,9 @@ from .noise_followup import _input_hash, _tree_hashes
 from .noise_pilot import _identity, _usage
 from .pilot import _write_json
 
-FORMAT = "ringdown-sr-main-study-section-1"
-CASE_FORMAT = "ringdown-sr-main-study-case-1"
-REGISTRATION_FORMAT = "ringdown-sr-main-study-registration-1"
+FORMAT = "ringdown-sr-main-study-section-2"
+CASE_FORMAT = "ringdown-sr-main-study-case-2"
+REGISTRATION_FORMAT = "ringdown-sr-main-study-registration-2"
 CALL_FORMAT = "ringdown-sr-main-study-call-1"
 SIGNALS = ("signal_200_4ms", "signal_250_6ms")
 ARMS = ("ordinary", "known_covariance", "estimated_64s", "estimated_4096s")
@@ -318,6 +318,7 @@ def _gates(prepared, technical_path, consumed):
     consumed.callbacks.append(local.check)
     if (
         report.get("status") != "completed"
+        or report.get("prediction_failure_policy") != search.WIDTH_POLICY
         or report.get("n_samples") != 103
         or report.get("niterations") != 10
         or report.get("search_calls") != 8
@@ -356,6 +357,7 @@ def _registration(prepared, signal_id, gates, previous_hash):
         "format": REGISTRATION_FORMAT,
         "signal_id": signal_id,
         "profile": search.PROFILE,
+        "prediction_failure_policy": search.WIDTH_POLICY,
         "preparation_sha256": _binding(prepared),
         "software": prepared.manifest["software"],
         "full_study_case_order": list(prepared.cases),
@@ -395,10 +397,13 @@ def _package(root, prepared, case, arm, consumed):
     report = search.verify_confirmed_package(directory)
     if (
         report.get("technical") is not False
+        or report.get("prediction_failure_policy") != search.WIDTH_POLICY
         or report.get("profile") != search.PROFILE
         or report.get("seeds") != case.spec["search_seeds"]
     ):
-        raise ValueError("Package profile or seeds differ from its main-study slot.")
+        raise ValueError(
+            "Package policy, profile or seeds differ from its main-study slot."
+        )
     sources._same(
         report["software"],
         prepared.manifest["software"],
@@ -472,6 +477,7 @@ def _case_report(root, prepared, case, gates, consumed):
         )
     return {
         "format": CASE_FORMAT,
+        "prediction_failure_policy": search.WIDTH_POLICY,
         "status": "completed",
         "signal_id": signal_id,
         "case": case.spec,
@@ -556,6 +562,7 @@ def _run_case(prepared, case_id, gates, output):
                         covariance=arrays.get("covariance"),
                         output=root / "symbolic" / arm,
                         seeds=case.spec["search_seeds"],
+                        withhold_on_reference_width=True,
                     )
                     _hold_tree(root / "symbolic" / arm, frozen)
                 frozen.check()
@@ -722,6 +729,7 @@ def _section_report(prepared, signal_id, registration, reports, calls):
     count = sum(report["search_calls"] for report in reports.values())
     return {
         "format": FORMAT,
+        "prediction_failure_policy": registration["prediction_failure_policy"],
         "status": "completed",
         "signal_id": signal_id,
         "signal_normalization": _signal_normalization(prepared, signal_id),

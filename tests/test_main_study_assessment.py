@@ -77,6 +77,19 @@ def package(data, *, status="success", tree=None, native=None):
     }
 
 
+def width_failure_fields():
+    return {
+        "prediction_failure_policy": "withhold_package_on_reference_width_v1",
+        "failure_reason": "reference_width_exceeds_bound",
+        "reference_width_members": [3],
+        "costs": {
+            "worker_wall_seconds": 21.0,
+            "fit_wall_seconds": 16.0,
+            "callback_calls_during_fit": None,
+        },
+    }
+
+
 def assess(
     condition="estimated_4096s",
     *,
@@ -255,6 +268,60 @@ def test_missing_outputs_keep_status_costs_and_no_formula_type(status):
     assert record["costs"]["worker_wall_seconds"] is None
     assert record["topology_descriptor"] is None
     assert record["supplemental"]["domain"]["status"] == "not_assessed"
+    assert record["primary"]["reason"] == "package_" + status
+
+
+def test_reference_width_is_an_unavailable_arm_with_four_calls_and_known_costs():
+    signal = assessment.SIGNALS[0]
+    data = arrays()
+    report = {**package(data, status="failed"), **width_failure_fields()}
+    failed = assessment.assess_package(
+        report,
+        data,
+        amplitude=2.0,
+        source_identity=identity("estimated_64s", status="failed"),
+    )
+    reason = "reference_width_exceeds_bound"
+    assert failed["status"] == "failed"
+    assert failed["original_candidate"] is failed["topology_descriptor"] is None
+    assert failed["costs"] == report["costs"]
+    assert failed["planned_members"] == failed["search_calls"] == 4
+    assert failed["primary"] == {
+        "status": "not_available",
+        "reason": reason,
+        "value": None,
+    }
+    assert all(
+        v["relative_l2"] is None and v["reason"] == reason
+        for v in failed["errors"].values()
+    )
+    assert all(
+        v["value"] is None and v["reason"] == reason
+        for v in failed["diagnostics"].values()
+    )
+
+    values = records(signal)
+    index = next(
+        i
+        for i, v in enumerate(values)
+        if v["source_identity"] == identity("estimated_64s")
+    )
+    values[index] = failed
+    section = assessment.summary(values, signal_id=signal)
+    ar1 = section["signals"][signal]["models"]["ar1"]
+    arm = ar1["conditions"]["estimated_64s"]
+    assert arm["failure_denominator"] == 30 and arm["failed_or_not_run"] == 1
+    assert arm["primary"]["values"][0]["reason"] == reason
+    assert arm["original_package_costs"]["worker_wall_seconds"]["total"] == 29 * 10 + 21
+    assert arm["original_package_costs"]["callback_calls_during_fit"]["total"] is None
+    pair = ar1["contrasts"][assessment.PRIMARY_CONTRAST]
+    assert (
+        pair["planned"],
+        pair["available"],
+        pair["pair_availability"]["only_left_available"],
+    ) == (30, 29, 1)
+    assert pair["interval"]["status"] == "not_available"
+    assert section["new_search_calls"] == 640
 
 
 @pytest.mark.parametrize("signal_id", (None, *assessment.SIGNALS))
