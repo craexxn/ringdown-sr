@@ -39,6 +39,7 @@ MAIN_WIDTH_FORMAT = "ringdown-sr-main-study-width-member-2"
 WIDTH_STATUS = "reference_width_indeterminate"
 WIDTH_REASON = "reference_width_exceeds_bound"
 WIDTH_FRONT = "width_front.json"
+WIDTH_MARKER = "width_observed"
 MAIN_TECHNICAL_ITERATIONS = 10
 MAIN_PLAN = "docs/main_study_plan.md"
 MAIN_PLAN_SHA256 = "772b26883e5bb871ad64af9d60b2e07b69c786af34790e9c68cfeb6930b5d706"
@@ -413,7 +414,9 @@ def verify_prepared(directory):
     return request, arrays, manifest
 
 
-def width_prediction(tree, times, python_prediction, native_prediction):
+def width_prediction(
+    tree, times, python_prediction, native_prediction, *, on_width=None
+):
     """Retain a finite wide reference only if every precision failed solely on width."""
     try:
         return verify_prediction(tree, times, python_prediction, native_prediction)
@@ -431,6 +434,8 @@ def width_prediction(tree, times, python_prediction, native_prediction):
             or record["membership"] != {"status": "not_attempted"}
         ):
             raise
+        if on_width is not None:
+            on_width()
         # Even a wide enclosure can refute a vector. Never issue a membership pass.
         limits = np.asarray(
             [
@@ -467,6 +472,7 @@ class WorkerHooks:
         self.request, self.arrays, self.manifest = verify_prepared(directory)
         self.module = self.original = self.guard = self.runtime = self.factor = None
         self.jl = None
+        self.width_observed = False
 
     def read_request(self, document):
         if document != self.request:
@@ -477,8 +483,14 @@ class WorkerHooks:
 
     def prediction_replay(self, *args):
         if self.request["format"] == MAIN_WIDTH_FORMAT:
-            return width_prediction(*args)
+            return width_prediction(*args, on_width=self._mark_width)
         return verify_prediction(*args)
+
+    def _mark_width(self):
+        if not self.width_observed:
+            # A deadline can kill the worker before the full diagnostic is ready.
+            (self.directory / WIDTH_MARKER).touch(exist_ok=False)
+            self.width_observed = True
 
     def loss_replay(self, *args, prediction_check, **kwargs):
         from .weighted_replay import verify_loss_replay, width_loss_diagnostic
@@ -614,7 +626,11 @@ def worker(directory):
     symbolic.worker(Path(directory).resolve(), hooks=WorkerHooks(directory))
 
 
-def failure_status(metadata, *, timed_out=False):
+def failure_status(metadata, *, timed_out=False, directory=None):
+    if directory is not None and any(
+        (directory / name).exists() for name in (WIDTH_MARKER, WIDTH_FRONT)
+    ):
+        raise ValueError("Incomplete worker replay after a reference width finding.")
     message = metadata.get("error")
     if message is not None:
         ordinary_fit = (
@@ -721,7 +737,7 @@ def run_member(directory, *, deadline):
     else:
         if not timed_out and (type(code) is not int or code <= 0):
             raise ValueError("Confirmed-profile worker interrupted by signal.")
-        status = failure_status(metadata, timed_out=timed_out)
+        status = failure_status(metadata, timed_out=timed_out, directory=directory)
     outcome = {
         "format": request["format"],
         "status": status,
@@ -917,6 +933,30 @@ def _width_candidate_evidence(
     )
 
 
+def _verify_width_timings(result, costs):
+    """The worker and its adapter each serialize one measured duration twice."""
+    timing = result.get("timing_seconds")
+    if (
+        not isinstance(timing, dict)
+        or "fit_including_jit_and_python_exports" not in timing
+    ):
+        raise ValueError("Missing withheld worker fit timing.")
+    for label, first, second in (
+        (
+            "fit",
+            costs["fit_wall_seconds"],
+            timing["fit_including_jit_and_python_exports"],
+        ),
+        ("worker", costs["worker_wall_seconds"], costs["adapter_call_wall_seconds"]),
+    ):
+        if (
+            type(first) is not float
+            or type(second) is not float
+            or first.hex() != second.hex()
+        ):
+            raise ValueError(f"Inconsistent withheld worker {label} timing.")
+
+
 def verify_member(directory):
     """Re-read the original member without importing Julia or performing a fit."""
     from .weighted_replay import candidate_evidence
@@ -936,6 +976,10 @@ def verify_member(directory):
     )
     if (directory / WIDTH_FRONT).exists() != withheld:
         raise ValueError("Inconsistent diagnostic width front.")
+    if (directory / WIDTH_MARKER).exists() != withheld or (
+        withheld and actual.get(WIDTH_MARKER) != _sha256(b"")
+    ):
+        raise ValueError("Inconsistent diagnostic width marker.")
     if (
         set(outcome)
         != {
@@ -959,7 +1003,7 @@ def verify_member(directory):
         raise ValueError("Invalid confirmed-member terminal outcome.")
     completed = outcome.get("status") == "completed"
     if not (completed or withheld) and outcome["status"] != failure_status(
-        metadata, timed_out=outcome["timed_out"]
+        metadata, timed_out=outcome["timed_out"], directory=directory
     ):
         raise ValueError("Changed numerical failure classification.")
     _verify_origin(
@@ -1035,6 +1079,8 @@ def verify_member(directory):
             raise ValueError("Missing actual native runtime/source evidence.")
         record = _native_completion(directory, request)
         result = read(directory, WIDTH_FRONT if withheld else "result.json")
+        if withheld:
+            _verify_width_timings(result, costs)
         if (
             result.get("format") != symbolic.FORMAT
             or result.get("evaluation_scope") != "fitted_samples_only"

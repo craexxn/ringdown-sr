@@ -33,6 +33,22 @@ v2-Ausführungscommit und der Start der neuen wissenschaftlichen Serie stehen
 aus. Die Bash-Blöcke mit `e366f50` oder `main-study-manjaro-001` weiter unten
 dokumentieren den ursprünglichen Laufweg.
 
+Die v2-Workerprüfung wurde auf den elf aus der archivierten nativen
+Formeltabelle rekonstruierten Bäumen und der ursprünglichen E64-Kovarianz
+ausgeführt. Julia reproduzierte alle elf gespeicherten Trainingsverluste
+bitgenau. Zehn Kandidaten bestanden die Vorhersage- und Verlustprüfung.
+Bei Kandidat elf bestanden die skalaren und Whitening-Prüfungen, während
+alle vier Präzisionsstufen die geforderte Intervallbreite verfehlten. Das
+Diagnoseprotokoll hat SHA-256
+`f68d62f7ff6b4a66bd74307b691f1000ce7c90433de65b555a8a825e67ab246f`.
+Die verwendeten Vorhersagevektoren stammen aus der erneuten Auswertung.
+
+Hat ein Worker eine zu breite Referenz erkannt, bewahrt er den Befund
+während der restlichen Frontprüfung auf. Erst ein vollständig geprüfter
+Worker darf als numerisch nicht auswertbar abgeschlossen werden. Wird
+diese Nachprüfung unterbrochen oder widersprechen sich die gespeicherten
+Zeitmessungen, stoppt die Serie.
+
 ## Umfang, Speicher und Reihenfolge
 
 Je Signal sind 30 AR(1)- und zehn White-Blöcke vorgesehen. Jeder Block

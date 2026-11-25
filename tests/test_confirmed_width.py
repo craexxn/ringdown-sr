@@ -1,6 +1,10 @@
 """Adversarial full-front withholding with an analytically zero wide expression."""
 
 import csv
+import math
+import subprocess
+import time
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -99,6 +103,18 @@ def test_terminal_status_requires_only_width_at_every_precision(monkeypatch):
         profile.width_prediction(tree, t, t, t)
 
 
+def test_worker_persists_width_before_checking_observed_vectors(tmp_path):
+    t = np.arange(103) / 4096
+    out = tmp_path / "member"
+    profile.prepare_main_width_member(out, t, np.ones(103), seed=5)
+    hooks = profile.WorkerHooks(out)
+    tree, zero = profile.equation_tree(WIDE), np.zeros_like(t)
+    with pytest.raises(ValueError, match="contradicts"):
+        hooks.prediction_replay(tree, t, zero, zero + 1)
+    assert (out / profile.WIDTH_MARKER).read_bytes() == b""
+    assert hooks.prediction_replay(tree, t, zero, zero)["status"] == "indeterminate"
+
+
 def width_fixture(directory, monkeypatch):
     """Simulate completed native accounting; actual prediction/loss replay stays live."""
     t, y = np.arange(103) / 4096, np.ones(103)
@@ -147,6 +163,10 @@ def width_fixture(directory, monkeypatch):
             "candidates": rows,
             "rng": {"python_seed": 5, "backend_seed": backend_seed(5)},
             "callback_calls_during_fit": 17,
+            "timing_seconds": {
+                "worker_setup": 0.5,
+                "fit_including_jit_and_python_exports": 10.0,
+            },
         },
     )
     initial = profile.read(directory, "metadata_initial.json")
@@ -206,7 +226,89 @@ def test_width_member_replays_whole_front_and_preserves_cost(tmp_path, monkeypat
     assert (
         result["costs"]["callback_calls_during_fit"] == 17
         and result["costs"]["fit_wall_seconds"] == 10.0
+        and result["costs"]["worker_wall_seconds"] == 11.0
+        and result["costs"]["adapter_call_wall_seconds"] == 11.0
     )
+
+
+@pytest.mark.parametrize(
+    "filename, field, value, label",
+    [
+        ("metadata.json", "fit_wall_seconds", math.nextafter(10.0, math.inf), "fit"),
+        (profile.WIDTH_FRONT, "fit_including_jit_and_python_exports", 10, "fit"),
+        (profile.WIDTH_FRONT, "fit_including_jit_and_python_exports", None, "fit"),
+        (
+            "outcome.json",
+            "worker_wall_seconds",
+            math.nextafter(11.0, math.inf),
+            "worker",
+        ),
+        ("outcome.json", "adapter_call_wall_seconds", 11, "worker"),
+    ],
+)
+def test_rehashed_width_timings_must_match_original_measurements(
+    tmp_path, monkeypatch, filename, field, value, label
+):
+    out = tmp_path / "member"
+    width_fixture(out, monkeypatch)
+    record = profile.read(out, filename)
+    fields = record["timing_seconds"] if filename == profile.WIDTH_FRONT else record
+    fields[field] = value
+    _write_json(out / filename, record)
+    _write_json(out / "member_checksums.json", profile._inventory(out))
+    with pytest.raises(
+        ValueError, match=f"Inconsistent withheld worker {label} timing"
+    ):
+        profile.verify_member(out)
+
+
+@pytest.mark.parametrize("stage", ["before_width", "after_width", "after_front"])
+@pytest.mark.parametrize("failure", ["timeout", "fit_error"])
+def test_incomplete_width_replay_never_becomes_an_ordinary_failure(
+    tmp_path, monkeypatch, stage, failure
+):
+    out = tmp_path / "member"
+    width_fixture(out, monkeypatch)
+    (out / "outcome.json").unlink()
+    if stage != "after_front":
+        (out / profile.WIDTH_FRONT).unlink()
+    if stage == "before_width":
+        (out / profile.WIDTH_MARKER).unlink()
+    metadata = profile.read(out, "metadata.json")
+    metadata["phase"] = "replay"
+    if failure == "fit_error":
+        metadata.update(
+            phase="failed",
+            failed_during="replay",
+            error="ValueError: No admissible candidates were exported.",
+        )
+    _write_json(out / "metadata.json", metadata)
+
+    class Worker:
+        returncode = -9 if failure == "timeout" else 1
+
+        def wait(self, timeout):
+            if failure == "timeout":
+                raise subprocess.TimeoutExpired("worker", timeout)
+            return self.returncode
+
+    monkeypatch.setattr(
+        profile,
+        "subprocess",
+        SimpleNamespace(
+            Popen=lambda *args, **kwargs: Worker(),
+            TimeoutExpired=subprocess.TimeoutExpired,
+            STDOUT=subprocess.STDOUT,
+        ),
+    )
+    monkeypatch.setattr(symbolic, "_stop_worker", lambda process: None)
+    deadline = time.monotonic() + 100
+    if stage == "before_width":
+        assert profile.run_member(out, deadline=deadline)["status"] == failure
+    else:
+        with pytest.raises(ValueError, match="Incomplete worker replay"):
+            profile.run_member(out, deadline=deadline)
+        assert not (out / "outcome.json").exists()
 
 
 @pytest.mark.parametrize(
@@ -216,6 +318,7 @@ def test_width_member_replays_whole_front_and_preserves_cost(tmp_path, monkeypat
         "wide_prediction",
         "wide_loss",
         "width_reasons",
+        "missing_marker",
         "front_row",
         "success_file",
         "success_outcome",
@@ -238,6 +341,8 @@ def test_rehashed_width_diagnostics_cannot_hide_other_failures(
         wide["python_loss"] = 0.5
     elif tamper == "width_reasons":
         wide["prediction_replay"]["attempts"][1]["reason"] = "other"
+    elif tamper == "missing_marker":
+        (out / profile.WIDTH_MARKER).unlink()
     elif tamper == "front_row":
         wide["display_equation"] = "0.0"
     elif tamper == "success_file":
