@@ -1,6 +1,14 @@
 # Fortsetzungsstand: Ringdown-Kontrollpfade
 
-## Aktuell: Hauptserie nach vollständiger CI übernommen, Manjaro-Start vorbereitet
+## Hauptserie nach dem Abbruch vom 25.11.2026
+
+Leitfadenphase 7. Das Teilarchiv von Manjaro 001 ist lokal mit dem Quellbestand
+abgeglichen. Umfang und Grenzen der Nachprüfung stehen im
+[Ergebnisindex](results_index.md#hauptserie-manjaro-001). Die
+[Ergänzung für v2](main_study_reference_width_v2.md) bindet die Behandlung
+eines reinen Breitenfehlers vor einer neuen vollständigen Ausführung.
+
+## Hauptserie nach vollständiger CI am 23.11.2026
 
 23.11.2026, Leitfadenphase 7. Der [Pilotabschluss](pilot_closeout.md) und
 Hauptentwurf sind nach geprüftem KI-Review und erfolgreicher

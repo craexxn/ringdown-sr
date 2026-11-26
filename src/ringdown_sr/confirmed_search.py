@@ -21,6 +21,7 @@ from .symbolic import ROOT, _inputs, select_candidate
 
 FORMAT = "ringdown-sr-confirmed-search-package-1"
 PROFILE = "r4x1000-local300x5-v1"
+WIDTH_POLICY = "withhold_package_on_reference_width_v1"
 # Operational limits, not scientific search-budget or success criteria.
 PACKAGE_SECONDS = 4 * 1800 + 600
 TECHNICAL_SECONDS = 1200
@@ -150,17 +151,21 @@ def _prepared_files(output):
 
 
 def _check_preparation(preparation, software, arrays, consumed):
+    fields = {
+        "format",
+        "profile",
+        "technical",
+        "seeds",
+        "software",
+        "provenance",
+        "input_fingerprints",
+    }
+    if "prediction_failure_policy" in preparation:
+        if preparation["prediction_failure_policy"] != WIDTH_POLICY:
+            raise ValueError("Unknown confirmed-package reference-width policy.")
+        fields.add("prediction_failure_policy")
     if (
-        set(preparation)
-        != {
-            "format",
-            "profile",
-            "technical",
-            "seeds",
-            "software",
-            "provenance",
-            "input_fingerprints",
-        }
+        set(preparation) != fields
         or preparation["format"] != FORMAT
         or preparation["profile"] != PROFILE
         or type(preparation["technical"]) is not bool
@@ -194,6 +199,10 @@ def _check_preparation(preparation, software, arrays, consumed):
 def _member_records(output, preparation, arrays, consumed, verified=None):
     records = []
     environment = None
+    width_policy = preparation.get("prediction_failure_policy") == WIDTH_POLICY
+    statuses = {"completed", "fit_error", "timeout"}
+    if width_policy:
+        statuses.add(profile.WIDTH_STATUS)
     for member, seed in enumerate(preparation["seeds"]):
         consumed.check()
         record = (
@@ -202,7 +211,7 @@ def _member_records(output, preparation, arrays, consumed, verified=None):
             else verified[member]
         )
         if (
-            record["status"] not in {"completed", "fit_error", "timeout"}
+            record["status"] not in statuses
             or record["profile"] != PROFILE
             or type(record["seed"]) is not int
             or record["seed"] != seed
@@ -211,6 +220,29 @@ def _member_records(output, preparation, arrays, consumed, verified=None):
             or set(record["costs"]) != set(costs.COST_FIELDS)
         ):
             raise ValueError("Confirmed-package member differs from its planned slot.")
+        if width_policy:
+            iterations = (
+                profile.MAIN_TECHNICAL_ITERATIONS if preparation["technical"] else 1000
+            )
+            if (
+                record.get("format") != profile.MAIN_WIDTH_FORMAT
+                or type(record.get("requested_iterations")) is not int
+                or record["requested_iterations"] != iterations
+            ):
+                raise ValueError(
+                    "Member differs from its planned replay policy or budget."
+                )
+        elif "format" in record or "requested_iterations" in record:
+            raise ValueError("Unexpected member format in an ordinary package.")
+        width_failure = width_policy and record["status"] == profile.WIDTH_STATUS
+        if width_failure:
+            if (
+                not isinstance(record.get("width_evidence"), dict)
+                or record["width_evidence"].get("reason") != profile.WIDTH_REASON
+            ):
+                raise ValueError("Missing verified reference-width evidence.")
+        elif "width_evidence" in record:
+            raise ValueError("Unexpected reference-width evidence for member status.")
         sources._same(
             record["input_fingerprints"],
             _fingerprints(arrays),
@@ -254,8 +286,8 @@ def _member_records(output, preparation, arrays, consumed, verified=None):
                     current, environment, "Package numerical environments differ."
                 )
             environment = current
-        elif record["status"] == "completed":
-            raise ValueError("Completed worker lacks numerical-environment evidence.")
+        elif record["status"] == "completed" or width_failure:
+            raise ValueError("Replayed worker lacks numerical-environment evidence.")
         records.append({"member": member, **record})
         consumed.check()
     costs.cost_totals(records)
@@ -263,7 +295,20 @@ def _member_records(output, preparation, arrays, consumed, verified=None):
 
 
 def _report(output, preparation, arrays, records, environment):
-    chosen = restarts.package_selection(records)
+    width_members = []
+    policy_fields = {}
+    if preparation.get("prediction_failure_policy") == WIDTH_POLICY:
+        width_members = [
+            r["member"] for r in records if r["status"] == profile.WIDTH_STATUS
+        ]
+        policy_fields = {
+            "prediction_failure_policy": WIDTH_POLICY,
+            "reference_width_members": width_members,
+        }
+        if width_members:
+            policy_fields["failure_reason"] = profile.WIDTH_REASON
+    chosen = None if width_members else restarts.package_selection(records)
+    total_costs = costs.cost_totals(records)
     return {
         "format": FORMAT,
         "status": "completed",
@@ -280,7 +325,10 @@ def _report(output, preparation, arrays, records, environment):
         "preparation_sha256": sources.sha256(
             (output / "preparation.json").read_bytes()
         ),
-        "selection": "minimum_native_training_loss_then_complexity_then_member",
+        **policy_fields,
+        "selection": "withheld_on_reference_width"
+        if width_members
+        else "minimum_native_training_loss_then_complexity_then_member",
         "loss": "covariance_quadratic_form_per_sample"
         if "covariance" in arrays
         else "mean_squared_error",
@@ -292,10 +340,8 @@ def _report(output, preparation, arrays, records, environment):
         "selected_candidate_path": None
         if chosen is None
         else f"member-{chosen + 1:02d}/result.json",
-        "costs": costs.cost_totals(records),
-        "all_costs_observed": all(
-            value is not None for value in costs.cost_totals(records).values()
-        ),
+        "costs": total_costs,
+        "all_costs_observed": all(value is not None for value in total_costs.values()),
         "numerical_environment": environment,
         "scientific_success_assessed": False,
     }
@@ -303,6 +349,16 @@ def _report(output, preparation, arrays, records, environment):
 
 def _summary(report):
     selected = report["selected_member"]
+    if report.get("reference_width_members"):
+        members = ", ".join(str(index) for index in report["reference_width_members"])
+        return (
+            "# Bestätigtes allgemeines Suchpaket\n\n"
+            f"Profil `{PROFILE}`. Alle vier Suchaufrufe wurden ausgeführt.\n\n"
+            f"Bei den Mitgliedern mit den nullbasierten Indizes {members} "
+            "überschritt die Vorhersagereferenz die zulässige Intervallbreite. "
+            "Das Paket ist als ausgefallen erfasst. Die Kosten aller vier "
+            "Mitglieder sind im Bericht enthalten.\n"
+        )
     return (
         "# Bestätigtes allgemeines Suchpaket\n\n"
         f"Profil: `{PROFILE}`. Vier vollständig neue Suchaufrufe.\n\n"
@@ -314,12 +370,21 @@ def _summary(report):
 
 
 def run_confirmed_package(
-    time_s, observed, *, covariance=None, output, seeds, technical=False
+    time_s,
+    observed,
+    *,
+    covariance=None,
+    output,
+    seeds,
+    technical=False,
+    withhold_on_reference_width=False,
 ):
     """Prepare all members, run four fresh workers, and publish one selected output."""
     seeds = _seeds(seeds)
     if type(technical) is not bool:
         raise ValueError("Technical scope must be explicitly boolean.")
+    if type(withhold_on_reference_width) is not bool:
+        raise ValueError("Reference-width policy opt-in must be explicitly boolean.")
     arrays = _arrays(time_s, observed, covariance)
     output = publication.validate_output(output)
     output.mkdir(parents=True)
@@ -342,6 +407,8 @@ def run_confirmed_package(
             "provenance": _provenance(),
             "input_fingerprints": _fingerprints(arrays),
         }
+        if withhold_on_reference_width:
+            preparation["prediction_failure_policy"] = WIDTH_POLICY
         _check_provenance(preparation["provenance"], software)
         _write_json(output / "preparation.json", preparation)
         restarts.freeze_files(
@@ -352,9 +419,14 @@ def run_confirmed_package(
                 for name in ("inputs.npz", "preparation.json")
             },
         )
+        prepare_member = (
+            profile.prepare_main_width_member
+            if withhold_on_reference_width
+            else profile.prepare_member
+        )
         for member, seed in enumerate(seeds):
             consumed.check()
-            profile.prepare_member(
+            prepare_member(
                 _directory(output, member),
                 arrays["time_s"],
                 arrays["observed"],

@@ -9,8 +9,8 @@ import numpy as np
 import pytest
 
 from ringdown_sr import confirmed_profile as profile
+from ringdown_sr import confirmed_search, symbolic
 from ringdown_sr import main_study_technical as technical
-from ringdown_sr import symbolic
 from ringdown_sr.pilot import _write_json
 
 
@@ -73,7 +73,8 @@ def probe(monkeypatch, tmp_path):
             arrays["covariance"] = (np.eye(103) + 0.2) * technical.ARMS.index(arm)
         return arrays
 
-    def prepare_member(path, time_s, observed, *, covariance=None, seed):
+    def prepare_member(path, time_s, observed, *, covariance=None, seed, technical):
+        assert technical is True
         case = next(case for case in cases if case.spec["id"] == path.parent.name)
         assert time_s.shape == observed.shape == (103,)
         assert seed == case.spec["search_seeds"][0]
@@ -82,9 +83,7 @@ def probe(monkeypatch, tmp_path):
         if covariance is not None:
             arrays["covariance"] = covariance
         _write_json(path / "prepared.json", {"provenance": software})
-        _write_json(
-            path / "fingerprints.json", technical.confirmed_search._fingerprints(arrays)
-        )
+        _write_json(path / "fingerprints.json", confirmed_search._fingerprints(arrays))
 
     def prepared_files(path):
         return {
@@ -109,7 +108,7 @@ def probe(monkeypatch, tmp_path):
         key = f"{case.spec['id']}/{path.name}"
         calls.append(key)
         record = {
-            "format": profile.MAIN_TECHNICAL_FORMAT,
+            "format": profile.MAIN_WIDTH_FORMAT,
             "requested_iterations": 10,
             "profile": profile.PROFILE,
             "technical": True,
@@ -140,7 +139,7 @@ def probe(monkeypatch, tmp_path):
         ),
     )
     monkeypatch.setattr(technical.inputs, "arm_arrays", arm_arrays)
-    monkeypatch.setattr(profile, "prepare_main_technical_member", prepare_member)
+    monkeypatch.setattr(profile, "prepare_main_width_member", prepare_member)
     monkeypatch.setattr(
         profile,
         "verify_prepared",
@@ -177,6 +176,10 @@ def test_eight_prepared_workers_and_completely_read_only_replay(probe):
     assert report["n_samples"] == 103
     assert report["niterations"] == 10
     assert report["search_calls"] == 8
+    assert report["prediction_failure_policy"] == confirmed_search.WIDTH_POLICY
+    preparation = profile.read(root, "preparation.json")
+    assert preparation["prediction_failure_policy"] == confirmed_search.WIDTH_POLICY
+    assert preparation["member_format"] == profile.MAIN_WIDTH_FORMAT
     assert report["scientific_success_assessed"] is False
     assert len(report["members"]) == 8
     assert report["costs"]["callback_calls_during_fit"] == 8
@@ -194,6 +197,7 @@ def test_eight_prepared_workers_and_completely_read_only_replay(probe):
 @pytest.mark.parametrize(
     "field,value",
     [
+        ("format", profile.MAIN_TECHNICAL_FORMAT),
         ("format", profile.NOISE_TECHNICAL_FORMAT),
         ("format", profile.FORMAT),
         ("requested_iterations", 1),
@@ -202,6 +206,7 @@ def test_eight_prepared_workers_and_completely_read_only_replay(probe):
         ("technical", False),
         ("profile", "different"),
         ("status", "timeout"),
+        ("status", "reference_width_indeterminate"),
         ("numerical_environment", None),
         ("numerical_environment", {"different": "native-runtime"}),
         ("provenance", {}),
@@ -281,6 +286,17 @@ def reseal_raw(root):
         (completion / "raw_checksums.json").read_bytes()
     )
     _write_json(completion / technical.publication.MANIFEST, manifest)
+
+
+def test_resealed_preparation_cannot_downgrade_the_prediction_policy(probe):
+    root, _, _, _ = probe
+    technical.run(root)
+    preparation = profile.read(root, "preparation.json")
+    del preparation["prediction_failure_policy"]
+    _write_json(root / "preparation.json", preparation)
+    reseal_raw(root)
+    with pytest.raises(ValueError, match="Changed technical preflight preparation"):
+        technical.verify(root)
 
 
 @pytest.mark.parametrize("wrong", ["background", "signal"])

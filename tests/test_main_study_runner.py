@@ -74,6 +74,7 @@ def boundary(tmp_path, monkeypatch):
     technical = tmp_path / "technical"
     (technical / "completion").mkdir(parents=True)
     gate_report = {
+        "prediction_failure_policy": study.search.WIDTH_POLICY,
         "status": "completed",
         "software": software,
         "numerical_environment": environment,
@@ -126,7 +127,10 @@ def boundary(tmp_path, monkeypatch):
     def gate(path, *, consumed=None):
         return study._json(Path(path) / "completion" / publication.REPORT, consumed)
 
-    def run_package(time_s, observed, *, covariance, output, seeds):
+    def run_package(
+        time_s, observed, *, covariance, output, seeds, withhold_on_reference_width
+    ):
+        assert withhold_on_reference_width is True
         output = Path(output)
         case_id, arm = output.parent.parent.name, output.name
         if arm == result.fail_arm:
@@ -149,6 +153,8 @@ def boundary(tmp_path, monkeypatch):
         }
         report = {
             "package_status": "success",
+            "prediction_failure_policy": study.search.WIDTH_POLICY,
+            "reference_width_members": [],
             "selected_member": 0,
             "selected_candidate": selected,
             "search_calls": 4,
@@ -360,6 +366,7 @@ def test_interruption_preserves_costs_and_forbids_any_partial_resume(
     [
         ("technical", True),
         ("profile", "wrong"),
+        ("prediction_failure_policy", None),
         ("seeds", [1, 2, 3, 4]),
         ("software", {}),
         ("input_fingerprints", {}),
@@ -382,6 +389,7 @@ def test_incorrect_worker_binding_prevents_release(boundary, tmp_path, field, va
     [
         ("software", {}),
         ("search_calls", 7),
+        ("prediction_failure_policy", None),
         ("n_samples", 128),
         ("niterations", 1000),
         ("numerical_environment", None),
@@ -442,6 +450,47 @@ def test_covariance_failure_does_not_replace_or_remove_arm(
     assert record["planned_members"] == 4
     assert record["search_calls"] == 0
     assert {arm for _, arm, _ in boundary.events} == set(study.ARMS) - {"estimated_64s"}
+
+
+def test_width_withholds_e64_and_runs_next_arm_with_readonly_case_replay(
+    boundary, tmp_path
+):
+    def reported_width(arm, report):
+        if arm == "estimated_64s":
+            report["members"][3]["status"] = "reference_width_indeterminate"
+            report.update(
+                package_status="failed",
+                failure_reason="reference_width_exceeds_bound",
+                reference_width_members=[3],
+                selected_member=None,
+                selected_candidate=None,
+            )
+
+    boundary.mutate_package = reported_width
+    consumed = publication.Consumption(publication.Deadline(60))
+    gates = study._gates(boundary.prepared, boundary.technical, consumed)
+    case_id = next(iter(boundary.cases))
+    root = tmp_path / case_id
+    report, timing = study._run_case(boundary.prepared, case_id, gates, root)
+    assert [arm for _, arm, _ in boundary.events][::4] == list(study.ARMS)
+    assert report["search_calls"] == report["planned_search_calls"] == 16
+    by_arm = {row["source_identity"]["condition"]: row for row in report["assessments"]}
+    missing = by_arm["estimated_64s"]
+    assert missing["status"] == "failed"
+    assert missing["original_candidate"] is None
+    assert missing["primary"] == {
+        "status": "not_available",
+        "value": None,
+        "reason": "reference_width_exceeds_bound",
+    }
+    assert missing["costs"]["callback_calls_during_fit"] == 100
+    assert by_arm["estimated_4096s"]["status"] == "success"
+    assert study._verify_case(root, boundary.prepared, case_id, gates, consumed) == (
+        report,
+        timing,
+    )
+    consumed.check()
+    assert len(boundary.events) == 16
 
 
 def test_late_mutation_revokes_released_case(boundary, tmp_path, monkeypatch):

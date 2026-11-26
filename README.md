@@ -5,7 +5,21 @@ Regression zur Rekonstruktion kurzer Ringdown-Signale.
 
 ## Projektstatus
 
-23.11.2026: Die **Hauptserie** ist in
+Am 25.11.2026 endete `main-study-manjaro-001` nach 25 als abgeschlossen
+protokollierten Fällen im ersten Signalabschnitt. Bei einem Kandidaten des
+E64-Arms war das Referenzintervall an 16 von 103 Messpunkten zu breit. Der
+Abschnitt verbuchte bis zum Abbruch 32 h 13 min. Das lokale Teilarchiv
+wurde beim Erstellen geprüft.
+Die [Belege zu Lauf 001](docs/results_index.md#hauptserie-manjaro-001) enthalten
+den abgeglichenen Diagnoseumfang und die Grenzen der Nachprüfung.
+
+Für eine neue vollständige Hauptserie legt die
+[Protokollergänzung v2](docs/main_study_reference_width_v2.md) fest, wie ein
+nachgewiesener reiner Breitenfehler als fehlende Ausgabe des ganzen Viererpakets
+gezählt wird. Die Wiederholung verwendet dieselben vorgegebenen Daten und
+Seeds. Die wissenschaftliche Ausführung dieser Version steht aus.
+
+Historischer Implementierungsstand vom 23.11.2026. Die **Hauptserie** ist in
 [PR #107](https://github.com/craexxn/ringdown-sr/pull/107) implementiert und
 lokal technisch geprüft. Der [verbindliche Plan](docs/main_study_plan.md) und die
 vollständige Seedtabelle sind vor wissenschaftlichen Beobachtungen in
@@ -24,9 +38,9 @@ ist bestanden: 4.955 Python-Tests, alle 35 nativen Fachschritte und Abschlussgat
 PR107 ist als `2774b9ebce7276f29af4d7d592264bcf092d033c` übernommen;
 der Mergebaum entspricht dem geprüften Stand. Für den neuen Manjaro-Checkout
 ist `e366f50b9cbff0e8d6dd4fc8035e0c09cdc103f7` festgelegt.
-Nächster Schritt ist die [Startfolge](docs/main_study.md#geprüfter-ausführungscheckout)
-mit eingebautem Zielrechnervorlauf und anschließender Hauptserie.
-Ein Manjaro-Vorlauf oder eine wissenschaftliche Hauptsuche ist noch nicht belegt.
+Auf diesem Stand begann anschließend der oben beschriebene Lauf 001.
+Sein [Ausführungscheckout](docs/main_study.md#geprüfter-ausführungscheckout)
+dient der Zuordnung der v1-Artefakte.
 
 23.11.2026: Der [Pilotabschluss](docs/pilot_closeout.md) ist einschließlich
 der begrenzten lesenden Struktur-/Domainprüfung fertig: 468 Originalausgaben,

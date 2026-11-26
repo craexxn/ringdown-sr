@@ -56,8 +56,8 @@ Basis, beide Mergeeltern und aktive strikte Required-Check-Regel abgeglichen.
 PR107 ist als `2774b9ebce7276f29af4d7d592264bcf092d033c` übernommen;
 beide Eltern und Baum entsprechen dem getesteten Mergecommit.
 
-Für den [Manjaro-Start](main_study.md#geprüfter-ausführungscheckout) bleibt der
-vollständig geprüfte Head `e366f50b9cbff0e8d6dd4fc8035e0c09cdc103f7` fest.
+Für den [ursprünglichen Manjaro-Start](main_study.md#geprüfter-ausführungscheckout) war der
+vollständig geprüfte Head `e366f50b9cbff0e8d6dd4fc8035e0c09cdc103f7` festgelegt.
 Eine spätere reine Statusdokumentation ändert diesen Ausführungsstand nicht.
 Die bestandene CI ersetzt den eingebauten technischen Zielrechnervorlauf
 nicht und belegt keine bereits ausgeführte wissenschaftliche Hauptserie.
@@ -100,11 +100,12 @@ jeden technischen Fall vollständig erzeugt; diese Daten und Seeds sind von
 der wissenschaftlichen Matrix getrennt. Die 1280 Hauptsuchen laufen nicht
 in CI. Neue Python-Referenzen prüfen insbesondere N103-Präfixe,
 L2-Normierung, Intervalle, Auswahl-/Ausfallregeln und Quellenbindungen.
-`docs/main_study_plan.md` ist eine laufzeitrelevante Ausnahme vom reinen
-Dokumentationspfad. Der historische Planungsentwurf
-`docs/main_study_protocol.md` bleibt Prosa. Die native Jobfrist bleibt
-180 Minuten; ein erfolgreicher Nachweis dieser erweiterten CI steht beim
-aktuellen Implementierungsstand noch aus.
+Der Hauptplan `docs/main_study_plan.md` und die prospektive Ergänzung
+`docs/main_study_reference_width_v2.md` sind laufzeitrelevante Ausnahmen
+vom reinen Dokumentationspfad. Der historische Planungsentwurf
+`docs/main_study_protocol.md` bleibt Prosa. Die native Jobfrist beträgt
+180 Minuten. Die oben genannte Ready-CI bestätigt den Stand von PR107.
+Für die Ergänzung ist eine eigene vollständige Prüfung vorgesehen.
 
 Der getrennte White-Skalierungspilot ergänzt `check_white_scaling.py`:
 native O/S/K-Arithmetik, vollständige Optionsgegenprüfungen, Vergleich der
@@ -260,7 +261,7 @@ und `docs/time_coordinate_plan.md`, `docs/restart_budget_plan.md`,
 `docs/restart_budget_confirmation_plan.md`, `docs/noise_pilot_plan.md`
 und `docs/noise_background_plan.md`, `docs/noise_followup_plan.md`,
 `docs/white_loss_scaling_plan.md`, `docs/offgrid_selection_plan.md`,
-`docs/main_study_plan.md`
+`docs/main_study_plan.md` und `docs/main_study_reference_width_v2.md`
 sind als eingefrorene Kontrollpläne
 mit festgelegter Prüfsumme an den jeweiligen Code gebunden.
 Änderungen daran erhalten trotz Markdown-Endung die volle CI. Weitere

@@ -1,6 +1,12 @@
 # Leitfaden: wiederholbare Ringdown-Rekonstruktion und Übergang zu Rauschversuchen
 
-Phase 7, Hauptserienanbindung vom 23.11.2026: Nach Übernahme des
+Phase 7, Stand 25.11.2026. Der erste wissenschaftliche Hauptlauf endete im
+ersten Signalabschnitt beim Replay. Das Teilarchiv wurde auf Manjaro geprüft.
+Der [Ergebnisindex](results_index.md#hauptserie-manjaro-001) ordnet Originale,
+Kosten und unabhängige Diagnose zu. Die [Ergänzung zur Hauptserie](main_study_reference_width_v2.md)
+regelt den nachgewiesenen Breitenfehler für eine neue Ausführung.
+
+Historische Hauptserienanbindung vom 23.11.2026: Nach Übernahme des
 [Pilotabschlusses](pilot_closeout.md) in PR106 ist der
 [verbindliche Hauptplan](main_study_plan.md) in
 [PR107](https://github.com/craexxn/ringdown-sr/pull/107) technisch umgesetzt.

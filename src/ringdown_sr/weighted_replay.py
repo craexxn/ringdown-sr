@@ -349,7 +349,30 @@ def _factor_certificate(covariance, factor):
     return result
 
 
-def verify_loss_replay(
+def verify_loss_replay(*args, prediction_check=None, **kwargs):
+    """Require bounded prediction evidence for the historical success path."""
+    if (
+        not isinstance(prediction_check, dict)
+        or prediction_check.get("format") != prediction_reference.FORMAT
+        or prediction_check.get("status") != "passed"
+    ):
+        raise ValueError("Missing bounded prediction evidence.")
+    return _loss_evidence(*args, prediction_check=prediction_check, **kwargs)
+
+
+def width_loss_diagnostic(*args, prediction_check, **kwargs):
+    """Check losses for a withheld prediction; never issue a passing certificate."""
+    if (
+        prediction_check.get("format") != prediction_reference.FORMAT
+        or prediction_check.get("status") != "indeterminate"
+        or prediction_check.get("reason") != "reference_width_exceeds_bound"
+    ):
+        raise ValueError("Missing width-only diagnostic.")
+    evidence = _loss_evidence(*args, prediction_check=prediction_check, **kwargs)
+    return {**evidence, "status": "scalar_checks_passed_prediction_indeterminate"}
+
+
+def _loss_evidence(
     observed,
     native_prediction,
     python_prediction,
@@ -364,19 +387,7 @@ def verify_loss_replay(
     native_factor=None,
     native_whitened=None,
 ):
-    """Check losses using MPFR-bound predictions and each actual whitening.
-
-    The worker supplies a fresh prediction proof; the reading parent must
-    recompute it (``candidate_evidence`` does so). This scalar routine does not
-    authenticate a caller-supplied prediction certificate. Native factor and
-    whitening evidence must come from the objective actually used by the worker.
-    """
-    if (
-        not isinstance(prediction_check, dict)
-        or prediction_check.get("format") != prediction_reference.FORMAT
-        or prediction_check.get("status") != "passed"
-    ):
-        raise ValueError("Missing bounded prediction evidence.")
+    """Check the scalar loss, including each actual whitening, independently."""
     if loss_object is None:
         if any(
             value is not None for value in (covariance, native_factor, native_whitened)

@@ -20,7 +20,10 @@ CASE_IDS = {
     )
     for signal in SIGNALS
 }
-TERMINAL = {"completed", "fit_error", "timeout"}
+WIDTH_STATUS = "reference_width_indeterminate"
+STATE_LABELS = {WIDTH_STATUS: "Referenzintervall zu breit"}
+FAILED = {"fit_error", "timeout", WIDTH_STATUS}
+TERMINAL = FAILED | {"completed"}
 
 
 def clean_text(value, limit=180):
@@ -86,8 +89,7 @@ def worker_state(directory, saved, now, warnings):
         "timing_kind": timing_kind,
         "error": None if error is None else clean_text(error),
         "process_finished": outcome.get("status") in TERMINAL,
-        "recorded_failure": outcome.get("status") in {"fit_error", "timeout"}
-        or error is not None,
+        "recorded_failure": outcome.get("status") in FAILED or error is not None,
     }
 
 
@@ -238,7 +240,7 @@ def render(data, *, detailed=False):
                 ):
                     continue
                 member_text = ", ".join(
-                    f"{index}={worker['state']}"
+                    f"{index}={STATE_LABELS.get(worker['state'], worker['state'])}"
                     for index, worker in enumerate(workers, 1)
                 )
                 lines.append(f"    {LABELS[condition['condition']]:10} {member_text}")

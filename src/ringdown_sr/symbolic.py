@@ -621,13 +621,16 @@ def _worker_search(
                 ),
             }
         )
-    selected = select_candidate(candidates)
+    terminal = getattr(hooks, "withheld_front", lambda front: None)(candidates)
+    selected = select_candidate(candidates) if terminal is None else None
     result = {
         "format": FORMAT,
         "evaluation_scope": "fitted_samples_only",
         "candidates": candidates,
         "selected_index": selected,
-        "selection": "minimum_training_loss_then_complexity",
+        "selection": "minimum_training_loss_then_complexity"
+        if terminal is None
+        else "withheld",
         "baseline_loss": baseline,
         "use_baseline": use_baseline,
         "cost_normalization": normalization,
@@ -652,9 +655,10 @@ def _worker_search(
             "fit_including_jit_and_python_exports": after_fit - before_fit,
         },
     }
-    _write_json(directory / "result.json", result)
+    phase, filename = ("success", "result.json") if terminal is None else terminal
+    _write_json(directory / filename, result)
     metadata.update(
-        phase="success",
+        phase=phase,
         completed_at=_utc_now(),
         environment_after_search=_environment_snapshot("after_search", julia_used=True),
     )
@@ -671,6 +675,10 @@ def _worker_search(
     }
     _write_json(directory / "checksums.json", checksums)
     print(
-        f"Free PySR search passed: {len(candidates)} replayed Pareto candidates.",
+        (
+            f"Free PySR search passed: {len(candidates)} replayed Pareto candidates."
+            if terminal is None
+            else "Native search finished with a withheld front."
+        ),
         flush=True,
     )

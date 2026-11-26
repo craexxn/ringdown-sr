@@ -1,6 +1,6 @@
 # Ergebnisindex und Archivierungsstand
 
-Stand: 23.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
+Stand 25.11.2026. Zentraler Wegweiser zu den belegten Versuchen und ihren
 nachträglichen Bewertungen; [Ablagerichtlinie](results_archiving.md).
 Serien sind die Indexeinheit, ihre Zellen/Wiederholungen bleiben im Originalbericht.
 Die Aufstellung ist keine Behauptung, dass alle jemals lokal erzeugten Ergebnisse
@@ -20,9 +20,10 @@ gebunden. Der [technische Laufweg](main_study.md) ist in PR107 lokal geprüft:
 4.955 Python-Tests, acht kurze N103-Worker, separater Replay und Originalplots.
 Die [Entwicklungsnachweise](#technische-hauptserienabnahme-vom-23112026) trennen
 den erhaltenen Umgebungsabbruch 001 vom bestandenen Vorlauf 002.
-Die wissenschaftliche Hauptserie und ihre 80 Dateneingaben sind noch nicht
-ausgeführt. Die vollständige Ready-CI ist bestanden und PR107 übernommen;
-Manjaro-Vorlauf und wissenschaftliche Ausführung bleiben offen.
+Die vollständige Ready-CI ist bestanden und PR107 übernommen. In der
+[Hauptserie Manjaro 001](#hauptserie-manjaro-001) folgten der technische
+Vorlauf, die Bindung der 80 Fälle und der später abgebrochene erste
+Signalabschnitt.
 
 **Archivierung offen:** Dauerhafte Ablage und eine geprüfte zweite Kopie sind
 hier noch nicht bestätigt. Lokal verfügbare Arbeitskopien werden nicht als
@@ -1137,6 +1138,47 @@ ersetzen weder die Originalauswahlexporte noch eine unabhängige Sicherung.
 Dauerhafte Ablage und geprüfte Zweitkopie außerhalb der Arbeitsumgebung
 bleiben unbestätigt; frühere Archive und deren Belege gelten unverändert weiter.
 
+### Hauptserie Manjaro 001
+
+Der erste wissenschaftliche Lauf begann am 23.11.2026 auf
+`e366f50b9cbff0e8d6dd4fc8035e0c09cdc103f7`. Laut übermitteltem
+Terminalprotokoll bestanden die acht technischen N103-Zehnerworker, ihr
+lesender Replay und die technischen Plotprüfungen. Alle 80 Hauptfälle wurden
+vor der ersten Hauptsuche gebunden und geprüft, das Shared-Archiv beim
+Schreiben mit seinem Quellbestand abgeglichen.
+
+Der Abschnitt 200 Hz / 4 ms endete am 25.11.2026 um 06:21 Uhr MEZ.
+Abschnittsstatus und Kostenbeleg stimmen bei den 25 als abgeschlossen
+gespeicherten Fall-IDs überein. Der 26. Fall `signal_200_4ms-ar1-16` war
+beim Abbruch in Bearbeitung, 14 Fälle waren noch geplant. Der zweite
+Signalabschnitt hatte noch nicht begonnen. Der erste Abschnitt verbuchte
+115.983,451 s Wandzeit. Darin sind die 1.911,689 s des abgebrochenen Falls
+enthalten. Beide CPU-Messungen sind als unvollständig gekennzeichnet.
+
+Im E64-Arm des betroffenen Falls erreichte Worker 4 alle 1.000 Iterationen.
+Der Fit dauerte 255,810 s. Beim Replay des elften Kandidaten der gespeicherten
+Formeltabelle war die Vorhersagereferenz an 16 der 103 Trainingspunkte zu
+breit. Der Kandidat (Komplexität 19) hatte den kleinsten Trainingsverlust dieses
+Workers. Eine nachträgliche Auswertung aus der ursprünglichen Formeltabelle
+und den Zeitbits bestätigte den Befund. Eine unabhängige Rechnung mit
+zulässigen binären Rundungen bestätigte dieselben 16 Überschreitungen.
+Der frische Julia-Replay reproduzierte alle elf gespeicherten Verluste
+bitgenau. Die historischen Vorhersagevektoren fehlen im Diagnosearchiv.
+Für diesen Arm liegt keine freigegebene Siegerformel vor.
+
+| Beleg | Umfang und Prüfstand |
+| --- | --- |
+| `main-study-manjaro-001-shared.tar.gz` | Manjaro meldete den erfolgreichen Byte- und Bestandsabgleich. |
+| `main-study-manjaro-001-partial.tar.gz` | Die Rückmeldung vom 25.11. bestätigt den lokalen Byte- und Bestandsabgleich unter `results/main-study-manjaro-001/archives/`. Für das Gesamtarchiv wurden hier weder die Bytes noch ein Hash übermittelt. |
+| `ar1-16-e64-member-04.tar.gz` | 191.607 empfangene Bytes, SHA-256 `b0d733dcdc95d22559a0322bc3311b25d152f7a13591b7b8c5d3c3ccce9bc066` mit Begleitdatei abgeglichen. Die Nachprüfung erfasste die Worker-Eingaben und 206 Quellenhashes, die Originaltabelle sowie verfügbare Status- und Kostenbelege. |
+| `Diagnose.zip` | Separater lesender Diagnoseexport mit Originalarchiv, Auswertungsskripten, Punktdaten und Grafik der Referenzbreiten. 406.270 Bytes, SHA-256 `af3ff8043002321a5039bc602bc4ee9365e7cce065b58e7679da8f88458c3fc1`. |
+
+Die vollständigen Fallbelege der 25 als abgeschlossen erfassten Fälle waren
+im gezielten Diagnosearchiv nicht enthalten. Ihre unabhängige wissenschaftliche
+Verifikation und die Hashprüfung einer dauerhaften Zweitkopie des Teilarchivs
+sind offen. Die [Regel für eine künftige Hauptserie](main_study_reference_width_v2.md)
+gilt ab einer eigenen Lauf-ID. Der ursprüngliche Abschnitt bleibt abgebrochen.
+
 ### Technische Hauptserienabnahme vom 23.11.2026
 
 Der [Laufweg samt Entwicklungsabnahme](main_study.md#technische-entwicklungsabnahme)
@@ -1162,8 +1204,8 @@ Ausführungscommit beider Cloud-Vorläufe ist
   [vollständige Ready-CI 45234592530](https://github.com/craexxn/ringdown-sr/actions/runs/45234592530)
   besteht ebenfalls mit 4.955 Tests, allen 35 nativen Fachschritten und dem
   Abschlussgate; PR107 ist als `2774b9e` übernommen. Historische
-  Ausführungscommits dieser Archive bleiben unverändert. Der Manjaro-Vorlauf
-  ist noch offen, keine wissenschaftliche Hauptausführung nachgewiesen.
+  Ausführungscommits dieser Archive bleiben unverändert. Der spätere
+  Manjaro-Lauf ist oben separat erfasst.
 - Originalnachweispaket: `main-study-development-001-002.tar.gz`.
   525.145.561 Bytes; SHA-256
   `96931e3479c0d7dd07fafde2ae3d5365dd2baa5dd7fd7af36e011603d3ed2c8a`.

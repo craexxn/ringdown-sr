@@ -17,10 +17,10 @@ from pathlib import Path
 import numpy as np
 
 from . import assessment_sources as sources
-from . import symbolic
+from . import prediction_reference, symbolic
 from . import time_budget_profile as native
 from .constant_diagnostic import backend_seed
-from .losses import CovarianceLoss
+from .losses import CovarianceLoss, _real_array
 from .parameter_export import _node_count
 from .pilot import _json_bytes, _provenance, _sha256, _write_json
 from .prediction_reference import PLAN as PREDICTION_PLAN
@@ -35,6 +35,11 @@ NOISE_TECHNICAL_ITERATIONS = 10
 NOISE_PLAN = "docs/noise_pilot_plan.md"
 NOISE_PLAN_SHA256 = "2a8e521b7729a668832ca02b0c8dd587d46ddec4010d7657d71e7b4d4d295fb8"
 MAIN_TECHNICAL_FORMAT = "ringdown-sr-main-study-technical-member-1"
+MAIN_WIDTH_FORMAT = "ringdown-sr-main-study-width-member-2"
+WIDTH_STATUS = "reference_width_indeterminate"
+WIDTH_REASON = "reference_width_exceeds_bound"
+WIDTH_FRONT = "width_front.json"
+WIDTH_MARKER = "width_observed"
 MAIN_TECHNICAL_ITERATIONS = 10
 MAIN_PLAN = "docs/main_study_plan.md"
 MAIN_PLAN_SHA256 = "772b26883e5bb871ad64af9d60b2e07b69c786af34790e9c68cfeb6930b5d706"
@@ -105,7 +110,7 @@ def source_hashes(*, request=None):
             if _sha256(raw) != NOISE_PLAN_SHA256:
                 raise ValueError("Changed frozen noise-pilot technical plan.")
             names.add(NOISE_PLAN)
-        elif request["format"] == MAIN_TECHNICAL_FORMAT:
+        elif request["format"] in (MAIN_TECHNICAL_FORMAT, MAIN_WIDTH_FORMAT):
             raw = (ROOT / MAIN_PLAN).read_bytes()
             if _sha256(raw) != MAIN_PLAN_SHA256:
                 raise ValueError("Changed frozen main-study technical plan.")
@@ -125,7 +130,12 @@ def checked_request(document):
         not isinstance(document, dict)
         or set(document) != {"format", "profile", "seed", "technical", "budget"}
         or document["format"]
-        not in (FORMAT, NOISE_TECHNICAL_FORMAT, MAIN_TECHNICAL_FORMAT)
+        not in (
+            FORMAT,
+            NOISE_TECHNICAL_FORMAT,
+            MAIN_TECHNICAL_FORMAT,
+            MAIN_WIDTH_FORMAT,
+        )
         or document["profile"] != PROFILE
         or type(document["technical"]) is not bool
         or type(document["seed"]) is not int
@@ -141,7 +151,8 @@ def checked_request(document):
     expected = symbolic.SearchBudget(
         seed=document["seed"],
         niterations=MAIN_TECHNICAL_ITERATIONS
-        if document["format"] == MAIN_TECHNICAL_FORMAT
+        if document["format"] in (MAIN_TECHNICAL_FORMAT, MAIN_WIDTH_FORMAT)
+        and document["technical"]
         else NOISE_TECHNICAL_ITERATIONS
         if ten_iteration
         else 1
@@ -307,6 +318,27 @@ def prepare_main_technical_member(
     return _prepare_member(directory, times, target, matrix, request)
 
 
+def prepare_main_width_member(
+    directory, time_s, observed, *, covariance=None, seed, technical=False
+):
+    """Prepare an explicitly opted-in N103 member with package-level withholding."""
+    times, target, matrix = symbolic._inputs(time_s, observed, covariance)
+    if times.shape != (103,) or not np.array_equal(times, np.arange(103) / 4096):
+        raise ValueError("The main-study width member requires its N103 grid.")
+    request = {
+        "format": MAIN_WIDTH_FORMAT,
+        "profile": PROFILE,
+        "seed": seed,
+        "technical": technical,
+        "budget": asdict(
+            symbolic.SearchBudget(
+                seed=seed, niterations=MAIN_TECHNICAL_ITERATIONS if technical else 1000
+            )
+        ),
+    }
+    return _prepare_member(directory, times, target, matrix, request)
+
+
 def _prepare_member(directory, time_s, observed, covariance, request):
     directory = Path(directory)
     checked_request(request)
@@ -363,7 +395,7 @@ def verify_prepared(directory):
     if any(value.dtype != np.dtype("float64") for value in arrays.values()):
         raise ValueError("Confirmed-profile inputs must retain Float64 representation.")
     symbolic._inputs(arrays["time_s"], arrays["observed"], arrays.get("covariance"))
-    if request["format"] == MAIN_TECHNICAL_FORMAT and (
+    if request["format"] in (MAIN_TECHNICAL_FORMAT, MAIN_WIDTH_FORMAT) and (
         arrays["time_s"].shape != (103,)
         or not np.array_equal(arrays["time_s"], np.arange(103) / 4096)
     ):
@@ -382,6 +414,56 @@ def verify_prepared(directory):
     return request, arrays, manifest
 
 
+def width_prediction(
+    tree, times, python_prediction, native_prediction, *, on_width=None
+):
+    """Retain a finite wide reference only if every precision failed solely on width."""
+    try:
+        return verify_prediction(tree, times, python_prediction, native_prediction)
+    except prediction_reference.PredictionVerificationError as error:
+        record = error.evidence
+        attempts = [
+            {"precision_bits": bits, "reason": WIDTH_REASON}
+            for bits in prediction_reference.PRECISIONS
+        ]
+        if (
+            record["status"] != "indeterminate"
+            or record["reason"] != WIDTH_REASON
+            or record["attempts"] != attempts
+            or record["width_status"] != "not_passed"
+            or record["membership"] != {"status": "not_attempted"}
+        ):
+            raise
+        if on_width is not None:
+            on_width()
+        # Even a wide enclosure can refute a vector. Never issue a membership pass.
+        limits = np.asarray(
+            [
+                [float.fromhex(value) for value in pair]
+                for pair in record["intervals_hex"]
+            ]
+        )
+        if limits.shape != (len(times), 2) or not np.isfinite(limits).all():
+            raise ValueError("Invalid reference width enclosure.") from error
+        for name, values in (
+            ("python", python_prediction),
+            ("native", native_prediction),
+        ):
+            values = _real_array(values, name)
+            if values.shape != (len(times),) or not np.all(
+                (limits[:, 0] <= values) & (values <= limits[:, 1])
+            ):
+                raise ValueError(
+                    "Prediction contradicts the wide enclosure: " + name
+                ) from error
+        return {
+            **record,
+            "observed_python": sources.fingerprint(python_prediction),
+            "observed_python_hex": [float(value).hex() for value in python_prediction],
+            "observed_native": sources.fingerprint(native_prediction),
+        }
+
+
 class WorkerHooks:
     """Explicit versioned hooks; legacy symbolic workers never construct these."""
 
@@ -390,6 +472,7 @@ class WorkerHooks:
         self.request, self.arrays, self.manifest = verify_prepared(directory)
         self.module = self.original = self.guard = self.runtime = self.factor = None
         self.jl = None
+        self.width_observed = False
 
     def read_request(self, document):
         if document != self.request:
@@ -397,13 +480,35 @@ class WorkerHooks:
         return checked_request(document)
 
     parameters = staticmethod(parameters)
-    prediction_replay = staticmethod(verify_prediction)
 
-    @staticmethod
-    def loss_replay(*args, **kwargs):
-        from .weighted_replay import verify_loss_replay
+    def prediction_replay(self, *args):
+        if self.request["format"] == MAIN_WIDTH_FORMAT:
+            return width_prediction(*args, on_width=self._mark_width)
+        return verify_prediction(*args)
 
-        return verify_loss_replay(*args, **kwargs)
+    def _mark_width(self):
+        if not self.width_observed:
+            # A deadline can kill the worker before the full diagnostic is ready.
+            (self.directory / WIDTH_MARKER).touch(exist_ok=False)
+            self.width_observed = True
+
+    def loss_replay(self, *args, prediction_check, **kwargs):
+        from .weighted_replay import verify_loss_replay, width_loss_diagnostic
+
+        verify = verify_loss_replay
+        if (
+            self.request["format"] == MAIN_WIDTH_FORMAT
+            and prediction_check["status"] == "indeterminate"
+        ):
+            verify = width_loss_diagnostic
+        return verify(*args, prediction_check=prediction_check, **kwargs)
+
+    def withheld_front(self, candidates):
+        if self.request["format"] == MAIN_WIDTH_FORMAT and any(
+            row["prediction_replay"]["status"] == "indeterminate" for row in candidates
+        ):
+            return WIDTH_STATUS, WIDTH_FRONT
+        return None
 
     def configure(self, jl, budget, matrix):
         self.jl = jl
@@ -521,7 +626,11 @@ def worker(directory):
     symbolic.worker(Path(directory).resolve(), hooks=WorkerHooks(directory))
 
 
-def failure_status(metadata, *, timed_out=False):
+def failure_status(metadata, *, timed_out=False, directory=None):
+    if directory is not None and any(
+        (directory / name).exists() for name in (WIDTH_MARKER, WIDTH_FRONT)
+    ):
+        raise ValueError("Incomplete worker replay after a reference width finding.")
     message = metadata.get("error")
     if message is not None:
         ordinary_fit = (
@@ -551,7 +660,8 @@ def _verify_origin(metadata, initial, manifest, *, completed):
         metadata.get("provenance") != initial["provenance"]
         or metadata.get("adapter_source_sha256") != manifest["sources"]
         or (
-            manifest.get("format") in (NOISE_TECHNICAL_FORMAT, MAIN_TECHNICAL_FORMAT)
+            manifest.get("format")
+            in (NOISE_TECHNICAL_FORMAT, MAIN_TECHNICAL_FORMAT, MAIN_WIDTH_FORMAT)
             and metadata.get("format") != manifest["format"]
         )
     ):
@@ -618,11 +728,16 @@ def run_member(directory, *, deadline):
     after = resource.getrusage(resource.RUSAGE_CHILDREN)
     metadata = read(directory, "metadata.json")
     if code == 0 and not timed_out:
-        status = "completed"
+        status = (
+            WIDTH_STATUS
+            if request["format"] == MAIN_WIDTH_FORMAT
+            and metadata.get("phase") == WIDTH_STATUS
+            else "completed"
+        )
     else:
         if not timed_out and (type(code) is not int or code <= 0):
             raise ValueError("Confirmed-profile worker interrupted by signal.")
-        status = failure_status(metadata, timed_out=timed_out)
+        status = failure_status(metadata, timed_out=timed_out, directory=directory)
     outcome = {
         "format": request["format"],
         "status": status,
@@ -795,6 +910,53 @@ def equation_tree(equation):
     return visit(root)
 
 
+def _width_candidate_evidence(
+    candidate, times, observed, covariance, *, native_factor, loss_object
+):
+    from .weighted_replay import width_loss_diagnostic
+
+    python = symbolic.evaluate_tree(candidate["tree"], times)
+    proof = width_prediction(candidate["tree"], times, python, candidate["prediction"])
+    return width_loss_diagnostic(
+        observed,
+        candidate["prediction"],
+        python,
+        candidate["loss"],
+        candidate["julia_reimport_loss"],
+        candidate["table_loss"],
+        candidate["python_loss"],
+        loss_object,
+        prediction_check=proof,
+        covariance=covariance,
+        native_factor=native_factor,
+        native_whitened=candidate.get("native_whitened_residual"),
+    )
+
+
+def _verify_width_timings(result, costs):
+    """The worker and its adapter each serialize one measured duration twice."""
+    timing = result.get("timing_seconds")
+    if (
+        not isinstance(timing, dict)
+        or "fit_including_jit_and_python_exports" not in timing
+    ):
+        raise ValueError("Missing withheld worker fit timing.")
+    for label, first, second in (
+        (
+            "fit",
+            costs["fit_wall_seconds"],
+            timing["fit_including_jit_and_python_exports"],
+        ),
+        ("worker", costs["worker_wall_seconds"], costs["adapter_call_wall_seconds"]),
+    ):
+        if (
+            type(first) is not float
+            or type(second) is not float
+            or first.hex() != second.hex()
+        ):
+            raise ValueError(f"Inconsistent withheld worker {label} timing.")
+
+
 def verify_member(directory):
     """Re-read the original member without importing Julia or performing a fit."""
     from .weighted_replay import candidate_evidence
@@ -809,6 +971,15 @@ def verify_member(directory):
         read(directory, "outcome.json"),
         read(directory, "metadata.json"),
     )
+    withheld = (
+        request["format"] == MAIN_WIDTH_FORMAT and outcome.get("status") == WIDTH_STATUS
+    )
+    if (directory / WIDTH_FRONT).exists() != withheld:
+        raise ValueError("Inconsistent diagnostic width front.")
+    if (directory / WIDTH_MARKER).exists() != withheld or (
+        withheld and actual.get(WIDTH_MARKER) != _sha256(b"")
+    ):
+        raise ValueError("Inconsistent diagnostic width marker.")
     if (
         set(outcome)
         != {
@@ -822,21 +993,24 @@ def verify_member(directory):
             "cpu_system_seconds",
         }
         or outcome.get("format") != request["format"]
-        or outcome.get("status") not in {"completed", "fit_error", "timeout"}
+        or (
+            not withheld
+            and outcome.get("status") not in {"completed", "fit_error", "timeout"}
+        )
         or type(outcome.get("returncode")) is not int
         or type(outcome.get("timed_out")) is not bool
     ):
         raise ValueError("Invalid confirmed-member terminal outcome.")
     completed = outcome.get("status") == "completed"
-    if not completed and outcome["status"] != failure_status(
-        metadata, timed_out=outcome["timed_out"]
+    if not (completed or withheld) and outcome["status"] != failure_status(
+        metadata, timed_out=outcome["timed_out"], directory=directory
     ):
         raise ValueError("Changed numerical failure classification.")
     _verify_origin(
         metadata,
         read(directory, "metadata_initial.json"),
         manifest,
-        completed=completed,
+        completed=completed or withheld,
     )
     costs = {key: outcome.get(key) for key in COST_FIELDS}
     for key in (
@@ -845,7 +1019,11 @@ def verify_member(directory):
         "cpu_user_seconds",
         "cpu_system_seconds",
     ):
-        if not completed and key.startswith("cpu_") and costs[key] is None:
+        if (
+            not (completed or withheld)
+            and key.startswith("cpu_")
+            and costs[key] is None
+        ):
             continue
         if (
             type(costs[key]) not in (int, float)
@@ -862,9 +1040,12 @@ def verify_member(directory):
         raise ValueError("Invalid observed fit wall cost.")
     runtime_path = directory / "native_runtime.json"
     runtime = read(directory, runtime_path.name) if runtime_path.exists() else None
-    native_required = completed or metadata.get(
-        "failed_during", metadata.get("phase")
-    ) in {"fit", "replay", "success"}
+    native_required = (
+        completed
+        or withheld
+        or metadata.get("failed_during", metadata.get("phase"))
+        in {"fit", "replay", "success"}
+    )
     backend_path = directory / "backend_sources.json"
     if (native_required and (runtime is None or not backend_path.is_file())) or (
         backend_path.exists()
@@ -876,13 +1057,18 @@ def verify_member(directory):
         )
     if runtime is not None:
         native.validate_runtime(runtime)
-    environment = numerical_environment(metadata, runtime, completed=completed)
+    environment = numerical_environment(
+        metadata, runtime, completed=completed or withheld
+    )
     candidates, selected = [], None
-    if completed:
+    width_evidence = None
+    if completed or withheld:
         if (
             outcome.get("returncode") != 0
             or outcome.get("timed_out") is not False
-            or metadata.get("phase") != "success"
+            or metadata.get("phase") != (WIDTH_STATUS if withheld else "success")
+            or (withheld and (directory / "result.json").exists())
+            or (withheld and ("error" in metadata or "failed_during" in metadata))
         ):
             raise ValueError("Invalid completed worker status.")
         if (
@@ -892,12 +1078,19 @@ def verify_member(directory):
         ):
             raise ValueError("Missing actual native runtime/source evidence.")
         record = _native_completion(directory, request)
-        result = read(directory, "result.json")
+        result = read(directory, WIDTH_FRONT if withheld else "result.json")
+        if withheld:
+            _verify_width_timings(result, costs)
         if (
             result.get("format") != symbolic.FORMAT
             or result.get("evaluation_scope") != "fitted_samples_only"
-            or result.get("selection") != "minimum_training_loss_then_complexity"
-            or type(result.get("selected_index")) is not int
+            or result.get("selection")
+            != ("withheld" if withheld else "minimum_training_loss_then_complexity")
+            or (
+                result.get("selected_index") is not None
+                if withheld
+                else type(result.get("selected_index")) is not int
+            )
         ):
             raise ValueError("Changed original candidate result contract.")
         candidates = result["candidates"]
@@ -909,7 +1102,7 @@ def verify_member(directory):
                 or candidate["complexity"] <= 0
             ):
                 raise ValueError("Invalid original candidate ordering fields.")
-        selected = symbolic.select_candidate(candidates)
+        selected = None if withheld else symbolic.select_candidate(candidates)
         if (
             selected != result["selected_index"]
             or result["rng"]["python_seed"] != request["seed"]
@@ -926,8 +1119,20 @@ def verify_member(directory):
                 ):
                     raise ValueError("Invalid native covariance factor artifact.")
                 factor = saved["lower"].copy()
-        for candidate in candidates:
-            evidence = candidate_evidence(
+        wide_indices = []
+        for index, candidate in enumerate(candidates):
+            wide = (
+                candidate.get("prediction_replay", {}).get("status") == "indeterminate"
+            )
+            if wide and not withheld:
+                raise ValueError(
+                    "A candidate without bounded predictions cannot be selected."
+                )
+            verify = candidate_evidence
+            if wide:
+                wide_indices.append(index)
+                verify = _width_candidate_evidence
+            evidence = verify(
                 candidate,
                 arrays["time_s"],
                 arrays["observed"],
@@ -946,6 +1151,17 @@ def verify_member(directory):
                 )
             ):
                 raise ValueError("Changed candidate replay evidence or residual.")
+        if withheld:
+            if not wide_indices:
+                raise ValueError("Withheld front has no width-indeterminate candidate.")
+            width_evidence = {
+                "reason": WIDTH_REASON,
+                "front_sha256": actual[WIDTH_FRONT],
+                "native_front_sha256": actual["pysr/search/hall_of_fame.csv"],
+                "candidate_indices": wide_indices,
+                "front_count": len(candidates),
+            }
+            candidates = []
         calls = result.get("callback_calls_during_fit")
         if (
             type(calls) is not int
@@ -993,9 +1209,11 @@ def verify_member(directory):
                 "format": request["format"],
                 "requested_iterations": request["budget"]["niterations"],
             }
-            if request["format"] in (NOISE_TECHNICAL_FORMAT, MAIN_TECHNICAL_FORMAT)
+            if request["format"]
+            in (NOISE_TECHNICAL_FORMAT, MAIN_TECHNICAL_FORMAT, MAIN_WIDTH_FORMAT)
             else {}
         ),
+        **({"width_evidence": width_evidence} if withheld else {}),
         "status": outcome["status"],
         "selected_index": selected,
         "selected": None if selected is None else candidates[selected],

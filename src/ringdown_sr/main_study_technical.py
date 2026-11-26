@@ -19,7 +19,7 @@ from . import main_study_inputs as inputs
 from .noise_pilot_inputs import _cpu_usage
 from .pilot import _utc_now, _write_json
 
-FORMAT = "ringdown-sr-main-study-technical-1"
+FORMAT = "ringdown-sr-main-study-technical-2"
 ARMS = inputs.ARMS
 SIGNALS = ("signal_200_4ms", "signal_250_6ms")
 SEARCH_CALLS = 8
@@ -91,7 +91,8 @@ def _preparation(root, prepared, cases):
         "format": FORMAT,
         "technical": True,
         "profile": profile.PROFILE,
-        "member_format": profile.MAIN_TECHNICAL_FORMAT,
+        "member_format": profile.MAIN_WIDTH_FORMAT,
+        "prediction_failure_policy": confirmed_search.WIDTH_POLICY,
         "cases": [_case_identity(case) for case in cases],
         "n_samples": 103,
         "niterations": 10,
@@ -120,7 +121,7 @@ def _records(root, prepared, cases, consumed):
             consumed.check()
             record = profile.verify_member(_directory(root, case.spec["id"], arm))
             if (
-                record.get("format") != profile.MAIN_TECHNICAL_FORMAT
+                record.get("format") != profile.MAIN_WIDTH_FORMAT
                 or record.get("requested_iterations") != 10
                 or type(record.get("requested_iterations")) is not int
                 or record.get("profile") != profile.PROFILE
@@ -205,6 +206,7 @@ def _report(root, prepared, cases, records, environment):
         "format": FORMAT,
         "status": "completed",
         "technical": True,
+        "prediction_failure_policy": confirmed_search.WIDTH_POLICY,
         "software": prepared.manifest["software"],
         "numerical_environment": environment,
         "preparation_sha256": sources.sha256((root / "preparation.json").read_bytes()),
@@ -356,8 +358,11 @@ def run(output):
                 for arm in ARMS:
                     directory = _directory(root, case.spec["id"], arm)
                     arrays = _arrays(prepared, case, arm)
-                    profile.prepare_main_technical_member(
-                        directory, **arrays, seed=case.spec["search_seeds"][0]
+                    profile.prepare_main_width_member(
+                        directory,
+                        **arrays,
+                        seed=case.spec["search_seeds"][0],
+                        technical=True,
                     )
                     _, _, manifest = profile.verify_prepared(directory)
                     confirmed_search._check_provenance(
